@@ -1,0 +1,28 @@
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    maven {
+        url "https://dl.bintray.com/msgilligan/maven"
+    }
+}
+
+description = 'bitcoin jsonrpc client example application package'
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    archiveBaseName.set("$rootProject.name-$project.name")
+    archiveClassifier.set('boot')
+}
+
+dependencies {
+    implementation project(':bitcoin-jsonrpc-client-starter')
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+}

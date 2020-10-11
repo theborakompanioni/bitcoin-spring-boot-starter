@@ -1,0 +1,9 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin jsonrpc client package'
+
+dependencies {
+    api 'com.msgilligan:cj-btc-jsonrpc:0.5.4'
+}
