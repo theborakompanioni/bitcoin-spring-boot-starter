@@ -1,0 +1,48 @@
+package org.tbk.bitcoin.currency;
+
+import org.javamoney.moneta.CurrencyUnitBuilder;
+
+import javax.money.CurrencyContext;
+import javax.money.CurrencyContextBuilder;
+import javax.money.CurrencyQuery;
+import javax.money.CurrencyUnit;
+import javax.money.spi.CurrencyProviderSpi;
+import java.util.Collections;
+import java.util.Set;
+
+/**
+ * A BitcoinCurrencyProvider based on work in the javamoney-shelter.
+ *
+ * @author Sean Gilligan
+ * @author Werner Keil
+ */
+public class BitcoinCurrencyProvider implements CurrencyProviderSpi {
+    private final static int bitcoinFractionDigits = 8;
+    private final static String bitcoinCurrencyCode = "BTC";
+
+    private static final CurrencyContext CONTEXT = CurrencyContextBuilder.of("BitcoinCurrencyContextProvider")
+            .build();
+
+    private final Set<CurrencyUnit> bitcoinSet;
+
+    public BitcoinCurrencyProvider() {
+        CurrencyUnit btcUnit = CurrencyUnitBuilder.of(bitcoinCurrencyCode, CONTEXT)
+                .setDefaultFractionDigits(bitcoinFractionDigits)
+                .build();
+        bitcoinSet = Collections.singleton(btcUnit);
+    }
+
+    /**
+     * Return a {@link CurrencyUnit} instances matching the given
+     * {@link javax.money.CurrencyQuery}.
+     *
+     * @param query the {@link javax.money.CurrencyQuery} containing the parameters determining the query. not null.
+     * @return the corresponding {@link CurrencyUnit}s matching, never null.
+     */
+    @Override
+    public Set<CurrencyUnit> getCurrencies(CurrencyQuery query) {
+        // Query for currencyCode BTC or default query returns bitcoinSet else emptySet.
+        return (query.getCurrencyCodes().contains(bitcoinCurrencyCode) ||
+                query.getCurrencyCodes().isEmpty()) ? bitcoinSet : Collections.emptySet();
+    }
+}

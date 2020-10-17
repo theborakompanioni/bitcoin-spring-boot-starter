@@ -1,0 +1,32 @@
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    maven {
+        url "https://dl.bintray.com/msgilligan/maven"
+    }
+}
+
+description = 'bitcoin exchange rate example application package'
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    archiveBaseName.set("$rootProject.name-$project.name")
+    archiveClassifier.set('boot')
+}
+
+dependencies {
+    api 'javax.money:money-api:1.1'
+    implementation 'org.javamoney:moneta:1.4.2'
+    implementation 'org.zalando:jackson-datatype-money:1.2.0'
+
+    compile group: 'io.projectreactor', name: 'reactor-core', version: '3.3.10.RELEASE'
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+}

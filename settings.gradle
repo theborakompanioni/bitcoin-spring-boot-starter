@@ -4,4 +4,5 @@ include 'bitcoin-jsonrpc-client'
 include 'bitcoin-jsonrpc-client-autoconfigure'
 include 'bitcoin-jsonrpc-client-starter'
 include 'bitcoin-jsonrpc-client-example-application'
+include 'bitcoin-exchange-rate-example-application'
 

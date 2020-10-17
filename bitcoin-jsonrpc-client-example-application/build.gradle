@@ -1,11 +1,5 @@
 apply plugin: 'org.springframework.boot'
 
-repositories {
-    maven {
-        url "https://dl.bintray.com/msgilligan/maven"
-    }
-}
-
 description = 'bitcoin jsonrpc client example application package'
 
 jar {
