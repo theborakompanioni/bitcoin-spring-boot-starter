@@ -12,7 +12,6 @@ Example application for monetary conversion
 ```json
 {
   "base":"EUR",
-  "date":[2020,10,15],
   "rates":[
     {"base":"EUR","derived":false,"factor":1.1698,"provider":"ECB","target":"USD","type":"DEFERRED"},
     {"base":"EUR","derived":false,"factor":1.0697,"provider":"ECB","target":"CHF","type":"DEFERRED"}

@@ -99,3 +99,4 @@ application-management.port
 *.db
 *.tmp
 **/*-local.yml
+*.dat

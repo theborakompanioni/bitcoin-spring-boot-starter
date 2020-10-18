@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.exchange.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -30,6 +31,7 @@ public class BitcoinExchangeApplicationConfig {
         return new Jackson2ObjectMapperBuilder()
                 .modulesToInstall(moneyModule)
                 .serializationInclusion(JsonInclude.Include.NON_NULL)
+                .featuresToEnable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
                 .indentOutput(true)
                 .failOnUnknownProperties(false);
     }

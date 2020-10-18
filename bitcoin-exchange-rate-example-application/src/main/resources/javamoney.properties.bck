@@ -14,7 +14,7 @@
 #
 # Default MathContext for Money
 #-------------------------------
-# Custom MathContext, overrides entries from 
+# Custom MathContext, overrides entries from
 {1}org.javamoney.moneta.Money.defaults.precision=256
 # RoundingMode enum values
 {1}org.javamoney.moneta.Money.defaults.roundingMode=HALF_EVEN
