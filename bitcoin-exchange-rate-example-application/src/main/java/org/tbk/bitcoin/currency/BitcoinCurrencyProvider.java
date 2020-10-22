@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2013, 2015, Werner Keil and others by the @author tag.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.tbk.bitcoin.currency;
 
 import org.javamoney.moneta.CurrencyUnitBuilder;
@@ -17,20 +31,17 @@ import java.util.Set;
  * @author Werner Keil
  */
 public class BitcoinCurrencyProvider implements CurrencyProviderSpi {
-    private final static int bitcoinFractionDigits = 8;
-    private final static String bitcoinCurrencyCode = "BTC";
+    private static final String bitcoinCurrencyCode = "BTC";
+    private static final int bitcoinFractionDigits = 8;
 
     private static final CurrencyContext CONTEXT = CurrencyContextBuilder.of("BitcoinCurrencyContextProvider")
             .build();
 
-    private final Set<CurrencyUnit> bitcoinSet;
+    private static final CurrencyUnit bitcoinUnit = CurrencyUnitBuilder.of(bitcoinCurrencyCode, CONTEXT)
+            .setDefaultFractionDigits(bitcoinFractionDigits)
+            .build();
 
-    public BitcoinCurrencyProvider() {
-        CurrencyUnit btcUnit = CurrencyUnitBuilder.of(bitcoinCurrencyCode, CONTEXT)
-                .setDefaultFractionDigits(bitcoinFractionDigits)
-                .build();
-        bitcoinSet = Collections.singleton(btcUnit);
-    }
+    private static final Set<CurrencyUnit> bitcoinUnitSet = Collections.singleton(bitcoinUnit);
 
     /**
      * Return a {@link CurrencyUnit} instances matching the given
@@ -43,6 +54,6 @@ public class BitcoinCurrencyProvider implements CurrencyProviderSpi {
     public Set<CurrencyUnit> getCurrencies(CurrencyQuery query) {
         // Query for currencyCode BTC or default query returns bitcoinSet else emptySet.
         return (query.getCurrencyCodes().contains(bitcoinCurrencyCode) ||
-                query.getCurrencyCodes().isEmpty()) ? bitcoinSet : Collections.emptySet();
+                query.getCurrencyCodes().isEmpty()) ? bitcoinUnitSet : Collections.emptySet();
     }
 }
