@@ -5,4 +5,7 @@ include 'bitcoin-jsonrpc-client-autoconfigure'
 include 'bitcoin-jsonrpc-client-starter'
 include 'bitcoin-jsonrpc-client-example-application'
 include 'bitcoin-exchange-rate-example-application'
+include 'spring-jsr354-core'
+include 'spring-jsr354-autoconfigure'
+include 'spring-jsr354-starter'
 
