@@ -19,3 +19,6 @@ logging.config: classpath:logback.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
+
+# `si.mazi.rescu.ResponseReader` is just too noisy in level WARN
+logging.level.si.mazi.rescu.ResponseReader: ERROR
