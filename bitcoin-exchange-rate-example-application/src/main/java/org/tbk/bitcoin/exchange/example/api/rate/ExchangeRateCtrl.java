@@ -24,14 +24,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
 
 @RestController
 @RequestMapping(value = "/api/v1/exchange")
 @RequiredArgsConstructor
 public class ExchangeRateCtrl {
-
-    private static final CurrencyUnit DEFAULT_CURRENCY_UNIT = Monetary.getCurrency("EUR");
 
     @GetMapping
     public ResponseEntity<? extends Map<String, Object>> get() {
@@ -47,18 +46,19 @@ public class ExchangeRateCtrl {
     public ResponseEntity<ExchangeRateResponseImpl> latest(
             @RequestParam(name = "base", required = false) CurrencyUnit baseParamOrNull,
             @RequestParam(name = "target", required = false) List<CurrencyUnit> targetParamOrNull,
-            @RequestParam(name = "provider", required = false) String providerParamOrNull,
+            @RequestParam(name = "provider", required = false) List<String> providerParamOrNull,
             @RequestParam(name = "days", required = false, defaultValue = "1") Integer daysParam
     ) {
+        checkArgument(baseParamOrNull != null, "'base' must not be empty");
         checkArgument(daysParam > 0, "'days' must be positive");
 
-        CurrencyUnit baseCurrency = Optional.ofNullable(baseParamOrNull)
-                .orElse(DEFAULT_CURRENCY_UNIT);
+        CurrencyUnit baseCurrency = requireNonNull(baseParamOrNull);
 
         List<CurrencyUnit> targetCurrencies = Optional.ofNullable(targetParamOrNull)
                 .orElseGet(Collections::emptyList);
 
         Optional<ExchangeRateProvider> exchangeRateProvider = Optional.ofNullable(providerParamOrNull)
+                .map(val -> val.toArray(String[]::new))
                 .map(MonetaryConversions::getExchangeRateProvider);
 
         LocalDate[] dates = SlidingWindows.withSlidingWindow(LocalDate.now(), daysParam)
@@ -73,13 +73,19 @@ public class ExchangeRateCtrl {
                 .map(conversionQueryBuilder::setTermCurrency)
                 .map(ConversionQueryBuilder::build)
                 .flatMap(conversionQuery -> {
-                    try {
-                        ExchangeRateProvider provider = exchangeRateProvider
-                                .orElseGet(() -> MonetaryConversions.getExchangeRateProvider(conversionQuery));
-                        return Flux.just(provider.getExchangeRate(conversionQuery));
-                    } catch (Exception e) {
-                        return Flux.empty();
-                    }
+                    Flux<ExchangeRateProvider> provider = exchangeRateProvider
+                            .map(val -> val.getContext().getProviderName())
+                            .map(Flux::just)
+                            .orElseGet(() -> Flux.fromIterable(MonetaryConversions.getDefaultConversionProviderChain()))
+                            .map(MonetaryConversions::getExchangeRateProvider);
+
+                    return provider.flatMap(val -> {
+                        try {
+                            return Flux.just(val.getExchangeRate(conversionQuery));
+                        } catch (Exception e) {
+                            return Flux.empty();
+                        }
+                    });
                 })
                 .map(exchangeRate -> ExchangeRateImpl.toDto(exchangeRate).build())
                 .collectList()
