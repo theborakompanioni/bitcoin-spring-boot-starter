@@ -20,6 +20,8 @@ bootJar {
 def xChangeVersion = '5.0.3'
 dependencies {
     implementation project(':bitcoin-jsr354-currency')
+    implementation project(':bitcoin-jsr354-exchange')
+
     implementation project(':spring-jsr354-starter')
 
     implementation 'org.javamoney:moneta:1.4.2'
