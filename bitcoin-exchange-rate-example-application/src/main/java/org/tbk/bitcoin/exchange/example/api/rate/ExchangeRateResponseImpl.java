@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.exchange.example.api.rate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
@@ -53,7 +53,9 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
         private String base;
         private boolean derived;
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         private BigDecimal factor;
+
         private String provider;
         private String target;
         private String type;
