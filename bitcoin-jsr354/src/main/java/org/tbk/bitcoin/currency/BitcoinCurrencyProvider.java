@@ -14,8 +14,6 @@
  */
 package org.tbk.bitcoin.currency;
 
-import org.javamoney.moneta.CurrencyUnitBuilder;
-
 import javax.money.CurrencyContext;
 import javax.money.CurrencyContextBuilder;
 import javax.money.CurrencyQuery;
@@ -31,15 +29,11 @@ import java.util.Set;
  * @author Werner Keil
  */
 public class BitcoinCurrencyProvider implements CurrencyProviderSpi {
-    private static final String bitcoinCurrencyCode = "BTC";
-    private static final int bitcoinFractionDigits = 8;
 
-    private static final CurrencyContext CONTEXT = CurrencyContextBuilder.of("BitcoinCurrencyContextProvider")
+    private static final CurrencyContext CONTEXT = CurrencyContextBuilder.of("BitcoinCurrencyProvider")
             .build();
 
-    private static final CurrencyUnit bitcoinUnit = CurrencyUnitBuilder.of(bitcoinCurrencyCode, CONTEXT)
-            .setDefaultFractionDigits(bitcoinFractionDigits)
-            .build();
+    private static final CurrencyUnit bitcoinUnit = new BitcoinCurrencyUnit(CONTEXT);
 
     private static final Set<CurrencyUnit> bitcoinUnitSet = Collections.singleton(bitcoinUnit);
 
@@ -53,7 +47,8 @@ public class BitcoinCurrencyProvider implements CurrencyProviderSpi {
     @Override
     public Set<CurrencyUnit> getCurrencies(CurrencyQuery query) {
         // Query for currencyCode BTC or default query returns bitcoinSet else emptySet.
-        return (query.getCurrencyCodes().contains(bitcoinCurrencyCode) ||
+        return (query.getCurrencyCodes().contains(bitcoinUnit.getCurrencyCode()) ||
                 query.getCurrencyCodes().isEmpty()) ? bitcoinUnitSet : Collections.emptySet();
     }
+
 }

@@ -17,9 +17,23 @@ bootJar {
     archiveClassifier.set('boot')
 }
 
+def xChangeVersion = '5.0.3'
 dependencies {
-    api 'javax.money:money-api:1.1'
+    implementation project(':bitcoin-jsr354')
+    implementation project(':spring-jsr354-starter')
+
     implementation 'org.javamoney:moneta:1.4.2'
+
+    implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-coinmarketcap:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
+    //implementation 'com.msgilligan:consensusj-exchange:0.5.4'
+
+
+    //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
+    //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
+
     implementation 'org.zalando:jackson-datatype-money:1.2.0'
 
     compile group: 'io.projectreactor', name: 'reactor-core', version: '3.3.10.RELEASE'
