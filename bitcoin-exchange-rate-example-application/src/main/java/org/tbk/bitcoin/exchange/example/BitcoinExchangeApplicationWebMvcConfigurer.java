@@ -1,14 +1,21 @@
 package org.tbk.bitcoin.exchange.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.zalando.jackson.datatype.money.MoneyModule;
+
+import java.util.List;
 
 @EnableWebMvc
 @Configuration
@@ -26,19 +33,34 @@ public class BitcoinExchangeApplicationWebMvcConfigurer implements WebMvcConfigu
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
     }
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        customizeJacksonMessageConverter(converters);
+    }
 
-    @Bean
-    public Jackson2ObjectMapperBuilder objectMapperBuilder() {
-        MoneyModule moneyModule = new MoneyModule()
-                .withDefaultFormatting()
-                .withQuotedDecimalNumbers();
+    /**
+     * This is the only way that worked making jackson pretty print json responses.
+     * <p>
+     * No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
+     * {@link Jackson2ObjectMapperBuilderCustomizer} did the job properly (which is very odd).
+     * Maybe try again at a later point in time. But this is good for now (2020-10-24).
+     */
+    private static void customizeJacksonMessageConverter(List<HttpMessageConverter<?>> converters) {
+        converters.stream()
+                .filter(any -> any instanceof MappingJackson2HttpMessageConverter)
+                .map(any -> (MappingJackson2HttpMessageConverter) any)
+                .forEach(converter -> {
+                    configureObjectMapper(converter.getObjectMapper());
+                });
+    }
 
-        return new Jackson2ObjectMapperBuilder()
-                .modulesToInstall(moneyModule)
-                .serializationInclusion(JsonInclude.Include.NON_NULL)
-                .featuresToEnable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
-                .indentOutput(true)
-                .failOnUnknownProperties(false);
+    private static void configureObjectMapper(ObjectMapper objectMapper) {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+                .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
 }
