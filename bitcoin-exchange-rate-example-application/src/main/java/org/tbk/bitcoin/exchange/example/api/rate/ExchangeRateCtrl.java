@@ -18,10 +18,9 @@ import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -57,9 +56,10 @@ public class ExchangeRateCtrl {
         List<CurrencyUnit> targetCurrencies = Optional.ofNullable(targetParamOrNull)
                 .orElseGet(Collections::emptyList);
 
-        Optional<ExchangeRateProvider> exchangeRateProvider = Optional.ofNullable(providerParamOrNull)
-                .map(val -> val.toArray(String[]::new))
-                .map(MonetaryConversions::getExchangeRateProvider);
+        List<ExchangeRateProvider> exchangeRateProviders = Optional.ofNullable(providerParamOrNull).stream()
+                .flatMap(Collection::stream)
+                .map(MonetaryConversions::getExchangeRateProvider)
+                .collect(Collectors.toList());
 
         LocalDate[] dates = SlidingWindows.withSlidingWindow(LocalDate.now(), daysParam)
                 .toArray(LocalDate[]::new);
@@ -73,11 +73,11 @@ public class ExchangeRateCtrl {
                 .map(conversionQueryBuilder::setTermCurrency)
                 .map(ConversionQueryBuilder::build)
                 .flatMap(conversionQuery -> {
-                    Flux<ExchangeRateProvider> provider = exchangeRateProvider
-                            .map(val -> val.getContext().getProviderName())
-                            .map(Flux::just)
-                            .orElseGet(() -> Flux.fromIterable(MonetaryConversions.getDefaultConversionProviderChain()))
-                            .map(MonetaryConversions::getExchangeRateProvider);
+                    Flux<ExchangeRateProvider> provider = Optional.of(exchangeRateProviders)
+                            .filter(val -> !val.isEmpty())
+                            .map(Flux::fromIterable)
+                            .orElseGet(() -> Flux.fromIterable(MonetaryConversions.getDefaultConversionProviderChain())
+                                    .map(MonetaryConversions::getExchangeRateProvider));
 
                     return provider.flatMap(val -> {
                         try {
