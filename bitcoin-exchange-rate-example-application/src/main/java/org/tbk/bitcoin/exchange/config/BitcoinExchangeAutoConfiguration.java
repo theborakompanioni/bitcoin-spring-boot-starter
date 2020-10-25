@@ -1,16 +1,17 @@
 package org.tbk.bitcoin.exchange.config;
 
-import lombok.NonNull;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import lombok.extern.slf4j.Slf4j;
+import org.knowm.xchange.ExchangeFactory;
+import org.knowm.xchange.bitstamp.BitstampExchange;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.bitcoin.exchange.BitcoinStandardExchangeRateProvider;
 
-import javax.money.convert.ExchangeRateProvider;
-import javax.money.convert.MonetaryConversions;
+import javax.money.Monetary;
+import javax.money.convert.*;
 
+@Slf4j
 @Configuration
 // @EnableConfigurationProperties(BitcoinExchangeAutoConfigProperties.class)
 // @ConditionalOnClass(MonetaryConversions.class)
@@ -24,8 +25,38 @@ public class BitcoinExchangeAutoConfiguration {
     }*/
 
     @Bean
-    // @ConditionalOnMissingBean
-    public ExchangeRateProvider defaultRateProvider() {
-        return MonetaryConversions.getExchangeRateProvider();
+    public XChangeExchangeRateProvider xChangeExchangeRateProvider(BitstampExchange exchange) {
+        ProviderContext providerContext = ProviderContextBuilder.of("BITSTAMP", RateType.DEFERRED)
+                .set("providerDescription", "BitstampExchange")
+                .set("days", 1)
+                .build();
+
+        return new XChangeExchangeRateProvider(providerContext, exchange);
+    }
+
+    @Bean
+    public BitstampExchange bitstampExchange() {
+        return ExchangeFactory.INSTANCE.createExchange(BitstampExchange.class);
+    }
+
+    @Bean
+    public BitcoinStandardExchangeRateProvider bitcoinStandardExchangeRateProvider() {
+        return new BitcoinStandardExchangeRateProvider();
+    }
+
+    @Bean
+    public CommandLineRunner test2(XChangeExchangeRateProvider XChangeExchangeRateProvider) {
+        return args -> {
+            log.info("Test2:");
+
+            ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
+                    .setBaseCurrency(Monetary.getCurrency("BTC"))
+                    .setTermCurrency(Monetary.getCurrency("USD"));
+
+            final ExchangeRate exchangeRate = XChangeExchangeRateProvider.getExchangeRate(conversionQueryBuilder.build());
+
+            log.info("exchangeRate: {}", exchangeRate);
+
+        };
     }
 }
