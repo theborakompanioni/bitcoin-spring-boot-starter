@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 
+import javax.money.AbstractContext;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,13 +23,20 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
     public static final class ExchangeRateResponseImplBuilder {
     }
 
-    private String base;
-    private List<? extends ExchangeRate> rates;
+    String base;
+    List<? extends ExchangeRate> rates;
 
     @Value
     @Builder
     @JsonDeserialize(builder = ExchangeRateImpl.ExchangeRateImplBuilder.class)
     public static class ExchangeRateImpl implements ExchangeRate {
+
+        private static final class ContextUtil {
+            public static Map<String, Object> toMap(AbstractContext context) {
+                return context.getKeys(Object.class).stream()
+                        .collect(Collectors.toMap(val -> val, val -> context.get(val, Object.class)));
+            }
+        }
 
         public static ExchangeRateImplBuilder toDto(javax.money.convert.ExchangeRate exchangeRate) {
             return ExchangeRateResponseImpl.ExchangeRateImpl.builder()
@@ -43,6 +51,7 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
                             .map(ExchangeRateImpl::toDto)
                             .map(ExchangeRateImplBuilder::build)
                             .collect(Collectors.toList()))
+                    .meta(ContextUtil.toMap(exchangeRate.getContext()))
                     .date(exchangeRate.getContext().get(LocalDate.class));
         }
 
@@ -50,23 +59,23 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
         public static final class ExchangeRateImplBuilder {
         }
 
-        private String base;
-        private boolean derived;
+        String base;
+        boolean derived;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        private BigDecimal factor;
+        BigDecimal factor;
 
-        private String provider;
-        private String target;
-        private String type;
+        String provider;
+        String target;
+        String type;
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private LocalDate date;
+        LocalDate date;
 
         @Singular("addChain")
-        private List<ExchangeRate> chain;
+        List<ExchangeRate> chain;
 
         @Singular("addMeta")
-        private Map<String, Object> meta;
+        Map<String, Object> meta;
     }
 }
