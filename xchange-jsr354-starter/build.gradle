@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin jsonrpc client starter package'
+
+dependencies {
+    api project(':xchange-jsr354-core')
+    implementation project(':xchange-jsr354-autoconfigure')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

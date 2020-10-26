@@ -32,6 +32,8 @@ contacts {
     }
 }
 
+apply from: 'versions.gradle'
+
 group = 'io.github.theborakompanioni'
 
 configurations.all {

@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    api 'javax.money:money-api:1.1'
+    api "javax.money:money-api:${jsr354Version}"
 }

@@ -10,4 +10,7 @@ include 'spring-jsr354-autoconfigure'
 include 'spring-jsr354-starter'
 include 'bitcoin-jsr354-currency'
 include 'bitcoin-jsr354-exchange'
+include 'xchange-jsr354-core'
+include 'xchange-jsr354-autoconfigure'
+include 'xchange-jsr354-starter'
 

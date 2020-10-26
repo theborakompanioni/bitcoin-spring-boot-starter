@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api "javax.money:money-api:${jsr354Version}"
+
+    implementation "org.javamoney:moneta:${monetaVersion}"
+    implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
+}
