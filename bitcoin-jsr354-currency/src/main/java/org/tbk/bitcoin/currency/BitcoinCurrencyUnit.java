@@ -12,7 +12,7 @@ public final class BitcoinCurrencyUnit implements CurrencyUnit {
 
     private final CurrencyContext context;
 
-    public BitcoinCurrencyUnit(CurrencyContext context) {
+    BitcoinCurrencyUnit(CurrencyContext context) {
         this.context = requireNonNull(context);
     }
 
