@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.tbk.xchange.jsr354.config.XChangeJsr354AutoConfiguration

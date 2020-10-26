@@ -24,17 +24,14 @@ dependencies {
     implementation project(':spring-jsr354-starter')
     implementation project(':xchange-jsr354-starter')
 
-    implementation 'org.javamoney:moneta:1.4.2'
+    implementation "org.javamoney:moneta:${monetaVersion}"
 
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
-    // compileOnly "org.knowm.xchange:xchange-coinmarketcap:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
-    // compileOnly "org.knowm.xchange:xchange-binance:${xChangeVersion}"
-    // compileOnly "org.knowm.xchange:xchange-coinbase:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-therock:${xChangeVersion}"
 
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
