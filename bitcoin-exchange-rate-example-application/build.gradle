@@ -27,11 +27,15 @@ dependencies {
     implementation 'org.javamoney:moneta:1.4.2'
 
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-coinmarketcap:${xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-coinmarketcap:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
     implementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
-    //implementation 'com.msgilligan:consensusj-exchange:0.5.4'
-
+    implementation "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-binance:${xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-coinbase:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-therock:${xChangeVersion}"
 
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
