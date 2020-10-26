@@ -15,7 +15,9 @@ import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
 
 import javax.money.CurrencyUnit;
+import javax.money.NumberValue;
 import javax.money.convert.*;
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.util.HashMap;
@@ -55,7 +57,7 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
 
         Optional<ExchangeRate> exchangeRateOrEmpty = getExchangeRateIfAvailable(baseCurrencyUnit, targetCurrencyUnit)
                 .or(() -> getExchangeRateIfAvailable(targetCurrencyUnit, baseCurrencyUnit).map(this::reverse));
-        
+
         return exchangeRateOrEmpty.orElse(null);
     }
 
@@ -70,14 +72,23 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
 
                 ConversionContext conversionContext = createConversionContextFromTicker(ticker);
 
-                ExchangeRate exchangeRate = new ExchangeRateBuilder(conversionContext)
-                        .setBase(baseCurrencyUnit)
-                        .setTerm(targetCurrencyUnit)
-                        .setFactor(DefaultNumberValue.of(ticker.getLast()))
-                        .build();
-                return Optional.of(exchangeRate);
-            }
+                Optional<NumberValue> exchangeRateValueOrEmpty = Optional.ofNullable(ticker.getLast())
+                        .or(() -> Optional.ofNullable(ticker.getAsk()))
+                        .or(() -> Optional.ofNullable(ticker.getBid()))
+                        // filter zero as some exchanges return 0 when tey do not support the currency pair
+                        .filter(val -> BigDecimal.ZERO.compareTo(val) != 0)
+                        .map(DefaultNumberValue::of);
 
+                if (exchangeRateValueOrEmpty.isPresent()) {
+                    ExchangeRate exchangeRate = new ExchangeRateBuilder(conversionContext)
+                            .setBase(baseCurrencyUnit)
+                            .setTerm(targetCurrencyUnit)
+                            .setFactor(exchangeRateValueOrEmpty.get())
+                            .build();
+
+                    return Optional.of(exchangeRate);
+                }
+            }
         } catch (Exception e) {
             log.warn("", e);
         }
