@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':bitcoin-jsr354-currency')
+    runtimeOnly project(':bitcoin-jsr354-currency')
 
     implementation "org.javamoney:moneta:${monetaVersion}"
 }
