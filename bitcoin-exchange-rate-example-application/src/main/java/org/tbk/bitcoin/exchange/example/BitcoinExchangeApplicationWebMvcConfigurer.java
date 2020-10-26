@@ -2,10 +2,8 @@ package org.tbk.bitcoin.exchange.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,6 +13,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @EnableWebMvc
@@ -33,6 +33,7 @@ public class BitcoinExchangeApplicationWebMvcConfigurer implements WebMvcConfigu
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
     }
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         customizeJacksonMessageConverter(converters);
@@ -55,12 +56,31 @@ public class BitcoinExchangeApplicationWebMvcConfigurer implements WebMvcConfigu
     }
 
     private static void configureObjectMapper(ObjectMapper objectMapper) {
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        SimpleModule internalModule = new SimpleModule("AppInternal")
+                .addSerializer(new BigDecimalToStringSerializer());
+
+        objectMapper
+                .registerModule(internalModule)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
                 .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
+
+    public static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
+
+        @Override
+        public Class<BigDecimal> handledType() {
+            return BigDecimal.class;
+        }
+
+        @Override
+        public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeString(value.toPlainString());
+        }
+    }
 }
