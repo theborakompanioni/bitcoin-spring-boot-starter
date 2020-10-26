@@ -4,4 +4,6 @@ plugins {
 
 dependencies {
     api "javax.money:money-api:${jsr354Version}"
+
+    testImplementation "org.javamoney:moneta:${monetaVersion}"
 }
