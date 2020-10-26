@@ -28,7 +28,6 @@ public class BitcoinExchangeAutoConfiguration {
     public XChangeExchangeRateProvider xChangeExchangeRateProvider(BitstampExchange exchange) {
         ProviderContext providerContext = ProviderContextBuilder.of("BITSTAMP", RateType.DEFERRED)
                 .set("providerDescription", "BitstampExchange")
-                .set("days", 1)
                 .build();
 
         return new XChangeExchangeRateProvider(providerContext, exchange);

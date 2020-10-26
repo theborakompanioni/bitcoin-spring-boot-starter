@@ -18,7 +18,11 @@ import javax.money.CurrencyUnit;
 import javax.money.convert.*;
 import java.math.MathContext;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,54 +53,42 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
         CurrencyUnit targetCurrencyUnit = conversionQuery.getCurrency();
         CurrencyUnit baseCurrencyUnit = conversionQuery.getBaseCurrency();
 
-        Currency targetCurrency = Currency.getInstance(targetCurrencyUnit.getCurrencyCode());
-        Currency baseCurrency = Currency.getInstance(baseCurrencyUnit.getCurrencyCode());
+        Optional<ExchangeRate> exchangeRateOrEmpty = getExchangeRateIfAvailable(baseCurrencyUnit, targetCurrencyUnit)
+                .or(() -> getExchangeRateIfAvailable(targetCurrencyUnit, baseCurrencyUnit).map(this::reverse));
+        
+        return exchangeRateOrEmpty.orElse(null);
+    }
 
-        ConversionContext conversionContext = ConversionContext.from(this.getContext(), RateType.DEFERRED);
-
+    private Optional<ExchangeRate> getExchangeRateIfAvailable(CurrencyUnit baseCurrencyUnit, CurrencyUnit targetCurrencyUnit) {
         try {
+            Currency baseCurrency = Currency.getInstance(baseCurrencyUnit.getCurrencyCode());
+            Currency targetCurrency = Currency.getInstance(targetCurrencyUnit.getCurrencyCode());
+
             CurrencyPair currencyPair = new CurrencyPair(baseCurrency, targetCurrency);
-
-            ExchangeRateBuilder exchangeRateBuilder = new ExchangeRateBuilder(conversionContext)
-                    .setBase(baseCurrencyUnit)
-                    .setTerm(targetCurrencyUnit);
-
-            // this is done like in the ECB provider -> reverse the rate if not found directly..
-            // TODO: do it more like IMFAbstractRateProvider -> always try to convert to BTC
-            // then also EUR to USD conversion is possible!
             if (isConversionAvailable(currencyPair)) {
                 Ticker ticker = cache.get(currencyPair);
 
-                return exchangeRateBuilder
-                        .setFactor(DefaultNumberValue.of(ticker.getAsk()))
+                ConversionContext conversionContext = createConversionContextFromTicker(ticker);
+
+                ExchangeRate exchangeRate = new ExchangeRateBuilder(conversionContext)
+                        .setBase(baseCurrencyUnit)
+                        .setTerm(targetCurrencyUnit)
+                        .setFactor(DefaultNumberValue.of(ticker.getLast()))
                         .build();
+                return Optional.of(exchangeRate);
             }
 
-            CurrencyPair currencyPairReverse = new CurrencyPair(targetCurrency, baseCurrency);
-            if (isConversionAvailable(currencyPairReverse)) {
-                Ticker ticker = cache.get(currencyPairReverse);
-
-                return reverse(exchangeRateBuilder
-                        .setFactor(DefaultNumberValue.of(ticker.getAsk()))
-                        .build());
-            }
-
-            CurrencyPair btcToBase = new CurrencyPair(Currency.getInstance("BTC"), baseCurrency);
-            CurrencyPair btcToTarget = new CurrencyPair(Currency.getInstance("BTC"), targetCurrency);
-            if (isConversionAvailable(btcToBase) && isConversionAvailable(btcToTarget)) {
-
-                Ticker tickerBtcToBase = cache.get(btcToBase);
-                Ticker tickerBtcToTarget = cache.get(btcToTarget);
-
-                // TODO: find common base of the two like in IMF provider
-                //throw new ExecutionException(new IllegalStateException());
-            }
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             log.warn("", e);
         }
 
-        // no result - return null!
-        return null;
+        return Optional.empty();
+    }
+
+    private ConversionContext createConversionContextFromTicker(Ticker ticker) {
+        ConversionContextBuilder builder = ConversionContextBuilder.create(this.getContext(), RateType.DEFERRED);
+        TickerHelper.createInfoMap(ticker).forEach(builder::set);
+        return builder.build();
     }
 
     private boolean isConversionAvailable(CurrencyPair currencyPair) {
@@ -124,4 +116,29 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
                 .setFactor(divide(DefaultNumberValue.ONE, rate.getFactor(), MathContext.DECIMAL64)).build();
     }
 
+    private static final class TickerHelper {
+
+        public static Map<String, Object> createInfoMap(Ticker ticker) {
+            return createInfoMapWithNulls(ticker).entrySet().stream()
+                    .filter(val -> val.getValue() != null)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
+
+        private static Map<String, Object> createInfoMapWithNulls(Ticker ticker) {
+            Map<String, Object> map = new HashMap<>(12, 1f);
+            map.put("ask", ticker.getAsk());
+            map.put("askSize", ticker.getAskSize());
+            map.put("bid", ticker.getBid());
+            map.put("bidSize", ticker.getBidSize());
+            map.put("high", ticker.getHigh());
+            map.put("last", ticker.getLast());
+            map.put("low", ticker.getLow());
+            map.put("open", ticker.getOpen());
+            map.put("quoteVolume", ticker.getQuoteVolume());
+            map.put("timestamp", ticker.getTimestamp());
+            map.put("volume", ticker.getVolume());
+            map.put("vwap", ticker.getVwap());
+            return map;
+        }
+    }
 }
