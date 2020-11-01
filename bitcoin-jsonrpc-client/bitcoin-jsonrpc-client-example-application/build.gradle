@@ -11,7 +11,7 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':bitcoin-jsonrpc-client-starter')
+    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
 
     implementation "com.google.guava:guava:${guavaVersion}"
 
