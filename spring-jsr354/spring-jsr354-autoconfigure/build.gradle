@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api project(':spring-jsr354-core')
+    api project(':spring-jsr354:spring-jsr354-core')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
