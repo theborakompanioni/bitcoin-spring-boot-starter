@@ -50,9 +50,7 @@ public class BitcoinExchangeApplicationWebMvcConfigurer implements WebMvcConfigu
         converters.stream()
                 .filter(any -> any instanceof MappingJackson2HttpMessageConverter)
                 .map(any -> (MappingJackson2HttpMessageConverter) any)
-                .forEach(converter -> {
-                    configureObjectMapper(converter.getObjectMapper());
-                });
+                .forEach(converter -> configureObjectMapper(converter.getObjectMapper()));
     }
 
     private static void configureObjectMapper(ObjectMapper objectMapper) {
