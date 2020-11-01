@@ -8,6 +8,7 @@ import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.Sha256Hash;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -66,7 +67,8 @@ public class BitcoinClientApplicationConfig {
                 log.info("'getBalance' after {}", stopwatch);
                 log.info("Balance: {}", balance);
 
-                Block block0 = bitcoinClient.getBlock(0);
+                Sha256Hash genesisBlockHash = bitcoinClient.getBlockHash(0);
+                Block block0 = bitcoinClient.getBlock(genesisBlockHash);
                 log.info("'getBlock(0)' after {}", stopwatch);
                 log.info("block0 Time: {}", block0.getTime());
 
