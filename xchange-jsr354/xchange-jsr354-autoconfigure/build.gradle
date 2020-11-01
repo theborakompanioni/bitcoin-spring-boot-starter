@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api project(':xchange-jsr354-core')
+    api project(':xchange-jsr354:xchange-jsr354-core')
 
     // ================================================================
     // Following exchanges provide exchange rates without needing a api secret
