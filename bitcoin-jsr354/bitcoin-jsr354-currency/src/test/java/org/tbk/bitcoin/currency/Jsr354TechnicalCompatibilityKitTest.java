@@ -49,13 +49,16 @@ public class Jsr354TechnicalCompatibilityKitTest {
 
         @Override
         public Collection<Class> getCurrencyClasses() {
-           return ImmutableList.of(BitcoinCurrencyUnit.class);
+            return ImmutableList.of(BitcoinCurrencyUnit.class);
         }
 
         @Override
         public Collection<MonetaryOperator> getMonetaryOperators4Test() {
             List<MonetaryOperator> ops = new ArrayList<>();
             ops.add(Monetary.getDefaultRounding());
+            ops.add(MonetaryOperators.rounding(0));
+            ops.add(MonetaryOperators.rounding(8));
+            ops.add(MonetaryOperators.rounding(12));
             ops.add(MonetaryOperators.majorPart());
             ops.add(MonetaryOperators.minorPart());
             ops.add(MonetaryOperators.percent(BigDecimal.ONE));
