@@ -6,4 +6,7 @@ dependencies {
     api "javax.money:money-api:${jsr354Version}"
 
     testImplementation "org.javamoney:moneta:${monetaVersion}"
+
+    // technical compatibility kit of JSR 354
+    testImplementation "org.javamoney:javamoney-tck:${jsr354Version}"
 }

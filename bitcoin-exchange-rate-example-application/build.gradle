@@ -13,7 +13,6 @@ jar {
 }
 
 bootJar {
-    archiveBaseName.set("$rootProject.name-$project.name")
     archiveClassifier.set('boot')
 }
 

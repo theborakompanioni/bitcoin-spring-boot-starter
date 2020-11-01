@@ -3,9 +3,11 @@ package org.tbk.bitcoin.currency;
 import javax.money.CurrencyContext;
 import javax.money.CurrencyUnit;
 
+import java.io.Serializable;
+
 import static java.util.Objects.requireNonNull;
 
-public final class BitcoinCurrencyUnit implements CurrencyUnit {
+public final class BitcoinCurrencyUnit implements CurrencyUnit, Serializable, Comparable<CurrencyUnit> {
     private static final String CURRENCY_CODE = "BTC";
     private static final int FRACTION_DIGITS = 8;
     private static final int NUMERIC_CODE = -1;
