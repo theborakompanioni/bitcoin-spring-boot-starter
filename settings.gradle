@@ -5,6 +5,9 @@ include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure'
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter'
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-example-application'
 
+include 'bitcoin-zeromq-client:bitcoin-zeromq-client-core'
+include 'bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj'
+
 include 'spring-jsr354:spring-jsr354-core'
 include 'spring-jsr354:spring-jsr354-autoconfigure'
 include 'spring-jsr354:spring-jsr354-starter'

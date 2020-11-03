@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin zeromq client package'
+
+dependencies {
+    implementation 'org.zeromq:jeromq:0.5.2'
+    implementation "io.projectreactor:reactor-core"
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+    // implementation 'org.reactivestreams:reactive-streams'
+
+    testImplementation 'org.bitcoinj:bitcoinj-core:0.15.8'
+}
