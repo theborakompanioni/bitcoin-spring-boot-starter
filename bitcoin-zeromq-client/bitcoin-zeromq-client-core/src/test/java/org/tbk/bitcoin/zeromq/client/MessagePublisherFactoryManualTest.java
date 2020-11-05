@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * zmqpubrawtx=tcp://127.0.0.1:28333
  */
 @Slf4j
-public class ZeroMqMessagePublisherFactoryManualTest {
+public class MessagePublisherFactoryManualTest {
     public static void main(String[] args) {
 
         Flow.Publisher<byte[]> rawtx = ZeroMqMessagePublisherFactory.builder()

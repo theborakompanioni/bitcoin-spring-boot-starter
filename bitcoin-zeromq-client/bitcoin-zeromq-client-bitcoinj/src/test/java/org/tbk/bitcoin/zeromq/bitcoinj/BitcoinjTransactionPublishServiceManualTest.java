@@ -1,9 +1,12 @@
-package org.tbk.bitcoin.zeromq.client;
+package org.tbk.bitcoin.zeromq.bitcoinj;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
 import org.reactivestreams.FlowAdapters;
+import org.tbk.bitcoin.zeromq.client.BitcoinZeroMqTopics;
+import org.tbk.bitcoin.zeromq.client.MessagePublishService;
+import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -21,36 +24,38 @@ import java.util.concurrent.atomic.AtomicLong;
  * zmqpubrawtx=tcp://127.0.0.1:28333
  */
 @Slf4j
-public class ZeroMqMessagePublisherServiceManualTest {
+public class BitcoinjTransactionPublishServiceManualTest {
     public static void main(String[] args) throws TimeoutException {
-        ZeroMqMessagePublishService<byte[]> rawTxPublisher = new ZeroMqMessagePublishService<>(ZeroMqMessagePublisherFactory.builder()
+        ZeroMqMessagePublisherFactory zmqRawTxPublisherFactory = ZeroMqMessagePublisherFactory.builder()
                 .topic(BitcoinZeroMqTopics.rawtx())
                 .address("tcp://localhost:28333")
-                .build());
+                .build();
+        BitcoinjTransactionPublisherFactory txPublisherFactory = new BitcoinjTransactionPublisherFactory(MainNetParams.get(), zmqRawTxPublisherFactory);
+
+        MessagePublishService<Transaction> txPublishService = new MessagePublishService<>(txPublisherFactory);
 
         AtomicLong counter = new AtomicLong();
 
-        Flux.from(FlowAdapters.toPublisher(rawTxPublisher))
-                .map(val ->  new Transaction(MainNetParams.get(), val))
+        Flux.from(FlowAdapters.toPublisher(txPublishService))
                 .subscribe(arg -> {
                     log.info("{} - {}", counter.incrementAndGet(), arg);
                 });
 
-        rawTxPublisher.startAsync();
-        rawTxPublisher.awaitRunning(Duration.ofSeconds(10));
+        txPublishService.startAsync();
+        txPublishService.awaitRunning(Duration.ofSeconds(10));
 
-        Flux.from(FlowAdapters.toPublisher(rawTxPublisher))
+        Flux.from(FlowAdapters.toPublisher(txPublishService))
                 .buffer(Duration.ofSeconds(10))
                 .subscribe(arg -> {
                     log.info("--------------------------- {}", arg.size());
 
-                    rawTxPublisher.stopAsync();
+                    txPublishService.stopAsync();
                 });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                rawTxPublisher.stopAsync();
-                rawTxPublisher.awaitTerminated(Duration.ofSeconds(10L));
+                txPublishService.stopAsync();
+                txPublishService.awaitTerminated(Duration.ofSeconds(10L));
             } catch (TimeoutException e) {
                 log.error("", e);
             }

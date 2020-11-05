@@ -19,7 +19,7 @@ import static com.google.common.util.concurrent.MoreExecutors.shutdownAndAwaitTe
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public final class ZeroMqMessagePublishService<T> extends AbstractIdleService implements Flow.Publisher<T> {
+public final class MessagePublishService<T> extends AbstractIdleService implements Flow.Publisher<T> {
 
     private final String serviceId = Integer.toHexString(System.identityHashCode(this));
 
@@ -36,7 +36,7 @@ public final class ZeroMqMessagePublishService<T> extends AbstractIdleService im
 
     private Disposable subscription;
 
-    public ZeroMqMessagePublishService(MessagePublisherFactory<T> bitcoinMessagePublisher) {
+    public MessagePublishService(MessagePublisherFactory<T> bitcoinMessagePublisher) {
         this.bitcoinMessagePublisher = requireNonNull(bitcoinMessagePublisher);
     }
 

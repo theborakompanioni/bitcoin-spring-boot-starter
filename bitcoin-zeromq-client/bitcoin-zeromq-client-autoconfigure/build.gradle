@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
