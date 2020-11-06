@@ -27,21 +27,6 @@ import java.util.List;
 public class BitcoinClientApplicationConfig {
 
     @Bean
-    @Profile({"debug"})
-    public CommandLineRunner logBeanDefinitionNames(ApplicationContext ctx) {
-        return args -> {
-            log.info("Let's inspect the beans provided by Spring Boot:");
-
-            String[] beanNames = ctx.getBeanDefinitionNames();
-            Arrays.sort(beanNames);
-            for (String beanName : beanNames) {
-                log.info(beanName);
-            }
-
-        };
-    }
-
-    @Bean
     public CommandLineRunner printBitcoinNodeInfo(TaskScheduler scheduler, BitcoinClient bitcoinClient) {
         Runnable task = () -> {
             Stopwatch stopwatch = Stopwatch.createStarted();
