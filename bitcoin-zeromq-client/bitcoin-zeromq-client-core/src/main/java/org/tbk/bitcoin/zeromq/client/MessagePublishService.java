@@ -30,7 +30,7 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
 
     private final SubmissionPublisher<T> publisher = new SubmissionPublisher<>(publisherExecutor, Flow.defaultBufferSize());
 
-    private final Scheduler subscribeOnScheduler = Schedulers.newSingle("zmq-msg-sub-" + serviceId + "-%d");
+    private final Scheduler subscribeOnScheduler = Schedulers.newSingle("zmq-msg-sub-" + serviceId );
 
     private final MessagePublisherFactory<T> bitcoinMessagePublisher;
 
