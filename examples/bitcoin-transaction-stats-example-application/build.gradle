@@ -22,8 +22,11 @@ dependencies {
 
     implementation project(':spring-jsr354:spring-jsr354-starter')
     implementation project(':xchange-jsr354:xchange-jsr354-starter')
+    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
     implementation "io.projectreactor:reactor-core"
+    implementation "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
+
     implementation "org.javamoney:moneta:${monetaVersion}"
 
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
