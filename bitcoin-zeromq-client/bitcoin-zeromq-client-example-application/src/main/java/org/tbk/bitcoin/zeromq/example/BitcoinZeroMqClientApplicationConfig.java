@@ -17,36 +17,4 @@ import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 @EnableScheduling
 public class BitcoinZeroMqClientApplicationConfig {
 
-    @Bean("bitcoinRawTxZeroMqMessagePublisherFactory")
-    public ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory() {
-        return ZeroMqMessagePublisherFactory.builder()
-                .topic(BitcoinZeroMqTopics.rawtx())
-                .address("tcp://localhost:28333")
-                .build();
-    }
-
-    @Bean("bitcoinRawBlockZeroMqMessagePublisherFactory")
-    public ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory() {
-        return ZeroMqMessagePublisherFactory.builder()
-                .topic(BitcoinZeroMqTopics.rawtx())
-                .address("tcp://localhost:28333")
-                .build();
-    }
-
-    @Bean("mainnetBitcoinjTransactionPublisherFactory")
-    public BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory(
-            @Qualifier("bitcoinRawTxZeroMqMessagePublisherFactory")
-                    ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory
-    ) {
-        return new BitcoinjTransactionPublisherFactory(MainNetParams.get(), bitcoinRawTxZeroMqMessagePublisherFactory);
-    }
-
-
-    @Bean(name = "mainnetBitcoinjTransactionPublishService", initMethod = "startAsync", destroyMethod = "stopAsync")
-    public MessagePublishService<Transaction> mainnetBitcoinjTransactionPublishService(
-            @Qualifier("mainnetBitcoinjTransactionPublisherFactory")
-                    BitcoinjTransactionPublisherFactory mainnetBitcoinjTransactionPublisherFactory
-    ) {
-        return new MessagePublishService<>(mainnetBitcoinjTransactionPublisherFactory);
-    }
 }

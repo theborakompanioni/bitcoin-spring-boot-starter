@@ -42,14 +42,15 @@ public class BitcoinZeroMqClientApplication {
 
 
     @Bean
-    public CommandLineRunner mainRunner(MessagePublishService<Transaction> mainnetBitcoinjTransactionPublishService) {
+    public CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
         return args -> {
             log.info("Starting example application main runner");
 
             Stopwatch statsStopwatch = Stopwatch.createStarted();
             Duration statsInterval = Duration.ofSeconds(10);
             AtomicLong statsTxCounter = new AtomicLong();
-            Flux.from(FlowAdapters.toPublisher(mainnetBitcoinjTransactionPublishService))
+
+            Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
                     .buffer(statsInterval)
                     .subscribe(arg -> {
                         statsTxCounter.addAndGet(arg.size());
@@ -67,11 +68,12 @@ public class BitcoinZeroMqClientApplication {
                     });
 
             AtomicLong singleTxCounter = new AtomicLong();
-            Flux.from(FlowAdapters.toPublisher(mainnetBitcoinjTransactionPublishService))
+            Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
                     .subscribe(arg -> {
                         log.info("{} - {}", singleTxCounter.incrementAndGet(), arg);
                     });
-            mainnetBitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
+
+            bitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
         };
     }
 
