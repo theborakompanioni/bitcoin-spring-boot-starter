@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.client.example;
+package org.tbk.bitcoin.jsonrpc.example;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,32 +1,29 @@
-package org.tbk.bitcoin.client.config;
-
+package org.tbk.bitcoin.jsonrpc.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.tbk.bitcoin.client.BitcoinClientFactory;
+import org.tbk.bitcoin.jsonrpc.BitcoinClientFactory;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class BitcoinClientAutoConfigurationTest {
+public class BitcoinJsonRpcClientAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
     public void beansAreCreated() {
-        this.contextRunner.withUserConfiguration(BitcoinClientAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.bitcoin.enabled=true",
-                        "org.tbk.bitcoin.client.enabled=true",
-                        "org.tbk.bitcoin.client.network=mainnet",
-                        "org.tbk.bitcoin.client.rpchost=http://localhost",
-                        "org.tbk.bitcoin.client.rpcport=7000",
-                        "org.tbk.bitcoin.client.rpcuser=test",
-                        "org.tbk.bitcoin.client.rpcpassword=test"
+                        "org.tbk.bitcoin.jsonrpc.network=mainnet",
+                        "org.tbk.bitcoin.jsonrpc.rpchost=http://localhost",
+                        "org.tbk.bitcoin.jsonrpc.rpcport=7000",
+                        "org.tbk.bitcoin.jsonrpc.rpcuser=test",
+                        "org.tbk.bitcoin.jsonrpc.rpcpassword=test"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinClientFactory"), is(true));
@@ -40,10 +37,9 @@ public class BitcoinClientAutoConfigurationTest {
 
     @Test
     public void noBeansAreCreated() {
-        this.contextRunner.withUserConfiguration(BitcoinClientAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.bitcoin.enabled=false",
-                        "org.tbk.bitcoin.client.enabled=true"
+                        "org.tbk.bitcoin.jsonrpc.enabled=false"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinClientFactory"), is(false));
@@ -67,10 +63,9 @@ public class BitcoinClientAutoConfigurationTest {
 
     @Test
     public void onlyFactoryIsCreated() {
-        this.contextRunner.withUserConfiguration(BitcoinClientAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.bitcoin.enabled=true",
-                        "org.tbk.bitcoin.client.enabled=false"
+                        "org.tbk.bitcoin.jsonrpc.enabled=true"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinClientFactory"), is(true));

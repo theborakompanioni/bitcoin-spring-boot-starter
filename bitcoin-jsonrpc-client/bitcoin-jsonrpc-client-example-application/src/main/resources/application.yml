@@ -20,12 +20,9 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
 
-org.tbk.bitcoin:
-  enabled: true
-  client:
-    enabled: true
-    network: mainnet
-    rpchost: http://localhost
-    rpcport: 8332
-    rpcuser: myrpcuser
-    rpcpassword: correct horse battery staple
+org.tbk.bitcoin.jsonrpc:
+  network: mainnet
+  rpchost: http://localhost
+  rpcport: 8332
+  rpcuser: myrpcuser
+  rpcpassword: correct horse battery staple

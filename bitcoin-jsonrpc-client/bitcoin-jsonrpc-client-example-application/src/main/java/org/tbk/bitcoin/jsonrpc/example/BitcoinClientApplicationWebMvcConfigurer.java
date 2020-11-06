@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.client.example;
+package org.tbk.bitcoin.jsonrpc.example;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;

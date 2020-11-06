@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.client.example;
+package org.tbk.bitcoin.jsonrpc.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.WebApplicationType;

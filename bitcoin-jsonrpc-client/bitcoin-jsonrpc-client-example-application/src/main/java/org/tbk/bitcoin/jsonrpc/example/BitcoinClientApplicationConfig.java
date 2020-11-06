@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.client.example;
+package org.tbk.bitcoin.jsonrpc.example;
 
 import com.google.common.base.Stopwatch;
 import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
