@@ -9,6 +9,4 @@ dependencies {
     implementation "io.projectreactor:reactor-core"
 
     implementation "com.google.guava:guava:${guavaVersion}"
-
-    testImplementation "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
 }

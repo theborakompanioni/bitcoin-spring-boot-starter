@@ -9,7 +9,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.Optional;
-import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
@@ -62,8 +61,7 @@ public class RawZeroMqRawTxTest {
                 log.error("", e);
                 emitter.error(e);
             }
-        })
-                ;
+        });
 
         Flux<byte[]> connectableFlux = objectFlux
                 .publishOn(Schedulers.newSingle("pub-on"))
@@ -119,10 +117,10 @@ public class RawZeroMqRawTxTest {
             }
         });
 
-       ConnectableFlux<byte[]> connectableFlux = objectFlux
-               .publishOn(Schedulers.newSingle("pub-on"))
-               .subscribeOn(Schedulers.newSingle("sub-on"))
-               .publish();
+        ConnectableFlux<byte[]> connectableFlux = objectFlux
+                .publishOn(Schedulers.newSingle("pub-on"))
+                .subscribeOn(Schedulers.newSingle("sub-on"))
+                .publish();
 
         connectableFlux.subscribe(val -> {
             log.info("val1: {}", val);

@@ -5,10 +5,10 @@ plugins {
 description = 'bitcoin zeromq bitcoinj package'
 
 dependencies {
-    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
+    api "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
 
     implementation "io.projectreactor:reactor-core"
-    implementation "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
 
     testImplementation "io.micrometer:micrometer-core"

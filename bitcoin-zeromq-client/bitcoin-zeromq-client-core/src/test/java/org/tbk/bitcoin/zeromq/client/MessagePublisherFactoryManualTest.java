@@ -2,8 +2,6 @@ package org.tbk.bitcoin.zeromq.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Hexadecimals;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.params.MainNetParams;
 import org.reactivestreams.FlowAdapters;
 import reactor.core.publisher.Flux;
 
@@ -40,13 +38,8 @@ public class MessagePublisherFactoryManualTest {
         log.info("start subscribing..");
 
         autoRawTx.subscribe(arg -> {
-            log.info("{}, rawtx {}", counter.incrementAndGet(), Hexadecimals.toHexString(arg));
+            log.info("{} - {}", counter.incrementAndGet(), Hexadecimals.toHexString(arg));
         });
-
-        autoRawTx.map(val -> new Transaction(MainNetParams.get(), val))
-                .subscribe(arg -> {
-                    log.info("{}", arg);
-                });
 
         autoRawTx.buffer(Duration.ofSeconds(3))
                 .subscribe(arg -> {

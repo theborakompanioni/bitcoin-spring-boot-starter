@@ -1,8 +1,6 @@
 package org.tbk.bitcoin.zeromq.client;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.params.MainNetParams;
 import org.reactivestreams.FlowAdapters;
 import reactor.core.publisher.Flux;
 
@@ -31,7 +29,6 @@ public class MessagePublishServiceManualTest {
         AtomicLong counter = new AtomicLong();
 
         Flux.from(FlowAdapters.toPublisher(rawTxPublisher))
-                .map(val ->  new Transaction(MainNetParams.get(), val))
                 .subscribe(arg -> {
                     log.info("{} - {}", counter.incrementAndGet(), arg);
                 });
