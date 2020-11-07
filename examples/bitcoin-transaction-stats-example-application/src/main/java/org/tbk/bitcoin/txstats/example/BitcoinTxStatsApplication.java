@@ -143,8 +143,30 @@ public class BitcoinTxStatsApplication {
                             });*/
 
             Flux.from(bitcoinjTransactionPublishService)
-                    .publishOn(Schedulers.elastic())
+                    .parallel()
+                    .runOn(Schedulers.parallel())
                     .doOnNext(tx -> {
+                        Stopwatch stopwatch = Stopwatch.createStarted();
+                        log.info("loading data for tx {}", tx.getTxId());
+
+                        for (TransactionInput input : tx.getInputs()) {
+                            if (input.isCoinBase()) {
+                                // coinbase inputs cannot be fetched
+                                // via `getrawtransaction`
+                                continue;
+                            }
+                            TransactionOutPoint outpoint = input.getOutpoint();
+                            Transaction txFromInput = txCache.getUnchecked(outpoint.getHash());
+
+                            RawTransactionInfo txFromInputInfo = txRawInfoCache.getUnchecked(txFromInput.getTxId());
+
+                            Optional.ofNullable(txFromInputInfo.getBlockhash())
+                                    .map(blockInfoCache::getUnchecked);
+                        }
+                        log.info("loading data took {} for tx {}", stopwatch.stop(), tx.getTxId());
+                    })
+                    .sequential()
+                    .subscribe(tx -> {
                         log.info("======================================================");
 
                         try {
@@ -234,7 +256,7 @@ public class BitcoinTxStatsApplication {
                             log.error("", e);
                         }
                         log.info("======================================================");
-                    }).subscribe();
+                    });
 
             bitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
         };
