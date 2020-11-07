@@ -22,6 +22,15 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 
 # `si.mazi.rescu.ResponseReader` is just too noisy in level WARN
 logging.level.si.mazi.rescu.ResponseReader: ERROR
+# prevent "Using default formatter for toString()." INFO logging
+logging.level.org.javamoney.moneta.Money: WARN
+
+org.tbk.bitcoin.jsonrpc:
+  network: mainnet
+  rpchost: http://localhost
+  rpcport: 8332
+  rpcuser: myrpcuser
+  rpcpassword: correct horse battery staple
 
 org.tbk.bitcoin.zeromq:
   network: mainnet

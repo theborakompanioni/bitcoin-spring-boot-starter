@@ -10,15 +10,12 @@ import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
