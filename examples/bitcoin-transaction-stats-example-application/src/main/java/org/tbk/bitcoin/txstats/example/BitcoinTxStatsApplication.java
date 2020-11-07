@@ -1,14 +1,9 @@
 package org.tbk.bitcoin.txstats.example;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.msgilligan.bitcoinj.json.pojo.BlockInfo;
 import com.msgilligan.bitcoinj.json.pojo.RawTransactionInfo;
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.*;
 import org.bitcoinj.script.Script;
@@ -21,6 +16,7 @@ import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.tbk.bitcoin.txstats.example.BitcoinTxStatsApplicationConfig.CacheFacade;
 import org.tbk.bitcoin.txstats.example.util.CoinWithCurrencyConversion;
 import org.tbk.bitcoin.txstats.example.util.MoreScripts;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
@@ -33,7 +29,10 @@ import javax.money.convert.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
@@ -69,8 +68,8 @@ public class BitcoinTxStatsApplication {
             AtomicLong statsTxCounter = new AtomicLong();
 
             Flux.from(bitcoinjTransactionPublishService)
-                    .buffer(statsInterval)
-                    .doOnNext(arg -> {
+                    .buffer(statsInterval, Schedulers.newSingle("buffer", true))
+                    .subscribe(arg -> {
                         statsTxCounter.addAndGet(arg.size());
 
                         long intervalElapsedSeconds = Math.max(statsInterval.toSeconds(), 1);
@@ -83,7 +82,7 @@ public class BitcoinTxStatsApplication {
                         log.info("total tx count: {}", statsTxCounter.get());
                         log.info("total tx/s: {}", statsTxCounter.get() / (float) statsTotalElapsedSeconds);
                         log.info("=======================================");
-                    }).subscribe();
+                    });
 
             bitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
         };
@@ -91,60 +90,42 @@ public class BitcoinTxStatsApplication {
 
     @Bean
     public CommandLineRunner txStatsDemoRunner(NetworkParameters networkParameters,
-                                               BitcoinClient bitcoinClient,
-                                               MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
+                                               MessagePublishService<Transaction> bitcoinjTransactionPublishService,
+                                               CacheFacade caches) {
         CurrencyUnit btcCurrencyUnit = Monetary.getCurrency("BTC");
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency(btcCurrencyUnit)
                 .setTermCurrency(Monetary.getCurrency("USD"))
                 .build();
 
-        LoadingCache<Sha256Hash, Transaction> txCache = CacheBuilder.newBuilder()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public Transaction load(Sha256Hash key) throws Exception {
-                        return bitcoinClient.getRawTransaction(key);
-                    }
-                });
-
-        LoadingCache<Sha256Hash, RawTransactionInfo> txRawInfoCache = CacheBuilder.newBuilder()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public RawTransactionInfo load(Sha256Hash key) throws Exception {
-                        return bitcoinClient.getRawTransactionInfo(key);
-                    }
-                });
-
-
-        LoadingCache<Sha256Hash, BlockInfo> blockInfoCache = CacheBuilder.newBuilder()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public BlockInfo load(Sha256Hash key) throws Exception {
-                        return bitcoinClient.getBlockInfo(key);
-                    }
-                });
-
-        Supplier<CurrencyConversion> btcToUsdConversionSupplier = Suppliers.memoizeWithExpiration(() -> {
-            return MonetaryConversions.getConversion(conversionQuery);
-        }, 1, TimeUnit.MINUTES);
-
         return args -> {
             log.info("Starting example application txStatsDemoRunner");
-            /*Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
+            /* Flux.from(bitcoinjTransactionPublishService)
                     .publishOn(Schedulers.elastic())
                     .subscribe(tx -> {
                                 log.info("{}", tx);
-                            });*/
+                            }); */
+            AtomicLong totalRuns = new AtomicLong(0L);
+
+            ExecutorService executorService = Executors.newFixedThreadPool(100, new ThreadFactoryBuilder()
+                    .setNameFormat("load-tx-cache-%d")
+                    .setDaemon(false)
+                    .build());
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    executorService.shutdown();
+                    executorService.awaitTermination(10, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    List<Runnable> runnables = executorService.shutdownNow();
+                    log.error("Could await " + runnables.size() + " tasks from terminating", e);
+                }
+            }));
+
 
             Flux.from(bitcoinjTransactionPublishService)
                     .parallel()
-                    .runOn(Schedulers.parallel())
+                    .runOn(Schedulers.fromExecutorService(executorService))
                     .doOnNext(tx -> {
                         Stopwatch stopwatch = Stopwatch.createStarted();
                         log.info("loading data for tx {}", tx.getTxId());
@@ -156,20 +137,27 @@ public class BitcoinTxStatsApplication {
                                 continue;
                             }
                             TransactionOutPoint outpoint = input.getOutpoint();
-                            Transaction txFromInput = txCache.getUnchecked(outpoint.getHash());
+                            Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
 
-                            RawTransactionInfo txFromInputInfo = txRawInfoCache.getUnchecked(txFromInput.getTxId());
+                            RawTransactionInfo txFromInputInfo = caches.txInfo().getUnchecked(txFromInput.getTxId());
 
                             Optional.ofNullable(txFromInputInfo.getBlockhash())
-                                    .map(blockInfoCache::getUnchecked);
+                                    .map(caches.blockInfo()::getUnchecked);
                         }
                         log.info("loading data took {} for tx {}", stopwatch.stop(), tx.getTxId());
                     })
                     .sequential()
+                    .onErrorContinue((throwable, causingValue) -> {
+                        log.error("error while handling {}", causingValue, throwable);
+                    })
                     .subscribe(tx -> {
                         log.info("======================================================");
 
                         try {
+                            CurrencyConversion btcToUsdConversion = caches.currencyConversion().getUnchecked(conversionQuery);
+
+
+                            log.info("run: {}", totalRuns.incrementAndGet());
                             log.info("txId: {}", tx.getTxId());
                             log.info("vin count / vout count: {} / {}", tx.getInputs().size(), tx.getOutputs().size());
                             log.info("is coinbase? {}", tx.isCoinBase());
@@ -185,12 +173,12 @@ public class BitcoinTxStatsApplication {
                                     continue;
                                 }
                                 TransactionOutPoint outpoint = input.getOutpoint();
-                                Transaction txFromInput = txCache.getUnchecked(outpoint.getHash());
+                                Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
 
-                                RawTransactionInfo txFromInputInfo = txRawInfoCache.getUnchecked(txFromInput.getTxId());
+                                RawTransactionInfo txFromInputInfo = caches.txInfo().getUnchecked(txFromInput.getTxId());
 
                                 Optional<BlockInfo> blockInfo = Optional.ofNullable(txFromInputInfo.getBlockhash())
-                                        .map(blockInfoCache::getUnchecked);
+                                        .map(caches.blockInfo()::getUnchecked);
 
                                 TransactionOutput fromOutput = txFromInput.getOutput(outpoint.getIndex());
                                 Script scriptPubKey = fromOutput.getScriptPubKey();
@@ -200,7 +188,7 @@ public class BitcoinTxStatsApplication {
 
                                 CoinWithCurrencyConversion inWithFiatAmount = CoinWithCurrencyConversion.builder()
                                         .coin(fromOutput.getValue())
-                                        .currencyConversion(btcToUsdConversionSupplier.get())
+                                        .currencyConversion(btcToUsdConversion)
                                         .build();
 
                                 long confirmations = blockInfo
@@ -228,7 +216,7 @@ public class BitcoinTxStatsApplication {
 
                                 CoinWithCurrencyConversion outWithFiatAmount = CoinWithCurrencyConversion.builder()
                                         .coin(output.getValue())
-                                        .currencyConversion(btcToUsdConversionSupplier.get())
+                                        .currencyConversion(btcToUsdConversion)
                                         .build();
 
                                 log.info("out: {} {} {}", scriptPubKey.getScriptType(), toAddress, outWithFiatAmount.toFriendlyString());
@@ -241,7 +229,7 @@ public class BitcoinTxStatsApplication {
 
                             CoinWithCurrencyConversion feeWithFiatAmount = CoinWithCurrencyConversion.builder()
                                     .coin(fee)
-                                    .currencyConversion(btcToUsdConversionSupplier.get())
+                                    .currencyConversion(btcToUsdConversion)
                                     .build();
                             log.info("fee: {}", feeWithFiatAmount.toFriendlyString());
 
