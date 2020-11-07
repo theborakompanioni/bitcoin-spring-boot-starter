@@ -12,13 +12,13 @@ import java.util.stream.Stream;
  */
 public final class BitcoinZeroMqTopics {
 
-    private static Topic rawtx = Topic.SimpleTopic.of("rawtx");
+    private static final Topic rawtx = Topic.SimpleTopic.of("rawtx");
 
-    private static Topic rawblock = Topic.SimpleTopic.of("rawblock");
+    private static final Topic rawblock = Topic.SimpleTopic.of("rawblock");
 
-    private static Topic hashtx = Topic.SimpleTopic.of("hashtx");
+    private static final Topic hashtx = Topic.SimpleTopic.of("hashtx");
 
-    private static Topic hashblock = Topic.SimpleTopic.of("hashblock");
+    private static final Topic hashblock = Topic.SimpleTopic.of("hashblock");
 
     public static Optional<Topic> ofName(String name) {
         return Stream.of(rawtx, rawblock, hashtx, hashblock)
