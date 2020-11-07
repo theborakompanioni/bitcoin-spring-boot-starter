@@ -23,13 +23,13 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MessagePublisherFactoryManualTest {
     public static void main(String[] args) {
 
-        Flow.Publisher<byte[]> rawtx = ZeroMqMessagePublisherFactory.builder()
+        Flux<byte[]> rawtx = ZeroMqMessagePublisherFactory.builder()
                 .topic(BitcoinZeroMqTopics.rawtx())
                 .address("tcp://localhost:28332")
                 .build()
                 .create();
 
-        Flux<byte[]> autoRawTx = Flux.from(FlowAdapters.toPublisher(rawtx))
+        Flux<byte[]> autoRawTx = rawtx
                 .publish()
                 .autoConnect();
 

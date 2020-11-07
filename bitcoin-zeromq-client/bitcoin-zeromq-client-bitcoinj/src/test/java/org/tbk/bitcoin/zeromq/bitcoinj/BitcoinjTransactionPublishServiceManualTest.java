@@ -36,7 +36,7 @@ public class BitcoinjTransactionPublishServiceManualTest {
 
         AtomicLong counter = new AtomicLong();
 
-        Flux.from(FlowAdapters.toPublisher(txPublishService))
+        Flux.from(txPublishService)
                 .subscribe(arg -> {
                     log.info("{} - {}", counter.incrementAndGet(), arg);
                 });
@@ -44,7 +44,7 @@ public class BitcoinjTransactionPublishServiceManualTest {
         txPublishService.startAsync();
         txPublishService.awaitRunning(Duration.ofSeconds(10));
 
-        Flux.from(FlowAdapters.toPublisher(txPublishService))
+        Flux.from(txPublishService)
                 .buffer(Duration.ofSeconds(10))
                 .subscribe(arg -> {
                     log.info("--------------------------- {}", arg.size());

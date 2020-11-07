@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.zeromq.client;
 
-import java.util.concurrent.Flow;
+import reactor.core.publisher.Flux;
 
 public interface MessagePublisherFactory<T> {
 
     String getTopicName();
 
-    Flow.Publisher<T> create();
+    Flux<T> create();
 }

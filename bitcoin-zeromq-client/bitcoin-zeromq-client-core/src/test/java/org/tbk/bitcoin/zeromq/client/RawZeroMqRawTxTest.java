@@ -77,7 +77,6 @@ public class RawZeroMqRawTxTest {
             log.info("val2: {}", val);
         });
 
-
         LongAdder longAdder = new LongAdder();
         connectableFlux.subscribe(val -> {
             longAdder.increment();
@@ -87,54 +86,5 @@ public class RawZeroMqRawTxTest {
                 throw new IllegalStateException();
             }
         });
-    }
-
-    public static void main2(String[] args) {
-        Flux<byte[]> objectFlux = Flux.<byte[]>create(emitter -> {
-            try (ZContext context = new ZContext()) {
-                try (ZMQ.Socket socket = context.createSocket(SocketType.SUB)) {
-                    boolean connected = socket.connect("tcp://localhost:28333");
-                    boolean subscribed = socket.subscribe(TOPIC);
-
-                    log.info("connected: {}", connected);
-                    log.info("subscribed: {}", subscribed);
-
-                    while (!emitter.isCancelled()) {
-                        byte[] rawTopicOrUnknown = socket.recv();
-                        Optional<String> topicOrEmpty = Optional.of(rawTopicOrUnknown)
-                                .map(String::new)
-                                .filter(TOPIC::equals);
-                        if (topicOrEmpty.isPresent()) {
-                            byte[] raw = socket.recv();
-                            emitter.next(raw);
-                        }
-                    }
-                }
-
-                emitter.complete();
-            } catch (Exception e) {
-                emitter.error(e);
-            }
-        });
-
-        ConnectableFlux<byte[]> connectableFlux = objectFlux
-                .publishOn(Schedulers.newSingle("pub-on"))
-                .subscribeOn(Schedulers.newSingle("sub-on"))
-                .publish();
-
-        connectableFlux.subscribe(val -> {
-            log.info("val1: {}", val);
-        });
-
-        connectableFlux.subscribe(val -> {
-            log.info("val2: {}", val);
-        });
-
-
-        connectableFlux.subscribe(val -> {
-            log.info("val3: {}", val);
-        });
-
-        connectableFlux.connect();
     }
 }

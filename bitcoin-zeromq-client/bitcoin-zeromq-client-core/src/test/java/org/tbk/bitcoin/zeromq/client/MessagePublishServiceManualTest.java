@@ -28,7 +28,7 @@ public class MessagePublishServiceManualTest {
 
         AtomicLong counter = new AtomicLong();
 
-        Flux.from(FlowAdapters.toPublisher(rawTxPublisher))
+        Flux.from(rawTxPublisher)
                 .subscribe(arg -> {
                     log.info("{} - {}", counter.incrementAndGet(), arg);
                 });
@@ -36,7 +36,7 @@ public class MessagePublishServiceManualTest {
         rawTxPublisher.startAsync();
         rawTxPublisher.awaitRunning(Duration.ofSeconds(10));
 
-        Flux.from(FlowAdapters.toPublisher(rawTxPublisher))
+        Flux.from(rawTxPublisher)
                 .buffer(Duration.ofSeconds(10))
                 .subscribe(arg -> {
                     log.info("--------------------------- {}", arg.size());

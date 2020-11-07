@@ -5,8 +5,8 @@ plugins {
 description = 'bitcoin zeromq client package'
 
 dependencies {
-    implementation 'org.zeromq:jeromq:0.5.2'
-    implementation "io.projectreactor:reactor-core"
+    api "io.projectreactor:reactor-core"
+    api "com.google.guava:guava:${guavaVersion}"
 
-    implementation "com.google.guava:guava:${guavaVersion}"
+    implementation 'org.zeromq:jeromq:0.5.2'
 }

@@ -30,8 +30,8 @@ public class ZeroMqMessagePublisherFactory implements MessagePublisherFactory<by
         return topic.getName();
     }
 
-    public Flow.Publisher<byte[]> create() {
-        Flux<byte[]> objectFlux = Flux.<byte[]>create(emitter -> {
+    public Flux<byte[]> create() {
+        Flux<byte[]> messageFlux = Flux.<byte[]>create(emitter -> {
             try (ZContext context = new ZContext()) {
                 try (ZMQ.Socket socket = context.createSocket(SocketType.SUB)) {
                     boolean connected = socket.connect(address);
@@ -75,7 +75,7 @@ public class ZeroMqMessagePublisherFactory implements MessagePublisherFactory<by
             }
         });
 
-        return FlowAdapters.toFlowPublisher(objectFlux);
+        return messageFlux;
     }
 
 }

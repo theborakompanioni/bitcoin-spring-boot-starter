@@ -25,9 +25,6 @@ dependencies {
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
-    implementation "io.projectreactor:reactor-core"
-    implementation "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
-
     implementation "org.javamoney:moneta:${monetaVersion}"
 
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
@@ -42,8 +39,6 @@ dependencies {
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
 
     implementation 'org.zalando:jackson-datatype-money:1.2.0'
-
-    implementation "com.google.guava:guava:${guavaVersion}"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

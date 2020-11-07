@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.FlowAdapters;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
@@ -19,7 +21,7 @@ import static com.google.common.util.concurrent.MoreExecutors.shutdownAndAwaitTe
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public final class MessagePublishService<T> extends AbstractIdleService implements Flow.Publisher<T> {
+public final class MessagePublishService<T> extends AbstractIdleService implements Publisher<T> {
 
     private final String serviceId = Integer.toHexString(System.identityHashCode(this));
 
@@ -40,9 +42,11 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
         this.bitcoinMessagePublisher = requireNonNull(bitcoinMessagePublisher);
     }
 
+
     @Override
-    public final void subscribe(Flow.Subscriber<? super T> subscriber) {
-        publisher.subscribe(subscriber);
+    public void subscribe(Subscriber<? super T> s) {
+        publisher.subscribe(FlowAdapters.toFlowSubscriber(s));
+
     }
 
     @Override
@@ -54,7 +58,7 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
     protected final void startUp() {
         log.info("starting..");
 
-        this.subscription = Flux.from(FlowAdapters.toPublisher(bitcoinMessagePublisher.create()))
+        this.subscription = bitcoinMessagePublisher.create()
                 .subscribeOn(subscribeOnScheduler)
                 .subscribe(publisher::submit);
 

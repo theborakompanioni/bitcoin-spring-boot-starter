@@ -6,14 +6,12 @@ import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.msgilligan.bitcoinj.json.pojo.BlockInfo;
 import com.msgilligan.bitcoinj.json.pojo.RawTransactionInfo;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.*;
 import org.bitcoinj.script.Script;
-import org.reactivestreams.FlowAdapters;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,7 +34,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
@@ -71,7 +68,7 @@ public class BitcoinTxStatsApplication {
             Duration statsInterval = Duration.ofSeconds(10);
             AtomicLong statsTxCounter = new AtomicLong();
 
-            Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
+            Flux.from(bitcoinjTransactionPublishService)
                     .buffer(statsInterval)
                     .doOnNext(arg -> {
                         statsTxCounter.addAndGet(arg.size());
@@ -145,7 +142,7 @@ public class BitcoinTxStatsApplication {
                                 log.info("{}", tx);
                             });*/
 
-            Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
+            Flux.from(bitcoinjTransactionPublishService)
                     .publishOn(Schedulers.elastic())
                     .doOnNext(tx -> {
                         log.info("======================================================");

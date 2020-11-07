@@ -3,7 +3,6 @@ package org.tbk.bitcoin.zeromq.example;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Transaction;
-import org.reactivestreams.FlowAdapters;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,7 +49,7 @@ public class BitcoinZeroMqClientApplication {
             Duration statsInterval = Duration.ofSeconds(10);
             AtomicLong statsTxCounter = new AtomicLong();
 
-            Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
+            Flux.from(bitcoinjTransactionPublishService)
                     .buffer(statsInterval)
                     .subscribe(arg -> {
                         statsTxCounter.addAndGet(arg.size());
@@ -68,7 +67,7 @@ public class BitcoinZeroMqClientApplication {
                     });
 
             AtomicLong singleTxCounter = new AtomicLong();
-            Flux.from(FlowAdapters.toPublisher(bitcoinjTransactionPublishService))
+            Flux.from(bitcoinjTransactionPublishService)
                     .subscribe(arg -> {
                         log.info("{} - {}", singleTxCounter.incrementAndGet(), arg);
                     });

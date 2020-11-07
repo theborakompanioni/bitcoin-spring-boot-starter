@@ -13,10 +13,6 @@ bootJar {
 dependencies {
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
-    implementation "io.projectreactor:reactor-core"
-    implementation "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
-    implementation "com.google.guava:guava:${guavaVersion}"
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
