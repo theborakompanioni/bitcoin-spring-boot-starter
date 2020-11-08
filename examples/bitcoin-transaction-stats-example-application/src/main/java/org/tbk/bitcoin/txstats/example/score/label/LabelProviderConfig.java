@@ -26,15 +26,14 @@ public class LabelProviderConfig {
     }
 
     @Bean
-    public ScoreLabelProvider scriptTypesLabelProvider(NetworkParameters networkParameters,
-                                                       CacheFacade caches) {
-        var labelPredicate = new ScriptTypesLabelPredicate(networkParameters, caches);
+    public ScoreLabelProvider scriptTypesLabelProvider(CacheFacade caches) {
+        var labelPredicate = new ScriptTypesLabelPredicate(caches);
         return new PredicateScoreLabelProvider(labelPredicate);
     }
+
     @Bean
-    public ScoreLabelProvider roundFeeLabelPredicate(NetworkParameters networkParameters,
-                                                       CacheFacade caches) {
-        var labelPredicate = new RoundFeeLabelPredicate(networkParameters, caches);
+    public ScoreLabelProvider roundFeeLabelPredicate(CacheFacade caches) {
+        var labelPredicate = new RoundFeeLabelPredicate(caches);
         return new PredicateScoreLabelProvider(labelPredicate);
     }
 

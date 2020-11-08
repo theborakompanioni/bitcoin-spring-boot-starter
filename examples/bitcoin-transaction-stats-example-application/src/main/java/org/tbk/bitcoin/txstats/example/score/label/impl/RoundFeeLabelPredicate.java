@@ -18,9 +18,6 @@ public class RoundFeeLabelPredicate implements ScoreLabelPredicate {
             .build();
 
     @NonNull
-    private final NetworkParameters networkParameters;
-
-    @NonNull
     private final CacheFacade caches;
 
     @Override
