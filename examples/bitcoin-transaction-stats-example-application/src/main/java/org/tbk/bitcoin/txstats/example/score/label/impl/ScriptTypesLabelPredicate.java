@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ScriptTypesLabelPredicate implements ScoreLabelPredicate {
 
-    private static final ScoreLabel label = ScoreLabel.SimpleScoreLabel.of("script_types");
+    private static final ScoreLabel label = ScoreLabel.SimpleScoreLabel.builder()
+            .name("script_types")
+            .description("If all inputs has the same type, and exactly one of the outputs is not of the same type — this output can be considered as the recipient")
+            .build();
 
     @NonNull
     private final NetworkParameters networkParameters;

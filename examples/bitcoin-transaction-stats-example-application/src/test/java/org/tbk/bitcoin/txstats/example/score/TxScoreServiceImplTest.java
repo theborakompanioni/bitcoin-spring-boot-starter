@@ -117,4 +117,23 @@ public class TxScoreServiceImplTest {
         assertThat(labelOrEmpty.isPresent(), is(true));
     }
 
+
+    @Test
+    public void round_fee() {
+        // https://blockchair.com/bitcoin/transaction/fb8c2c96d1f442e2e66fe1eccd519a5658eeb9ea5de7f79bef96d82b22755854
+        String txId = "fb8c2c96d1f442e2e66fe1eccd519a5658eeb9ea5de7f79bef96d82b22755854";
+        String rawTx = "0200000000010145fd7fd53a850b76a4dc3c52109ee4036238a87c78ba7adfbe0a7288c2a59ad10100000000fdffffff02f8240100000000001600147bf8e466c69b3e13558cfa1349a9600246421ee7f049020000000000160014310010ccde94f42580d790bfaa5ff07324f5c08102483045022100f52d77f2944209c5fde18d8a3c94473bd1ee595e65de4a79c5762ef11dc8ddde022071717d45b6df0f2fbd075d1e8080669a1e7cd256b8b063f824dc724c5142cd9e01210312972e5c7ae75d995761972a6c9cb020f4d1401f24c34a87454794cbfa5db0b2ceaa0900";
+
+        byte[] rawTxBytes = BaseEncoding.base16().decode(rawTx.toUpperCase());
+        Transaction tx = new Transaction(MainNetParams.get(), rawTxBytes);
+
+        TxScoreService.ScoredTransaction scoredTransaction = this.sut.scoreTransaction(tx).blockFirst();
+
+        Optional<ScoreLabel> labelOrEmpty = scoredTransaction.getLabels().stream()
+                .filter(val -> "round_fee".equals(val.getName()))
+                .findFirst();
+
+        assertThat(labelOrEmpty.isPresent(), is(true));
+    }
+
 }

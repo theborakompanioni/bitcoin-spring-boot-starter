@@ -32,8 +32,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MinerLabelProvider implements ScoreLabelProvider {
 
-    private static final ScoreLabel knownMinerLabel = ScoreLabel.SimpleScoreLabel.of("known_miner");
-    private static final ScoreLabel unknownMinerLabel = ScoreLabel.SimpleScoreLabel.of("unknown_miner");
+    private static final ScoreLabel knownMinerLabel = ScoreLabel.SimpleScoreLabel.builder()
+            .name("known_miner")
+            .description("The recipient is a known miner")
+            .build();
+
+    private static final ScoreLabel unknownMinerLabel = ScoreLabel.SimpleScoreLabel.builder()
+            .name("unknown_miner")
+            .description("The recipient is an unknown miner")
+            .build();
 
     @NonNull
     private final NetworkParameters networkParameters;

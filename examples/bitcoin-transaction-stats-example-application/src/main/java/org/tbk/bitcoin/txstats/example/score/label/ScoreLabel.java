@@ -15,14 +15,6 @@ public interface ScoreLabel {
     @Builder
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class SimpleScoreLabel implements ScoreLabel {
-        public static SimpleScoreLabel of(String name) {
-            return new SimpleScoreLabel(name, "");
-        }
-
-        public static SimpleScoreLabel of(String name, String description) {
-            return new SimpleScoreLabel(name, description);
-        }
-
         @NonNull
         String name;
 

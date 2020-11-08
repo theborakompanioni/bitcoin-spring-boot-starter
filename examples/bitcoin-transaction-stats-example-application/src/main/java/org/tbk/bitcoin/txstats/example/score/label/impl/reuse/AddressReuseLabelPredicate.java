@@ -16,7 +16,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AddressReuseLabelPredicate implements ScoreLabelPredicate {
 
-    private static final ScoreLabel label = ScoreLabel.SimpleScoreLabel.of("address_reuse");
+    private static final ScoreLabel label = ScoreLabel.SimpleScoreLabel.builder()
+            .name("address_reuse")
+            .description("")
+            .build();
 
     @NonNull
     private final NetworkParameters networkParameters;

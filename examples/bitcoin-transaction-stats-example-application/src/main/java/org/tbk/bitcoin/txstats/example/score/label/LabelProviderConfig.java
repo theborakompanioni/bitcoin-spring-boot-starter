@@ -5,6 +5,7 @@ import org.bitcoinj.core.NetworkParameters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.score.label.impl.RoundFeeLabelPredicate;
 import org.tbk.bitcoin.txstats.example.score.label.impl.ScriptTypesLabelPredicate;
 import org.tbk.bitcoin.txstats.example.score.label.impl.miner.KnownPools;
 import org.tbk.bitcoin.txstats.example.score.label.impl.miner.MinerLabelProvider;
@@ -28,6 +29,12 @@ public class LabelProviderConfig {
     public ScoreLabelProvider scriptTypesLabelProvider(NetworkParameters networkParameters,
                                                        CacheFacade caches) {
         var labelPredicate = new ScriptTypesLabelPredicate(networkParameters, caches);
+        return new PredicateScoreLabelProvider(labelPredicate);
+    }
+    @Bean
+    public ScoreLabelProvider roundFeeLabelPredicate(NetworkParameters networkParameters,
+                                                       CacheFacade caches) {
+        var labelPredicate = new RoundFeeLabelPredicate(networkParameters, caches);
         return new PredicateScoreLabelProvider(labelPredicate);
     }
 
