@@ -16,9 +16,10 @@ import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.tbk.bitcoin.txstats.example.BitcoinTxStatsApplicationConfig.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
 import org.tbk.bitcoin.txstats.example.util.CoinWithCurrencyConversion;
 import org.tbk.bitcoin.txstats.example.util.MoreScripts;
+import org.tbk.bitcoin.txstats.example.util.ShutdownHooks;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
@@ -46,7 +47,7 @@ public class BitcoinTxStatsApplication {
                 .sources(BitcoinTxStatsApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
+                .profiles("development", "local", "demo")
                 .run(args);
     }
 
@@ -59,6 +60,7 @@ public class BitcoinTxStatsApplication {
     }
 
     @Bean
+    @Profile("demo")
     public CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
         return args -> {
             log.info("Starting example application mainRunner");
@@ -89,6 +91,7 @@ public class BitcoinTxStatsApplication {
     }
 
     @Bean
+    @Profile("disable-for-now")
     public CommandLineRunner txStatsDemoRunner(NetworkParameters networkParameters,
                                                MessagePublishService<Transaction> bitcoinjTransactionPublishService,
                                                CacheFacade caches) {
@@ -112,16 +115,7 @@ public class BitcoinTxStatsApplication {
                     .setDaemon(false)
                     .build());
 
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    executorService.shutdown();
-                    executorService.awaitTermination(10, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    List<Runnable> runnables = executorService.shutdownNow();
-                    log.error("Could await " + runnables.size() + " tasks from terminating", e);
-                }
-            }));
-
+            Runtime.getRuntime().addShutdownHook(ShutdownHooks.shutdownHook(executorService, Duration.ofSeconds(10)));
 
             Flux.from(bitcoinjTransactionPublishService)
                     .parallel()
@@ -148,7 +142,7 @@ public class BitcoinTxStatsApplication {
                     })
                     .sequential()
                     .onErrorContinue((throwable, causingValue) -> {
-                        log.error("error while handling {}", causingValue, throwable);
+                        log.error("error while handling " + causingValue, throwable);
                     })
                     .subscribe(tx -> {
                         log.info("======================================================");
