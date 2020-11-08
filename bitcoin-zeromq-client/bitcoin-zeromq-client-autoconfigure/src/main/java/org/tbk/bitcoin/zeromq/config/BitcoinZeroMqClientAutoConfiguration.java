@@ -1,6 +1,8 @@
 package org.tbk.bitcoin.zeromq.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.BitcoinSerializer;
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
@@ -13,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.bitcoin.zeromq.bitcoinj.BitcoinjBlockPublisherFactory;
 import org.tbk.bitcoin.zeromq.bitcoinj.BitcoinjTransactionPublisherFactory;
 import org.tbk.bitcoin.zeromq.client.BitcoinZeroMqTopics;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
@@ -45,6 +48,13 @@ public class BitcoinZeroMqClientAutoConfiguration {
         }
         throw new IllegalArgumentException();
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BitcoinSerializer bitcoinSerializer(NetworkParameters networkParameters) {
+        return new BitcoinSerializer(networkParameters, false);
+    }
+
 
     @Bean("bitcoinRawTxZeroMqMessagePublisherFactory")
     @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubrawtx")
@@ -94,10 +104,10 @@ public class BitcoinZeroMqClientAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "bitcoinRawTxZeroMqMessagePublisherFactory")
     public BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory(
-            NetworkParameters networkParameters,
+            BitcoinSerializer bitcoinSerializer,
             @Qualifier("bitcoinRawTxZeroMqMessagePublisherFactory") ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory
     ) {
-        return new BitcoinjTransactionPublisherFactory(networkParameters, bitcoinRawTxZeroMqMessagePublisherFactory);
+        return new BitcoinjTransactionPublisherFactory(bitcoinSerializer, bitcoinRawTxZeroMqMessagePublisherFactory);
     }
 
     @Bean(name = "bitcoinjTransactionPublishService", initMethod = "startAsync", destroyMethod = "stopAsync")
@@ -106,5 +116,23 @@ public class BitcoinZeroMqClientAutoConfiguration {
             BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory
     ) {
         return new MessagePublishService<>(bitcoinjTransactionPublisherFactory);
+    }
+
+    @Bean("bitcoinjBlockPublisherFactory")
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(name = "bitcoinRawBlockZeroMqMessagePublisherFactory")
+    public BitcoinjBlockPublisherFactory bitcoinjBlockPublisherFactory(
+            BitcoinSerializer bitcoinSerializer,
+            @Qualifier("bitcoinRawBlockZeroMqMessagePublisherFactory") ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory
+    ) {
+        return new BitcoinjBlockPublisherFactory(bitcoinSerializer, bitcoinRawBlockZeroMqMessagePublisherFactory);
+    }
+
+    @Bean(name = "bitcoinjBlockPublishService", initMethod = "startAsync", destroyMethod = "stopAsync")
+    @ConditionalOnBean(BitcoinjBlockPublisherFactory.class)
+    public MessagePublishService<Block> bitcoinjBlockPublishService(
+            BitcoinjBlockPublisherFactory bitcoinjBlockPublisherFactory
+    ) {
+        return new MessagePublishService<>(bitcoinjBlockPublisherFactory);
     }
 }

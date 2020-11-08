@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.zeromq.bitcoinj;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
 import org.reactivestreams.FlowAdapters;
@@ -30,7 +31,8 @@ public class BitcoinjTransactionPublishServiceManualTest {
                 .topic(BitcoinZeroMqTopics.rawtx())
                 .address("tcp://localhost:28333")
                 .build();
-        BitcoinjTransactionPublisherFactory txPublisherFactory = new BitcoinjTransactionPublisherFactory(MainNetParams.get(), zmqRawTxPublisherFactory);
+        BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(MainNetParams.get(), false);
+        BitcoinjTransactionPublisherFactory txPublisherFactory = new BitcoinjTransactionPublisherFactory(bitcoinSerializer, zmqRawTxPublisherFactory);
 
         MessagePublishService<Transaction> txPublishService = new MessagePublishService<>(txPublisherFactory);
 
