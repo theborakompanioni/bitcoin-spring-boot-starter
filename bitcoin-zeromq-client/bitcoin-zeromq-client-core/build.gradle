@@ -8,5 +8,5 @@ dependencies {
     api "io.projectreactor:reactor-core"
     api "com.google.guava:guava:${guavaVersion}"
 
-    implementation 'org.zeromq:jeromq:0.5.2'
+    implementation "org.zeromq:jeromq:${jeroMqVersion}"
 }

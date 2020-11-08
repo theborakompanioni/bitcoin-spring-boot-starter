@@ -3,4 +3,6 @@ ext {
     monetaVersion = '1.4.2'
     xChangeVersion = '5.0.3'
     bitcoinjVersion = '0.15.8'
+    consensusJVersion = '0.5.4'
+    jeroMqVersion = '0.5.2'
 }
