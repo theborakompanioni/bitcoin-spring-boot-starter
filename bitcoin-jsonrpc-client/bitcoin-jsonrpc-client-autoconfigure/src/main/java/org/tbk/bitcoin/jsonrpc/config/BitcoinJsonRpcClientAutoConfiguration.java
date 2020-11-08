@@ -2,7 +2,6 @@ package org.tbk.bitcoin.jsonrpc.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import com.msgilligan.bitcoinj.rpc.RpcConfig;
-import lombok.NonNull;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
@@ -14,8 +13,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.jsonrpc.BitcoinClientFactory;
-import org.tbk.bitcoin.jsonrpc.BitcoinClientFactoryImpl;
+import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactory;
+import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactoryImpl;
 
 import java.net.URI;
 
@@ -23,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BitcoinJsonRpcClientAutoConfigProperties.class)
-@ConditionalOnClass(BitcoinClientFactory.class)
+@ConditionalOnClass(BitcoinJsonRpcClientFactory.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
 public class BitcoinJsonRpcClientAutoConfiguration {
 
@@ -35,8 +34,8 @@ public class BitcoinJsonRpcClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BitcoinClientFactory bitcoinClientFactory() {
-        return new BitcoinClientFactoryImpl();
+    public BitcoinJsonRpcClientFactory bitcoinJsonRpcClientFactory() {
+        return new BitcoinJsonRpcClientFactoryImpl();
     }
 
     @Bean
@@ -67,7 +66,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(RpcConfig.class)
-    public BitcoinClient bitcoinClient(BitcoinClientFactory bitcoinClientFactory, RpcConfig rpcConfig) {
+    public BitcoinClient bitcoinJsonRpcClient(BitcoinJsonRpcClientFactory bitcoinClientFactory, RpcConfig rpcConfig) {
         return bitcoinClientFactory.create(rpcConfig);
     }
 }
