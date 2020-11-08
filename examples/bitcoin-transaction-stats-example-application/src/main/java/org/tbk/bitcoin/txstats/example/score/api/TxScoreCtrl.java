@@ -55,6 +55,7 @@ public class TxScoreCtrl {
         ImmutableMap<String, Object> result = ImmutableMap.<String, Object>builder()
                 .put("tx_id", tx.getTxId().toString())
                 .put("score", scoredTransaction.getScore())
+                .put("type", scoredTransaction.getType())
                 .put("labels", scoredTransaction.getLabels())
                 .build();
 
