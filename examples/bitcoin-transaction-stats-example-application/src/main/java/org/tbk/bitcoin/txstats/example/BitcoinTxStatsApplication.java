@@ -17,6 +17,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.score.TxScoreRunner;
+import org.tbk.bitcoin.txstats.example.score.TxScoreService;
 import org.tbk.bitcoin.txstats.example.util.CoinWithCurrencyConversion;
 import org.tbk.bitcoin.txstats.example.util.MoreScripts;
 import org.tbk.bitcoin.txstats.example.util.ShutdownHooks;
@@ -30,7 +32,6 @@ import javax.money.convert.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,6 +58,15 @@ public class BitcoinTxStatsApplication {
 
     public static ApplicationListener<?> webServerPortFileWriter() {
         return new WebServerPortFileWriter("application.port");
+    }
+
+    @Bean
+    @Profile("demo")
+    public TxScoreRunner txScoreRunner(NetworkParameters networkParameters,
+                                       MessagePublishService<Transaction> bitcoinjTransactionPublishService,
+                                       TxScoreService txScoreService,
+                                       CacheFacade caches) {
+        return new TxScoreRunner(networkParameters, bitcoinjTransactionPublishService, txScoreService, caches);
     }
 
     @Bean

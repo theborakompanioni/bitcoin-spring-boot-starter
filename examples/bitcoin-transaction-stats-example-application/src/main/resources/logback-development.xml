@@ -2,5 +2,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="org.tbk.bitcoin.exchange" level="DEBUG"/>
+    <logger name="org.tbk.bitcoin.txstats" level="DEBUG"/>
 </configuration>
