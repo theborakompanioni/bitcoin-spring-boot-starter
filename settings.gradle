@@ -25,4 +25,5 @@ include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
 
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:bitcoin-transaction-stats-example-application'
+include 'examples:bitcoin-neo4j-example-application'
 

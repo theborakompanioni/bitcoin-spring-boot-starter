@@ -1,0 +1,49 @@
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    maven {
+        url "https://dl.bintray.com/msgilligan/maven"
+    }
+}
+
+description = 'bitcoin exchange rate example application package'
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    archiveClassifier.set('boot')
+}
+
+dependencies {
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-exchange')
+
+    implementation project(':spring-jsr354:spring-jsr354-starter')
+    implementation project(':xchange-jsr354:xchange-jsr354-starter')
+    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
+
+    implementation "org.javamoney:moneta:${monetaVersion}"
+
+    implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-therock:${xChangeVersion}"
+
+    //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
+    //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
+
+    implementation "org.testcontainers:testcontainers:1.15.0"
+    implementation "org.testcontainers:neo4j:1.15.0"
+
+    implementation 'org.zalando:jackson-datatype-money:1.2.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
+}
