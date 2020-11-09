@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.neo4j.example.model;
+package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.Id;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @NodeEntity("block")
-public class NeoBlock {
+public class BlockNeoEntity {
     @Id
     private String hash;
 
@@ -26,12 +26,12 @@ public class NeoBlock {
     int txcount;*/
 
     @Relationship(type = "BASED_ON")
-    private NeoBlock prevblock;
+    private BlockNeoEntity prevblock;
 
     @Relationship(type = "BASED_ON", direction = "INCOMING")
-    private NeoBlock nextblock;
+    private BlockNeoEntity nextblock;
 
     @Relationship(type = "INCLUDED_IN", direction = "INCOMING")
-    private List<NeoTx> transactions = new ArrayList<>();
+    private List<TxNeoEntity> transactions = new ArrayList<>();
 }
 

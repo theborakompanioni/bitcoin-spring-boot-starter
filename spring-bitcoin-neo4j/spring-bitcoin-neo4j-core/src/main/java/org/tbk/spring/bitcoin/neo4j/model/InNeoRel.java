@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.neo4j.example.model;
+package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.EndNode;
@@ -7,12 +7,12 @@ import org.neo4j.ogm.annotation.StartNode;
 
 
 @Data
-@RelationshipEntity(type = "BASED_ON")
-public class BasedOnRel {
+@RelationshipEntity(type = "IN")
+public class InNeoRel {
 
     @StartNode
-    private NeoBlock block;
+    private TxOutputNeoEntity input;
 
     @EndNode
-    private NeoBlock prevblock;
+    private TxNeoEntity transaction;
 }

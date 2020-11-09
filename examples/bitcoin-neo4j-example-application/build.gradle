@@ -25,6 +25,9 @@ dependencies {
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
+    implementation project(':spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter')
+    implementation project(':spring-bitcoin-neo4j:spring-neo4j-testcontainer-starter')
+
     implementation "org.javamoney:moneta:${monetaVersion}"
 
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
@@ -37,9 +40,6 @@ dependencies {
 
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
-
-    implementation "org.testcontainers:testcontainers:1.15.0"
-    implementation "org.testcontainers:neo4j:1.15.0"
 
     implementation 'org.zalando:jackson-datatype-money:1.2.0'
 

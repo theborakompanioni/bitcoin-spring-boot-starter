@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation 'org.springframework.data:spring-data-neo4j'
+
+    implementation "org.testcontainers:testcontainers:1.15.0"
+    implementation "org.testcontainers:neo4j:1.15.0"
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

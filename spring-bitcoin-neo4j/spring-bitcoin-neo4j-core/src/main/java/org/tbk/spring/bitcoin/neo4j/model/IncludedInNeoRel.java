@@ -1,17 +1,18 @@
-package org.tbk.bitcoin.neo4j.example.model;
+package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
 
+
 @Data
-@RelationshipEntity(type = "ADDRESS")
-public class AddressRel {
+@RelationshipEntity(type = "INCLUDED_IN")
+public class IncludedInNeoRel {
 
     @StartNode
-    private NeoTxOutput output;
+    private TxNeoEntity transaction;
 
     @EndNode
-    private NeoAddress address;
+    private BlockNeoEntity block;
 }

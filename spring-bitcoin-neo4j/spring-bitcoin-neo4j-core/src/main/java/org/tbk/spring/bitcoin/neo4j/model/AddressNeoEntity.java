@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.neo4j.example.model;
+package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.Id;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @Data
 @NodeEntity("addr")
-public class NeoAddress {
+public class AddressNeoEntity {
 
     @Id
     private String address;
 
     @Relationship(type = "ADDRESS", direction = "INCOMING")
-    private List<NeoTxOutput> outputs;
+    private List<TxOutputNeoEntity> outputs;
 }

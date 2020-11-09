@@ -1,8 +1,8 @@
 package org.tbk.bitcoin.neo4j.example;
 
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Lists;
 import org.bitcoinj.core.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.tbk.bitcoin.neo4j.example.cache.CacheFacade;
-import org.tbk.bitcoin.neo4j.example.model.*;
 import org.tbk.bitcoin.neo4j.example.util.MoreScripts;
 import org.tbk.bitcoin.neo4j.example.util.ShutdownHooks;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
+import org.tbk.spring.bitcoin.neo4j.model.*;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -54,10 +54,10 @@ public class BitcoinNeo4jApplication {
     public CommandLineRunner insertBlockToNeo4j(NetworkParameters networkParameters,
                                                 MessagePublishService<Block> bitcoinjBlockPublishService,
                                                 MessagePublishService<Transaction> bitcoinjTranscationPublishService,
-                                                BlockRepository blockRepository,
-                                                TransactionRepository transactionRepository,
-                                                TxOutputRepository txOutputRepository,
-                                                AddressRepository addressRepository,
+                                                BlockNeoRepository blockRepository,
+                                                TxNeoRepository transactionRepository,
+                                                TxOutputNeoRepository txOutputRepository,
+                                                AddressNeoRepository addressRepository,
                                                 TransactionTemplate transactionTemplate,
                                                 CacheFacade caches) {
         return args -> {
@@ -74,13 +74,13 @@ public class BitcoinNeo4jApplication {
             Sha256Hash randomBlockHash = Sha256Hash.wrap("000000000000000000341c2bcc0e2eadb0a4b1453a44ac31cab893080f967a85");
             Block randomBlock = caches.block().getUnchecked(randomBlockHash);
 
-            NeoBlock savedNeoBlock = transactionTemplate.execute(status -> {
+            BlockNeoEntity savedNeoBlock = transactionTemplate.execute(status -> {
                 String blockHash = randomBlock.getHash().toString();
                 String prevBlockHash = randomBlock.getPrevBlockHash().toString();
 
                 log.info("inserting new block {}", blockHash);
 
-                NeoBlock neoBlock = new NeoBlock();
+                BlockNeoEntity neoBlock = new BlockNeoEntity();
                 neoBlock.setHash(blockHash);
 
                 blockRepository.findById(prevBlockHash)
@@ -97,11 +97,11 @@ public class BitcoinNeo4jApplication {
 
                     log.info("{} - inserting new transaction {}", txCounter.incrementAndGet(), txId);
 
-                    NeoTx neoTx = new NeoTx();
+                    TxNeoEntity neoTx = new TxNeoEntity();
                     neoTx.setTxid(txId);
                     neoTx.setBlock(savedNeoBlock);
 
-                    List<NeoTxOutput> neoSpentOutputs = Lists.newArrayList();
+                    List<TxOutputNeoEntity> neoSpentOutputs = Lists.newArrayList();
                     tx.getInputs().forEach(input -> {
                         if (input.isCoinBase()) {
                             // coinbase inputs cannot be fetched
@@ -112,11 +112,11 @@ public class BitcoinNeo4jApplication {
                         TransactionOutPoint outpoint = input.getOutpoint();
 
                         String neoTxoId = outpoint.getHash().toString() + ":" + outpoint.getIndex();
-                        NeoTxOutput neoTxOutputSpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
+                        TxOutputNeoEntity TxOutputNeoEntitySpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
                             Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
                             TransactionOutput fromOutput = txFromInput.getOutput(outpoint.getIndex());
 
-                            NeoTxOutput neoTxo = new NeoTxOutput();
+                            TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
                             neoTxo.setId(neoTxoId);
                             neoTxo.setIndex(outpoint.getIndex());
                             neoTxo.setValue(fromOutput.getValue().getValue());
@@ -124,24 +124,24 @@ public class BitcoinNeo4jApplication {
 
                             Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, fromOutput.getScriptPubKey());
                             addressOrEmpty.ifPresent(address -> {
-                                NeoAddress neoAddress = addressRepository.findById(address.toString()).orElseGet(() -> {
-                                    NeoAddress newNeoAddress = new NeoAddress();
-                                    newNeoAddress.setAddress(address.toString());
-                                    return addressRepository.save(newNeoAddress);
+                                AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
+                                    AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
+                                    newAddressNeoEntity.setAddress(address.toString());
+                                    return addressRepository.save(newAddressNeoEntity);
                                 });
 
-                                neoTxo.setAddress(neoAddress);
+                                neoTxo.setAddress(AddressNeoEntity);
                             });
 
                             return txOutputRepository.save(neoTxo);
                         });
 
-                        neoSpentOutputs.add(neoTxOutputSpent);
+                        neoSpentOutputs.add(TxOutputNeoEntitySpent);
                     });
 
-                    List<NeoTxOutput> neoCreatedOutputs = Lists.newArrayList();
+                    List<TxOutputNeoEntity> neoCreatedOutputs = Lists.newArrayList();
                     tx.getOutputs().forEach(output -> {
-                        NeoTxOutput neoTxo = new NeoTxOutput();
+                        TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
                         neoTxo.setId(txId + ":" + output.getIndex());
                         neoTxo.setIndex(output.getIndex());
                         neoTxo.setValue(output.getValue().getValue());
@@ -150,13 +150,13 @@ public class BitcoinNeo4jApplication {
 
                         Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, output.getScriptPubKey());
                         addressOrEmpty.ifPresent(address -> {
-                            NeoAddress neoAddress = addressRepository.findById(address.toString()).orElseGet(() -> {
-                                NeoAddress newNeoAddress = new NeoAddress();
-                                newNeoAddress.setAddress(address.toString());
-                                return addressRepository.save(newNeoAddress);
+                            AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
+                                AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
+                                newAddressNeoEntity.setAddress(address.toString());
+                                return addressRepository.save(newAddressNeoEntity);
                             });
 
-                            neoTxo.setAddress(neoAddress);
+                            neoTxo.setAddress(AddressNeoEntity);
                         });
 
                         neoCreatedOutputs.add(txOutputRepository.save(neoTxo));
@@ -176,10 +176,10 @@ public class BitcoinNeo4jApplication {
     public CommandLineRunner mainRunner(NetworkParameters networkParameters,
                                         MessagePublishService<Block> bitcoinjBlockPublishService,
                                         MessagePublishService<Transaction> bitcoinjTranscationPublishService,
-                                        BlockRepository blockRepository,
-                                        TransactionRepository transactionRepository,
-                                        TxOutputRepository txOutputRepository,
-                                        AddressRepository addressRepository,
+                                        BlockNeoRepository blockRepository,
+                                        TxNeoRepository transactionRepository,
+                                        TxOutputNeoRepository txOutputRepository,
+                                        AddressNeoRepository addressRepository,
                                         TransactionTemplate transactionTemplate,
                                         CacheFacade caches) {
         return args -> {
@@ -201,7 +201,7 @@ public class BitcoinNeo4jApplication {
 
                             log.info("inserting new block {}", blockHash);
 
-                            NeoBlock neoBlock = new NeoBlock();
+                            BlockNeoEntity neoBlock = new BlockNeoEntity();
                             neoBlock.setHash(blockHash);
 
                             blockRepository.findById(prevBlockHash)
@@ -244,10 +244,10 @@ public class BitcoinNeo4jApplication {
 
                             log.info("inserting new transaction {}", txId);
 
-                            NeoTx neoTx = new NeoTx();
+                            TxNeoEntity neoTx = new TxNeoEntity();
                             neoTx.setTxid(txId);
 
-                            List<NeoTxOutput> neoSpentOutputs = Lists.newArrayList();
+                            List<TxOutputNeoEntity> neoSpentOutputs = Lists.newArrayList();
                             tx.getInputs().forEach(input -> {
                                 if (input.isCoinBase()) {
                                     // coinbase inputs cannot be fetched
@@ -258,11 +258,11 @@ public class BitcoinNeo4jApplication {
                                 TransactionOutPoint outpoint = input.getOutpoint();
 
                                 String neoTxoId = outpoint.getHash().toString() + ":" + outpoint.getIndex();
-                                NeoTxOutput neoTxOutputSpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
+                                TxOutputNeoEntity TxOutputNeoEntitySpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
                                     Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
                                     TransactionOutput fromOutput = txFromInput.getOutput(outpoint.getIndex());
 
-                                    NeoTxOutput neoTxo = new NeoTxOutput();
+                                    TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
                                     neoTxo.setId(neoTxoId);
                                     neoTxo.setIndex(outpoint.getIndex());
                                     neoTxo.setValue(fromOutput.getValue().getValue());
@@ -270,24 +270,24 @@ public class BitcoinNeo4jApplication {
 
                                     Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, fromOutput.getScriptPubKey());
                                     addressOrEmpty.ifPresent(address -> {
-                                        NeoAddress neoAddress = addressRepository.findById(address.toString()).orElseGet(() -> {
-                                            NeoAddress newNeoAddress = new NeoAddress();
-                                            newNeoAddress.setAddress(address.toString());
-                                            return addressRepository.save(newNeoAddress);
+                                        AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
+                                            AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
+                                            newAddressNeoEntity.setAddress(address.toString());
+                                            return addressRepository.save(newAddressNeoEntity);
                                         });
 
-                                        neoTxo.setAddress(neoAddress);
+                                        neoTxo.setAddress(AddressNeoEntity);
                                     });
 
                                     return txOutputRepository.save(neoTxo);
                                 });
 
-                                neoSpentOutputs.add(neoTxOutputSpent);
+                                neoSpentOutputs.add(TxOutputNeoEntitySpent);
                             });
 
-                            List<NeoTxOutput> neoCreatedOutputs = Lists.newArrayList();
+                            List<TxOutputNeoEntity> neoCreatedOutputs = Lists.newArrayList();
                             tx.getOutputs().forEach(output -> {
-                                NeoTxOutput neoTxo = new NeoTxOutput();
+                                TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
                                 neoTxo.setId(txId + ":" + output.getIndex());
                                 neoTxo.setIndex(output.getIndex());
                                 neoTxo.setValue(output.getValue().getValue());
@@ -296,13 +296,13 @@ public class BitcoinNeo4jApplication {
 
                                 Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, output.getScriptPubKey());
                                 addressOrEmpty.ifPresent(address -> {
-                                    NeoAddress neoAddress = addressRepository.findById(address.toString()).orElseGet(() -> {
-                                        NeoAddress newNeoAddress = new NeoAddress();
-                                        newNeoAddress.setAddress(address.toString());
-                                        return addressRepository.save(newNeoAddress);
+                                    AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
+                                        AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
+                                        newAddressNeoEntity.setAddress(address.toString());
+                                        return addressRepository.save(newAddressNeoEntity);
                                     });
 
-                                    neoTxo.setAddress(neoAddress);
+                                    neoTxo.setAddress(AddressNeoEntity);
                                 });
 
                                 neoCreatedOutputs.add(txOutputRepository.save(neoTxo));

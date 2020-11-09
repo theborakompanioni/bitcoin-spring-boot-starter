@@ -1,16 +1,14 @@
-package org.tbk.bitcoin.neo4j.example.model;
+package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.List;
-
 
 @Data
 @NodeEntity("txo")
-public class NeoTxOutput {
+public class TxOutputNeoEntity {
 
     // id is "$tx_hash:$index"
     @Id
@@ -24,13 +22,13 @@ public class NeoTxOutput {
     private int size;
 
     @Relationship(type = "ADDRESS", direction = "OUTGOING")
-    private NeoAddress address;
+    private AddressNeoEntity address;
 
     @Relationship(type = "OUT", direction = "INCOMING")
-    private NeoTx createdIn;
+    private TxNeoEntity createdIn;
 
     @Relationship(type = "IN", direction = "OUTGOING")
-    private NeoTx spentBy;
+    private TxNeoEntity spentBy;
 
     public boolean isUnspent() {
         return spentBy == null;
