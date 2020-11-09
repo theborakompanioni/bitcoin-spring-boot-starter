@@ -32,32 +32,4 @@ public class BitcoinTxStatsApplicationTest {
     public void contextLoads() {
         assertThat(applicationContext, is(notNullValue()));
     }
-
-    @Test
-    public void dollarsCanBeExchangedForBitcoin() {
-        CurrencyConversion btcToUsdConversion = MonetaryConversions.getConversion(ConversionQueryBuilder.of()
-                .setBaseCurrency(Monetary.getCurrency("USD"))
-                .setTermCurrency(Monetary.getCurrency("BTC"))
-                .build());
-
-        Money singleDollar = Money.of(BigDecimal.ONE, "USD");
-        Money singleDollarInBtc = singleDollar.with(btcToUsdConversion);
-
-        assertThat("value is in BTC", singleDollarInBtc.getCurrency().getCurrencyCode(), is("BTC"));
-        assertThat("value is greater than zero", singleDollarInBtc.isPositive(), is(true));
-    }
-
-    @Test
-    public void bitcoinCanBeExchangeToDollars() {
-        CurrencyConversion btcToUsdConversion = MonetaryConversions.getConversion(ConversionQueryBuilder.of()
-                .setBaseCurrency(Monetary.getCurrency("BTC"))
-                .setTermCurrency(Monetary.getCurrency("USD"))
-                .build());
-
-        Money singleBitcoin = Money.of(BigDecimal.ONE, "BTC");
-        Money singleBitcoinInUsd = singleBitcoin.with(btcToUsdConversion);
-
-        assertThat("value is in USD", singleBitcoinInUsd.getCurrency().getCurrencyCode(), is("USD"));
-        assertThat("value is greater than zero", singleBitcoinInUsd.isPositive(), is(true));
-    }
 }
