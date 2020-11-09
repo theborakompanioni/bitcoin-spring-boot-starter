@@ -16,7 +16,7 @@ import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.score.TxScoreRunner;
 import org.tbk.bitcoin.txstats.example.score.TxScoreService;
 import org.tbk.bitcoin.txstats.example.util.CoinWithCurrencyConversion;
@@ -65,7 +65,7 @@ public class BitcoinTxStatsApplication {
     public TxScoreRunner txScoreRunner(NetworkParameters networkParameters,
                                        MessagePublishService<Transaction> bitcoinjTransactionPublishService,
                                        TxScoreService txScoreService,
-                                       CacheFacade caches) {
+                                       AppCacheFacade caches) {
         return new TxScoreRunner(networkParameters, bitcoinjTransactionPublishService, txScoreService, caches);
     }
 
@@ -104,7 +104,7 @@ public class BitcoinTxStatsApplication {
     @Profile("disable-for-now")
     public CommandLineRunner txStatsDemoRunner(NetworkParameters networkParameters,
                                                MessagePublishService<Transaction> bitcoinjTransactionPublishService,
-                                               CacheFacade caches) {
+                                               AppCacheFacade caches) {
         CurrencyUnit btcCurrencyUnit = Monetary.getCurrency("BTC");
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency(btcCurrencyUnit)

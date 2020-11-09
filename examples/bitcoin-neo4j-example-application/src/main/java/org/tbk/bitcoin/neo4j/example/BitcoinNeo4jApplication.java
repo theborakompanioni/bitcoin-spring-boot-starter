@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.tbk.bitcoin.neo4j.example.cache.CacheFacade;
+import org.tbk.bitcoin.jsonrpc.cache.CacheFacade;
 import org.tbk.bitcoin.neo4j.example.util.MoreScripts;
 import org.tbk.bitcoin.neo4j.example.util.ShutdownHooks;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;

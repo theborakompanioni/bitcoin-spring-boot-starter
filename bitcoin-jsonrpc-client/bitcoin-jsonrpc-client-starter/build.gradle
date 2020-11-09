@@ -6,6 +6,7 @@ description = 'bitcoin jsonrpc client starter package'
 
 dependencies {
     api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-cache')
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'

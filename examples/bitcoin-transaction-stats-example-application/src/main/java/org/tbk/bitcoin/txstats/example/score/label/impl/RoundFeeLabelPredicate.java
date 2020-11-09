@@ -3,7 +3,7 @@ package org.tbk.bitcoin.txstats.example.score.label.impl;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.bitcoinj.core.*;
-import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabelPredicate;
 
@@ -18,7 +18,7 @@ public class RoundFeeLabelPredicate implements ScoreLabelPredicate {
             .build();
 
     @NonNull
-    private final CacheFacade caches;
+    private final AppCacheFacade caches;
 
     @Override
     public ScoreLabel getLabel() {

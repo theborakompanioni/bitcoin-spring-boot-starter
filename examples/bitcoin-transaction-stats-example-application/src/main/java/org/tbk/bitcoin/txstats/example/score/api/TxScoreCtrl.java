@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.score.TxScoreService;
 
 import java.util.Map;
@@ -22,10 +22,10 @@ import static java.util.Objects.requireNonNull;
 @RequestMapping(value = "/api/v1/tx/score")
 public class TxScoreCtrl {
 
-    private final CacheFacade caches;
+    private final AppCacheFacade caches;
     private final TxScoreService txScoreService;
 
-    public TxScoreCtrl(CacheFacade caches, TxScoreService txScoreService) {
+    public TxScoreCtrl(AppCacheFacade caches, TxScoreService txScoreService) {
         this.caches = requireNonNull(caches);
         this.txScoreService = requireNonNull(txScoreService);
     }

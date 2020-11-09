@@ -3,12 +3,11 @@ package org.tbk.bitcoin.txstats.example.score.label.impl;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.script.Script;
-import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabelPredicate;
 
@@ -25,7 +24,7 @@ public class ScriptTypesLabelPredicate implements ScoreLabelPredicate {
             .build();
 
     @NonNull
-    private final CacheFacade caches;
+    private final AppCacheFacade caches;
 
     @Override
     public ScoreLabel getLabel() {

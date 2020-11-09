@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.bitcoinj.core.*;
-import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabelPredicate;
 import org.tbk.bitcoin.txstats.example.util.MoreScripts;
@@ -25,7 +25,7 @@ public class AddressReuseLabelPredicate implements ScoreLabelPredicate {
     private final NetworkParameters networkParameters;
 
     @NonNull
-    private final CacheFacade caches;
+    private final AppCacheFacade caches;
 
     @Override
     public ScoreLabel getLabel() {

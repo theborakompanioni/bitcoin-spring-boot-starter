@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.springframework.boot.CommandLineRunner;
-import org.tbk.bitcoin.txstats.example.cache.CacheFacade;
+import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.util.ShutdownHooks;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
@@ -27,12 +27,12 @@ public class TxScoreRunner implements CommandLineRunner {
     private final NetworkParameters networkParameters;
     private final MessagePublishService<Transaction> bitcoinjTransactionPublishService;
     private final TxScoreService txScoreService;
-    private final CacheFacade caches;
+    private final AppCacheFacade caches;
 
     public TxScoreRunner(NetworkParameters networkParameters,
                          MessagePublishService<Transaction> bitcoinjTransactionPublishService,
                          TxScoreService txScoreService,
-                         CacheFacade caches) {
+                         AppCacheFacade caches) {
         this.networkParameters = requireNonNull(networkParameters);
         this.bitcoinjTransactionPublishService = requireNonNull(bitcoinjTransactionPublishService);
         this.txScoreService = requireNonNull(txScoreService);

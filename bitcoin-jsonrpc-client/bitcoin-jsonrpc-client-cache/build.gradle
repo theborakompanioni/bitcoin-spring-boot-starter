@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin jsonrpc client cache package'
+
+dependencies {
+    api "com.msgilligan:cj-btc-jsonrpc:${consensusJVersion}"
+    api "com.google.guava:guava:${guavaVersion}"
+}
