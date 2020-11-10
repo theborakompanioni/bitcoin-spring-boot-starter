@@ -6,6 +6,7 @@ import org.bitcoinj.core.Transaction;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import reactor.core.publisher.Flux;
 
+import java.time.Instant;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -29,6 +30,9 @@ public interface TxScoreService {
     @Value
     @Builder
     class ScoredTransaction {
+        @Builder.Default
+        Instant createdAt = Instant.now();
+
         @NonNull
         Transaction tx;
 

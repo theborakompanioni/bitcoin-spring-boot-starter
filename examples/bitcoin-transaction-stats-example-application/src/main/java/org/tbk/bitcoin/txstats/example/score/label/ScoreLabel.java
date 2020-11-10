@@ -21,7 +21,6 @@ public interface ScoreLabel {
         @NonNull
         String description;
 
-
         public String toString() {
             return MoreObjects.toStringHelper(this)
                     .addValue(name)

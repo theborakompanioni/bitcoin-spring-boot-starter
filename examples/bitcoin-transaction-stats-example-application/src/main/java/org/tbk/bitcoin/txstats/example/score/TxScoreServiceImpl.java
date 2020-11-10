@@ -3,11 +3,13 @@ package org.tbk.bitcoin.txstats.example.score;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.bitcoinj.core.Transaction;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabelProvider;
 import reactor.core.publisher.Flux;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +25,8 @@ public class TxScoreServiceImpl implements TxScoreService {
     @Override
     public Flux<ScoredTransaction> scoreTransaction(Transaction tx) {
 
+        Instant now = Instant.now();
+
         TxType txType = identifyType(tx);
 
         Set<ScoreLabel> labels = labelProviders.stream()
@@ -30,12 +34,16 @@ public class TxScoreServiceImpl implements TxScoreService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toUnmodifiableSet());
 
+        // currently just a made up score (favoring higher numbers).
+        var randomScore = RandomUtils.nextInt(RandomUtils.nextInt(1, 50), 100);
+
         return Flux.just(1)
                 .map(val -> {
                     return ScoredTransaction.builder()
+                            .createdAt(now)
                             .tx(tx)
                             .type(txType)
-                            .score(0)
+                            .score(randomScore)
                             .labels(labels)
                             .build();
                 });

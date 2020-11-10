@@ -26,6 +26,7 @@ import org.tbk.bitcoin.txstats.example.model.TxScoreNeoEntity;
 import org.tbk.bitcoin.txstats.example.model.TxScoreNeoRepository;
 import org.tbk.bitcoin.txstats.example.score.TxScoreRunner;
 import org.tbk.bitcoin.txstats.example.score.TxScoreService;
+import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.util.CoinWithCurrencyConversion;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.spring.bitcoin.neo4j.model.*;
@@ -45,6 +46,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootApplication
@@ -130,28 +133,40 @@ public class BitcoinTxStatsApplication {
 
             Runtime.getRuntime().addShutdownHook(ShutdownHooks.shutdownHook(executorService, Duration.ofSeconds(10)));
 
-            // a block with comparatively low amount of total inputs and tx.. (tx count: 318; i nput count: 875)
-            Sha256Hash randomBlockHash = Sha256Hash.wrap("000000000000000000341c2bcc0e2eadb0a4b1453a44ac31cab893080f967a85");
-            Block randomBlock = caches.block().getUnchecked(randomBlockHash);
-
-            BlockNeoEntity savedNeoBlock = transactionTemplate.execute(status -> {
-                String blockHash = randomBlock.getHash().toString();
-                String prevBlockHash = randomBlock.getPrevBlockHash().toString();
-
-                log.info("inserting new block {}", blockHash);
-
+            Function<Block, BlockNeoEntity> toBlockNeoEntity = block -> {
                 BlockNeoEntity neoBlock = new BlockNeoEntity();
-                neoBlock.setHash(blockHash);
 
-                blockRepository.findById(prevBlockHash)
+                neoBlock.setHash(block.getHash().toString());
+
+                neoBlock.setVersion(block.getVersion());
+                neoBlock.setMerkleroot(block.getMerkleRoot().toString());
+                neoBlock.setTime(block.getTime().toInstant());
+                neoBlock.setDifficulty(block.getDifficultyTarget());
+                neoBlock.setNonce(block.getNonce());
+
+                blockRepository.findById(block.getPrevBlockHash().toString())
                         .ifPresent(neoBlock::setPrevblock);
 
-                return blockRepository.save(neoBlock);
+                return neoBlock;
+            };
+
+            Function<Block, BlockNeoEntity> insertNeoBlock = block -> transactionTemplate.execute(status -> {
+                log.info("inserting new block {}", block.getHash());
+                return blockRepository.save(toBlockNeoEntity.apply(block));
             });
 
+            // a block with comparatively low amount of total inputs and tx.. (tx count: 318; i nput count: 875)
+            Sha256Hash blockHash = Sha256Hash.wrap("000000000000000000341c2bcc0e2eadb0a4b1453a44ac31cab893080f967a85");
+            Block block = caches.block().getUnchecked(blockHash);
+            Block prevBlock = caches.block().getUnchecked(block.getPrevBlockHash());
+            Block prevPrevBlock = caches.block().getUnchecked(prevBlock.getPrevBlockHash());
+
+            BlockNeoEntity savedPrevPrevNeoBlock = insertNeoBlock.apply(prevPrevBlock);
+            BlockNeoEntity savedPrevNeoBlock = insertNeoBlock.apply(prevBlock);
+            BlockNeoEntity savedNeoBlock = insertNeoBlock.apply(block);
 
             AtomicLong txCounter = new AtomicLong();
-            randomBlock.getTransactions().forEach(tx -> {
+            block.getTransactions().forEach(tx -> {
                 TxNeoEntity newNeoTx = transactionTemplate.execute(status -> {
                     String txId = tx.getTxId().toString();
 
@@ -159,6 +174,10 @@ public class BitcoinTxStatsApplication {
 
                     TxNeoEntity neoTx = new TxNeoEntity();
                     neoTx.setTxid(txId);
+                    neoTx.setVersion(tx.getVersion());
+                    neoTx.setTxincount(tx.getInputs().size());
+                    neoTx.setTxoutcount(tx.getOutputs().size());
+                    neoTx.setLocktime(tx.getLockTime());
                     neoTx.setBlock(savedNeoBlock);
 
                     List<TxOutputNeoEntity> neoSpentOutputs = Lists.newArrayList();
@@ -229,7 +248,7 @@ public class BitcoinTxStatsApplication {
                 });
             });
 
-            Flux.fromIterable(randomBlock.getTransactions())
+            Flux.fromIterable(block.getTransactions())
                     .doOnNext(val -> {
                         log.info("Score check for tx {}", val.getTxId());
                     })
@@ -237,12 +256,18 @@ public class BitcoinTxStatsApplication {
                     .subscribe(score -> {
                         String txId = score.getTx().getTxId().toString();
 
+                        List<String> labels = score.getLabels().stream()
+                                .map(ScoreLabel::getName)
+                                .collect(Collectors.toList());
+
                         TxScoreNeoEntity newNeoTxScore = transactionTemplate.execute(status -> {
                             TxScoreNeoEntity neoTxScore = new TxScoreNeoEntity();
 
+                            neoTxScore.setCreatedAt(score.getCreatedAt());
                             neoTxScore.setFinalized(score.isFinalized());
                             neoTxScore.setScore(score.getScore());
                             neoTxScore.setType(score.getType().toString());
+                            neoTxScore.setLabels(labels);
 
                             transactionRepository.findById(txId).ifPresent(neoTx -> {
                                 neoTxScore.setTx(neoTx);
@@ -250,7 +275,7 @@ public class BitcoinTxStatsApplication {
 
                             return txScoreNeoRepository.save(neoTxScore);
                         });
-                    log.info("Score check finished for tx {} - {}", txId, newNeoTxScore.getId());
+                        log.info("Score check finished for tx {} - {}", txId, newNeoTxScore.getId());
                     });
         };
     }

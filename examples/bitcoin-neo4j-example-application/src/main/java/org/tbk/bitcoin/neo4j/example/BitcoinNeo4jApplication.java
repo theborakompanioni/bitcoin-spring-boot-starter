@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 @Slf4j
 @SpringBootApplication
@@ -71,28 +72,37 @@ public class BitcoinNeo4jApplication {
 
             Runtime.getRuntime().addShutdownHook(ShutdownHooks.shutdownHook(executorService, Duration.ofSeconds(10)));
 
-            // a block with comparatively low amount of total inputs and tx.. (tx count: 318; i nput count: 875)
-            Sha256Hash randomBlockHash = Sha256Hash.wrap("000000000000000000341c2bcc0e2eadb0a4b1453a44ac31cab893080f967a85");
-            Block randomBlock = caches.block().getUnchecked(randomBlockHash);
-
-            BlockNeoEntity savedNeoBlock = transactionTemplate.execute(status -> {
-                String blockHash = randomBlock.getHash().toString();
-                String prevBlockHash = randomBlock.getPrevBlockHash().toString();
-
-                log.info("inserting new block {}", blockHash);
-
+            Function<Block, BlockNeoEntity> toBlockNeoEntity = block -> {
                 BlockNeoEntity neoBlock = new BlockNeoEntity();
-                neoBlock.setHash(blockHash);
 
-                blockRepository.findById(prevBlockHash)
+                neoBlock.setHash(block.getHash().toString());
+
+                neoBlock.setVersion(block.getVersion());
+                neoBlock.setMerkleroot(block.getMerkleRoot().toString());
+                neoBlock.setTime(block.getTime().toInstant());
+                neoBlock.setDifficulty(block.getDifficultyTarget());
+                neoBlock.setNonce(block.getNonce());
+
+                blockRepository.findById(block.getPrevBlockHash().toString())
                         .ifPresent(neoBlock::setPrevblock);
 
-                return blockRepository.save(neoBlock);
+                return neoBlock;
+            };
+
+            Function<Block, BlockNeoEntity> insertNeoBlock = block -> transactionTemplate.execute(status -> {
+                log.info("inserting new block {}", block.getHash());
+                return blockRepository.save(toBlockNeoEntity.apply(block));
             });
+
+            // a block with comparatively low amount of total inputs and tx.. (tx count: 318; i nput count: 875)
+            Sha256Hash blockHash = Sha256Hash.wrap("000000000000000000341c2bcc0e2eadb0a4b1453a44ac31cab893080f967a85");
+            Block block = caches.block().getUnchecked(blockHash);
+
+            BlockNeoEntity savedNeoBlock = insertNeoBlock.apply(block);
 
 
             AtomicLong txCounter = new AtomicLong();
-            randomBlock.getTransactions().forEach(tx -> {
+            block.getTransactions().forEach(tx -> {
                 transactionTemplate.executeWithoutResult(status -> {
                     String txId = tx.getTxId().toString();
 
@@ -100,6 +110,10 @@ public class BitcoinNeo4jApplication {
 
                     TxNeoEntity neoTx = new TxNeoEntity();
                     neoTx.setTxid(txId);
+                    neoTx.setVersion(tx.getVersion());
+                    neoTx.setTxincount(tx.getInputs().size());
+                    neoTx.setTxoutcount(tx.getOutputs().size());
+                    neoTx.setLocktime(tx.getLockTime());
                     neoTx.setBlock(savedNeoBlock);
 
                     List<TxOutputNeoEntity> neoSpentOutputs = Lists.newArrayList();
@@ -194,23 +208,29 @@ public class BitcoinNeo4jApplication {
 
             Runtime.getRuntime().addShutdownHook(ShutdownHooks.shutdownHook(executorService, Duration.ofSeconds(10)));
 
-            Flux.from(bitcoinjBlockPublishService)
-                    .subscribe(block -> {
-                        transactionTemplate.executeWithoutResult(status -> {
-                            String blockHash = block.getHash().toString();
-                            String prevBlockHash = block.getPrevBlockHash().toString();
+            Function<Block, BlockNeoEntity> toBlockNeoEntity = block -> {
+                BlockNeoEntity neoBlock = new BlockNeoEntity();
 
-                            log.info("inserting new block {}", blockHash);
+                neoBlock.setHash(block.getHash().toString());
 
-                            BlockNeoEntity neoBlock = new BlockNeoEntity();
-                            neoBlock.setHash(blockHash);
+                neoBlock.setVersion(block.getVersion());
+                neoBlock.setMerkleroot(block.getMerkleRoot().toString());
+                neoBlock.setTime(block.getTime().toInstant());
+                neoBlock.setDifficulty(block.getDifficultyTarget());
+                neoBlock.setNonce(block.getNonce());
 
-                            blockRepository.findById(prevBlockHash)
-                                    .ifPresent(neoBlock::setPrevblock);
+                blockRepository.findById(block.getPrevBlockHash().toString())
+                        .ifPresent(neoBlock::setPrevblock);
 
-                            blockRepository.save(neoBlock);
-                        });
-                    });
+                return neoBlock;
+            };
+
+            Function<Block, BlockNeoEntity> insertNeoBlock = block -> transactionTemplate.execute(status -> {
+                log.info("inserting new block {}", block.getHash());
+                return blockRepository.save(toBlockNeoEntity.apply(block));
+            });
+
+            Flux.from(bitcoinjBlockPublishService).subscribe(insertNeoBlock::apply);
 
             Flux.from(bitcoinjTranscationPublishService)
                     /*.parallel()
