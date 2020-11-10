@@ -7,8 +7,8 @@ import org.neo4j.ogm.annotation.StartNode;
 
 
 @Data
-@RelationshipEntity(type = "BASED_ON")
-public class BasedOnNeoRel {
+@RelationshipEntity(type = "PREV_BLOCK")
+public class PrevBlockNeoRel {
 
     @StartNode
     private BlockNeoEntity block;

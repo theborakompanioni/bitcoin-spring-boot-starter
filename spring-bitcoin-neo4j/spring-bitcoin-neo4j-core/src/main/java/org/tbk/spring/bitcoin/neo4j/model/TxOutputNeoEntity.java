@@ -4,6 +4,7 @@ import lombok.Data;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Required;
 
 
 @Data
@@ -14,8 +15,10 @@ public class TxOutputNeoEntity {
     @Id
     private String id;
 
+    @Required
     private long index;
 
+    @Required
     private long value;
 
     // size in bytes
@@ -24,6 +27,7 @@ public class TxOutputNeoEntity {
     @Relationship(type = "ADDRESS", direction = "OUTGOING")
     private AddressNeoEntity address;
 
+    @Required
     @Relationship(type = "OUT", direction = "INCOMING")
     private TxNeoEntity createdIn;
 

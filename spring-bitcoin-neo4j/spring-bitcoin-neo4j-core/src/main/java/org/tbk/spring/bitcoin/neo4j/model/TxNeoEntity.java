@@ -13,6 +13,23 @@ public class TxNeoEntity {
     @Id
     private String txid;
 
+    /**
+     * Transaction data format version (note, this is signed)
+     */
+    private long version;
+
+    /**
+     * Number of Transaction inputs (never zero)
+     */
+    private long txincount;
+
+    /**
+     * Number of Transaction outputs
+     */
+    private long txoutcount;
+
+    private long locktime;
+
     @Relationship(type = "INCLUDED_IN")
     private BlockNeoEntity block;
 

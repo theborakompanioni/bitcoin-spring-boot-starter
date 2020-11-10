@@ -4,7 +4,10 @@ import lombok.Data;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Required;
+import org.neo4j.ogm.annotation.typeconversion.DateString;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,18 +17,38 @@ public class BlockNeoEntity {
     @Id
     private String hash;
 
-    /*int version;
+    /**
+     * Block version information (note, this is signed)
+     */
+    private long version;
 
-    String prevblock;
-    String merkeroot;
-    long timestamp;
+    /**
+     * The reference to a Merkle tree collection which is a hash of all transactions related to this block
+     */
+    @Required
+    private String merkleroot;
 
-    String bits;
-    long nonce;
-    int size;
-    int txcount;*/
+    /**
+     * A Unix timestamp recording when this block was created (Currently limited to dates before the year 2106!)
+     */
+    @Required
+    @DateString
+    private Instant time;
 
-    @Relationship(type = "BASED_ON")
+    /**
+     * The calculated difficulty target being used for this block
+     */
+    private long difficulty;
+
+    /**
+     * The nonce used to generate this block… to allow variations of the header and compute different hashes
+     */
+    private long nonce;
+
+    /**
+     * The hash value of the previous block this particular block references
+     */
+    @Relationship(type = "PREV_BLOCK")
     private BlockNeoEntity prevblock;
 
     @Relationship(type = "BASED_ON", direction = "INCOMING")
