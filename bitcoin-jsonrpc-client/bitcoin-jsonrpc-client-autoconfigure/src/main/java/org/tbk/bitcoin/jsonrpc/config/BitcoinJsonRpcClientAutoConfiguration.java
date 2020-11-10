@@ -40,7 +40,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public NetworkParameters bitcoinNetworkParameters() {
+    public NetworkParameters bitcoinJsonRpcNetworkParameters() {
         switch (properties.getNetwork()) {
             case mainnet:
                 return MainNetParams.get();
@@ -58,7 +58,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
             "org.tbk.bitcoin.jsonrpc.rpchost",
             "org.tbk.bitcoin.jsonrpc.rpcport"
     })
-    public RpcConfig bitcoinRpcConfig(NetworkParameters bitcoinNetworkParameters) {
+    public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters) {
         URI uri = URI.create(properties.getRpchost() + ":" + properties.getRpcport());
         return new RpcConfig(bitcoinNetworkParameters, uri, properties.getRpcuser(), properties.getRpcpassword());
     }
