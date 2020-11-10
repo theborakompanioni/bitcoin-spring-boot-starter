@@ -8,7 +8,7 @@ Spring boot starter projects with convenient dependency descriptors for multiple
 include in your application. Strong focus on [JSR354](https://github.com/JavaMoney/jsr354-api) and representing, 
 transporting, and performing comprehensive calculations with Bitcoin in financial applications and monetary computations.
 
-## modules
+## Modules
 ### bitcoin-jsr354
 Contains a JSR354 compliant `CurrentyUnit` implementation representing Bitcoin.
 
@@ -130,11 +130,25 @@ Example output (2020-11-08):
 #### bitcoin-tx-stats-example-application
 Start the application and open url `http://localhost:8080/api/v1/tx/score/0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098`
 
-## build
+#### bitcoin-neo4j-example-application
+Start the application and open the neo4j browser.
+The port is random on every start.
+
+![Bitcoin Neo4j Example Application Screenshot](examples/bitcoin-neo4j-example-application/src/main/resources/static/screenshots/screenshot_neo4j_example.png)
+
+## Development
+### Requirements
+- java >=11
+- docker
+
+To run all examples you need access to a Bitcoin Core node.
+
+Optional: To enable all features the node should publish `rawtx` and `rawblock` messages via zmq.
+  
+### Build
 ```
 ./gradlew clean build
 ```
-
 
 # Resources
 - Bitcoin: https://bitcoin.org/en/getting-started
@@ -145,6 +159,7 @@ Start the application and open url `http://localhost:8080/api/v1/tx/score/0e3e23
 - JermoMq (GitHub): https://github.com/zeromq/jeromq
 - Bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
+- Neo4j (GitHub): https://github.com/neo4j/neo4j
 
 # License
 The project is licensed under the Apache License. See [LICENSE](LICENSE) for details.
