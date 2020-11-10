@@ -20,6 +20,7 @@ import org.tbk.bitcoin.jsonrpc.cache.CacheFacade;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.spring.bitcoin.neo4j.model.*;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.List;
@@ -320,4 +321,18 @@ public class BitcoinNeo4jApplication {
         };
     }
 
+    @Bean
+    public CommandLineRunner cacheStatsRunner(CacheFacade caches) {
+        return args -> {
+            Flux.interval(Duration.ofSeconds(30), Schedulers.newSingle("chache-stats"))
+                    .subscribe(foo -> {
+                        log.info("======================================================");
+                        log.info("tx: {}", caches.tx().stats());
+                        log.info("txInfo: {}", caches.txInfo().stats());
+                        log.info("block: {}", caches.block().stats());
+                        log.info("blockInfo: {}", caches.blockInfo().stats());
+                        log.info("======================================================");
+                    });
+        };
+    }
 }
