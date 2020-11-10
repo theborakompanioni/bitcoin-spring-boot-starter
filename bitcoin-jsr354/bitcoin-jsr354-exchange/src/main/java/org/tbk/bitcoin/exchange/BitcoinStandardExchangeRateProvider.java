@@ -10,7 +10,7 @@ import javax.money.convert.ProviderContextBuilder;
 import javax.money.convert.RateType;
 
 @Slf4j
-public class BitcoinStandardExchangeRateProvider extends AbstractStandardExchangeRateProvider implements ExchangeRateProvider {
+public final class BitcoinStandardExchangeRateProvider extends AbstractStandardExchangeRateProvider implements ExchangeRateProvider {
     private static final ProviderContext providerContext = ProviderContextBuilder.of("BITCOIN-STANDARD", RateType.DEFERRED)
             .set("providerDescription", "Exchange Rate Provider using BTC as base currency.")
             .build();

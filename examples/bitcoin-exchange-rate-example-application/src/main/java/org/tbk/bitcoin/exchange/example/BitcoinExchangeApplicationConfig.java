@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.exchange.BitcoinStandardExchangeRateProvider;
 import org.tbk.xchange.jsr354.XChangeExchangeRateProvider;
 
 import javax.money.Monetary;
@@ -15,12 +14,6 @@ import java.util.List;
 @Slf4j
 @Configuration
 public class BitcoinExchangeApplicationConfig {
-
-    @Bean
-    public BitcoinStandardExchangeRateProvider bitcoinStandardExchangeRateProvider() {
-        return new BitcoinStandardExchangeRateProvider();
-    }
-
     @Bean
     public CommandLineRunner exchangeRateDemoRunner(List<XChangeExchangeRateProvider> XChangeExchangeRateProviders) {
         return args -> {

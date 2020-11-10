@@ -17,9 +17,7 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
-    implementation project(':bitcoin-jsr354:bitcoin-jsr354-exchange')
-
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-starter')
     implementation project(':spring-jsr354:spring-jsr354-starter')
     implementation project(':xchange-jsr354:xchange-jsr354-starter')
 

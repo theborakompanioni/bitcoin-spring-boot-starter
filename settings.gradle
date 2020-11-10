@@ -14,6 +14,7 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
 include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
+include 'bitcoin-jsr354:bitcoin-jsr354-starter'
 
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-core'
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter'
