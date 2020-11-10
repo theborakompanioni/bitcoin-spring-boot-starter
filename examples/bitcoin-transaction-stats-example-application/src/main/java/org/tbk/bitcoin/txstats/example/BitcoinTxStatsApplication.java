@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.txstats.example;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.msgilligan.bitcoinj.json.pojo.BlockInfo;
 import com.msgilligan.bitcoinj.json.pojo.RawTransactionInfo;
@@ -16,13 +17,18 @@ import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.tbk.bitcoin.common.bitcoinj.util.MoreScripts;
+import org.tbk.bitcoin.common.util.ShutdownHooks;
+import org.tbk.bitcoin.jsonrpc.cache.CacheFacade;
 import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
+import org.tbk.bitcoin.txstats.example.model.TxScoreNeoEntity;
+import org.tbk.bitcoin.txstats.example.model.TxScoreNeoRepository;
 import org.tbk.bitcoin.txstats.example.score.TxScoreRunner;
 import org.tbk.bitcoin.txstats.example.score.TxScoreService;
 import org.tbk.bitcoin.txstats.example.util.CoinWithCurrencyConversion;
-import org.tbk.bitcoin.common.util.ShutdownHooks;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
+import org.tbk.spring.bitcoin.neo4j.model.*;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
@@ -32,6 +38,7 @@ import javax.money.convert.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,7 +68,7 @@ public class BitcoinTxStatsApplication {
     }
 
     @Bean
-    @Profile("demo")
+    @Profile("disabled-for-now-demo")
     public TxScoreRunner txScoreRunner(NetworkParameters networkParameters,
                                        MessagePublishService<Transaction> bitcoinjTransactionPublishService,
                                        TxScoreService txScoreService,
@@ -97,6 +104,154 @@ public class BitcoinTxStatsApplication {
                     });
 
             bitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
+        };
+    }
+
+    @Bean
+    @Profile("demo")
+    public CommandLineRunner insertBlockToNeo4j(NetworkParameters networkParameters,
+                                                MessagePublishService<Block> bitcoinjBlockPublishService,
+                                                MessagePublishService<Transaction> bitcoinjTranscationPublishService,
+                                                BlockNeoRepository blockRepository,
+                                                TxNeoRepository transactionRepository,
+                                                TxOutputNeoRepository txOutputRepository,
+                                                AddressNeoRepository addressRepository,
+                                                TxScoreNeoRepository txScoreNeoRepository,
+                                                TransactionTemplate transactionTemplate,
+                                                CacheFacade caches,
+                                                TxScoreService txScoreService) {
+        return args -> {
+            log.info("Starting example application insertBlockToNeo4j");
+
+            ExecutorService executorService = Executors.newFixedThreadPool(10, new ThreadFactoryBuilder()
+                    .setNameFormat("load-init-block-%d")
+                    .setDaemon(false)
+                    .build());
+
+            Runtime.getRuntime().addShutdownHook(ShutdownHooks.shutdownHook(executorService, Duration.ofSeconds(10)));
+
+            // a block with comparatively low amount of total inputs and tx.. (tx count: 318; i nput count: 875)
+            Sha256Hash randomBlockHash = Sha256Hash.wrap("000000000000000000341c2bcc0e2eadb0a4b1453a44ac31cab893080f967a85");
+            Block randomBlock = caches.block().getUnchecked(randomBlockHash);
+
+            BlockNeoEntity savedNeoBlock = transactionTemplate.execute(status -> {
+                String blockHash = randomBlock.getHash().toString();
+                String prevBlockHash = randomBlock.getPrevBlockHash().toString();
+
+                log.info("inserting new block {}", blockHash);
+
+                BlockNeoEntity neoBlock = new BlockNeoEntity();
+                neoBlock.setHash(blockHash);
+
+                blockRepository.findById(prevBlockHash)
+                        .ifPresent(neoBlock::setPrevblock);
+
+                return blockRepository.save(neoBlock);
+            });
+
+
+            AtomicLong txCounter = new AtomicLong();
+            randomBlock.getTransactions().forEach(tx -> {
+                TxNeoEntity newNeoTx = transactionTemplate.execute(status -> {
+                    String txId = tx.getTxId().toString();
+
+                    log.info("{} - inserting new transaction {}", txCounter.incrementAndGet(), txId);
+
+                    TxNeoEntity neoTx = new TxNeoEntity();
+                    neoTx.setTxid(txId);
+                    neoTx.setBlock(savedNeoBlock);
+
+                    List<TxOutputNeoEntity> neoSpentOutputs = Lists.newArrayList();
+                    tx.getInputs().forEach(input -> {
+                        if (input.isCoinBase()) {
+                            // coinbase inputs cannot be fetched
+                            // via `getrawtransaction`
+                            return;
+                        }
+
+                        TransactionOutPoint outpoint = input.getOutpoint();
+
+                        String neoTxoId = outpoint.getHash().toString() + ":" + outpoint.getIndex();
+                        TxOutputNeoEntity TxOutputNeoEntitySpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
+                            Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
+                            TransactionOutput fromOutput = txFromInput.getOutput(outpoint.getIndex());
+
+                            TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
+                            neoTxo.setId(neoTxoId);
+                            neoTxo.setIndex(outpoint.getIndex());
+                            neoTxo.setValue(fromOutput.getValue().getValue());
+                            neoTxo.setSize(fromOutput.getScriptBytes().length);
+
+                            Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, fromOutput.getScriptPubKey());
+                            addressOrEmpty.ifPresent(address -> {
+                                AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
+                                    AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
+                                    newAddressNeoEntity.setAddress(address.toString());
+                                    return addressRepository.save(newAddressNeoEntity);
+                                });
+
+                                neoTxo.setAddress(AddressNeoEntity);
+                            });
+
+                            return txOutputRepository.save(neoTxo);
+                        });
+
+                        neoSpentOutputs.add(TxOutputNeoEntitySpent);
+                    });
+
+                    List<TxOutputNeoEntity> neoCreatedOutputs = Lists.newArrayList();
+                    tx.getOutputs().forEach(output -> {
+                        TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
+                        neoTxo.setId(txId + ":" + output.getIndex());
+                        neoTxo.setIndex(output.getIndex());
+                        neoTxo.setValue(output.getValue().getValue());
+                        neoTxo.setCreatedIn(neoTx);
+                        neoTxo.setSize(output.getScriptBytes().length);
+
+                        Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, output.getScriptPubKey());
+                        addressOrEmpty.ifPresent(address -> {
+                            AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
+                                AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
+                                newAddressNeoEntity.setAddress(address.toString());
+                                return addressRepository.save(newAddressNeoEntity);
+                            });
+
+                            neoTxo.setAddress(AddressNeoEntity);
+                        });
+
+                        neoCreatedOutputs.add(txOutputRepository.save(neoTxo));
+                    });
+
+                    neoTx.setInputs(neoSpentOutputs);
+                    neoTx.setOutputs(neoCreatedOutputs);
+
+                    return transactionRepository.save(neoTx);
+                });
+            });
+
+            Flux.fromIterable(randomBlock.getTransactions())
+                    .doOnNext(val -> {
+                        log.info("Score check for tx {}", val.getTxId());
+                    })
+                    .flatMap(txScoreService::scoreTransaction)
+                    .subscribe(score -> {
+                        String txId = score.getTx().getTxId().toString();
+
+                        TxScoreNeoEntity newNeoTxScore = transactionTemplate.execute(status -> {
+                            TxScoreNeoEntity neoTxScore = new TxScoreNeoEntity();
+
+                            neoTxScore.setFinalized(score.isFinalized());
+                            neoTxScore.setScore(score.getScore());
+                            neoTxScore.setType(score.getType().toString());
+
+                            transactionRepository.findById(txId).ifPresent(neoTx -> {
+                                neoTxScore.setTx(neoTx);
+                            });
+
+                            return txScoreNeoRepository.save(neoTxScore);
+                        });
+                    log.info("Score check finished for tx {} - {}", txId, newNeoTxScore.getId());
+                    });
         };
     }
 
