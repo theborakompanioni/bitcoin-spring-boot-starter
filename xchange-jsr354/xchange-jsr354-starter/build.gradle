@@ -8,6 +8,14 @@ dependencies {
     api project(':xchange-jsr354:xchange-jsr354-core')
     implementation project(':xchange-jsr354:xchange-jsr354-autoconfigure')
 
+    implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
+    implementation "org.knowm.xchange:xchange-therock:${xChangeVersion}"
+
     implementation 'org.springframework.boot:spring-boot-starter'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
