@@ -6,7 +6,7 @@ import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.springframework.boot.CommandLineRunner;
 import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
-import org.tbk.bitcoin.txstats.example.util.ShutdownHooks;
+import org.tbk.bitcoin.common.util.ShutdownHooks;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;

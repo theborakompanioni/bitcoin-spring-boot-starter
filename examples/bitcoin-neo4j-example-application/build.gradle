@@ -28,6 +28,9 @@ dependencies {
     implementation project(':spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter')
     implementation project(':spring-bitcoin-neo4j:spring-neo4j-testcontainer-starter')
 
+    implementation project(':tbk-bitcoin-common:tbk-bitcoin-common-util')
+    implementation project(':tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util')
+
     implementation "org.javamoney:moneta:${monetaVersion}"
 
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"

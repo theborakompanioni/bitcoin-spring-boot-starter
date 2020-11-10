@@ -7,7 +7,7 @@ import org.bitcoinj.core.*;
 import org.tbk.bitcoin.txstats.example.cache.AppCacheFacade;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabelPredicate;
-import org.tbk.bitcoin.txstats.example.util.MoreScripts;
+import org.tbk.bitcoin.common.bitcoinj.util.MoreScripts;
 
 import java.util.Optional;
 import java.util.Set;

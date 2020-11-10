@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.neo4j.example.util;
+package org.tbk.bitcoin.common.util;
 
 import com.google.common.io.BaseEncoding;
 

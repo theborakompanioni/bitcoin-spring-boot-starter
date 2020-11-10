@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.txstats.example.util;
+package org.tbk.bitcoin.common.util;
 
 import lombok.extern.slf4j.Slf4j;
 

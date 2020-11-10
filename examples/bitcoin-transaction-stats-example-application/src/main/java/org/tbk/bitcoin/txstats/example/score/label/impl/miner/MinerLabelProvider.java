@@ -13,7 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabelProvider;
-import org.tbk.bitcoin.txstats.example.util.MoreScripts;
+import org.tbk.bitcoin.common.bitcoinj.util.MoreScripts;
 
 import java.io.IOException;
 import java.io.InputStream;

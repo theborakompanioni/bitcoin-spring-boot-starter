@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
-import org.tbk.bitcoin.txstats.example.util.Hex;
+import org.tbk.bitcoin.common.util.Hex;
 
 import java.util.Optional;
 
