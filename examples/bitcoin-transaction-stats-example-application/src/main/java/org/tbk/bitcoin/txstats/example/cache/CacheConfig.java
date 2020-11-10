@@ -29,6 +29,7 @@ public class CacheConfig {
                         log.info("======================================================");
                         log.info("tx: {}", caches.tx().stats());
                         log.info("txInfo: {}", caches.txInfo().stats());
+                        log.info("block: {}", caches.block().stats());
                         log.info("blockInfo: {}", caches.blockInfo().stats());
                         log.info("currencyConversion: {}", caches.currencyConversion().stats());
                         log.info("======================================================");
