@@ -1,10 +1,10 @@
 package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.Required;
+import org.neo4j.ogm.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Data
@@ -23,6 +23,9 @@ public class TxOutputNeoEntity {
 
     // size in bytes
     private int size;
+
+    @Properties(prefix = "meta")
+    private Map<String, Object> meta = new HashMap<>();
 
     @Relationship(type = "ADDRESS", direction = "OUTGOING")
     private AddressNeoEntity address;

@@ -1,15 +1,14 @@
 package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.Required;
+import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.DateString;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NodeEntity("block")
@@ -44,6 +43,9 @@ public class BlockNeoEntity {
      * The nonce used to generate this block… to allow variations of the header and compute different hashes
      */
     private long nonce;
+
+    @Properties(prefix = "meta")
+    private Map<String, Object> meta = new HashMap<>();
 
     /**
      * The hash value of the previous block this particular block references
