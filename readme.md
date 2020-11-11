@@ -39,7 +39,7 @@ log.info("{} equals {}", singleBitcoin, singleBitcoinInUsd);
 
 ### bitcoin-zeromq-client
 A module containing a spring boot starter for a Bitcoin Core ZeroMq API client.
-The Starter will automatically create autowireable `ZeroMqMessagePublisherFactory` beans
+The starter will automatically create autowireable `ZeroMqMessagePublisherFactory` beans
 for every zmq endpoint:
 
 ```yaml
@@ -76,7 +76,7 @@ of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory
 
 ### bitcoin-jsonrpc-client
 A module containing a spring boot starter for a [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.
-The Starter will automatically create an autowireable `BitcoinClient` bean:
+The starter will automatically create an autowireable `BitcoinClient` bean:
 
 ```yaml
 org.tbk.bitcoin.jsonrpc.client:
@@ -156,10 +156,11 @@ Optional: To enable all features the node should publish `rawtx` and `rawblock` 
 - Spring Boot (GitHub): https://github.com/spring-projects/spring-boot
 - XChange (GitHub): https://github.com/knowm/XChange
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
-- JermoMq (GitHub): https://github.com/zeromq/jeromq
+- JeroMq (GitHub): https://github.com/zeromq/jeromq
 - Bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
 - Neo4j (GitHub): https://github.com/neo4j/neo4j
+- Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
 
 # License
 The project is licensed under the Apache License. See [LICENSE](LICENSE) for details.
