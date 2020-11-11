@@ -1,6 +1,7 @@
 package org.tbk.spring.bitcoin.neo4j.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.DateString;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@EqualsAndHashCode(of = "hash")
 @NodeEntity("block")
 public class BlockNeoEntity {
     @Id
