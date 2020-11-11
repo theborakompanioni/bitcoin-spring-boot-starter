@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.txstats.example;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.msgilligan.bitcoinj.json.pojo.BlockInfo;
@@ -8,6 +9,7 @@ import com.msgilligan.bitcoinj.json.pojo.RawTransactionInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.*;
 import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptPattern;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -191,17 +193,34 @@ public class BitcoinTxStatsApplication {
                         TransactionOutPoint outpoint = input.getOutpoint();
 
                         String neoTxoId = outpoint.getHash().toString() + ":" + outpoint.getIndex();
-                        TxOutputNeoEntity TxOutputNeoEntitySpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
+                        TxOutputNeoEntity txOutputNeoEntitySpent = txOutputRepository.findById(neoTxoId).orElseGet(() -> {
                             Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
-                            TransactionOutput fromOutput = txFromInput.getOutput(outpoint.getIndex());
+                            TransactionOutput output = txFromInput.getOutput(outpoint.getIndex());
 
                             TxOutputNeoEntity neoTxo = new TxOutputNeoEntity();
                             neoTxo.setId(neoTxoId);
-                            neoTxo.setIndex(outpoint.getIndex());
-                            neoTxo.setValue(fromOutput.getValue().getValue());
-                            neoTxo.setSize(fromOutput.getScriptBytes().length);
+                            neoTxo.setIndex(output.getIndex());
+                            neoTxo.setValue(output.getValue().getValue());
+                            neoTxo.setSize(output.getScriptBytes().length);
 
-                            Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, fromOutput.getScriptPubKey());
+                            String scriptTypeName = Optional.ofNullable(output.getScriptPubKey())
+                                    .map(Script::getScriptType)
+                                    .map(Enum::name)
+                                    .or(() -> Optional.ofNullable(output.getScriptPubKey())
+                                            .filter(ScriptPattern::isOpReturn)
+                                            .map(val -> "opreturn"))
+                                    .orElse("unknown")
+                                    .toLowerCase();
+
+                            boolean isOpReturn = ScriptPattern.isOpReturn(output.getScriptPubKey());
+                            neoTxo.setMeta(ImmutableMap.<String, Object>builder()
+                                    .put("op_return_data", isOpReturn ? output.getScriptPubKey().toString() : "")
+                                    .put("script_type_name", scriptTypeName)
+                                    .put("is_sent_to_multisig", ScriptPattern.isSentToMultisig(output.getScriptPubKey()))
+                                    .put("is_witness_commitment", ScriptPattern.isWitnessCommitment(output.getScriptPubKey()))
+                                    .build());
+
+                            Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, output.getScriptPubKey());
                             addressOrEmpty.ifPresent(address -> {
                                 AddressNeoEntity AddressNeoEntity = addressRepository.findById(address.toString()).orElseGet(() -> {
                                     AddressNeoEntity newAddressNeoEntity = new AddressNeoEntity();
@@ -215,7 +234,7 @@ public class BitcoinTxStatsApplication {
                             return txOutputRepository.save(neoTxo);
                         });
 
-                        neoSpentOutputs.add(TxOutputNeoEntitySpent);
+                        neoSpentOutputs.add(txOutputNeoEntitySpent);
                     });
 
                     List<TxOutputNeoEntity> neoCreatedOutputs = Lists.newArrayList();
@@ -226,6 +245,24 @@ public class BitcoinTxStatsApplication {
                         neoTxo.setValue(output.getValue().getValue());
                         neoTxo.setCreatedIn(neoTx);
                         neoTxo.setSize(output.getScriptBytes().length);
+
+
+                        String scriptTypeName = Optional.ofNullable(output.getScriptPubKey())
+                                .map(Script::getScriptType)
+                                .map(Enum::name)
+                                .or(() -> Optional.ofNullable(output.getScriptPubKey())
+                                        .filter(ScriptPattern::isOpReturn)
+                                        .map(val -> "opreturn"))
+                                .orElse("unknown")
+                                .toLowerCase();
+
+                        boolean isOpReturn = ScriptPattern.isOpReturn(output.getScriptPubKey());
+                        neoTxo.setMeta(ImmutableMap.<String, Object>builder()
+                                .put("op_return_data", isOpReturn ? output.getScriptPubKey().toString() : "")
+                                .put("script_type_name", scriptTypeName)
+                                .put("is_sent_to_multisig", ScriptPattern.isSentToMultisig(output.getScriptPubKey()))
+                                .put("is_witness_commitment", ScriptPattern.isWitnessCommitment(output.getScriptPubKey()))
+                                .build());
 
                         Optional<Address> addressOrEmpty = MoreScripts.extractAddress(networkParameters, output.getScriptPubKey());
                         addressOrEmpty.ifPresent(address -> {
@@ -238,11 +275,34 @@ public class BitcoinTxStatsApplication {
                             neoTxo.setAddress(AddressNeoEntity);
                         });
 
-                        neoCreatedOutputs.add(txOutputRepository.save(neoTxo));
+                        TxOutputNeoEntity savedNeoTxo = txOutputRepository.save(neoTxo);
+                        neoCreatedOutputs.add(savedNeoTxo);
                     });
 
                     neoTx.setInputs(neoSpentOutputs);
                     neoTx.setOutputs(neoCreatedOutputs);
+
+                    Coin fee = Optional.of(tx)
+                            .filter(val -> !val.isCoinBase())
+                            .map(t -> {
+                                Coin inputSum = t.getInputs().stream()
+                                        .filter(val -> !val.isCoinBase())
+                                        .map(TransactionInput::getOutpoint)
+                                        .map(outpoint -> {
+                                            Transaction txFromInput = caches.tx().getUnchecked(outpoint.getHash());
+                                            return txFromInput.getOutput(outpoint.getIndex());
+                                        })
+                                        .map(TransactionOutput::getValue)
+                                        .reduce(Coin.ZERO, Coin::add);
+
+                                return Optional.of(inputSum.minus(t.getOutputSum()))
+                                        .filter(Coin::isPositive)
+                                        .orElse(Coin.ZERO);
+                            }).orElse(Coin.ZERO);
+
+                    neoTx.setMeta(ImmutableMap.<String, Object>builder()
+                            .put("fee", fee.getValue())
+                            .build());
 
                     return transactionRepository.save(neoTx);
                 });
