@@ -82,7 +82,7 @@ public class BitcoinTxStatsApplication {
     }
 
     @Bean
-    @Profile("demo")
+    @Profile("demo & !test")
     public CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
         return args -> {
             log.info("Starting example application mainRunner");
@@ -113,7 +113,7 @@ public class BitcoinTxStatsApplication {
     }
 
     @Bean
-    @Profile("demo")
+    @Profile("demo & !test")
     public CommandLineRunner insertBlockToNeo4j(NetworkParameters networkParameters,
                                                 MessagePublishService<Block> bitcoinjBlockPublishService,
                                                 MessagePublishService<Transaction> bitcoinjTranscationPublishService,
