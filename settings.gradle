@@ -30,6 +30,8 @@ include 'xchange-jsr354:xchange-jsr354-starter'
 
 include 'tbk-bitcoin-common:tbk-bitcoin-common-util'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
+include 'tbk-bitcoin-common:spring-bitcoin-testcontainer-starter'
+include 'tbk-bitcoin-common:spring-bitcoin-testcontainer-example-application'
 
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:bitcoin-transaction-stats-example-application'

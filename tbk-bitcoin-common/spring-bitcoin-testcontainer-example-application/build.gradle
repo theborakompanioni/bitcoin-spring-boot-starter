@@ -1,0 +1,22 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'bitcoin tsstcontainer example application package'
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    archiveClassifier.set('boot')
+}
+
+dependencies {
+    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
+    implementation project(':tbk-bitcoin-common:spring-bitcoin-testcontainer-starter')
+    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+
+    implementation "io.projectreactor:reactor-core"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
