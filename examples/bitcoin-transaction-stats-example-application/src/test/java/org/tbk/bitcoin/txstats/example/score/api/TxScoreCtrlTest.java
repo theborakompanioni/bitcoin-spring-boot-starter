@@ -44,7 +44,7 @@ public class TxScoreCtrlTest {
         RequestEntity<Void> requestEntity = RequestEntity.get(uriComponents.toUri())
                 .build();
 
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
         });
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -73,7 +73,7 @@ public class TxScoreCtrlTest {
         RequestEntity<Void> requestEntity = RequestEntity.get(uriComponents.toUri())
                 .build();
 
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
         });
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
@@ -91,7 +91,7 @@ public class TxScoreCtrlTest {
         RequestEntity<Void> requestEntity = RequestEntity.get(uriComponents.toUri())
                 .build();
 
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
         });
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
