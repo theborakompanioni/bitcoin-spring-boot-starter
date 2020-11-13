@@ -1,17 +1,17 @@
 package org.tbk.bitcoin.txstats.example.score;
 
-import com.google.common.io.BaseEncoding;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 import org.tbk.bitcoin.common.util.Hex;
+import org.tbk.bitcoin.txstats.example.score.label.ScoreLabel;
 
 import java.util.Optional;
 
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("local")
+@Ignore("Needs access to a mainnet node - refactor to use regtest!")
 public class TxScoreServiceImplTest {
 
     @Autowired

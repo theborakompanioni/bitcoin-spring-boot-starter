@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.txstats.example.score.api;
 
 import com.google.common.collect.ImmutableMap;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
+@Ignore("Needs access to a mainnet node - refactor to use regtest!")
 public class TxScoreCtrlTest {
 
     @Autowired
