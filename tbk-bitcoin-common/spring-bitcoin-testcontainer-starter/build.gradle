@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api "org.testcontainers:testcontainers:1.15.0"
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
     implementation "com.google.guava:guava:${guavaVersion}"
 

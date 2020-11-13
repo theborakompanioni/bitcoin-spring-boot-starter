@@ -7,8 +7,8 @@ dependencies {
 
     implementation 'org.springframework.data:spring-data-neo4j'
 
-    implementation "org.testcontainers:testcontainers:1.15.0"
-    implementation "org.testcontainers:neo4j:1.15.0"
+    implementation "org.testcontainers:testcontainers:${testcontainersVersion}"
+    implementation "org.testcontainers:neo4j:${testcontainersVersion}"
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation 'org.springframework.boot:spring-boot-starter'
