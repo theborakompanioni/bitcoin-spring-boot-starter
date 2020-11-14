@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.txstats.example.score.bitcoinabuse.client;
+package org.tbk.bitcoin.tool.btcabuse.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.DisposableBean;
+import org.tbk.bitcoin.tool.btcabuse.AbuseTypeDto;
+import org.tbk.bitcoin.tool.btcabuse.CheckResponseDto;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,9 +46,9 @@ public class BtcAbuseApiClientImpl implements BtcAbuseApiClient, DisposableBean 
             try (InputStream is = entity.getContent()) {
                 Map<String, Object> val = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
                 });
-                return CheckResponseDto.builder()
-                        .address((String) val.get("address"))
-                        .count((int) val.get("count"))
+                return CheckResponseDto.newBuilder()
+                        .setAddress((String) val.get("address"))
+                        .setCount((int) val.get("count"))
                         .build();
             }
         } catch (IOException e) {
@@ -55,7 +57,7 @@ public class BtcAbuseApiClientImpl implements BtcAbuseApiClient, DisposableBean 
     }
 
     @Override
-    public List<AbuseType> abuseTypes() {
+    public List<AbuseTypeDto> abuseTypes() {
         String url = String.format("%s/%s?api_token=%s", baseUrl, "api/abuse-types", apiToken);
         try (CloseableHttpResponse response = client.execute(new HttpGet(url))) {
             HttpEntity entity = response.getEntity();
@@ -63,9 +65,9 @@ public class BtcAbuseApiClientImpl implements BtcAbuseApiClient, DisposableBean 
                 List<Map<String, Object>> values = objectMapper.readValue(is, new TypeReference<List<Map<String, Object>>>() {
                 });
                 return values.stream()
-                        .map(val -> AbuseType.builder()
-                                .id((long) val.get("id"))
-                                .label((String) val.get("label"))
+                        .map(val -> AbuseTypeDto.newBuilder()
+                                .setId((int) val.get("id"))
+                                .setLabel((String) val.get("label"))
                                 .build())
                         .collect(Collectors.toList());
             }
@@ -76,8 +78,7 @@ public class BtcAbuseApiClientImpl implements BtcAbuseApiClient, DisposableBean 
 
     @Override
     public void downloadCsv(DownloadDuration duration, FileOutputStream outputStream) {
-        String url = String.format("%s/%s/%s?api_token=%s",
-                baseUrl, "api/download", duration.getDuration(), apiToken);
+        String url = String.format("%s/%s/%s?api_token=%s", baseUrl, "api/download", duration.getDuration(), apiToken);
 
         try (CloseableHttpResponse response = client.execute(new HttpGet(url))) {
             HttpEntity entity = response.getEntity();

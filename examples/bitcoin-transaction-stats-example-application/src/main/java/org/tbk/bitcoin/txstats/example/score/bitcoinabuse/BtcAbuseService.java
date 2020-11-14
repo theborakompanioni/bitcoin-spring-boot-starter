@@ -1,8 +1,9 @@
 package org.tbk.bitcoin.txstats.example.score.bitcoinabuse;
 
+import org.tbk.bitcoin.tool.btcabuse.CheckResponseDto;
+
 import java.util.List;
-import java.util.Map;
 
 public interface BtcAbuseService {
-    List<Map<String, Object>> findMetaInfoOfAddress(String address);
+    List<CheckResponseDto> findMetaInfoOfAddress(String address);
 }

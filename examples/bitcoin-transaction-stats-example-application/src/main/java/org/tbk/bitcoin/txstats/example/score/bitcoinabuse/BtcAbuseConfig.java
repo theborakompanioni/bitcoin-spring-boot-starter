@@ -2,12 +2,14 @@ package org.tbk.bitcoin.txstats.example.score.bitcoinabuse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
-import org.tbk.bitcoin.txstats.example.score.bitcoinabuse.client.BtcAbuseApiClient;
+import org.tbk.bitcoin.tool.btcabuse.client.BtcAbuseApiClient;
+import org.tbk.bitcoin.tool.btcabuse.config.BtcAbuseAutoConfiguration;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -20,6 +22,7 @@ import java.util.function.Supplier;
 
 @Slf4j
 @Configuration
+@AutoConfigureAfter(BtcAbuseAutoConfiguration.class)
 public class BtcAbuseConfig implements InitializingBean {
     private static final String packagedForeverFileName = "/btcabuse/packaged-btc-abuse-forever-2020-1.csv";
 
@@ -49,10 +52,16 @@ public class BtcAbuseConfig implements InitializingBean {
         this.fileDestinationDirPath = buildAbuseFileDestinationDirPathAndCreateIfNecessary();
     }
 
-    @Bean
+    @Bean("btcAbuseService")
     @ConditionalOnBean(BtcAbuseApiClient.class)
     public BtcAbuseService btcAbuseService(BtcAbuseApiClient btcAbuseApiClient) {
         return new BtcAbuseServiceImpl(btcAbuseApiClient);
+    }
+
+    @Bean("btcAbuseAddressScoreProvider")
+    @ConditionalOnBean(BtcAbuseService.class)
+    public BtcAbuseAddressScoreProvider btcAbuseAddressScoreProvider(BtcAbuseService btcAbuseService) {
+        return new BtcAbuseAddressScoreProvider(btcAbuseService);
     }
 
     @Override

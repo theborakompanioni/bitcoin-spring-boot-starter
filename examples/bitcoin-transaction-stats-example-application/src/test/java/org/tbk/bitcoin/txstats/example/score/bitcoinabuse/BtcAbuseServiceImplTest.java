@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.tbk.bitcoin.tool.btcabuse.CheckResponseDto;
+import org.tbk.bitcoin.tool.btcabuse.config.BtcAbuseAutoConfigProperties;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.*;
@@ -29,7 +30,6 @@ public class BtcAbuseServiceImplTest {
     @Autowired(required = false)
     private BtcAbuseAutoConfigProperties properties;
 
-
     @Autowired(required = false)
     private BtcAbuseServiceImpl sut;
 
@@ -45,11 +45,11 @@ public class BtcAbuseServiceImplTest {
     public void itShouldFindMetaInfoOfAddress() {
         String addressWithMeta = "1KvuTx8TZ4buoXoh9UaPhA4WhZttFwhtbS";
 
-        List<Map<String, Object>> metaInfoOfAddress = this.sut.findMetaInfoOfAddress(addressWithMeta);
+        List<CheckResponseDto> metaInfoOfAddress = this.sut.findMetaInfoOfAddress(addressWithMeta);
         assertThat(metaInfoOfAddress, hasSize(1));
 
-        Map<String, Object> meta = metaInfoOfAddress.get(0);
-        assertThat(meta.get("address"), is(addressWithMeta));
-        assertThat((long) meta.get("count"), is(greaterThan(0L)));
+        CheckResponseDto meta = metaInfoOfAddress.get(0);
+        assertThat(meta.getAddress(), is(addressWithMeta));
+        assertThat(meta.getCount(), is(greaterThan(0L)));
     }
 }

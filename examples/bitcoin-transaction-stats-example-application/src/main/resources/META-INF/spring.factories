@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.tbk.bitcoin.tool.btcabuse.config.BtcAbuseAutoConfiguration,\
+org.tbk.bitcoin.tool.cryptoscamdb.config.CryptoScamDbAutoConfiguration,\
+org.tbk.bitcoin.txstats.example.score.bitcoinabuse.BtcAbuseConfig

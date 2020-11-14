@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package btcabuse;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "org.tbk.bitcoin.tool.btcabuse";
+option java_outer_classname = "BtcAbuseProtos";
+option java_multiple_files = true;
+
+// id,address,abuse_type_id,abuse_type_other,abuser,description,from_country,from_country_code,created_at
+// 1,12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw,1,,wannacry,https://bitcointalk.org/index.php?topic=1916199.0,,,"2017-05-16 00:28:13"
+message CsvRow {
+    int64 id = 1;
+    string address = 2;
+    int32 abuse_type_id = 3;
+    int32 abuse_type_other = 4;
+    string abuser = 5;
+    string description = 6;
+    string from_country = 7;
+    string from_country_code = 8;
+    string created_at = 9;
+}
+
+message AbuseTypeDto {
+    int32 id = 1;
+    string label = 2;
+}
+
+message CheckResponseDto {
+    string address = 1;
+    int64 count = 2;
+}

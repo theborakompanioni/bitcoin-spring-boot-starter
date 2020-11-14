@@ -4,10 +4,10 @@ import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client.AddressesResponseDto;
-import org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client.CheckResponseDto;
-import org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client.CryptoScamDbClient;
-import org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client.EntryDto;
+import org.tbk.bitcoin.tool.cryptoscamdb.client.AddressesResponseDto;
+import org.tbk.bitcoin.tool.cryptoscamdb.client.CheckResponseDto;
+import org.tbk.bitcoin.tool.cryptoscamdb.client.CryptoScamDbClient;
+import org.tbk.bitcoin.tool.cryptoscamdb.client.EntryDto;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -64,13 +64,22 @@ public class CryptoScamDbServiceImpl implements CryptoScamDbService {
             return entries.get();
         }
 
+        // do not check single at the moment!
+        // TODO: uncomment if it is allowed to send many requests
+        // return findMetaInfoOfAddressWithExternalRequest(address);
+        return Collections.emptyList();
+    }
+
+    // other than the 'addresses' endpoint, this will send a request
+    // for every new address - too much during development)
+    private List<EntryDto> findMetaInfoOfAddressWithExternalRequest(String address) {
         CheckResponseDto checkResponse = checkCache.getUnchecked(address);
         if (!checkResponse.isSuccess()) {
             return Collections.emptyList();
         }
 
-        return checkResponse.getResult().getEntries();
+        return Optional.ofNullable(checkResponse.getResult())
+                .map(CheckResponseDto.Result::getEntries)
+                .orElseGet(Collections::emptyList);
     }
-
-
 }

@@ -11,3 +11,4 @@
 - https://www.bitcoinabuse.com/
 - https://github.com/citp/BlockSci
 - https://www.hackalert.io/
+- https://interpol-innovation-centre.github.io/DW-VA-Taxonomy/

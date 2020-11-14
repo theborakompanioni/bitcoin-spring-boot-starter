@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client;
+package org.tbk.bitcoin.tool.cryptoscamdb.client;
 
 import lombok.Builder;
 import lombok.Value;

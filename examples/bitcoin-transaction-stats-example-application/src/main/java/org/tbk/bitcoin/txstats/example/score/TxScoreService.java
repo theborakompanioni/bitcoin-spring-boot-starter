@@ -38,6 +38,8 @@ public interface TxScoreService {
 
         long score;
 
+        long confidence;
+
         TxType type;
 
         // shows whether the transaction has the final score — true if all outputs are spent, false otherwise (nulldata and other non-spendable outputs are considered as spent)

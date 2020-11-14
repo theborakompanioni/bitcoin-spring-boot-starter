@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.txstats.example.score.cryptoscamdb;
 
-import org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client.EntryDto;
+import org.tbk.bitcoin.tool.cryptoscamdb.client.EntryDto;
 
 import java.util.List;
 

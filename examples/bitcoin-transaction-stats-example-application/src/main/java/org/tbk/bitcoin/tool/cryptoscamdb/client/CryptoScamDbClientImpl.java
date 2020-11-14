@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.txstats.example.score.cryptoscamdb.client;
+package org.tbk.bitcoin.tool.cryptoscamdb.client;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.NonNull;
@@ -10,17 +10,17 @@ import static java.util.Objects.requireNonNull;
 
 public class CryptoScamDbClientImpl implements CryptoScamDbClient {
 
-    private final String host;
+    private final String baseUrl;
     private final RestTemplate restTemplate;
 
-    public CryptoScamDbClientImpl(String host, RestTemplate restTemplate) {
-        this.host = host;
+    public CryptoScamDbClientImpl(String baseUrl, RestTemplate restTemplate) {
+        this.baseUrl = requireNonNull(baseUrl);
         this.restTemplate = requireNonNull(restTemplate);
     }
 
     @Override
     public AddressesResponseDto addresses() {
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(host + "/v1/addresses")
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + "/v1/addresses")
                 .buildAndExpand(ImmutableMap.builder()
                         .build());
 
@@ -29,7 +29,7 @@ public class CryptoScamDbClientImpl implements CryptoScamDbClient {
 
     @Override
     public CheckResponseDto check(@NonNull String address) {
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(host + "/v1/check/{address}")
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(baseUrl + "/v1/check/{address}")
                 .buildAndExpand(ImmutableMap.builder()
                         .put("address", address)
                         .build());

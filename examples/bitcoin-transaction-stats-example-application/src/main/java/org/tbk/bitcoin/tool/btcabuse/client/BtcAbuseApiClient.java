@@ -1,4 +1,7 @@
-package org.tbk.bitcoin.txstats.example.score.bitcoinabuse.client;
+package org.tbk.bitcoin.tool.btcabuse.client;
+
+import org.tbk.bitcoin.tool.btcabuse.AbuseTypeDto;
+import org.tbk.bitcoin.tool.btcabuse.CheckResponseDto;
 
 import java.io.FileOutputStream;
 import java.util.List;
@@ -45,7 +48,7 @@ public interface BtcAbuseApiClient {
      * {"id":5,"label":"sextortion"},
      * {"id":99,"label":"other"}]
      */
-    List<AbuseType> abuseTypes();
+    List<AbuseTypeDto> abuseTypes();
 
     /**
      * Complete Download

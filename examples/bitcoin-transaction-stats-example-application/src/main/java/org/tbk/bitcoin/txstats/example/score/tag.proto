@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package score;
+
+// import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+// import "google/protobuf/wrappers.proto";
+
+option java_package = "org.tbk.bitcoin.txstats.example.score";
+option java_outer_classname = "TagProtos";
+option java_multiple_files = true;
+
+// --------------------------------------
+// protos for TagPack - START
+// https://github.com/graphsense/graphsense-tagpack-tool/blob/master/tagpack/conf/tagpack_schema.yaml
+
+//
+// title: GraphSense Binance
+// creator: GraphSense User (SR)
+// description: Addresses related to Binance
+// category: exchange
+// currency: BTC
+// label: binance
+// lastmod: 2019-07-03
+// source: https://www.coindesk.com/hackers-steal-40-7-million-in-bitcoin-from-crypto-exchange-binance
+// tags:
+// - address: 1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s
+// - address: 3CTPRyUbCKkByGmAVvDV6ReZXT1WfV3UPd
+
+message Tag {
+    // header
+
+    // address:
+    // type: text
+    // mandatory: true
+    string address = 1;
+
+    // label:
+    // type: text
+    // mandatory: true
+    string label = 2;
+
+    // source:
+    // type: text
+    // mandatory: true
+    string source = 3;
+
+    // currency:
+    // type: text
+    // mandatory: true
+    string currency = 4;
+
+    // lastmod:
+    // type: datetime
+    // mandatory: false
+    string lastmod = 5;
+    // category:
+    // type: datetime
+    // mandatory: false
+    // taxonomy: entity
+    string category = 6;
+    // abuse:
+    // type: datetime
+    // mandatory: false
+    // taxonomy: abuse
+    string abuse = 7;
+
+}
+
+message TagPackHeader {
+    // title:
+    // type: text
+    // mandatory: true
+    string title = 1;
+
+    // creator:
+    // type: text
+    // mandatory: true
+    string creator = 2;
+
+    // creator:
+    // type: text
+    // mandatory: false
+    string description = 3;
+
+    map<string, google.protobuf.Value> additional_data = 4;
+
+    // label:
+    // type: text
+    // mandatory: true
+    string label = 5;
+
+    // source:
+    // type: text
+    // mandatory: true
+    string source = 6;
+
+    // currency:
+    // type: text
+    // mandatory: true
+    string currency = 7;
+
+    // lastmod:
+    // type: datetime
+    // mandatory: false
+    string lastmod = 8;
+    // category:
+    // type: datetime
+    // mandatory: false
+    // taxonomy: entity
+    string category = 9;
+    // abuse:
+    // type: datetime
+    // mandatory: false
+    // taxonomy: abuse
+    string abuse = 10;
+}
+
+message TagPack {
+    TagPackHeader header = 1;
+
+    // tags:
+    // type: list
+    // mandatory: true
+    repeated Tag tags = 2;
+
+    map<string, google.protobuf.Value> additional_data = 3;
+}
+// protos for TagPack - END
+// --------------------------------------

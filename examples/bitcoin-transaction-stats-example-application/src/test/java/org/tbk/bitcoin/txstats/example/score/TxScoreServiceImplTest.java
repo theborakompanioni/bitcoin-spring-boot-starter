@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles({"test", "local"})
 @Ignore("Needs access to a mainnet node - refactor to use regtest!")
 public class TxScoreServiceImplTest {
 

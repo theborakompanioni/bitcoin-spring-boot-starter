@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.txstats.example.score.bitcoinabuse;
+package org.tbk.bitcoin.tool.btcabuse.config;
 
 import com.google.common.base.Strings;
 import lombok.Data;
@@ -15,6 +15,12 @@ import java.util.Optional;
         ignoreUnknownFields = false
 )
 public class BtcAbuseAutoConfigProperties implements Validator {
+    private static final String DEFAULT_VERSION = Optional.ofNullable(BtcAbuseAutoConfigProperties.class
+            .getPackage()
+            .getImplementationVersion()
+    ).orElse("0.0.0");
+    private static final String DEFAULT_USERAGENT = "tbk-btcabuse-client/" + DEFAULT_VERSION;
+
     private static final String DEFAULT_BASE_URL = "https://www.bitcoinabuse.com";
 
     /**
@@ -24,10 +30,16 @@ public class BtcAbuseAutoConfigProperties implements Validator {
 
     private String baseUrl;
     private String apiToken;
+    private String userAgent;
 
     public String getBaseUrl() {
         return Optional.ofNullable(baseUrl)
                 .orElse(DEFAULT_BASE_URL);
+    }
+
+    public String getUserAgent() {
+        return Optional.ofNullable(userAgent)
+                .orElse(DEFAULT_USERAGENT);
     }
 
     @Override
@@ -51,8 +63,8 @@ public class BtcAbuseAutoConfigProperties implements Validator {
 
             boolean validProtocol = isHttp || isHttps;
             if (!validProtocol) {
-                String errorMessage = String.format("'baseUrl'' must either start with 'http://' or 'https://' - invalid value: %d", baseUrlValue);
-                errors.rejectValue("base", "base.invalid", errorMessage);
+                String errorMessage = String.format("'baseUrl' must either start with 'http://' or 'https://' - invalid value: %d", baseUrlValue);
+                errors.rejectValue("baseUrl", "baseUrl.invalid", errorMessage);
             }
         }
     }
