@@ -4,7 +4,12 @@ ext {
     xChangeVersion = '5.0.3'
     bitcoinjVersion = '0.15.8'
     consensusJVersion = '0.5.4'
+    guavaVersion = '29.0-jre'
     jeroMqVersion = '0.5.2'
     testcontainersVersion = '1.15.0'
     httpComponentsVersion = '4.4.1'
+    grpcVersion = '1.28.0'
+    protobufVersion = '3.11.4'
+    protocVersion = protobufVersion
+    jUnitVersion = '4.12'
 }

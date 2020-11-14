@@ -3,13 +3,14 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 buildscript {
     ext {
         springBootVersion = '2.3.5.RELEASE'
-        guavaVersion = '29.0-jre'
+        protobufGradleVersion = '0.8.12'
     }
     repositories {
         jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("com.google.protobuf:protobuf-gradle-plugin:${protobufGradleVersion}")
     }
 }
 
@@ -54,6 +55,7 @@ subprojects {
     apply plugin: 'nebula.lint'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
+    apply plugin: 'com.google.protobuf'
     apply plugin: 'io.spring.dependency-management'
 
     sourceCompatibility = JavaVersion.VERSION_11
@@ -64,6 +66,14 @@ subprojects {
         maven {
             // needed for consensusj packages
             url "https://dl.bintray.com/msgilligan/maven"
+        }
+    }
+    sourceSets {
+        main {
+            proto {
+                // In addition to the default 'src/main/proto'
+                srcDir file('src/main/java')
+            }
         }
     }
 
@@ -91,13 +101,16 @@ subprojects {
 
         developmentOnlyLocal 'org.springframework.boot:spring-boot-devtools'
 
+        implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+        implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
 
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
-        testImplementation group: 'junit', name: 'junit', version: '4.12'
+        testImplementation "junit:junit:${jUnitVersion}"
     }
 
     task sourcesJar(type: Jar) {
@@ -112,5 +125,16 @@ subprojects {
 
     artifacts {
         archives testJar, sourcesJar
+    }
+
+    protobuf {
+        protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+
+        plugins {
+            grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+        }
+        generateProtoTasks {
+            all()*.plugins { grpc {} }
+        }
     }
 }
