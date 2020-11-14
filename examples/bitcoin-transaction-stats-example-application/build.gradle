@@ -30,9 +30,11 @@ dependencies {
     implementation project(':tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util')
 
     implementation "org.javamoney:moneta:${monetaVersion}"
-
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
+
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
 
     implementation 'org.zalando:jackson-datatype-money:1.2.0'
 

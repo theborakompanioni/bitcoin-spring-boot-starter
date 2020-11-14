@@ -6,4 +6,5 @@ ext {
     consensusJVersion = '0.5.4'
     jeroMqVersion = '0.5.2'
     testcontainersVersion = '1.15.0'
+    httpComponentsVersion = '4.4.1'
 }
