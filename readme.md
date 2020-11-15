@@ -89,6 +89,28 @@ org.tbk.bitcoin.jsonrpc.client:
 ```
 
 
+### spring-bitcoin-testcontainer
+A fast any easy way to start one or multiple Bitcoin Core Daemons within docker containers programmatically within
+your application.
+Please note, that **this module is intended to be used with regtest only**.
+
+It contains a spring boot starter module that can be used in combination with
+[bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client) and [bitcoin-zeromq-client](#bitcoin-zeromq-client).
+
+### spring-bitcoin-fee
+A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
+The following providers are implemented:
+- [x] bitcoiner.live API
+- [x] Bitgo API
+- [x] Bitcore API
+- [x] Blockchain.info API
+- [x] Blockchair API
+- [x] BlockCypher API
+- [x] Blockstream.info API
+- [x] BTC.com API
+- [x] earn.com API
+
+
 ### examples
 There are also some example applications showing basic usage of the functionality provided by these modules.
 
