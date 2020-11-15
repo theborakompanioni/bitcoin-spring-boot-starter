@@ -1,11 +1,13 @@
 
 
 
-# Resources
-- https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
+- Credit: The following list has been produced by [0xB10C](https://github.com/0xb10c).
+- Original: https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
+- License: [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+- Changes: Removed some text. Focus on links, example and unit of measurement.
 
-- [ ] bitcoiner.live API
-- [ ] Bitgo API
+- [x] bitcoiner.live API
+- [x] Bitgo API
 - [x] Bitcore API
 - [x] Blockchain.info API
 - [x] Blockchair API
@@ -14,10 +16,14 @@
 - [x] BTC.com API
 - [x] earn.com API
 
+# Resources
+- https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
+
+
 ### bitcoiner.live API
 - [`https://bitcoiner.live/api/fees/estimates/latest`](https://bitcoiner.live/api/fees/estimates/latest)
 
-Type: **`sat/vByte`**
+Unit of measurement: **`sat/vByte`**
 
 License: Attribution-NonCommercial-ShareAlike 4.0 International License.
 
@@ -50,7 +56,7 @@ Note: It is free for non-commercial use. If you'd like a commercial license or i
 - [`https://www.bitgo.com/api/v2/btc/tx/fee`](https://www.bitgo.com/api/v2/btc/tx/fee)
 - [documentation](https://bitgo.com/api/v2/#operation/v2.tx.getfeeestimate)
 
-Type: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
+Unit of measurement: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 
 
 ```json
@@ -75,7 +81,7 @@ Type: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 - [`https://api.bitcore.io/api/BTC/mainnet/fee/2`](https://api.bitcore.io/api/BTC/mainnet/fee/2)
 - https://github.com/bitpay/bitcore/blob/master/packages/bitcore-node/src/routes/api/fee.ts
 
-Type: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </small> 
+Unit of measurement: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </small> 
 
 ```json
 {
@@ -89,7 +95,7 @@ Type: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </small>
 ### Blockchain.info API
 - [`https://api.blockchain.info/mempool/fees`](https://api.blockchain.info/mempool/fees)
 
-Type: **`sat/Byte`**
+Unit of measurement: **`sat/Byte`**
 
 ```json
 {
@@ -108,7 +114,7 @@ Type: **`sat/Byte`**
 - [`https://api.blockchair.com/bitcoin/stats`](https://api.blockchair.com/bitcoin/stats)
 - [documentation](https://github.com/Blockchair/Blockchair.Support/blob/master/API.md)
 
-- Type: **`sat/Byte`**
+- Unit of measurement: **`sat/Byte`**
 
 ```json
 {
@@ -126,7 +132,7 @@ Type: **`sat/Byte`**
 - [`https://api.blockcypher.com/v1/btc/main`](https://api.blockcypher.com/v1/btc/main)
 - [documentation]()
 
-Type: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
+Unit of measurement: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 
 
 ```json
@@ -145,7 +151,7 @@ Type: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 - [`https://blockstream.info/api/fee-estimates`](https://blockstream.info/api/fee-estimates)
 - [documentation](https://github.com/Blockstream/esplora/blob/master/API.md#fee-estimates)
 
-Type: **`sat/vByte`** 
+Unit of measurement: **`sat/vByte`** 
 
 ```json
 {
@@ -166,7 +172,7 @@ Type: **`sat/vByte`**
 ### BTC.com API
 - [`https://btc.com/service/fees/distribution`](https://btc.com/service/fees/distribution)
 
-Type: **`sat/Byte`**
+Unit of measurement: **`sat/Byte`**
 
 
 ```json
@@ -187,7 +193,7 @@ Type: **`sat/Byte`**
 ### earn.com API
 - [`https://bitcoinfees.earn.com/api/v1/fees/recommended`](https://bitcoinfees.earn.com/api/v1/fees/recommended)
 
-Type: **`sat/Byte`**
+Unit of measurement: **`sat/Byte`**
 
 ```json
 {
@@ -196,3 +202,8 @@ Type: **`sat/Byte`**
   "hourFee": 4
 }
 ```
+
+
+
+
+All text and images in this readme.md are licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).

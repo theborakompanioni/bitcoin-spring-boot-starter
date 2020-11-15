@@ -9,6 +9,7 @@ dependencies {
 
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcoinerlive')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcore')
+    compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitgo')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchaininfo')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchair')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-blockcypher')

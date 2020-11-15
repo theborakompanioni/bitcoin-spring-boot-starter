@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.ConfidenceOrValueCase;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
@@ -56,7 +55,7 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
     }
 
     private static String toConfidenceValue(FeeEstimatesLatestRequest request) {
-        switch (request.getConfidenceOrValueCase()) {
+        switch (request.getConfidenceCase()) {
             case CONFIDENCE_VAL:
                 return String.valueOf(request.getConfidenceVal());
             case CONFIDENCE_TYPE:
@@ -70,7 +69,7 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
                     default:
                         return ConfidenceConstants.HIGH;
                 }
-            case CONFIDENCEORVALUE_NOT_SET:
+            case CONFIDENCE_NOT_SET:
             default:
                 return ConfidenceConstants.HIGH;
         }

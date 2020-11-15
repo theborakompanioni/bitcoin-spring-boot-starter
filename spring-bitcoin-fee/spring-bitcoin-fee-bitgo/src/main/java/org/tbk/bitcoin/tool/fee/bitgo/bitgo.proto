@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package bitgo;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.bitgo";
+option java_outer_classname = "BitGoProtos";
+option java_multiple_files = true;
+
+/**
+ * Fee estimate
+ * https://www.bitgo.com/api/v2/btc/tx/fee
+ * https://app.bitgo.com/docs/#operation/v2.tx.getfeeestimate
+ *
+ * Returns the estimated fee for a transaction. UTXO coins will return a fee per kB,
+ * while Account-based coins will return a flat fee estimate
+ *
+ * Query params:
+ * numBlocks: integer := target number of blocks
+
+ * For example:
+ * {
+     "feePerKb":7003,
+     "cpfpFeePerKb":7003,
+     "numBlocks":2,
+     "confidence":80,
+     "multiplier":1,
+     "feeByBlockTarget": {
+       "1":55808,
+       "2":7003,
+       "3":4022,
+       "4":3161,
+       "6":3017,
+       "9":2006
+     }
+   }
+ */
+
+message BtcTxFeeRequest {
+    int64 num_blocks = 1 [json_name = "numBlocks"];
+}
+
+message BtcTxFeeResponse {
+    // fee per kilobyte for a transaction to be confirmed in numBlocks number of blocks, defaults to 2 if numBlocks is not provided in the request query
+    int64 fee_per_kb = 1 [json_name = "feePerKb"];
+    // child pays for parent fee per kilobyte where the fee includes the fees for all of the unconfirmed transactions dependent on this transaction
+    int64 cpfp_fee_per_kb = 2 [json_name = "cpfpFeePerKb"];
+    // the target block confirmation
+    int64 num_blocks = 3 [json_name = "numBlocks"];
+    // only for BTC, the confidence for the fee estimates as a percentage
+    int64 confidence = 4 [json_name = "confidence"];
+    int64 multiplier = 5 [json_name = "multiplier"];
+    // only for BTC, fee estimates stored as a key-value pair where the key is the block target (between 1 and 1000) and the value is the corresponding fee estimate (in baseunits per kilobyte)
+    map<string, int64> fee_by_block_target = 6 [json_name = "feeByBlockTarget"];
+}

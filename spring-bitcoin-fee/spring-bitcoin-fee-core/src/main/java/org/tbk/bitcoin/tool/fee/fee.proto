@@ -29,7 +29,9 @@ message FeeRecommendationRequest {
         HAX = 5; // can be anything but must be higher or equal to MIN
     }
 
-    Urgency urgency = 1;
+    oneof urgencySpec {
+        Urgency urgency = 1;
+    }
     Confidence confidence = 2;
 }
 

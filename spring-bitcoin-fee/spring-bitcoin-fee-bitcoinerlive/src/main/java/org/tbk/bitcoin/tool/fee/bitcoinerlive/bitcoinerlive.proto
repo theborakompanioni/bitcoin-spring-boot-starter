@@ -48,7 +48,7 @@ message FeeEstimatesLatestRequest {
     }
 
     // confidence: the target confirmation probability. Possible values: 0.5, 0.8, 0.9
-    oneof confidenceOrValue {
+    oneof confidence {
         Confidence confidence_type = 1 [json_name = "confidence_type"];
         double confidence_val = 2 [json_name = "confidence"];
     }
