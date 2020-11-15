@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package btcdotcom;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.btcdotcom";
+option java_outer_classname = "BtcdotcomProtos";
+option java_multiple_files = true;
+
+/**
+ * Fee Distribution
+ * https://btc.com/service/fees/distribution
+ * https://github.com/Blockstream/esplora/blob/master/API.md#fee-estimates
+ *
+ * For example:
+{
+  "tx_size": [
+    3403,
+    144,
+    0,
+    ...
+    393645,
+    2028026,
+    0
+  ],
+  "tx_size_count": [
+    21804,
+    28113,
+    ...
+    655850,
+    2683876
+  ],
+  "tx_size_divide_max_size": [
+    0.0016779863769004935,
+    0,
+    ...
+    0.19410254109168226,
+    1,
+    0
+  ],
+  "tx_duration_time_rate": [
+    [
+      0.23126652953276522,
+      0.7687334704672348,
+      0,
+      0,
+      0,
+      0
+    ],
+    ...
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "fees_recommended": {
+    "one_block_fee": 9
+  },
+  "update_time": "1605405010"
+}
+ */
+message FeeDistribution {
+    message FeesRecommended {
+        int64 one_block_fee = 1 [json_name = "one_block_fee"];
+    }
+
+    repeated int64 tx_size = 1 [json_name = "tx_size"];
+    repeated int64 tx_size_count = 2 [json_name = "tx_size_count"];
+    repeated double tx_size_divide_max_size = 3 [json_name = "tx_size_divide_max_size"];
+    repeated google.protobuf.ListValue tx_duration_time_rate = 4 [json_name = "tx_duration_time_rate"];
+    FeesRecommended fees_recommended = 5 [json_name = "fees_recommended"];
+    string update_time = 6 [json_name = "update_time"];
+}

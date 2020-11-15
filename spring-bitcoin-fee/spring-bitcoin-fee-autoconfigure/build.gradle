@@ -11,6 +11,7 @@ dependencies {
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchair')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-blockcypher')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-blockstreaminfo')
+    compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-btcdotcom')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-earndotcom')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
