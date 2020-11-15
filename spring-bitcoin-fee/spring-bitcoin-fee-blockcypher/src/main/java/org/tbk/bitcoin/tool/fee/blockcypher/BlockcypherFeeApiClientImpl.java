@@ -46,7 +46,7 @@ public class BlockcypherFeeApiClientImpl implements BlockcypherFeeApiClient {
     public ChainInfo btcMain() {
         // https://api.blockcypher.com/v1/btc/main
         String query = toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s%s", baseUrl, "/v1/btc/main", query);
+        String url = String.format("%s/%s%s", baseUrl, "v1/btc/main", query);
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);
         return MoreJsonFormat.jsonToProto(json, ChainInfo.newBuilder()).build();
@@ -56,7 +56,7 @@ public class BlockcypherFeeApiClientImpl implements BlockcypherFeeApiClient {
     public ChainInfo btcTestnet3() {
         // https://api.blockcypher.com/v1/btc/test3
         String query = toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s%s", baseUrl, "/v1/btc/test3", query);
+        String url = String.format("%s/%s%s", baseUrl, "v1/btc/test3", query);
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);
         return MoreJsonFormat.jsonToProto(json, ChainInfo.newBuilder()).build();
