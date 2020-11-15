@@ -4,6 +4,15 @@
 # Resources
 - https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
 
+- [ ] bitcoiner.live API
+- [ ] Bitgo API
+- [x] Bitcore API
+- [x] Blockchain.info API
+- [x] Blockchair API
+- [x] BlockCypher API
+- [x] Blockstream.info API
+- [x] BTC.com API
+- [x] earn.com API
 
 ### bitcoiner.live API
 - [`https://bitcoiner.live/api/fees/estimates/latest`](https://bitcoiner.live/api/fees/estimates/latest)
@@ -58,16 +67,16 @@ Type: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 
 
 
-### Bitpay Insight API
-- [`https://insight.bitpay.com/api/utils/estimatefee?nbBlocks=2,4,6`](https://insight.bitpay.com/api/utils/estimatefee?nbBlocks=2,4,6)
+### Bitcore API
+- [`https://api.bitcore.io/api/BTC/mainnet/fee/2`](https://api.bitcore.io/api/BTC/mainnet/fee/2)
+- https://github.com/bitpay/bitcore/blob/master/packages/bitcore-node/src/routes/api/fee.ts
 
 Type: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </small> 
 
 ```json
 {
-  "2": 0.00051894,
-  "4": 0.00047501,
-  "6": 0.00043338
+  "feerate": 0.00062164,
+  "blocks": 2
 }
 ```
 
@@ -111,7 +120,7 @@ Type: **`sat/Byte`**
 
 ### BlockCypher API
 - [`https://api.blockcypher.com/v1/btc/main`](https://api.blockcypher.com/v1/btc/main)
-- [documentation](https://www.blockcypher.com/dev/bitcoin/?javascript#restful-resources)
+- [documentation]()
 
 Type: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 

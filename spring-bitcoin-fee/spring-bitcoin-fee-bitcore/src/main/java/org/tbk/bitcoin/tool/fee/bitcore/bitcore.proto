@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package bitcore;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.bitcore";
+option java_outer_classname = "BitcoreProtos";
+option java_multiple_files = true;
+
+/**
+ * Bitcoin Mainnet Fee
+ * https://api.bitcore.io/api/BTC/mainnet/fee/<target>
+ *
+ * For example:
+ * GET https://api.bitcore.io/api/BTC/mainnet/fee/2
+ * {
+ *   "feerate":0.00062164,
+ *   "blocks":2
+ * }
+ */
+message FeeEstimationRequest {
+    int64 blocks = 1 [json_name = "blocks"]; //  1 <= blocks <= 100
+}
+
+message FeeEstimationResponse {
+    int64 blocks = 1 [json_name = "blocks"];
+    double feerate = 2 [json_name = "feerate"];
+}
