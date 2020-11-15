@@ -20,6 +20,7 @@ include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
 include 'bitcoin-jsr354:bitcoin-jsr354-starter'
 
 include 'spring-bitcoin-fee:spring-bitcoin-fee-core'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-bitcoinerlive'
 include 'spring-bitcoin-fee:spring-bitcoin-fee-bitcore'
 include 'spring-bitcoin-fee:spring-bitcoin-fee-blockchair'
 include 'spring-bitcoin-fee:spring-bitcoin-fee-blockchaininfo'

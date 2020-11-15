@@ -6,10 +6,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
+import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -36,20 +36,13 @@ public class BitcoreFeeApiClientImpl implements BitcoreFeeApiClient {
         return queryParamsBuilder.build();
     }
 
-    private static String toQueryString(Map<String, String> queryParams) {
-        // todo: should be escaped
-        return queryParams.entrySet().stream()
-                .map(val -> val.getKey() + "=" + val.getValue())
-                .collect(Collectors.joining("&", "?", ""));
-    }
-
     @Override
     public FeeEstimationResponse bitcoinMainnetFee(FeeEstimationRequest feeEstimationRequest) {
         checkArgument(feeEstimationRequest.getBlocks() > 0L, "'blocks' must be between 1 and 100");
         checkArgument(feeEstimationRequest.getBlocks() <= 100L, "'blocks' must be between 1 and 100");
 
         // https://api.bitcore.io/api/BTC/mainnet/fee/1
-        String query = toQueryString(createDefaultParamMap());
+        String query = MoreQueryString.toQueryString(createDefaultParamMap());
         String url = String.format("%s/%s/%d%s", baseUrl, "api/BTC/mainnet/fee", feeEstimationRequest.getBlocks(), query);
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);

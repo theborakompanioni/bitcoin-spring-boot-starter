@@ -9,16 +9,30 @@ option java_package = "org.tbk.bitcoin.tool.fee";
 option java_outer_classname = "FeeProtos";
 option java_multiple_files = true;
 
-enum Urgency {
-    LOW = 0;
-    MEDIUM = 1;
-    HIGH = 2;
+enum Confidence {
+    DEFAULT = 0; // can be anything; implementations should
+    MIN = 1; // can be anything but must be lower than MAX
+    LOW = 2; // can be equal to MIN but not lower
+    MEDIUM = 3; // can be anything but not higher than HIGH and lower than LOW
+    HIGH = 4; // can be equal to MAX but not higher
+    HAX = 5; // can be anything but must be higher or equal to MIN
 }
 
 message FeeRecommendationRequest {
+
+    enum Urgency {
+        DEFAULT = 0; // can be anything; implementations should
+        MIN = 1; // can be anything but must be lower than MAX
+        LOW = 2; // can be equal to MIN but not lower
+        MEDIUM = 3; // can be anything but not higher than HIGH and lower than LOW
+        HIGH = 4; // can be equal to MAX but not higher
+        HAX = 5; // can be anything but must be higher or equal to MIN
+    }
+
     Urgency urgency = 1;
+    Confidence confidence = 2;
 }
 
 message FeeRecommendationResponse {
-    Urgency urgency = 1;
+    FeeRecommendationRequest request = 1;
 }

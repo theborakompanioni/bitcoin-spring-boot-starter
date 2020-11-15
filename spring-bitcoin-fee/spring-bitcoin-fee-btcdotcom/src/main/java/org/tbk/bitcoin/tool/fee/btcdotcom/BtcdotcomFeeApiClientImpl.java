@@ -43,13 +43,6 @@ public class BtcdotcomFeeApiClientImpl implements BtcdotcomFeeApiClient {
         return queryParamsBuilder.build();
     }
 
-    private static String toQueryString(Map<String, String> queryParams) {
-        // todo: should be escaped
-        return queryParams.entrySet().stream()
-                .map(val -> val.getKey() + "=" + val.getValue())
-                .collect(Collectors.joining("&", "?", ""));
-    }
-
     @Override
     public FeeDistribution feeDistribution() {
         // https://bitcoinfees.earn.com/api/v1/fees/recommended

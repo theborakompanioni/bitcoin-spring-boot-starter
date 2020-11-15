@@ -19,6 +19,10 @@
 
 Type: **`sat/vByte`**
 
+License: Attribution-NonCommercial-ShareAlike 4.0 International License.
+
+Note: It is free for non-commercial use. If you'd like a commercial license or if you anticipate to make a lot of requests, please just get in touch before!
+
 ```json
 {
   "timestamp": 1563456789,

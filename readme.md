@@ -161,6 +161,7 @@ Optional: To enable all features the node should publish `rawtx` and `rawblock` 
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
 - Neo4j (GitHub): https://github.com/neo4j/neo4j
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
+- Protocol Buffers: https://developers.google.com/protocol-buffers
 
 # License
 The project is licensed under the Apache License. See [LICENSE](LICENSE) for details.
