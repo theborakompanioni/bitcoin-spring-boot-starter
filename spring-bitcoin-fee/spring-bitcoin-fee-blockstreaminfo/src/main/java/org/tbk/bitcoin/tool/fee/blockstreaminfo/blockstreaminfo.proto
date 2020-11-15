@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package blockstreaminfo;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.blockstreaminfo";
+option java_outer_classname = "BlockstreamInfoProtos";
+option java_multiple_files = true;
+
+/**
+ * Fee Estimates
+ * https://blockstream.info/api/fee-estimates
+ * https://github.com/Blockstream/esplora/blob/master/API.md#fee-estimates
+ *
+ * GET /fee-estimates
+ * Get an object where the key is the confirmation target (in number of blocks) and the value is the estimated feerate (in sat/vB).
+ * The available confirmation targets are 1-25, 144, 504 and 1008 blocks.
+ *
+ * For example: { "1": 87.882, "2": 87.882, "3": 87.882, "4": 87.882, "5": 81.129, "6": 68.285, ..., "144": 1.027, "504": 1.027, "1008": 1.027 }
+ *
+ * Caution: This response cannot be represented by protobuf as message. You must
+ *          parse it as `struct` and then create a FeeEstimates message with it.
+ */
+message FeeEstimates {
+    message Entry {
+        int64 numberOfBlocks = 1;
+        double estimatedFeerateInSatPerVbyte = 2;
+    }
+    repeated Entry entry = 1;
+}
