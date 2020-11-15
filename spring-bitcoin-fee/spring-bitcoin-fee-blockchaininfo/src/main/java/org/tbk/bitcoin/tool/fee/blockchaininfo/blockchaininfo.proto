@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package blockchaininfo;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.blockchaininfo";
+option java_outer_classname = "BlockchainInfoProtos";
+option java_multiple_files = true;
+
+/**
+ * Recommended Transaction Fees
+ * https://api.blockchain.info/mempool/fees
+ *
+ * Example response:
+ * {"limits":{"min":2,"max":24},"regular":4,"priority":16}
+ */
+message MempoolFees {
+    int64 regular = 1 [json_name = "regular"];
+    int64 priority = 2 [json_name = "priority"];
+    Limit limit = 3 [json_name = "limits"];
+
+    message Limit {
+        int64 min = 1 [json_name = "min"];
+        int64 max = 2 [json_name = "max"];
+    }
+}

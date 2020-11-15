@@ -19,6 +19,13 @@ include 'bitcoin-jsr354:bitcoin-jsr354-currency'
 include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
 include 'bitcoin-jsr354:bitcoin-jsr354-starter'
 
+include 'spring-bitcoin-fee:spring-bitcoin-fee-core'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-blockchair'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-blockchaininfo'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-earndotcom'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-autoconfigure'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-starter'
+
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-core'
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter'
 include 'spring-bitcoin-neo4j:spring-neo4j-testcontainer-starter'

@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin fee client package'
+
+dependencies {
+    // httpcomponents needed for utils -> move away from core module (recommended improvement)
+    compileOnly "org.apache.httpcomponents:httpclient:${httpComponentsVersion}"
+    compileOnly "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+}
