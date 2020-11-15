@@ -86,7 +86,7 @@ public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
 
             boolean validProtocol = isHttp || isHttps;
             if (!validProtocol) {
-                String errorMessage = String.format("Host must either start with 'http://' or 'https://' - invalid value: %d", rpchost);
+                String errorMessage = String.format("Host must either start with 'http://' or 'https://' - invalid value: %s", rpchost);
                 errors.rejectValue("rpchost", "rpchost.invalid", errorMessage);
             }
         }

@@ -57,7 +57,7 @@ public class CryptoScamDbAutoConfigProperties implements Validator {
 
             boolean validProtocol = isHttp || isHttps;
             if (!validProtocol) {
-                String errorMessage = String.format("'baseUrl' must either start with 'http://' or 'https://' - invalid value: %d", baseUrlValue);
+                String errorMessage = String.format("'baseUrl' must either start with 'http://' or 'https://' - invalid value: %s", baseUrlValue);
                 errors.rejectValue("baseUrl", "baseUrl.invalid", errorMessage);
             }
         }

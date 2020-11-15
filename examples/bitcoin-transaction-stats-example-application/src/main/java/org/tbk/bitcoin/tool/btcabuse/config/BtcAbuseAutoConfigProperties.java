@@ -52,7 +52,7 @@ public class BtcAbuseAutoConfigProperties implements Validator {
         BtcAbuseAutoConfigProperties properties = (BtcAbuseAutoConfigProperties) target;
 
         if (Strings.isNullOrEmpty(properties.getApiToken())) {
-            String errorMessage = String.format("'apiToken' must not be empty - invalid value: %d", properties.getApiToken());
+            String errorMessage = String.format("'apiToken' must not be empty - invalid value: %s", properties.getApiToken());
             errors.rejectValue("apiToken", "apiToken.invalid", errorMessage);
         }
 
@@ -63,7 +63,7 @@ public class BtcAbuseAutoConfigProperties implements Validator {
 
             boolean validProtocol = isHttp || isHttps;
             if (!validProtocol) {
-                String errorMessage = String.format("'baseUrl' must either start with 'http://' or 'https://' - invalid value: %d", baseUrlValue);
+                String errorMessage = String.format("'baseUrl' must either start with 'http://' or 'https://' - invalid value: %s", baseUrlValue);
                 errors.rejectValue("baseUrl", "baseUrl.invalid", errorMessage);
             }
         }
