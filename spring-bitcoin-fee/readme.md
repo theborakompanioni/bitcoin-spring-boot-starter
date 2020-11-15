@@ -111,6 +111,7 @@ Type: **`sat/Byte`**
 
 ### BlockCypher API
 - [`https://api.blockcypher.com/v1/btc/main`](https://api.blockcypher.com/v1/btc/main)
+- [documentation](https://www.blockcypher.com/dev/bitcoin/?javascript#restful-resources)
 
 Type: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 

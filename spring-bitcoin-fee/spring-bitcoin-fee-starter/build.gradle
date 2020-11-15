@@ -9,6 +9,7 @@ dependencies {
 
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchaininfo')
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchair')
+    api project(':spring-bitcoin-fee:spring-bitcoin-fee-blockcypher')
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-blockstreaminfo')
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-earndotcom')
 

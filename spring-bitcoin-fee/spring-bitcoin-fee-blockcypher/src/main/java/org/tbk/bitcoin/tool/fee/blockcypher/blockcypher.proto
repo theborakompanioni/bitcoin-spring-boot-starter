@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package blockcypher;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.blockcypher";
+option java_outer_classname = "BlockcypherProtos";
+option java_multiple_files = true;
+
+/**
+ * Fee Estimates
+ * https://api.blockcypher.com/v1/btc/main
+ * https://github.com/Blockstream/esplora/blob/master/API.md#fee-estimates
+ *
+ * For example:
+ *  {
+ *   "name": "BTC.main",
+ *   "height": 656961,
+ *   "hash": "00000000000000000007431045b2edb9f285746ad1b937a64e178d4d420e34c5",
+ *   "time": "2020-11-15T00:39:27.603333859Z",
+ *   "latest_url": "https://api.blockcypher.com/v1/btc/main/blocks/00000000000000000007431045b2edb9f285746ad1b937a64e178d4d420e34c5",
+ *   "previous_hash": "0000000000000000000088048d6db16d58e233c29aa40f981fe3455aa8f72e4b",
+ *   "previous_url": "https://api.blockcypher.com/v1/btc/main/blocks/0000000000000000000088048d6db16d58e233c29aa40f981fe3455aa8f72e4b",
+ *   "peer_count": 1044,
+ *   "unconfirmed_count": 6516,
+ *   "high_fee_per_kb": 78233,
+ *   "medium_fee_per_kb": 39504,
+ *   "low_fee_per_kb": 25694,
+ *   "last_fork_height": 653835,
+ *   "last_fork_hash": "00000000000000000003daa47cc9190cb32dcea750dce17684458beabe89fbec"
+ * }
+ */
+message ChainInfo {
+    string name = 1 [json_name = "name"];
+    int64 height = 2 [json_name = "height"];
+    string hash = 3 [json_name = "hash"];
+    google.protobuf.Timestamp time = 4 [json_name = "time"];
+    string latest_url = 5 [json_name = "latest_url"];
+    string previous_hash = 6 [json_name = "previous_hash"];
+    string previous_url = 7 [json_name = "previous_url"];
+    int64 peer_count = 8 [json_name = "peer_count"];
+    int64 unconfirmed_count = 9 [json_name = "unconfirmed_count"];
+    int64 high_fee_per_kb = 10 [json_name = "high_fee_per_kb"];
+    int64 medium_fee_per_kb = 11 [json_name = "medium_fee_per_kb"];
+    int64 low_fee_per_kb = 12 [json_name = "low_fee_per_kb"];
+    int64 last_fork_height = 13 [json_name = "last_fork_height"];
+    string last_fork_hash = 14 [json_name = "last_fork_hash"];
+}
