@@ -9,6 +9,19 @@ option java_package = "org.tbk.bitcoin.tool.fee";
 option java_outer_classname = "FeeProtos";
 option java_multiple_files = true;
 
+/** enum UnitOfMeasurement {
+    SAT_PER_BYTE = 0;
+    SAT_PER_VBYTE = 1;
+    SAT_PER_KBYTE = 2;
+    BTC_PER_KBYTE = 3;
+}*/
+
+enum Network {
+    MAINNET = 0;
+    REGTEST = 1;
+    TESTNET = 2;
+}
+
 enum Confidence {
     DEFAULT = 0; // can be anything; implementations should
     MIN = 1; // can be anything but must be lower than MAX
@@ -19,7 +32,6 @@ enum Confidence {
 }
 
 message FeeRecommendationRequest {
-
     enum Urgency {
         DEFAULT = 0; // can be anything; implementations should
         MIN = 1; // can be anything but must be lower than MAX
@@ -29,12 +41,24 @@ message FeeRecommendationRequest {
         HAX = 5; // can be anything but must be higher or equal to MIN
     }
 
-    oneof urgencySpec {
-        Urgency urgency = 1;
+    oneof urgency {
+        Urgency urgency_type = 1 [json_name = "urgency_type"];
+        int64 urgency_seconds = 2 [json_name = "urgency_seconds"];
+        int64 urgency_blocks = 3 [json_name = "urgency_blocks"];
     }
-    Confidence confidence = 2;
+    oneof confidence {
+        Confidence confidence_type = 4 [json_name = "confidence_type"];
+        int64 confidence_val = 5 [json_name = "confidence_val"];
+    }
+
+    int64 tx_size_in_vbytes = 6 [json_name = "tx_size_in_vbytes"];
+    Network network = 7 [json_name = "network"];
 }
 
 message FeeRecommendationResponse {
-    FeeRecommendationRequest request = 1;
+    message FeeRecommendation {
+        // UnitOfMeasurement unit = 1  [json_name = "unit"];
+    }
+
+    FeeRecommendationRequest request = 1 [json_name = "request"];
 }
