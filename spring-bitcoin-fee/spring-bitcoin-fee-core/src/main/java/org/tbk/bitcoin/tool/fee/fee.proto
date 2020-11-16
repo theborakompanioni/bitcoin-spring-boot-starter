@@ -16,6 +16,12 @@ option java_multiple_files = true;
     BTC_PER_KBYTE = 3;
 }*/
 
+// NOTE: Make a case for sat/vbyte.. why not sat/wu or sat/byte? what are the benefits/drawbacks?
+message SatoshiPerVbyte {
+    // if smaller values are needed (e.g. 0.002 sat/vbyte) another property can be introduced
+    int64 sat_per_vbyte = 1 [json_name = "sat_per_vbyte"];
+}
+
 enum Network {
     MAINNET = 0;
     REGTEST = 1;
@@ -43,22 +49,28 @@ message FeeRecommendationRequest {
 
     oneof urgency {
         Urgency urgency_type = 1 [json_name = "urgency_type"];
-        int64 urgency_seconds = 2 [json_name = "urgency_seconds"];
-        int64 urgency_blocks = 3 [json_name = "urgency_blocks"];
+        int64 urgency_blocks = 2 [json_name = "urgency_blocks"];
+        // NOTE: urgency in seconds has benefits: independence of chain; humans think in time, not blocks
+        // int64 urgency_seconds = 3 [json_name = "urgency_seconds"];
     }
     oneof confidence {
         Confidence confidence_type = 4 [json_name = "confidence_type"];
         int64 confidence_val = 5 [json_name = "confidence_val"];
     }
 
-    int64 tx_size_in_vbytes = 6 [json_name = "tx_size_in_vbytes"];
-    Network network = 7 [json_name = "network"];
+    Network network = 6 [json_name = "network"];
+
+    // NOTE: is 'size of tx' too implementation specific?
+    // int64 tx_size_in_vbytes = 6 [json_name = "tx_size_in_vbytes"];
 }
 
 message FeeRecommendationResponse {
     message FeeRecommendation {
+        // NOTE: we should make 'sats/wu', 'sats/vbyte' the default
         // UnitOfMeasurement unit = 1  [json_name = "unit"];
+        SatoshiPerVbyte sat_per_vbyte = 1 [json_name = "sat_per_vbyte"];
     }
 
     FeeRecommendationRequest request = 1 [json_name = "request"];
+    repeated FeeRecommendation recommendation = 2 [json_name = "request"];
 }

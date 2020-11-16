@@ -4,8 +4,8 @@
 - Credit: The following list has been produced by [0xB10C](https://github.com/0xb10c).
 - Original: https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
 - License: [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
-- Changes: Removed some text. Focus on links, example and unit of measurement.
-
+- Changes: Removed some text. Focus on links, authentication, examples and unit of measurement. Add "last checked" date.
+ 
 - [x] bitcoiner.live API
 - [x] Bitgo API
 - [x] Bitcore API
@@ -22,12 +22,10 @@
 
 ### bitcoiner.live API
 - [`https://bitcoiner.live/api/fees/estimates/latest`](https://bitcoiner.live/api/fees/estimates/latest)
-
-Unit of measurement: **`sat/vByte`**
-
-License: Attribution-NonCommercial-ShareAlike 4.0 International License.
-
-Note: It is free for non-commercial use. If you'd like a commercial license or if you anticipate to make a lot of requests, please just get in touch before!
+- Unit of measurement: **`sat/vByte`**
+- Last check: 2020-11-15
+- License: Attribution-NonCommercial-ShareAlike 4.0 International License.
+- Note: It is free for non-commercial use. If you'd like a commercial license or if you anticipate to make a lot of requests, please just get in touch before!
 
 ```json
 {
@@ -55,9 +53,8 @@ Note: It is free for non-commercial use. If you'd like a commercial license or i
 ### Bitgo API
 - [`https://www.bitgo.com/api/v2/btc/tx/fee`](https://www.bitgo.com/api/v2/btc/tx/fee)
 - [documentation](https://bitgo.com/api/v2/#operation/v2.tx.getfeeestimate)
-
-Unit of measurement: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
-
+- Unit of measurement: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
+- Last check: 2020-11-15
 
 ```json
 {
@@ -80,8 +77,8 @@ Unit of measurement: **`sat/kB`**.  <small> (*`sat/kB / 1000 = sat/Byte`*) </sma
 ### Bitcore API
 - [`https://api.bitcore.io/api/BTC/mainnet/fee/2`](https://api.bitcore.io/api/BTC/mainnet/fee/2)
 - https://github.com/bitpay/bitcore/blob/master/packages/bitcore-node/src/routes/api/fee.ts
-
-Unit of measurement: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </small> 
+- Last check: 2020-11-14
+- Unit of measurement: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </small> 
 
 ```json
 {
@@ -94,8 +91,8 @@ Unit of measurement: **`BTC/kB`**. <small>  *(`BTC/kB x 100000 = sat/Byte`)* </s
 
 ### Blockchain.info API
 - [`https://api.blockchain.info/mempool/fees`](https://api.blockchain.info/mempool/fees)
-
-Unit of measurement: **`sat/Byte`**
+- Last check: 2020-11-13
+- Unit of measurement: **`sat/Byte`**
 
 ```json
 {
@@ -113,7 +110,7 @@ Unit of measurement: **`sat/Byte`**
 ### Blockchair API
 - [`https://api.blockchair.com/bitcoin/stats`](https://api.blockchair.com/bitcoin/stats)
 - [documentation](https://github.com/Blockchair/Blockchair.Support/blob/master/API.md)
-
+- Last check: 2020-11-14
 - Unit of measurement: **`sat/Byte`**
 
 ```json
@@ -130,9 +127,9 @@ Unit of measurement: **`sat/Byte`**
 
 ### BlockCypher API
 - [`https://api.blockcypher.com/v1/btc/main`](https://api.blockcypher.com/v1/btc/main)
-- [documentation]()
-
-Unit of measurement: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
+- [documentation](https://www.blockcypher.com/dev/bitcoin/#restful-resources)
+- Last check: 2020-11-14
+- Unit of measurement: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </small>
 
 
 ```json
@@ -150,8 +147,8 @@ Unit of measurement: **`sat/kB`**. <small> (*`sat/kB / 1000 = sat/Byte`*) </smal
 ### Blockstream.info API
 - [`https://blockstream.info/api/fee-estimates`](https://blockstream.info/api/fee-estimates)
 - [documentation](https://github.com/Blockstream/esplora/blob/master/API.md#fee-estimates)
-
-Unit of measurement: **`sat/vByte`** 
+- Last check: 2020-11-14
+- Unit of measurement: **`sat/vByte`** 
 
 ```json
 {
@@ -171,8 +168,8 @@ Unit of measurement: **`sat/vByte`**
 
 ### BTC.com API
 - [`https://btc.com/service/fees/distribution`](https://btc.com/service/fees/distribution)
-
-Unit of measurement: **`sat/Byte`**
+- Last check: 2020-11-14
+- Unit of measurement: **`sat/Byte`**
 
 
 ```json
@@ -192,8 +189,8 @@ Unit of measurement: **`sat/Byte`**
 
 ### earn.com API
 - [`https://bitcoinfees.earn.com/api/v1/fees/recommended`](https://bitcoinfees.earn.com/api/v1/fees/recommended)
-
-Unit of measurement: **`sat/Byte`**
+- Last check: 2020-11-13
+- Unit of measurement: **`sat/Byte`**
 
 ```json
 {

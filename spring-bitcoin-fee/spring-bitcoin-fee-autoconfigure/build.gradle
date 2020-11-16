@@ -22,5 +22,15 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcoinerlive')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcore')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitgo')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchaininfo')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-blockchair')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-blockcypher')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-blockstreaminfo')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-btcdotcom')
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-earndotcom')
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

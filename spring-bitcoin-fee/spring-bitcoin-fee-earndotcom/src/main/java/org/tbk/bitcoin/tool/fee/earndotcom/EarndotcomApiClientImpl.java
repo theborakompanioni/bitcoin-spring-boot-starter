@@ -16,7 +16,7 @@ public class EarndotcomApiClientImpl implements EarndotcomApiClient {
 
     public EarndotcomApiClientImpl(String baseUrl, String apiToken) {
         this.baseUrl = requireNonNull(baseUrl);
-        this.apiToken = requireNonNull(apiToken);
+        this.apiToken = apiToken;
     }
 
     @Override

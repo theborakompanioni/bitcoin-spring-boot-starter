@@ -16,7 +16,7 @@ public class BlockchainInfoFeeApiClientImpl implements BlockchainInfoFeeApiClien
 
     public BlockchainInfoFeeApiClientImpl(String baseUrl, String apiToken) {
         this.baseUrl = requireNonNull(baseUrl);
-        this.apiToken = requireNonNull(apiToken);
+        this.apiToken = apiToken;
     }
 
     @Override

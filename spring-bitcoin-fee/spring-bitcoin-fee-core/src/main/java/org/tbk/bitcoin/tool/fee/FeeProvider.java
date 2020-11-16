@@ -1,7 +1,13 @@
 package org.tbk.bitcoin.tool.fee;
 
+import reactor.core.publisher.Flux;
+
 public interface FeeProvider {
 
-    FeeRecommendationResponse request(FeeRecommendationRequest request);
+    default boolean supports(FeeRecommendationRequest request) {
+        return true;
+    }
+
+    Flux<FeeRecommendationResponse> request(FeeRecommendationRequest request);
 
 }
