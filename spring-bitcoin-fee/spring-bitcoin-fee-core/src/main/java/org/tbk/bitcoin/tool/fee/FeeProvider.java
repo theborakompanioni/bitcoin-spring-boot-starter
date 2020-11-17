@@ -4,9 +4,7 @@ import reactor.core.publisher.Flux;
 
 public interface FeeProvider {
 
-    default boolean supports(FeeRecommendationRequest request) {
-        return true;
-    }
+    boolean supports(FeeRecommendationRequest request);
 
     Flux<FeeRecommendationResponse> request(FeeRecommendationRequest request);
 

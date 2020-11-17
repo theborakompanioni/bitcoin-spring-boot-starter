@@ -1,6 +1,8 @@
 package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.AbstractFeeProvider;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
@@ -18,9 +20,8 @@ import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
+@RequiredArgsConstructor
 public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
 
     private static final Map<Double, Confidence> confidenceMap = ImmutableMap.<Double, Confidence>builder()
@@ -34,10 +35,12 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
             .min()
             .orElseThrow();
 
+    @NonNull
     private final BitcoinerliveFeeApiClient client;
 
-    public BitcoinerliveFeeProvider(BitcoinerliveFeeApiClient client) {
-        this.client = requireNonNull(client);
+    @Override
+    public boolean supports(FeeRecommendationRequest request) {
+        return true;
     }
 
     @Override
