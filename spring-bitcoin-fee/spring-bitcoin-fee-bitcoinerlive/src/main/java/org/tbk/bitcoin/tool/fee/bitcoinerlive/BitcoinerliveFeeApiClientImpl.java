@@ -37,10 +37,6 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
         this.apiToken = apiToken;
     }
 
-    private Optional<String> getApiToken() {
-        return Optional.ofNullable(this.apiToken);
-    }
-
     @Override
     public FeeEstimatesLatestResponse feeEstimatesLatest(FeeEstimatesLatestRequest request) {
         String query = MoreQueryString.toQueryString(ImmutableMap.<String, String>builder()
@@ -55,21 +51,13 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
     }
 
     private static String toConfidenceValue(FeeEstimatesLatestRequest request) {
-        switch (request.getConfidenceCase()) {
-            case CONFIDENCE_VAL:
-                return String.valueOf(request.getConfidenceVal());
-            case CONFIDENCE_TYPE:
-                switch (request.getConfidenceType()) {
-                    case LOW:
-                        return ConfidenceConstants.LOW;
-                    case MEDIUM:
-                        return ConfidenceConstants.MEDIUM;
-                    case HIGH:
-                    case UNRECOGNIZED:
-                    default:
-                        return ConfidenceConstants.HIGH;
-                }
-            case CONFIDENCE_NOT_SET:
+        switch (request.getConfidenceType()) {
+            case LOW:
+                return ConfidenceConstants.LOW;
+            case MEDIUM:
+                return ConfidenceConstants.MEDIUM;
+            case HIGH:
+            case UNRECOGNIZED:
             default:
                 return ConfidenceConstants.HIGH;
         }

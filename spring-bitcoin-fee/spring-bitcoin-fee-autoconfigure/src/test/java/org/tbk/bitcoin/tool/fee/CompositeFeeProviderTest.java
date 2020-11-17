@@ -57,7 +57,7 @@ public class CompositeFeeProviderTest {
             CompositeFeeProvider compositeFeeProvider = context.getBean(CompositeFeeProvider.class);
             assertThat(compositeFeeProvider, is(notNullValue()));
 
-            FeeRecommendationRequest request = FeeRecommendationRequest.newBuilder()
+            FeeRecommendationRequest request = FeeRecommendationRequestImpl.builder()
                     .build();
 
             List<FeeRecommendationResponse> response = compositeFeeProvider.request(request)

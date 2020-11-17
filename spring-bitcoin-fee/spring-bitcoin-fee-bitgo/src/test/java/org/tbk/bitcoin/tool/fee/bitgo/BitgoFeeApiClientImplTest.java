@@ -35,13 +35,10 @@ public class BitgoFeeApiClientImplTest {
 
         Map<String, Long> feeByBlockTargetMap = response.getFeeByBlockTargetMap();
         assertThat(feeByBlockTargetMap, is(notNullValue()));
-        assertThat(feeByBlockTargetMap.values(), hasSize(greaterThan(5)));
 
-        assertThat(feeByBlockTargetMap.get("1"), is(greaterThanOrEqualTo(0L)));
-        assertThat(feeByBlockTargetMap.get("2"), is(greaterThanOrEqualTo(0L)));
-        assertThat(feeByBlockTargetMap.get("3"), is(greaterThanOrEqualTo(0L)));
-        assertThat(feeByBlockTargetMap.get("4"), is(greaterThanOrEqualTo(0L)));
-        assertThat(feeByBlockTargetMap.get("5"), is(greaterThanOrEqualTo(0L)));
+        for (Long value : feeByBlockTargetMap.values()) {
+            assertThat(value, is(greaterThanOrEqualTo(0L)));
+        }
     }
 
     @Test
@@ -59,5 +56,12 @@ public class BitgoFeeApiClientImplTest {
         assertThat(response.getCpfpFeePerKb(), is(greaterThanOrEqualTo(0L)));
         assertThat(response.getConfidence(), is(greaterThanOrEqualTo(0L)));
         assertThat(response.getMultiplier(), is(greaterThanOrEqualTo(0L)));
+
+        Map<String, Long> feeByBlockTargetMap = response.getFeeByBlockTargetMap();
+        assertThat(feeByBlockTargetMap, is(notNullValue()));
+
+        for (Long value : feeByBlockTargetMap.values()) {
+            assertThat(value, is(greaterThanOrEqualTo(0L)));
+        }
     }
 }

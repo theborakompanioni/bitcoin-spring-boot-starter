@@ -5,7 +5,7 @@ package fee;
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
-option java_package = "org.tbk.bitcoin.tool.fee";
+option java_package = "org.tbk.bitcoin.tool.fee.proto";
 option java_outer_classname = "FeeProtos";
 option java_multiple_files = true;
 

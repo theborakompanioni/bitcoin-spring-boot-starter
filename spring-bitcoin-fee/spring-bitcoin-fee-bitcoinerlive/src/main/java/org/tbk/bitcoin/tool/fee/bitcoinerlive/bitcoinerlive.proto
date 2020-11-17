@@ -42,16 +42,13 @@ option java_multiple_files = true;
  */
 message FeeEstimatesLatestRequest {
     enum Confidence {
+        // confidence: the target confirmation probability. Possible values: 0.5, 0.8, 0.9
         HIGH = 0; // can be equal to MAX but not higher
         MEDIUM = 1; // can be anything but not higher than HIGH and lower than LOW
         LOW = 2; // can be equal to MIN but not lower
     }
 
-    // confidence: the target confirmation probability. Possible values: 0.5, 0.8, 0.9
-    oneof confidence {
-        Confidence confidence_type = 1 [json_name = "confidence_type"];
-        double confidence_val = 2 [json_name = "confidence"];
-    }
+    Confidence confidence_type = 1 [json_name = "confidence_type"];
 }
 
 message FeeEstimatesLatestResponse {

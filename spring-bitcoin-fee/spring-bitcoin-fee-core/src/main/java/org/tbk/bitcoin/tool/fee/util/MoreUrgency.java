@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.tool.fee.util;
 
 import com.google.common.collect.ImmutableMap;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest.Urgency;
+import org.tbk.bitcoin.tool.fee.proto.FeeRecommendationRequest.Urgency;
 
 import java.time.Duration;
 import java.util.Comparator;
