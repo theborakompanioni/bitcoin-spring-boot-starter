@@ -3,6 +3,7 @@ package org.tbk.bitcoin.tool.fee;
 import org.junit.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.config.BitcoinerliveFeeClientAutoConfiguration;
+import org.tbk.bitcoin.tool.fee.bitgo.config.BitgoFeeClientAutoConfiguration;
 import org.tbk.bitcoin.tool.fee.blockchaininfo.config.BlockchainInfoFeeClientAutoConfiguration;
 import org.tbk.bitcoin.tool.fee.config.BitcoinFeeClientAutoConfiguration;
 
@@ -38,12 +39,13 @@ public class CompositeFeeProviderTest {
         this.contextRunner.withUserConfiguration(
                 BitcoinFeeClientAutoConfiguration.class,
                 BitcoinerliveFeeClientAutoConfiguration.class,
-                BlockchainInfoFeeClientAutoConfiguration.class
+                BlockchainInfoFeeClientAutoConfiguration.class,
+                BitgoFeeClientAutoConfiguration.class
         ).run(context -> {
             CompositeFeeProvider compositeFeeProvider = context.getBean(CompositeFeeProvider.class);
             assertThat(compositeFeeProvider, is(notNullValue()));
 
-            assertThat(compositeFeeProvider.getProviderCount(), is(2));
+            assertThat(compositeFeeProvider.getProviderCount(), is(3));
         });
     }
 
@@ -52,7 +54,8 @@ public class CompositeFeeProviderTest {
         this.contextRunner.withUserConfiguration(
                 BitcoinFeeClientAutoConfiguration.class,
                 BitcoinerliveFeeClientAutoConfiguration.class,
-                BlockchainInfoFeeClientAutoConfiguration.class
+                BlockchainInfoFeeClientAutoConfiguration.class,
+                BitgoFeeClientAutoConfiguration.class
         ).run(context -> {
             CompositeFeeProvider compositeFeeProvider = context.getBean(CompositeFeeProvider.class);
             assertThat(compositeFeeProvider, is(notNullValue()));
