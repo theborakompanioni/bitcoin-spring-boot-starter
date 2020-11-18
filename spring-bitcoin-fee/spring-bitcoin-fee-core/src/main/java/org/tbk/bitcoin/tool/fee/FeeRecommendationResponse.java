@@ -6,6 +6,8 @@ public interface FeeRecommendationResponse {
 
     List<FeeRecommendation> getFeeRecommendations();
 
+    ProviderInfo getProviderInfo();
+
     interface FeeRecommendation {
         SatPerVbyte getSatPerVbyte();
     }

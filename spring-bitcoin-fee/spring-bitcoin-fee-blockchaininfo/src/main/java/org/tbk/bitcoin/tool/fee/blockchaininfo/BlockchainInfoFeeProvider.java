@@ -1,17 +1,26 @@
 package org.tbk.bitcoin.tool.fee.blockchaininfo;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.tbk.bitcoin.tool.fee.AbstractFeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import reactor.core.publisher.Flux;
 
-@RequiredArgsConstructor
+import static java.util.Objects.requireNonNull;
+
+@Slf4j
 public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
-    @NonNull
+    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+            .name("Blockchain.info")
+            .description("")
+            .build();
+
     private final BlockchainInfoFeeApiClient client;
+
+    public BlockchainInfoFeeProvider(BlockchainInfoFeeApiClient client) {
+        super(providerInfo);
+
+        this.client = requireNonNull(client);
+    }
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
@@ -24,16 +33,15 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
     public Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
         MempoolFees mempoolFees = client.mempoolFees();
 
-        // get the standard fee from the response
-        // as the "priority" value has no other metadata available
-        // it is simply unknown what to expect from it or what it exactly means.
-        long satsPerByte = mempoolFees.getRegular();
+        log.debug("data: {}", mempoolFees);
+
+        long satsPerByte = mempoolFees.getPriority();
+
+        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.fromSatPerByte(satsPerByte);
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
-                        .satPerVbyte(FeeRecommendationResponseImpl.SatPerVbyteImpl.builder()
-                                .satPerVbyteValue(satsPerByte)
-                                .build())
+                        .satPerVbyte(satPerVbyte)
                         .build())
                 .build());
     }

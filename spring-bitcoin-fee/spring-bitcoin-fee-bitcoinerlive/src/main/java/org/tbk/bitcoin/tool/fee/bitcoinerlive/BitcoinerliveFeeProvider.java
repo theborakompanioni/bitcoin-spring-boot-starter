@@ -1,13 +1,8 @@
 package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.tbk.bitcoin.tool.fee.AbstractFeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl;
+import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confidence;
@@ -20,9 +15,15 @@ import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
-@RequiredArgsConstructor
 public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
+
+    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+            .name("Bitcoinerlive")
+            .description("")
+            .build();
 
     private static final Map<Double, Confidence> confidenceMap = ImmutableMap.<Double, Confidence>builder()
             .put(Double.valueOf("0.5"), Confidence.LOW)
@@ -35,8 +36,13 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
             .min()
             .orElseThrow();
 
-    @NonNull
     private final BitcoinerliveFeeApiClient client;
+
+    public BitcoinerliveFeeProvider(BitcoinerliveFeeApiClient client) {
+        super(providerInfo);
+
+        this.client = requireNonNull(client);
+    }
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
@@ -47,6 +53,8 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
     public Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest feeRecommendationRequest) {
         FeeEstimatesLatestRequest request = toApiRequest(feeRecommendationRequest);
         FeeEstimatesLatestResponse response = client.feeEstimatesLatest(request);
+
+        log.debug("data: {}", response);
 
         Map<String, Estimate> estimateMap = response.getEstimateMap();
         if (estimateMap.isEmpty()) {

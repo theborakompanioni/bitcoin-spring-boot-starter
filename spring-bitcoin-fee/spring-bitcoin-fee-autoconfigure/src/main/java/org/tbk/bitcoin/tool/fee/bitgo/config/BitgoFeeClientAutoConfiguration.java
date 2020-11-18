@@ -35,8 +35,8 @@ public class BitgoFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BitcoinerliveFeeProvider.class)
-    @ConditionalOnMissingBean(BitcoinerliveFeeProvider.class)
+    @ConditionalOnClass(BitgoFeeProvider.class)
+    @ConditionalOnMissingBean(BitgoFeeProvider.class)
     public BitgoFeeProvider bitgoFeeProvider(BitgoFeeApiClient bitgoFeeApiClient) {
         return new BitgoFeeProvider(bitgoFeeApiClient);
     }
