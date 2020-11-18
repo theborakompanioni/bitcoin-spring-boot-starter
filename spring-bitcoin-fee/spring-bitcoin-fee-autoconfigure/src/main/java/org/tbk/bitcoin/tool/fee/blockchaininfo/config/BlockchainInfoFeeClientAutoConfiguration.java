@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 }, havingValue = "true", matchIfMissing = true)
 public class BlockchainInfoFeeClientAutoConfiguration {
 
-    private BlockchainInfoFeeClientAutoConfigProperties properties;
+    private final BlockchainInfoFeeClientAutoConfigProperties properties;
 
     public BlockchainInfoFeeClientAutoConfiguration(BlockchainInfoFeeClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

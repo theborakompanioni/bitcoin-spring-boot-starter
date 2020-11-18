@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 }, havingValue = "true", matchIfMissing = true)
 public class BitcoinerliveFeeClientAutoConfiguration {
 
-    private BitcoinerliveFeeClientAutoConfigProperties properties;
+    private final BitcoinerliveFeeClientAutoConfigProperties properties;
 
     public BitcoinerliveFeeClientAutoConfiguration(BitcoinerliveFeeClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

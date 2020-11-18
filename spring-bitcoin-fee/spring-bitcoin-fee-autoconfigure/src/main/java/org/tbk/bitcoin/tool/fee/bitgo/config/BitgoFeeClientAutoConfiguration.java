@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 }, havingValue = "true", matchIfMissing = true)
 public class BitgoFeeClientAutoConfiguration {
 
-    private BitgoFeeClientAutoConfigProperties properties;
+    private final BitgoFeeClientAutoConfigProperties properties;
 
     public BitgoFeeClientAutoConfiguration(BitgoFeeClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

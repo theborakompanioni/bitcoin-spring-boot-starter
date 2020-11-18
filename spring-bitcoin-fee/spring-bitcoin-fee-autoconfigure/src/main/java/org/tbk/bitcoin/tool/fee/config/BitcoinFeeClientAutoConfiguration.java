@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.bitcoin.tool.fee.enabled", havingValue = "true", matchIfMissing = true)
 public class BitcoinFeeClientAutoConfiguration {
 
-    private BitcoinFeeClientAutoConfigProperties properties;
+    private final BitcoinFeeClientAutoConfigProperties properties;
 
     public BitcoinFeeClientAutoConfiguration(BitcoinFeeClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);
