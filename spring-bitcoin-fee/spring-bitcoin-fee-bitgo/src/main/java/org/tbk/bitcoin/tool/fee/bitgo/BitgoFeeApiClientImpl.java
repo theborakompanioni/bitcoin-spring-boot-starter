@@ -13,6 +13,9 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 public class BitgoFeeApiClientImpl implements BitgoFeeApiClient {
+    // api errors when "num blocks" param is lower than this value
+    private static final int MIN_NUM_BLOCKS_PARAM_VAL = 2;
+
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final String baseUrl;
@@ -27,9 +30,9 @@ public class BitgoFeeApiClientImpl implements BitgoFeeApiClient {
     public BtcTxFeeResponse btcTxFee(BtcTxFeeRequest request) {
         String query = MoreQueryString.toQueryString(ImmutableMap.<String, String>builder()
                 .put("numBlocks", Optional.of(request.getNumBlocks())
-                        .filter(val -> val > 0L)
+                        .filter(val -> val >= MIN_NUM_BLOCKS_PARAM_VAL)
                         .map(val -> Long.toString(val, 10))
-                        .orElse("2"))
+                        .orElseGet(() -> Long.toString(MIN_NUM_BLOCKS_PARAM_VAL, 10)))
                 .build());
 
         // https://www.bitgo.com/api/v2/btc/tx/fee

@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.bitgo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
 import reactor.core.publisher.Flux;
@@ -40,7 +41,7 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
         SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.fromSatPerKilobyte(satPerKilobyte);
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
-                .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
+                .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .satPerVbyte(satPerVbyte)
                         .build())
                 .build());
