@@ -47,8 +47,8 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
     }
 
     private BtcTxFeeRequest buildApiRequest(FeeRecommendationRequest request) {
-        BtcTxFeeRequest.Builder apiRequestBuilder = BtcTxFeeRequest.newBuilder();
-        request.getBlockTarget().ifPresent(apiRequestBuilder::setNumBlocks);
-        return apiRequestBuilder.build();
+        return BtcTxFeeRequest.newBuilder()
+                .setNumBlocks(request.getBlockTarget())
+                .build();
     }
 }

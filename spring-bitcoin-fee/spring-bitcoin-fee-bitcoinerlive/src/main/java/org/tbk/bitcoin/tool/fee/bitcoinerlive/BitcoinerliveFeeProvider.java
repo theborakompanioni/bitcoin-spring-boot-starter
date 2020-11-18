@@ -62,9 +62,7 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
             return Flux.empty();
         }
 
-        long minutes = feeRecommendationRequest.getDurationTarget()
-                .map(Duration::toMinutes)
-                .orElse(0L);
+        long minutes = feeRecommendationRequest.getDurationTarget().toMinutes();
 
         Map<Long, Estimate> estimateMapWithMinutesAsKeys = estimateMap.entrySet().stream()
                 .collect(Collectors.toMap(val -> Long.valueOf(val.getKey(), 10), Map.Entry::getValue));

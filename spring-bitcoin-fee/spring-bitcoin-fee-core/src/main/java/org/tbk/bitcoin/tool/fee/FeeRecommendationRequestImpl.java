@@ -1,9 +1,6 @@
 package org.tbk.bitcoin.tool.fee;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -18,13 +15,10 @@ public class FeeRecommendationRequestImpl implements FeeRecommendationRequest {
         double confidenceValue;
     }
 
+    @NonNull
     Duration durationTarget;
-    Confidence desiredConfidence;
 
-    @Override
-    public Optional<Duration> getDurationTarget() {
-        return Optional.ofNullable(durationTarget);
-    }
+    Confidence desiredConfidence;
 
     @Override
     public Optional<Confidence> getDesiredConfidence() {

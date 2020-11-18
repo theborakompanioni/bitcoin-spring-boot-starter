@@ -7,12 +7,16 @@ import java.util.Optional;
 
 public interface FeeRecommendationRequest {
 
-    Optional<Duration> getDurationTarget();
+    Duration getDurationTarget();
 
     Optional<Confidence> getDesiredConfidence();
 
-    default Optional<Long> getBlockTarget() {
-        return getDurationTarget().map(val -> val.dividedBy(MoreBitcoin.averageBlockDuration()));
+    default long getBlockTarget() {
+        return getDurationTarget().dividedBy(MoreBitcoin.averageBlockDuration());
+    }
+
+    default boolean isNextBlockTarget() {
+        return getBlockTarget() <= 1;
     }
 
     interface Confidence {

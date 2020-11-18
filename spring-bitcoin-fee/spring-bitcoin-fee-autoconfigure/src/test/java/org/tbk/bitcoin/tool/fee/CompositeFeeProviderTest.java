@@ -61,6 +61,7 @@ public class CompositeFeeProviderTest {
             assertThat(compositeFeeProvider, is(notNullValue()));
 
             FeeRecommendationRequest request = FeeRecommendationRequestImpl.builder()
+                    .durationTarget(Duration.ofMinutes(30))
                     .build();
 
             List<FeeRecommendationResponse> response = compositeFeeProvider.request(request)

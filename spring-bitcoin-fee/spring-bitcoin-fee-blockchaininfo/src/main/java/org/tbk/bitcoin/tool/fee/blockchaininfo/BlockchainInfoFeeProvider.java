@@ -5,6 +5,8 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
+
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -26,7 +28,7 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
     public boolean supports(FeeRecommendationRequest request) {
         // blockchain.info fees do not support any customized request
         return request.getDesiredConfidence().isEmpty() &&
-                request.getDurationTarget().isEmpty();
+                Duration.ofMinutes(360).compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override
@@ -35,7 +37,21 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
 
         log.debug("data: {}", mempoolFees);
 
-        long satsPerByte = mempoolFees.getPriority();
+        boolean isLessOrEqualToSixHours = Duration.ofMinutes(60 * 6).compareTo(request.getDurationTarget()) >= 0;
+
+        if (!isLessOrEqualToSixHours) {
+            log.warn("Unsupported call to Blockchain.info fee provider: period out of range: {}", request);
+            return Flux.empty();
+        }
+
+        boolean isZeroOrLess = Duration.ZERO.compareTo(request.getDurationTarget()) >= 0;
+        boolean isLessOrEqualToHalfHour = Duration.ofMinutes(30).compareTo(request.getDurationTarget()) >= 0;
+
+        long satsPerByte = isZeroOrLess ?
+                mempoolFees.getLimit().getMax() :
+                isLessOrEqualToHalfHour ?
+                        mempoolFees.getPriority() :
+                        mempoolFees.getRegular();
 
         SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.fromSatPerByte(satsPerByte);
 
