@@ -31,6 +31,7 @@ include 'spring-bitcoin-fee:spring-bitcoin-fee-btcdotcom'
 include 'spring-bitcoin-fee:spring-bitcoin-fee-earndotcom'
 include 'spring-bitcoin-fee:spring-bitcoin-fee-autoconfigure'
 include 'spring-bitcoin-fee:spring-bitcoin-fee-starter'
+include 'spring-bitcoin-fee:spring-bitcoin-fee-example-application'
 
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-core'
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter'
