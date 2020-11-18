@@ -22,7 +22,7 @@ public class BlockstreamInfoFeeApiClientImpl implements BlockstreamInfoFeeApiCli
 
     public BlockstreamInfoFeeApiClientImpl(String baseUrl, String apiToken) {
         this.baseUrl = requireNonNull(baseUrl);
-        this.apiToken = requireNonNull(apiToken);
+        this.apiToken = apiToken;
     }
 
     @Override

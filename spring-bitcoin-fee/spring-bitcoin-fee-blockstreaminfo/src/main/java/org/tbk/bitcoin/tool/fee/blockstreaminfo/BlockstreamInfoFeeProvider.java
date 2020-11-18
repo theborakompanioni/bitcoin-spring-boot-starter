@@ -1,22 +1,57 @@
 package org.tbk.bitcoin.tool.fee.blockstreaminfo;
 
-import lombok.RequiredArgsConstructor;
-import org.tbk.bitcoin.tool.fee.AbstractFeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
+import java.util.Comparator;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
+
+@Slf4j
 public class BlockstreamInfoFeeProvider extends AbstractFeeProvider {
+    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+            .name("blockstream.info")
+            .description("")
+            .build();
+
+    private final BlockstreamInfoFeeApiClient client;
+
+    public BlockstreamInfoFeeProvider(BlockstreamInfoFeeApiClient client) {
+        super(providerInfo);
+
+        this.client = requireNonNull(client);
+    }
+
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         return request.getDesiredConfidence().isEmpty();
     }
 
-    @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
-        return null;
+        FeeEstimates feeEstimates = client.feeEstimates();
+
+        Optional<FeeEstimates.Entry> feeEstimateOrEmpty = feeEstimates.getEntryList().stream()
+                .filter(val -> val.getNumberOfBlocks() <= request.getBlockTarget())
+                .max(Comparator.comparingLong(FeeEstimates.Entry::getNumberOfBlocks));
+
+        if (feeEstimateOrEmpty.isEmpty()) {
+            log.warn("no suitable estimation entries present in response for request: {}", request);
+            return Flux.empty();
+        }
+
+        long satsPerVbyte = (long) Math.ceil(feeEstimateOrEmpty.get().getEstimatedFeerateInSatPerVbyte());
+
+        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.builder()
+                .satPerVbyteValue(satsPerVbyte)
+                .build();
+
+        return Flux.just(FeeRecommendationResponseImpl.builder()
+                .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
+                        .satPerVbyte(satPerVbyte)
+                        .build())
+                .build());
     }
 }
