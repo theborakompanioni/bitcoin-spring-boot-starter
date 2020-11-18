@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.tool.fee;
 
 import lombok.*;
+import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 
 import java.time.Duration;
 import java.util.Optional;

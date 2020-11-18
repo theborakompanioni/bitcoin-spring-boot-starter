@@ -12,11 +12,11 @@ public interface FeeRecommendationRequest {
     Optional<Confidence> getDesiredConfidence();
 
     default long getBlockTarget() {
-        return getDurationTarget().dividedBy(MoreBitcoin.averageBlockDuration());
+        return Math.max(1, getDurationTarget().dividedBy(MoreBitcoin.averageBlockDuration()));
     }
 
     default boolean isNextBlockTarget() {
-        return getBlockTarget() <= 1;
+        return getBlockTarget() == 1;
     }
 
     interface Confidence {
