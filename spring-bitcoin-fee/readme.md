@@ -9,12 +9,18 @@
 - [x] bitcoiner.live API
 - [x] Bitgo API
 - [x] Bitcore API
-- [x] Blockchain.info API
+- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
 - [x] Blockchair API
 - [x] BlockCypher API
 - [x] Blockstream.info API
 - [x] BTC.com API
 - [x] earn.com API
+
+Incubating: 
+- [ ] https://btcpriceequivalent.com/fee-estimates -> https://btcpriceequivalent.com/n/{n}
+- [ ] whatthefee.io
+- [ ] https://mempool.space/api/v1/fees/recommended
+- [ ] estimatestmartfee from own node
 
 # Resources
 - https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
@@ -90,7 +96,7 @@
 
 
 ### Blockchain.info API
-- [`https://api.blockchain.info/mempool/fees`](https://api.blockchain.info/mempool/fees)
+- [`161616`](https://api.blockchain.info/mempool/fees)
 - Last check: 2020-11-13
 - Unit of measurement: **`sat/Byte`**
 
