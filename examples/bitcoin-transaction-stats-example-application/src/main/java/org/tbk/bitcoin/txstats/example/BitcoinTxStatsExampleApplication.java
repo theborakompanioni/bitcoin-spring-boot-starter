@@ -53,11 +53,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootApplication
-public class BitcoinTxStatsApplication {
+public class BitcoinTxStatsExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(BitcoinTxStatsApplication.class)
+                .sources(BitcoinTxStatsExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local", "demo")

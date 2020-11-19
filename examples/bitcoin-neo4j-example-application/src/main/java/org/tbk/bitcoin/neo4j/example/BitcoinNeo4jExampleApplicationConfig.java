@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-public class BitcoinNeo4jApplicationConfig {
+public class BitcoinNeo4jExampleApplicationConfig {
 }

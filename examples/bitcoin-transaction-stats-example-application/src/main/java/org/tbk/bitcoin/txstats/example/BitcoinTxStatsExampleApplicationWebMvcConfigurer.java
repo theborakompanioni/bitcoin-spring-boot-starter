@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.exchange.example;
+package org.tbk.bitcoin.txstats.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class BitcoinExchangeApplicationWebMvcConfigurer implements WebMvcConfigurer {
+public class BitcoinTxStatsExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

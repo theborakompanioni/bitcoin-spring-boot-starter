@@ -21,11 +21,11 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @SpringBootApplication
-public class BitcoinFeeApplication {
+public class BitcoinFeeExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(BitcoinFeeApplication.class)
+                .sources(BitcoinFeeExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local")

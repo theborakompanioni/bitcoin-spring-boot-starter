@@ -9,5 +9,5 @@ import org.tbk.bitcoin.txstats.example.model.TxScoreNeoEntity;
 @Slf4j
 @Configuration
 @EntityScan(basePackageClasses = TxScoreNeoEntity.class)
-public class BitcoinTxStatsApplicationConfig {
+public class BitcoinTxStatsExampleApplicationConfig {
 }

@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.jsonrpc.example;
+package org.tbk.bitcoin.zeromq.example;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebMvc
 @Configuration
-public class BitcoinClientApplicationWebMvcConfigurer implements WebMvcConfigurer {
+public class BitcoinZeroMqClientExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

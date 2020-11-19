@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.fee.example;
+package org.tbk.bitcoin.neo4j.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class BitcoinFeeApplicationWebMvcConfigurer implements WebMvcConfigurer {
+public class BitcoinNeo4jExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.jsonrpc.example;
+package org.tbk.bitcoin.zeromq.example;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class BitcoinClientApplicationTest {
+public class BitcoinZeroMqClientExampleApplicationTest {
 
     @Test
     public void contextLoads() {

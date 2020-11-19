@@ -32,11 +32,11 @@ import java.util.function.Function;
 
 @Slf4j
 @SpringBootApplication
-public class BitcoinNeo4jApplication {
+public class BitcoinNeo4jExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(BitcoinNeo4jApplication.class)
+                .sources(BitcoinNeo4jExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local", "demo")

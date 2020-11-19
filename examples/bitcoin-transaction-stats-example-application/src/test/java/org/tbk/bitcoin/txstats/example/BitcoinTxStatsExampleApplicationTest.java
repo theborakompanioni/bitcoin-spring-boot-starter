@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class BitcoinTxStatsApplicationTest {
+public class BitcoinTxStatsExampleApplicationTest {
 
     @Autowired(required = false)
     private ApplicationContext applicationContext;

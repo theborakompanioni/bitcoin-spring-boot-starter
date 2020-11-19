@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.exchange.example;
+package org.tbk.bitcoin.jsonrpc.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.WebApplicationType;
@@ -10,11 +10,11 @@ import org.springframework.context.ApplicationListener;
 
 @Slf4j
 @SpringBootApplication
-public class BitcoinExchangeApplication {
+public class BitcoinJsonrpcClientExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(BitcoinExchangeApplication.class)
+                .sources(BitcoinJsonrpcClientExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local")

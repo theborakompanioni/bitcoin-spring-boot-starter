@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableScheduling
-public class BitcoinClientApplicationConfig {
+public class BitcoinJsonrpcClientExampleApplicationConfig {
 
     @Bean
     public CommandLineRunner printBitcoinNodeInfo(TaskScheduler scheduler, BitcoinClient bitcoinClient) {

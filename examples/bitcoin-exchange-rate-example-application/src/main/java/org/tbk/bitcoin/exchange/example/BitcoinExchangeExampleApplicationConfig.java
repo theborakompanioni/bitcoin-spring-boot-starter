@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-public class BitcoinExchangeApplicationConfig {
+public class BitcoinExchangeExampleApplicationConfig {
     @Bean
     public CommandLineRunner exchangeRateDemoRunner(List<XChangeExchangeRateProvider> XChangeExchangeRateProviders) {
         return args -> {

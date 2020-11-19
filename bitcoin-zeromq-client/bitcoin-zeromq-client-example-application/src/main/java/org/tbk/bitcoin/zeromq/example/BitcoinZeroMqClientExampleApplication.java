@@ -20,11 +20,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @SpringBootApplication
-public class BitcoinZeroMqClientApplication {
+public class BitcoinZeroMqClientExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(BitcoinZeroMqClientApplication.class)
+                .sources(BitcoinZeroMqClientExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local")
