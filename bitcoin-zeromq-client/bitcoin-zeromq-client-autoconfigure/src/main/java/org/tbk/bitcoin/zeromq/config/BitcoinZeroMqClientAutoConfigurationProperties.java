@@ -10,7 +10,7 @@ import java.util.Optional;
         prefix = "org.tbk.bitcoin.zeromq",
         ignoreUnknownFields = false
 )
-public class BitcoinZeroMqClientProperties {
+public class BitcoinZeroMqClientAutoConfigurationProperties {
     public enum Network {
         mainnet,
         testnet,
