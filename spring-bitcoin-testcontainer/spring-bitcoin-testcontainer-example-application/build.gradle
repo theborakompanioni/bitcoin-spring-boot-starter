@@ -11,9 +11,13 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     implementation project(':spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter')
+
+    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+
+    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
+    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
     implementation "io.projectreactor:reactor-core"
 

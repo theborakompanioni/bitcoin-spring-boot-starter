@@ -2,6 +2,7 @@ package org.tbk.spring.bitcoin.testcontainer.config;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -98,11 +99,14 @@ public class BitcoinContainerAutoConfiguration {
                 .map(val -> String.format("-rpcpassword=%s", val))
                 .ifPresent(commandsBuilder::add);
 
+        commandsBuilder.addAll(this.properties.getCommands());
+
         return commandsBuilder.build();
     }
 
     @Value
     @Builder
+    @EqualsAndHashCode(callSuper = false)
     public static class CustomHostPortWaitStrategy extends HostPortWaitStrategy {
         @Singular("addPort")
         List<Integer> ports;
