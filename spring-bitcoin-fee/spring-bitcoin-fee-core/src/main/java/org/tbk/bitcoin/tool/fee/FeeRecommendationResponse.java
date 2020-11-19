@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.tool.fee;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface FeeRecommendationResponse {
@@ -13,6 +14,6 @@ public interface FeeRecommendationResponse {
     }
 
     interface SatPerVbyte {
-        long getSatPerVbyteValue();
+        BigDecimal getSatPerVbyteValue();
     }
 }

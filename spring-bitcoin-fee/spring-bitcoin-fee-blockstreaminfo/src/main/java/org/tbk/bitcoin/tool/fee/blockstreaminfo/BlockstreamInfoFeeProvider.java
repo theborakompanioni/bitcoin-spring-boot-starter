@@ -5,6 +5,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import reactor.core.publisher.Flux;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -42,10 +43,10 @@ public class BlockstreamInfoFeeProvider extends AbstractFeeProvider {
             return Flux.empty();
         }
 
-        long satsPerVbyte = (long) Math.ceil(feeEstimateOrEmpty.get().getEstimatedFeerateInSatPerVbyte());
+        BigDecimal satPerVbyteValue = BigDecimal.valueOf(feeEstimateOrEmpty.get().getEstimatedFeerateInSatPerVbyte());
 
         SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.builder()
-                .satPerVbyteValue(satsPerVbyte)
+                .satPerVbyteValue(satPerVbyteValue)
                 .build();
 
         return Flux.just(FeeRecommendationResponseImpl.builder()

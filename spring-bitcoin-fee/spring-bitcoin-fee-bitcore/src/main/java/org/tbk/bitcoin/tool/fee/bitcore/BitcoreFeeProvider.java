@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.bitcore;
 
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -34,7 +35,9 @@ public class BitcoreFeeProvider extends AbstractFeeProvider {
 
         double btcPerKB = feeEstimationResponse.getFeerate();
 
-        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.fromBtcPerKVbyte(BigDecimal.valueOf(btcPerKB));
+        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.builder()
+                .satPerVbyteValue(MoreSatPerVbyte.fromBtcPerKVbyte(BigDecimal.valueOf(btcPerKB)))
+                .build();
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()

@@ -5,7 +5,10 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
+import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
+
+import java.math.BigDecimal;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,7 +41,10 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
         log.debug("data: {}", response);
 
         long satPerKilobyte = response.getFeePerKb();
-        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.fromSatPerKilobyte(satPerKilobyte);
+
+        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.builder()
+                .satPerVbyteValue(MoreSatPerVbyte.fromSatPerKVbyte(BigDecimal.valueOf(satPerKilobyte)))
+                .build();
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()

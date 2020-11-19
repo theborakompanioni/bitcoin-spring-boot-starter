@@ -5,6 +5,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import reactor.core.publisher.Flux;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
@@ -53,7 +54,9 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
                         mempoolFees.getPriority() :
                         mempoolFees.getRegular();
 
-        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.fromSatPerByte(satsPerByte);
+        SatPerVbyteImpl satPerVbyte = SatPerVbyteImpl.builder()
+                .satPerVbyteValue(BigDecimal.valueOf(satsPerByte))
+                .build();
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()

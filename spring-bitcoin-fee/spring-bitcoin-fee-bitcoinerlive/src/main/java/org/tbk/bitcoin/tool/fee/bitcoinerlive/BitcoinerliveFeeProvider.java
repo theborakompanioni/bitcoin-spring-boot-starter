@@ -9,7 +9,7 @@ import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confiden
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimate;
 import reactor.core.publisher.Flux;
 
-import java.time.Duration;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -90,7 +90,7 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .satPerVbyte(SatPerVbyteImpl.builder()
-                                .satPerVbyteValue(estimate.getSatPerVbyte())
+                                .satPerVbyteValue(BigDecimal.valueOf(estimate.getSatPerVbyte()))
                                 .build())
                         .build())
                 .build());
