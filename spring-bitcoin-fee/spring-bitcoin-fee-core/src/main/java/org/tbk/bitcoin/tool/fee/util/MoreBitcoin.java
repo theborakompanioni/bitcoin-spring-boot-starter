@@ -19,4 +19,8 @@ public final class MoreBitcoin {
     public static BigDecimal btcToSatFactor() {
         return BTC_TO_SAT_FACTOR;
     }
+
+    public static int fractionDigits() {
+        return FRACTION_DIGITS;
+    }
 }

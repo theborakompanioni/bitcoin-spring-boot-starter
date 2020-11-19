@@ -10,26 +10,23 @@ public final class MoreSatPerVbyte {
     }
 
     public static BigDecimal fromBtcPerKVbyte(BigDecimal btcPerKVbyte) {
-        //return fromSatPerKVbyte(btcPerKVbyte.multiply(MoreBitcoin.btcToSatFactor()));
-        //return fromSatPerKVbyte(btcPerKVbyte.scaleByPowerOfTen(MoreBitcoin.fractionDigits()));
-        //return fromSatPerKVbyte(btcPerKVbyte.movePointRight(MoreBitcoin.fractionDigits()));
-        //return btcPerKVbyte.multiply(BigDecimal.ONE.scaleByPowerOfTen(5));
-        //return btcPerKVbyte.movePointRight(5);
-        //fromSatPerKVbyte(btcPerKVbyte.multiply(MoreBitcoin.btcToSatFactor()));
-        //return btcPerKVbyte.multiply(BigDecimal.TEN.pow(MoreBitcoin.fractionDigits() - 3));
+        // this approach makes sure to never decrease the scale of the provided value
+        // DO CHANGE ONLY IF YOU KNOW WHAT YOU ARE DOING
+        // see {@see MoreSatPerVbyteTest}
         return btcPerKVbyte.multiply(BigDecimal.ONE.scaleByPowerOfTen(MoreBitcoin.fractionDigits()).movePointRight(-3));
     }
 
     public static BigDecimal fromBtcPerVbyte(BigDecimal btcPerVbyte) {
-        //return btcPerVbyte.scaleByPowerOfTen(MoreBitcoin.fractionDigits());
-        //return btcPerVbyte.movePointRight(MoreBitcoin.fractionDigits());
-        //return btcPerVbyte.multiply(BigDecimal.ONE.scaleByPowerOfTen(MoreBitcoin.fractionDigits()));
+        // this approach makes sure to never decrease the scale of the provided value
+        // DO CHANGE ONLY IF YOU KNOW WHAT YOU ARE DOING
+        // see {@see MoreSatPerVbyteTest}
         return btcPerVbyte.multiply(MoreBitcoin.btcToSatFactor());
     }
 
     public static BigDecimal fromSatPerKVbyte(BigDecimal satPerKilobyte) {
-        //return satPerKilobyte.divide(BigDecimal.valueOf(1_000L));
-        //return satPerKilobyte.scaleByPowerOfTen(-3);
+        // this approach makes sure to never decrease the scale of the provided value
+        // DO CHANGE ONLY IF YOU KNOW WHAT YOU ARE DOING
+        // see {@see MoreSatPerVbyteTest}
         return satPerKilobyte.multiply(BigDecimal.ONE.scaleByPowerOfTen(-3));
     }
 }
