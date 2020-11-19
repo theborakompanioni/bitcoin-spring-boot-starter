@@ -22,6 +22,8 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 
 org.tbk.spring.bitcoin.testcontainer:
   enabled: true
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

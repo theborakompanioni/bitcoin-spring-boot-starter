@@ -1,5 +1,6 @@
 package org.tbk.spring.bitcoin.testcontainer.config;
 
+import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -7,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
+
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,18 +42,25 @@ public class BitcoinContainerAutoConfiguration {
     public GenericContainer<?> bitcoinContainer() {
         DockerImageName imageName = DockerImageName.parse("ruimarinho/bitcoin-core:0.20.1-alpine");
 
+        List<String> commands = ImmutableList.<String>builder()
+                .add("-printtoconsole")
+                .add("-regtest=1")
+                .add("-dnsseed=0")
+                .add("-upnp=0")
+                .add("-txindex=1")
+                .add("-server=1")
+                .add("-rpcbind=0.0.0.0")
+                .add("-rpcallowip=0.0.0.0/0")
+                .build();
+
+        List<String> commandsWithUserValues = ImmutableList.<String>builder()
+                .addAll(commands)
+                .add(String.format("-rpcuser=%s", this.properties.getRpcuser()))
+                .add(String.format("-rpcpassword=%s", this.properties.getRpcpassword()))
+                .build();
+
         return new GenericContainer<>(imageName)
                 .withExposedPorts(18443, 18444)
-                .withCommand(
-                        "-printtoconsole",
-                        "-regtest=1",
-                        "-dnsseed=0",
-                        "-upnp=0",
-                        "-txindex=1",
-                        "-server=1",
-                        "-rpcbind=0.0.0.0",
-                        "-rpcallowip=0.0.0.0/0",
-                        "-rpcuser=myrpcuser",
-                        "-rpcpassword=correcthorsebatterystaple");
+                .withCommand(commandsWithUserValues.toArray(new String[]{}));
     }
 }

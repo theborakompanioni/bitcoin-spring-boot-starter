@@ -19,13 +19,3 @@ logging.config: classpath:logback.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
-
-org.tbk.spring.bitcoin.testcontainer:
-  enabled: true
-
-org.tbk.bitcoin.jsonrpc:
-  network: regtest
-  rpchost: http://localhost
-  rpcport: 18443
-  rpcuser: myrpcuser
-  rpcpassword: correcthorsebatterystaple
