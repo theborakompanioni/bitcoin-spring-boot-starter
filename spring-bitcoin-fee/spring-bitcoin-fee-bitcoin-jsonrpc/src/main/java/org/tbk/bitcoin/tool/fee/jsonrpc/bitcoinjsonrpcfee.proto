@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package bitcoincore.jsonrpc;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.jsonrpc";
+option java_outer_classname = "BitcoinCoreJsonRpcFeeProtos";
+option java_multiple_files = true;
+
+message EstimateSmartFeeRequest {
+    /*
+     * Argument #1 - conf_target
+     * Type: numeric, required
+     * Confirmation target in blocks (1 - 1008)
+     */
+    int32 conf_target = 1 [json_name = "conf_target"];
+}
+
+/*
+ * Response
+ * <p>
+ * {
+ * "feerate" : x.x,     (numeric, optional) estimate fee rate in BTC/kB
+ * "errors": [ str... ] (json array of strings, optional) Errors encountered during processing
+ * "blocks" : n         (numeric) block number where estimate was found
+ * }
+*/
+message EstimateSmartFeeResponse {
+    double feerate = 1 [json_name = "feerate"];
+    repeated string error = 2 [json_name = "errors"];
+    int32 blocks = 3 [json_name = "blocks"];
+}

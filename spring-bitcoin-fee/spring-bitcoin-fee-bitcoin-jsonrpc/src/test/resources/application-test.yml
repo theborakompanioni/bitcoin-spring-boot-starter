@@ -1,0 +1,12 @@
+
+org.tbk.spring.bitcoin.testcontainer:
+  enabled: true
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple

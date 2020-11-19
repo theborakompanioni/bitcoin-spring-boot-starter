@@ -7,6 +7,7 @@ description = 'bitcoin fee client autoconfigure package'
 dependencies {
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-core')
 
+    compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcoin-jsonrpc')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcoinerlive')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcore')
     compileOnly project(':spring-bitcoin-fee:spring-bitcoin-fee-bitgo')
@@ -22,6 +23,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcoin-jsonrpc')
     testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcoinerlive')
     testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitcore')
     testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-bitgo')

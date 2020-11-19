@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin core jsonrpc api fee client package'
+
+dependencies {
+    api project(':spring-bitcoin-fee:spring-bitcoin-fee-core')
+
+    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+
+    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
+    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    testImplementation project(':spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter')
+}
