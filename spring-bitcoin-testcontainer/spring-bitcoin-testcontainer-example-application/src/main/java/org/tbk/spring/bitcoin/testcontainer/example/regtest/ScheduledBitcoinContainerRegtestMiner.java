@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class PeriodicBitcoinContainerRegtestMiner extends AbstractScheduledService {
+public class ScheduledBitcoinContainerRegtestMiner extends AbstractScheduledService {
     private static final Duration DEFAULT_DELAY = Duration.ofSeconds(60);
     private static final Scheduler DEFAULT_SCHEDULER = Scheduler.newFixedDelaySchedule(0, DEFAULT_DELAY.toMillis(), TimeUnit.MILLISECONDS);
 
@@ -21,15 +21,15 @@ public class PeriodicBitcoinContainerRegtestMiner extends AbstractScheduledServi
     private final BitcoinClient client;
     private final Address addressOrNull;
 
-    public PeriodicBitcoinContainerRegtestMiner(BitcoinClient client) {
+    public ScheduledBitcoinContainerRegtestMiner(BitcoinClient client) {
         this(client, DEFAULT_SCHEDULER);
     }
 
-    public PeriodicBitcoinContainerRegtestMiner(BitcoinClient client, Scheduler scheduler) {
+    public ScheduledBitcoinContainerRegtestMiner(BitcoinClient client, Scheduler scheduler) {
         this(client, scheduler, null);
     }
 
-    public PeriodicBitcoinContainerRegtestMiner(BitcoinClient client, Scheduler scheduler, Address address) {
+    public ScheduledBitcoinContainerRegtestMiner(BitcoinClient client, Scheduler scheduler, Address address) {
         this.client = requireNonNull(client);
         this.scheduler = requireNonNull(scheduler);
         this.addressOrNull = address;

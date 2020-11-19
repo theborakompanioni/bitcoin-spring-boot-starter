@@ -1,6 +1,6 @@
 package org.tbk.spring.bitcoin.testcontainer.example;
 
-import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
+import com.google.common.util.concurrent.AbstractScheduledService;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import com.msgilligan.bitcoinj.rpc.RpcConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
-import org.tbk.spring.bitcoin.testcontainer.example.regtest.PeriodicBitcoinContainerRegtestMiner;
+import org.tbk.spring.bitcoin.testcontainer.example.regtest.ScheduledBitcoinContainerRegtestMiner;
 import org.testcontainers.containers.GenericContainer;
 
 import java.net.URI;
@@ -35,12 +35,31 @@ public class BitcoinContainerExampleApplicationConfig {
     }
 
     @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
-    public PeriodicBitcoinContainerRegtestMiner periodicBitcoinContainerRegtestMiner(BitcoinClient bitcoinJsonRpcClient) {
-        Duration initDelay = Duration.ofSeconds(10);
-        Duration durationTillNewBlock = Duration.ofSeconds(10);
+    public ScheduledBitcoinContainerRegtestMiner bitcoinRegtestContainerMiner(BitcoinClient bitcoinJsonRpcClient,
+                                                                              @Qualifier("bitcoinRegtestBlockMiningScheduler")
+                                                                                      AbstractScheduledService.Scheduler scheduler) {
+        return new ScheduledBitcoinContainerRegtestMiner(bitcoinJsonRpcClient, scheduler);
+    }
 
-        Scheduler scheduler = Scheduler.newFixedDelaySchedule(initDelay.toMillis(), durationTillNewBlock.toMillis(), TimeUnit.MILLISECONDS);
+    @Bean("bitcoinRegtestBlockMiningScheduler")
+    public AbstractScheduledService.Scheduler bitcoinRegtestBlockMiningScheduler() {
+        return new AbstractScheduledService.CustomScheduler() {
+            private final Duration MIN_BLOCK_DURATION = Duration.ofSeconds(1);
+            private final Duration MAX_BLOCK_DURATION = Duration.ofSeconds(10);
 
-        return new PeriodicBitcoinContainerRegtestMiner(bitcoinJsonRpcClient, scheduler);
+            @Override
+            protected Schedule getNextSchedule() {
+                long randomMillis = (long) Math.max(
+                        MIN_BLOCK_DURATION.toMillis(),
+                        MAX_BLOCK_DURATION.toMillis() * Math.random()
+                );
+
+                Duration durationTillNewBlock = Duration.ofMillis(randomMillis);
+
+                log.info("Duration till next block: {}", durationTillNewBlock);
+
+                return new Schedule(durationTillNewBlock.toSeconds(), TimeUnit.SECONDS);
+            }
+        };
     }
 }
