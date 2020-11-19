@@ -10,6 +10,7 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
+
 @Slf4j
 public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
@@ -49,7 +50,7 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
         boolean isLessOrEqualToHalfHour = Duration.ofMinutes(30).compareTo(request.getDurationTarget()) >= 0;
 
         long satsPerByte = isZeroOrLess ?
-                mempoolFees.getLimit().getMax() :
+                calcSatPerVbyteForNextBlock(mempoolFees) :
                 isLessOrEqualToHalfHour ?
                         mempoolFees.getPriority() :
                         mempoolFees.getRegular();
@@ -63,5 +64,15 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
                         .satPerVbyte(satPerVbyte)
                         .build())
                 .build());
+    }
+
+    /**
+     * NEVER EVER RETURN the maximum of the mempool - this way we would be vulnerable to overpaying extremely
+     * This just goes to show that APIs such as blockchain.info are not
+     * very well suited for this a "block target" approach..
+     * TODO: consider removing the blockchain.info module entirely
+     */
+    private long calcSatPerVbyteForNextBlock(MempoolFees mempoolFees) {
+        return (mempoolFees.getPriority() + mempoolFees.getLimit().getMax()) / 2;
     }
 }
