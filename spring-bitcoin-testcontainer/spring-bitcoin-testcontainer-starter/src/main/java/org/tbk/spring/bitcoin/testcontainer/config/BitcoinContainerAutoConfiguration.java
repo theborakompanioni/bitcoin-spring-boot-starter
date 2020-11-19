@@ -42,8 +42,15 @@ public class BitcoinContainerAutoConfiguration {
     public GenericContainer<?> bitcoinContainer() {
         DockerImageName imageName = DockerImageName.parse("ruimarinho/bitcoin-core:0.20.1-alpine");
 
-        List<String> commands = ImmutableList.<String>builder()
-                .add("-printtoconsole")
+        List<String> commands = buildCommandList();
+
+        return new GenericContainer<>(imageName)
+                .withExposedPorts(18443, 18444)
+                .withCommand(commands.toArray(new String[]{}));
+    }
+
+    private List<String> buildCommandList() {
+        List<String> fixedCommands = ImmutableList.<String>builder()
                 .add("-regtest=1")
                 .add("-dnsseed=0")
                 .add("-upnp=0")
@@ -53,14 +60,16 @@ public class BitcoinContainerAutoConfiguration {
                 .add("-rpcallowip=0.0.0.0/0")
                 .build();
 
-        List<String> commandsWithUserValues = ImmutableList.<String>builder()
-                .addAll(commands)
-                .add(String.format("-rpcuser=%s", this.properties.getRpcuser()))
-                .add(String.format("-rpcpassword=%s", this.properties.getRpcpassword()))
-                .build();
+        ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
+                .addAll(fixedCommands);
 
-        return new GenericContainer<>(imageName)
-                .withExposedPorts(18443, 18444)
-                .withCommand(commandsWithUserValues.toArray(new String[]{}));
+        this.properties.getRpcuser()
+                .map(val -> String.format("-rpcuser=%s", val))
+                .ifPresent(commandsBuilder::add);
+        this.properties.getRpcpassword()
+                .map(val -> String.format("-rpcpassword=%s", val))
+                .ifPresent(commandsBuilder::add);
+
+        return commandsBuilder.build();
     }
 }
