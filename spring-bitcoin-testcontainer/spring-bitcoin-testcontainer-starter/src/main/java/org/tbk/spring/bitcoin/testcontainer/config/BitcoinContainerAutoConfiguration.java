@@ -1,15 +1,21 @@
 package org.tbk.spring.bitcoin.testcontainer.config;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Builder;
+import lombok.Singular;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,6 +24,9 @@ import static java.util.Objects.requireNonNull;
 @EnableConfigurationProperties(BitcoinContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.bitcoin.testcontainer.enabled", havingValue = "true")
 public class BitcoinContainerAutoConfiguration {
+    // currently only the image from "ruimarinho" is supported
+    private static final String DOCKER_IMAGE_NAME = "ruimarinho/bitcoin-core:0.20.1-alpine";
+    private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
     private final BitcoinContainerProperties properties;
 
@@ -25,7 +34,12 @@ public class BitcoinContainerAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
+
     /**
+     * Creates a bitcoin container from the properties given.
+     * <p>
+     * NOTE: Currently only supports creating "regtest" container.
+     * <p>
      * Mainnet
      * JSON-RPC/REST: 8332
      * P2P: 8333
@@ -40,13 +54,27 @@ public class BitcoinContainerAutoConfiguration {
      */
     @Bean(name = "bitcoinContainer", initMethod = "start", destroyMethod = "stop")
     public GenericContainer<?> bitcoinContainer() {
-        DockerImageName imageName = DockerImageName.parse("ruimarinho/bitcoin-core:0.20.1-alpine");
-
         List<String> commands = buildCommandList();
 
-        return new GenericContainer<>(imageName)
-                .withExposedPorts(18443, 18444)
-                .withCommand(commands.toArray(new String[]{}));
+        List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
+                .add(18443)
+                .add(18444)
+                .build();
+
+        List<Integer> exposedPorts = ImmutableList.<Integer>builder()
+                .addAll(hardcodedStandardPorts)
+                .addAll(this.properties.getExposedPorts())
+                .build();
+
+        // only wait for rpc ports - zeromq ports wont work (we can live with that for now)
+        CustomHostPortWaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
+                .ports(hardcodedStandardPorts)
+                .build();
+
+        return new GenericContainer<>(dockerImageName)
+                .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
+                .withCommand(commands.toArray(new String[]{}))
+                .waitingFor(waitStrategy);
     }
 
     private List<String> buildCommandList() {
@@ -71,5 +99,19 @@ public class BitcoinContainerAutoConfiguration {
                 .ifPresent(commandsBuilder::add);
 
         return commandsBuilder.build();
+    }
+
+    @Value
+    @Builder
+    public static class CustomHostPortWaitStrategy extends HostPortWaitStrategy {
+        @Singular("addPort")
+        List<Integer> ports;
+
+        @Override
+        protected Set<Integer> getLivenessCheckPorts() {
+            return ports.stream()
+                    .map(val -> waitStrategyTarget.getMappedPort(val))
+                    .collect(Collectors.toSet());
+        }
     }
 }

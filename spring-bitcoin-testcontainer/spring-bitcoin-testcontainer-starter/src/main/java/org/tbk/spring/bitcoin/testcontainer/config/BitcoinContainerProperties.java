@@ -36,6 +36,8 @@ public class BitcoinContainerProperties implements Validator {
 
     private List<String> commands;
 
+    private List<Integer> exposedPorts;
+
     public Optional<String> getRpcuser() {
         return Optional.ofNullable(rpcuser);
     }
@@ -48,6 +50,12 @@ public class BitcoinContainerProperties implements Validator {
         return commands == null ?
                 Collections.emptyList() :
                 ImmutableList.copyOf(commands);
+    }
+
+    public List<Integer> getExposedPorts() {
+        return exposedPorts == null ?
+                Collections.emptyList() :
+                ImmutableList.copyOf(exposedPorts);
     }
 
     @Override
