@@ -3,6 +3,13 @@ org.tbk.spring.bitcoin.testcontainer:
   enabled: true
   rpcuser: myrpcuser
   rpcpassword: correcthorsebatterystaple
+  commands:
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc'
+    # Log transaction fee per kB when mining blocks.
+    - '-printpriority=1'
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

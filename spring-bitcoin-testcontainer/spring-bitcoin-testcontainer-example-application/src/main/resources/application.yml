@@ -38,21 +38,17 @@ org.tbk.spring.bitcoin.testcontainer:
     # Number of seconds after which an uncompleted RPC call will time out
     - '-rpcservertimeout=10' # default is 30
     # [debug]
-    # Enable debug logging for all categories.
+    # Enable debug logging for categories.
     # '-debug=1' would log ALL messages
-    - '-debug=zmq'
+    - '-debug=rpc,zmq'
     # Log IP Addresses in debug output.
     - '-logips=1'
     # Append comment to the user agent string.
     - '-uacomment=tbk-spring-bitcoin-testcontainer-example'
     # Allows you to test address relay on localhost.
     - '-addrmantest=1'
-    # Run checks every <n> transactions.
-    - '-checkmempool=1'
     # Send trace/debug info to console instead of debug.log.
     - '-printtoconsole=1'
-    # Log transaction fee per kB when mining blocks.
-    - '-printpriority=1'
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest
