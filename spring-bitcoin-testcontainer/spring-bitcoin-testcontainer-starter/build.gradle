@@ -17,5 +17,8 @@ dependencies {
 
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
+
     testImplementation "io.projectreactor:reactor-core"
 }

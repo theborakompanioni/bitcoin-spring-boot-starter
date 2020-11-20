@@ -14,7 +14,7 @@ management.server.servlet.context-path: /actuator
 
 # LOGGING
 logging.file.path: ./var/log
-logging.file.name: application.log
+logging.file.name: application-dev.log
 logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
