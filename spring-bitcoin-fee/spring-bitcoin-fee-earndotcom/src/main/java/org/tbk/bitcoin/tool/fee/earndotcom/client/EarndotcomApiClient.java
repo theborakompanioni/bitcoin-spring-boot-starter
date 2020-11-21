@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.tool.fee.earndotcom;
+package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
 public interface EarndotcomApiClient {
 

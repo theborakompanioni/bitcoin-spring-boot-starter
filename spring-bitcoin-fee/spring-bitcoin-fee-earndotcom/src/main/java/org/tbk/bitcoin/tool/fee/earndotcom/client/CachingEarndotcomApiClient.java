@@ -1,6 +1,5 @@
-package org.tbk.bitcoin.tool.fee.earndotcom;
+package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;

@@ -9,7 +9,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.tool.fee.earndotcom.*;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.CachingEarndotcomApiClient;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.EarndotcomApiClient;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.EarndotcomApiClientImpl;
+import org.tbk.bitcoin.tool.fee.earndotcom.provider.EarndotcomFeeProvider;
+import org.tbk.bitcoin.tool.fee.earndotcom.provider.FeeSelectionStrategy;
+import org.tbk.bitcoin.tool.fee.earndotcom.provider.SimpleFeeSelectionStrategy;
 
 import java.util.Map;
 

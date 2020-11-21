@@ -1,9 +1,12 @@
-package org.tbk.bitcoin.tool.fee.earndotcom;
+package org.tbk.bitcoin.tool.fee.earndotcom.provider;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.FeesSummaryEntry;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.TransactionFeesSummary;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.EarndotcomApiClient;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;

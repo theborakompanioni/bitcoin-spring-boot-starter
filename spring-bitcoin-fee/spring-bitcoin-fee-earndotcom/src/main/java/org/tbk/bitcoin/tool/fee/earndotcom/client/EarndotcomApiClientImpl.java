@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.tool.fee.earndotcom;
+package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;

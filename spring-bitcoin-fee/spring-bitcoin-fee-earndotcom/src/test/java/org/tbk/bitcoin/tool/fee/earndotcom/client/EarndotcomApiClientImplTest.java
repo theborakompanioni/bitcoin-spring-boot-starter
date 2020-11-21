@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.tool.fee.earndotcom;
+package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
 import org.junit.Before;
 import org.junit.Test;
