@@ -41,11 +41,14 @@ message ChainInfo {
     string latest_url = 5 [json_name = "latest_url"];
     string previous_hash = 6 [json_name = "previous_hash"];
     string previous_url = 7 [json_name = "previous_url"];
-    int64 peer_count = 8 [json_name = "peer_count"];
-    int64 unconfirmed_count = 9 [json_name = "unconfirmed_count"];
-    int64 high_fee_per_kb = 10 [json_name = "high_fee_per_kb"];
-    int64 medium_fee_per_kb = 11 [json_name = "medium_fee_per_kb"];
-    int64 low_fee_per_kb = 12 [json_name = "low_fee_per_kb"];
-    int64 last_fork_height = 13 [json_name = "last_fork_height"];
-    string last_fork_hash = 14 [json_name = "last_fork_hash"];
+    // Number of unconfirmed transactions in memory pool (likely to be included in next block).
+    int64 unconfirmed_count = 8 [json_name = "unconfirmed_count"];
+    // A rolling average of the fee (in satoshis) paid per kilobyte for transactions to be confirmed within 1 to 2 blocks.
+    int64 high_fee_per_kb = 9 [json_name = "high_fee_per_kb"];
+    // A rolling average of the fee (in satoshis) paid per kilobyte for transactions to be confirmed within 3 to 6 blocks.
+    int64 medium_fee_per_kb = 10 [json_name = "medium_fee_per_kb"];
+    // A rolling average of the fee (in satoshis) paid per kilobyte for transactions to be confirmed in 7 or more blocks.
+    int64 low_fee_per_kb = 11 [json_name = "low_fee_per_kb"];
+    int64 last_fork_height = 12 [json_name = "last_fork_height"];
+    string last_fork_hash = 13 [json_name = "last_fork_hash"];
 }

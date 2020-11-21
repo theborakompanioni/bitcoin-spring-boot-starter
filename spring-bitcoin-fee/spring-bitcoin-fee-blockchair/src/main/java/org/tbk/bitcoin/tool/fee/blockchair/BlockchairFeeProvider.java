@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.blockchair;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
 
@@ -14,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 public class BlockchairFeeProvider extends AbstractFeeProvider {
     // blockchair only delivery one value "suggested_transaction_fee_per_byte_sat".
     // compared with whatthefee.io this seems to be a suggestion for the next 3 blocks
-    private static final Duration MAX_DURATION_TARGET = Duration.ofMinutes(30);
+    private static final Duration MAX_DURATION_TARGET = MoreBitcoin.averageBlockDuration(3);
 
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
             .name("Blockchair.com")
@@ -40,7 +41,7 @@ public class BlockchairFeeProvider extends AbstractFeeProvider {
         BitcoinStatsFeesOnly bitcoinStatsFeesOnly = this.client.bitcoinStatsFeesOnly();
 
         FeeRecommendationResponseImpl.SatPerVbyteImpl satPerVbyte = FeeRecommendationResponseImpl.SatPerVbyteImpl.builder()
-                .satPerVbyteValue(MoreSatPerVbyte.fromBtcPerKVbyte(BigDecimal.valueOf(bitcoinStatsFeesOnly.getData().getSuggestedTransactionFeePerByteSat())))
+                .satPerVbyteValue(BigDecimal.valueOf(bitcoinStatsFeesOnly.getData().getSuggestedTransactionFeePerByteSat()))
                 .build();
 
         return Flux.just(FeeRecommendationResponseImpl.builder()

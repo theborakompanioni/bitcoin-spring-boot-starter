@@ -29,7 +29,6 @@ public class BlockcypherFeeApiClientImplTest {
         assertThat(chainInfo.getLatestUrl(), startsWith("https://api.blockcypher.com/v1/btc/main/"));
         assertThat(chainInfo.getPreviousHash(), is(notNullValue()));
         assertThat(chainInfo.getPreviousUrl(), startsWith("https://api.blockcypher.com/v1/btc/main/"));
-        assertThat(chainInfo.getPeerCount(), is(greaterThanOrEqualTo(0L)));
         assertThat(chainInfo.getUnconfirmedCount(), is(greaterThanOrEqualTo(0L)));
         assertThat(chainInfo.getHighFeePerKb(), is(greaterThanOrEqualTo(0L)));
         assertThat(chainInfo.getLowFeePerKb(), is(greaterThanOrEqualTo(0L)));
@@ -49,7 +48,6 @@ public class BlockcypherFeeApiClientImplTest {
         assertThat(chainInfo.getLatestUrl(), startsWith("https://api.blockcypher.com/v1/btc/test3/"));
         assertThat(chainInfo.getPreviousHash(), is(notNullValue()));
         assertThat(chainInfo.getPreviousUrl(), startsWith("https://api.blockcypher.com/v1/btc/test3/"));
-        assertThat(chainInfo.getPeerCount(), is(greaterThanOrEqualTo(0L)));
         assertThat(chainInfo.getUnconfirmedCount(), is(greaterThanOrEqualTo(0L)));
         assertThat(chainInfo.getHighFeePerKb(), is(greaterThanOrEqualTo(0L)));
         assertThat(chainInfo.getLowFeePerKb(), is(greaterThanOrEqualTo(0L)));

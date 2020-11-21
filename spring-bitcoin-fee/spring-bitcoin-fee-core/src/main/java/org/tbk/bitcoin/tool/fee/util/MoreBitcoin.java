@@ -13,7 +13,11 @@ public final class MoreBitcoin {
     }
 
     public static Duration averageBlockDuration() {
-        return AVERAGE_BLOCK_DURATION;
+        return averageBlockDuration(1);
+    }
+
+    public static Duration averageBlockDuration(long numBlocks) {
+        return AVERAGE_BLOCK_DURATION.multipliedBy(numBlocks);
     }
 
     public static BigDecimal btcToSatFactor() {

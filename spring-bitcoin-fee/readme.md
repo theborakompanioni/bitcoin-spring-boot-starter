@@ -1,5 +1,4 @@
-
-
+See fee distribution: https://jochen-hoenicke.de/queue/#0,2h
 
 - Credit: The following list has been produced by [0xB10C](https://github.com/0xb10c).
 - Original: https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
