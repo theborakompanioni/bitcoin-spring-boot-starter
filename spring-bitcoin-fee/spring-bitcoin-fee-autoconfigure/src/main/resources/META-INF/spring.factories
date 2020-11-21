@@ -7,5 +7,6 @@ org.tbk.bitcoin.tool.fee.blockchaininfo.config.BlockchainInfoFeeClientAutoConfig
 org.tbk.bitcoin.tool.fee.blockchair.config.BlockchairFeeClientAutoConfiguration,\
 org.tbk.bitcoin.tool.fee.blockcypher.config.BlockcypherFeeClientAutoConfiguration,\
 org.tbk.bitcoin.tool.fee.blockstreaminfo.config.BlockstreamInfoFeeClientAutoConfiguration,\
-org.tbk.bitcoin.tool.fee.btcdotcom.config.BtcdotcomFeeClientAutoConfiguration
+org.tbk.bitcoin.tool.fee.btcdotcom.config.BtcdotcomFeeClientAutoConfiguration,\
+org.tbk.bitcoin.tool.fee.earndotcom.config.EarndotcomFeeClientAutoConfiguration
 

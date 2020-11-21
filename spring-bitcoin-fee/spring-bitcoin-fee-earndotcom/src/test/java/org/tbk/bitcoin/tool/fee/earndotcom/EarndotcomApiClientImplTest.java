@@ -45,6 +45,5 @@ public class EarndotcomApiClientImplTest {
         assertThat(firstEntry.getMaxDelay(), is(greaterThanOrEqualTo(0L)));
         assertThat(firstEntry.getDayCount(), is(greaterThanOrEqualTo(0L)));
         assertThat(firstEntry.getMemCount(), is(greaterThanOrEqualTo(0L)));
-
     }
 }

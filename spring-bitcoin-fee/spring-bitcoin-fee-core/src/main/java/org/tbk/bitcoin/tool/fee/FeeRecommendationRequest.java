@@ -19,6 +19,10 @@ public interface FeeRecommendationRequest {
         return getBlockTarget() == 1;
     }
 
+    default boolean isTargetDurationZero() {
+        return getDurationTarget().isZero();
+    }
+
     interface Confidence {
         double getConfidenceValue();
     }

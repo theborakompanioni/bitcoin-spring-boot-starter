@@ -18,11 +18,11 @@ option java_multiple_files = true;
  */
 message RecommendedTransactionFees {
     // fastestFee: The lowest fee (in satoshis per byte) that will currently result in the fastest transaction confirmations (usually 0 to 1 block delay).
-    int64 fastestFee = 1 [json_name = "fastestFee"];
+    int64 fastest_fee = 1 [json_name = "fastestFee"];
     // halfHourFee: The lowest fee (in satoshis per byte) that will confirm transactions within half an hour (with 90% probability).
-    int64 halfHourFee = 2 [json_name = "halfHourFee"];
+    int64 half_hour_fee = 2 [json_name = "halfHourFee"];
     // hourFee: The lowest fee (in satoshis per byte) that will confirm transactions within an hour (with 90% probability).
-    int64 hourFee = 3 [json_name = "hourFee"];
+    int64 hour_fee = 3 [json_name = "hourFee"];
 }
 
 /**
@@ -37,16 +37,23 @@ message RecommendedTransactionFees {
  * ] }
  */
 message TransactionFeesSummary {
+    // list of Fee objects that contain predictions about fees in the given range from minFee to maxFee in satoshis/byte
     repeated FeesSummaryEntry fee = 1 [json_name = "fees"];
 }
 
 message FeesSummaryEntry {
-    int64 minFee = 1 [json_name = "minFee"];
-    int64 maxFee = 2 [json_name = "maxFee"];
-    int64 dayCount = 3 [json_name = "dayCount"];
-    int64 memCount = 4 [json_name = "memCount"];
-    int64 minDelay = 5 [json_name = "minDelay"];
-    int64 maxDelay = 6 [json_name = "maxDelay"];
-    int64 minMinutes = 7 [json_name = "minMinutes"];
-    int64 maxMinutes = 8 [json_name = "maxMinutes"];
+    int64 min_fee = 1 [json_name = "minFee"];
+    int64 max_fee = 2 [json_name = "maxFee"];
+    // dayCount: Number of confirmed transactions with this fee in the last 24 hours.
+    int64 day_count = 3 [json_name = "dayCount"];
+    // memCount: Number of unconfirmed transactions with this fee.
+    int64 mem_count = 4 [json_name = "memCount"];
+    // minDelay: Estimated minimum delay (in blocks) until transaction is confirmed (90% confidence interval).
+    int64 min_delay = 5 [json_name = "minDelay"];
+    // maxDelay: Estimated maximum delay (in blocks) until transaction is confirmed (90% confidence interval).
+    int64 max_delay = 6 [json_name = "maxDelay"];
+    // minMinutes: Estimated minimum time (in minutes) until transaction is confirmed (90% confidence interval).
+    int64 min_minutes = 7 [json_name = "minMinutes"];
+    // maxMinutes: Estimated maximum time (in minutes) until transaction is confirmed (90% confidence interval).
+    int64 max_minutes = 8 [json_name = "maxMinutes"];
 }

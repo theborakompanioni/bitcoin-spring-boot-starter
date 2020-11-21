@@ -203,9 +203,12 @@ Incubating:
 
 ### earn.com API
 - [`https://bitcoinfees.earn.com/api/v1/fees/recommended`](https://bitcoinfees.earn.com/api/v1/fees/recommended)
+- [`https://bitcoinfees.earn.com/api/v1/fees/list`](https://bitcoinfees.earn.com/api/v1/fees/list)
+- [documentation](https://bitcoinfees.earn.com/api)
 - Last check: 2020-11-13
 - Unit of measurement: **`sat/Byte`**
 
+`GET /api/v1/fees/recommended`:
 ```json
 {
   "fastestFee": 44,
@@ -214,7 +217,14 @@ Incubating:
 }
 ```
 
-
+`GET /api/v1/fees/list`:
+```json
+{ "fees": [ 
+  {"minFee":0,"maxFee":0,"dayCount":545,"memCount":87,
+  "minDelay":4,"maxDelay":32,"minMinutes":20,"maxMinutes":420},
+  [...]
+ ] }
+```
 
 
 All text and images in this readme.md are licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
