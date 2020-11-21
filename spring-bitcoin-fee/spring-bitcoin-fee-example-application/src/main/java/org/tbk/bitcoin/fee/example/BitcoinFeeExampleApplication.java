@@ -9,6 +9,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.tool.fee.FeeProvider;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequestImpl;
@@ -28,7 +29,7 @@ public class BitcoinFeeExampleApplication {
                 .sources(BitcoinFeeExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
+                .profiles("development", "local", "demo")
                 .run(args);
     }
 
@@ -41,6 +42,7 @@ public class BitcoinFeeExampleApplication {
     }
 
     @Bean
+    @Profile("demo")
     public ApplicationRunner mainRunner(FeeProvider feeProvider) {
         return args -> {
             log.info("=====================");
