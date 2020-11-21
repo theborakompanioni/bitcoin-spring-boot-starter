@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 
 public class BlockchairFeeApiClientImplTest {
     private static final String BASE_URL = "https://api.blockchair.com";
-    private static final String API_TOKEN = "test";
+    private static final String API_TOKEN = null;
 
     private BlockchairFeeApiClientImpl sut;
 
@@ -31,7 +31,6 @@ public class BlockchairFeeApiClientImplTest {
         assertThat(data.getMempoolSize(), is(greaterThanOrEqualTo(0L)));
         assertThat(data.getAverageTransactionFee24H(), is(greaterThan(0L)));
         assertThat(data.getMedianTransactionFee24H(), is(greaterThan(0L)));
-        assertThat(data.getAverageTransactionFeeUsd24H(), is(greaterThan(0d)));
-        assertThat(data.getMedianTransactionFeeUsd24H(), is(greaterThan(0d)));
+        assertThat(data.getMempoolTps(), is(greaterThan(0d)));
     }
 }

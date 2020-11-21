@@ -1,22 +1,52 @@
 package org.tbk.bitcoin.tool.fee.blockchair;
 
-import lombok.RequiredArgsConstructor;
-import org.tbk.bitcoin.tool.fee.AbstractFeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
+import java.math.BigDecimal;
+import java.time.Duration;
+
+import static java.util.Objects.requireNonNull;
+
+@Slf4j
 public class BlockchairFeeProvider extends AbstractFeeProvider {
+    // blockchair only delivery one value "suggested_transaction_fee_per_byte_sat".
+    // compared with whatthefee.io this seems to be a suggestion for the next 3 blocks
+    private static final Duration MAX_DURATION_TARGET = Duration.ofMinutes(30);
+
+    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+            .name("Blockchair.com")
+            .description("")
+            .build();
+
+    private final BlockchairFeeApiClient client;
+
+    public BlockchairFeeProvider(BlockchairFeeApiClient client) {
+        super(providerInfo);
+
+        this.client = requireNonNull(client);
+    }
+
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty();
+        return request.getDesiredConfidence().isEmpty() &&
+                MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
-        return null;
+        BitcoinStatsFeesOnly bitcoinStatsFeesOnly = this.client.bitcoinStatsFeesOnly();
+
+        FeeRecommendationResponseImpl.SatPerVbyteImpl satPerVbyte = FeeRecommendationResponseImpl.SatPerVbyteImpl.builder()
+                .satPerVbyteValue(MoreSatPerVbyte.fromBtcPerKVbyte(BigDecimal.valueOf(bitcoinStatsFeesOnly.getData().getSuggestedTransactionFeePerByteSat())))
+                .build();
+
+        return Flux.just(FeeRecommendationResponseImpl.builder()
+                .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
+                        .feeUnit(satPerVbyte)
+                        .build())
+                .build());
     }
 }

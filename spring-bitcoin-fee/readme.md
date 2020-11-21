@@ -116,8 +116,12 @@ Incubating:
 ### Blockchair API
 - [`https://api.blockchair.com/bitcoin/stats`](https://api.blockchair.com/bitcoin/stats)
 - [documentation](https://github.com/Blockchair/Blockchair.Support/blob/master/API.md)
+- [documentation](https://blockchair.com/api/docs)
 - Last check: 2020-11-14
 - Unit of measurement: **`sat/Byte`**
+- Pricing: 
+  - free for personal or testing/non-commercial or academic of up to 1440 requests/day
+  - Commercial plans available
 
 ```json
 {

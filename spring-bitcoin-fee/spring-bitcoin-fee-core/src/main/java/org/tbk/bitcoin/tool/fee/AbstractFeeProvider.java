@@ -16,6 +16,7 @@ public abstract class AbstractFeeProvider implements FeeProvider {
         this.providerInfo = providerInfo;
     }
 
+    @Override
     public final Flux<FeeRecommendationResponse> request(FeeRecommendationRequest feeRecommendationRequest) {
         return Flux.just(feeRecommendationRequest)
                 .filter(this::supports)
