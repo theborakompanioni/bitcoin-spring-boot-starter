@@ -15,6 +15,9 @@ import org.tbk.bitcoin.tool.fee.blockchair.BlockchairFeeProvider;
 import org.tbk.bitcoin.tool.fee.blockcypher.BlockcypherFeeApiClient;
 import org.tbk.bitcoin.tool.fee.blockcypher.BlockcypherFeeApiClientImpl;
 import org.tbk.bitcoin.tool.fee.blockcypher.BlockcypherFeeProvider;
+import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeApiClient;
+import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeApiClientImpl;
+import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeProvider;
 
 import java.util.List;
 
@@ -66,8 +69,24 @@ public class BitcoinFeeClientAutoConfiguration {
     @Bean
     @ConditionalOnClass(BlockcypherFeeProvider.class)
     @ConditionalOnMissingBean(BlockcypherFeeProvider.class)
-    public BlockcypherFeeProvider BlockcypherFeeProvider(BlockcypherFeeApiClient blockcypherFeeApiClient) {
+    public BlockcypherFeeProvider blockcypherFeeProvider(BlockcypherFeeApiClient blockcypherFeeApiClient) {
         return new BlockcypherFeeProvider(blockcypherFeeApiClient);
+    }
+
+    // TODO: move to own package
+    @Bean
+    @ConditionalOnClass(BtcdotcomFeeApiClient.class)
+    @ConditionalOnMissingBean(BtcdotcomFeeApiClient.class)
+    public BtcdotcomFeeApiClient btcdotcomFeeApiClient() {
+        return new BtcdotcomFeeApiClientImpl("https://btc.com", null);
+    }
+
+    // TODO: move to own package
+    @Bean
+    @ConditionalOnClass(BtcdotcomFeeProvider.class)
+    @ConditionalOnMissingBean(BtcdotcomFeeProvider.class)
+    public BtcdotcomFeeProvider btcdotcomFeeProvider(BtcdotcomFeeApiClient btcdotcomFeeApiClient) {
+        return new BtcdotcomFeeProvider(btcdotcomFeeApiClient);
     }
 
 }

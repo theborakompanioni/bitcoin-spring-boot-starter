@@ -13,7 +13,6 @@ option java_multiple_files = true;
 /**
  * Fee Distribution
  * https://btc.com/service/fees/distribution
- * https://github.com/Blockstream/esplora/blob/master/API.md#fee-estimates
  *
  * For example:
 {

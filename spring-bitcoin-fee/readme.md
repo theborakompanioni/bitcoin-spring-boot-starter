@@ -1,4 +1,9 @@
+
+// TODO: move fee providers perform very poorly under small mempool conditions..
+// verify all results and adjust the finetuning parameters accordingly.
+// e.g.: make min/medium/max durations configurable per fee provider -> autoconfig + properties!
 See fee distribution: https://jochen-hoenicke.de/queue/#0,2h
+
 
 - Credit: The following list has been produced by [0xB10C](https://github.com/0xb10c).
 - Original: https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/

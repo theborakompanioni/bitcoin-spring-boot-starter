@@ -1,22 +1,47 @@
 package org.tbk.bitcoin.tool.fee.btcdotcom;
 
-import lombok.RequiredArgsConstructor;
-import org.tbk.bitcoin.tool.fee.AbstractFeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.tbk.bitcoin.tool.fee.*;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
+import java.math.BigDecimal;
+
+import static java.util.Objects.requireNonNull;
+
+@Slf4j
 public class BtcdotcomFeeProvider extends AbstractFeeProvider {
+    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+            .name("btc.com")
+            .description("")
+            .build();
+
+    private final BtcdotcomFeeApiClient client;
+
+    public BtcdotcomFeeProvider(BtcdotcomFeeApiClient client) {
+        super(providerInfo);
+
+        this.client = requireNonNull(client);
+    }
+
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty();
+        return request.getDesiredConfidence().isEmpty() &&
+                request.isNextBlockTarget();
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
-        return null;
+        FeeDistribution feeDistribution = this.client.feeDistribution();
+
+        BigDecimal satPerVbyteValue = BigDecimal.valueOf(feeDistribution.getFeesRecommended().getOneBlockFee());
+        FeeRecommendationResponseImpl.SatPerVbyteImpl satPerVbyte = FeeRecommendationResponseImpl.SatPerVbyteImpl.builder()
+                .satPerVbyteValue(satPerVbyteValue)
+                .build();
+
+        return Flux.just(FeeRecommendationResponseImpl.builder()
+                .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
+                        .feeUnit(satPerVbyte)
+                        .build())
+                .build());
     }
 }

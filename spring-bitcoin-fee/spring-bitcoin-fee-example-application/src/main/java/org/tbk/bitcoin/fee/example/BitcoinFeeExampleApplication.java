@@ -55,7 +55,7 @@ public class BitcoinFeeExampleApplication {
 
                 List<FeeRecommendationResponse> response = feeProvider.request(request)
                         .collectList()
-                        .block(Duration.ofSeconds(20));
+                        .block(Duration.ofSeconds(30));
 
                 log.info("=====================");
                 log.info("Duration: {}", duration);
