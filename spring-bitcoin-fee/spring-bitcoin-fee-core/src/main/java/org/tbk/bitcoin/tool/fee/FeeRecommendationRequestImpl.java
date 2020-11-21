@@ -1,19 +1,31 @@
 package org.tbk.bitcoin.tool.fee;
 
 import lombok.*;
-import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 
 import java.time.Duration;
 import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Value
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class FeeRecommendationRequestImpl implements FeeRecommendationRequest {
+
     @Value
-    @Builder
     public static class ConfidenceImpl implements Confidence {
         double confidenceValue;
+
+        @Builder
+        public ConfidenceImpl(double confidenceValue) {
+            // we can never have hundred percent guarantee that we make it into the next block
+            checkArgument(confidenceValue < 1d, "value must be lower than 1");
+            //  we cannot guarantee the other way around either: this means "i really dont care" and should
+            // therefore be expressed with "durationTarget"
+            checkArgument(confidenceValue > 0d, "value must be greater than zero");
+
+            this.confidenceValue = confidenceValue;
+        }
     }
 
     @NonNull

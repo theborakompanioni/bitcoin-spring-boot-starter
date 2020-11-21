@@ -9,10 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.tool.fee.earndotcom.CachingEarndotcomApiClient;
-import org.tbk.bitcoin.tool.fee.earndotcom.EarndotcomApiClient;
-import org.tbk.bitcoin.tool.fee.earndotcom.EarndotcomApiClientImpl;
-import org.tbk.bitcoin.tool.fee.earndotcom.EarndotcomFeeProvider;
+import org.tbk.bitcoin.tool.fee.earndotcom.*;
 
 import java.util.Map;
 
@@ -47,10 +44,18 @@ public class EarndotcomFeeClientAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnClass(FeeSelectionStrategy.class)
+    @ConditionalOnMissingBean(FeeSelectionStrategy.class)
+    public FeeSelectionStrategy earndotcomFeeSelectionStrategy() {
+        return new SimpleFeeSelectionStrategy();
+    }
+
+    @Bean
     @ConditionalOnClass(EarndotcomFeeProvider.class)
     @ConditionalOnMissingBean(EarndotcomFeeProvider.class)
-    public EarndotcomFeeProvider earndotcomFeeProvider(EarndotcomApiClient earndotcomApiClient) {
-        return new EarndotcomFeeProvider(earndotcomApiClient);
+    public EarndotcomFeeProvider earndotcomFeeProvider(EarndotcomApiClient earndotcomApiClient,
+                                                       FeeSelectionStrategy earndotcomFeeSelectionStrategy) {
+        return new EarndotcomFeeProvider(earndotcomApiClient, earndotcomFeeSelectionStrategy);
     }
 
     private CacheBuilderSpec defaultFeesListCacheBuilderSpec() {
