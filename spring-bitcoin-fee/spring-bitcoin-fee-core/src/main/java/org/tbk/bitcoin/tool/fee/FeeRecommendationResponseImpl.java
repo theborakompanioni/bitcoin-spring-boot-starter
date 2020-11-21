@@ -24,12 +24,12 @@ public class FeeRecommendationResponseImpl implements FeeRecommendationResponse 
     @Builder
     public static class FeeRecommendationImpl implements FeeRecommendation {
         @NonNull
-        SatPerVbyte satPerVbyte;
+        FeeRecommendationResponse.FeeUnit feeUnit;
     }
 
     @Value
     @Builder
-    public static class SatPerVbyteImpl implements SatPerVbyte {
+    public static class SatPerVbyteImpl implements FeeUnit {
         @NonNull
         BigDecimal satPerVbyteValue;
 
@@ -38,6 +38,10 @@ public class FeeRecommendationResponseImpl implements FeeRecommendationResponse 
             checkArgument(satPerVbyteValue.compareTo(BigDecimal.ZERO) >= 0);
 
             this.satPerVbyteValue = satPerVbyteValue;
+        }
+
+        public BigDecimal getValue() {
+            return satPerVbyteValue;
         }
     }
 }

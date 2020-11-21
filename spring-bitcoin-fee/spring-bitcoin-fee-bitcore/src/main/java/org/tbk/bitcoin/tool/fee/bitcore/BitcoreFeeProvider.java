@@ -41,7 +41,7 @@ public class BitcoreFeeProvider extends AbstractFeeProvider {
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
-                        .satPerVbyte(satPerVbyte)
+                        .feeUnit(satPerVbyte)
                         .build())
                 .build());
     }

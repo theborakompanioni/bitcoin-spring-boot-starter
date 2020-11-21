@@ -10,10 +10,10 @@ public interface FeeRecommendationResponse {
     ProviderInfo getProviderInfo();
 
     interface FeeRecommendation {
-        SatPerVbyte getSatPerVbyte();
+        FeeUnit getFeeUnit();
     }
 
-    interface SatPerVbyte {
-        BigDecimal getSatPerVbyteValue();
+    interface FeeUnit {
+        BigDecimal getValue();
     }
 }

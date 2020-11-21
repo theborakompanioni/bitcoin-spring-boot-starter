@@ -89,7 +89,7 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
-                        .satPerVbyte(SatPerVbyteImpl.builder()
+                        .feeUnit(SatPerVbyteImpl.builder()
                                 .satPerVbyteValue(BigDecimal.valueOf(estimate.getSatPerVbyte()))
                                 .build())
                         .build())

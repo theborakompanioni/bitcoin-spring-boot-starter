@@ -48,7 +48,7 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
-                        .satPerVbyte(satPerVbyte)
+                        .feeUnit(satPerVbyte)
                         .build())
                 .build());
     }
