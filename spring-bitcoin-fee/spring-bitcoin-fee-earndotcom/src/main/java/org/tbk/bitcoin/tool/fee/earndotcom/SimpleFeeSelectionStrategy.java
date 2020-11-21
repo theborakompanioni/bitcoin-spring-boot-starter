@@ -30,7 +30,7 @@ public class SimpleFeeSelectionStrategy implements FeeSelectionStrategy {
                 .collect(Collectors.toList());
 
         final Optional<FeesSummaryEntry> summaryEntryOrEmpty;
-        if (request.isTargetDurationZero()) {
+        if (request.isTargetDurationZeroOrLess()) {
             // if the special value zero take the maximum fee other pay if the requested amount
             summaryEntryOrEmpty = eligibleEntries.stream().max(comparator);
         } else {

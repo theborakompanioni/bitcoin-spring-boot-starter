@@ -19,8 +19,8 @@ public interface FeeRecommendationRequest {
         return getBlockTarget() == 1;
     }
 
-    default boolean isTargetDurationZero() {
-        return getDurationTarget().isZero();
+    default boolean isTargetDurationZeroOrLess() {
+        return Duration.ZERO.compareTo(getDurationTarget()) >= 0;
     }
 
     interface Confidence {

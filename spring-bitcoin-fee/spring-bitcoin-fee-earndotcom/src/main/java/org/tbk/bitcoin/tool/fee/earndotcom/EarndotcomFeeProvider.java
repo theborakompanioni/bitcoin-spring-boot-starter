@@ -8,10 +8,7 @@ import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -53,7 +50,7 @@ public class EarndotcomFeeProvider extends AbstractFeeProvider {
         FeesSummaryEntry feesSummaryEntry = summaryEntryOrEmpty.orElseThrow();
 
         final BigDecimal satPerVbyte;
-        if (request.isTargetDurationZero()) {
+        if (request.isTargetDurationZeroOrLess()) {
             // take the maximum fee other pay if the requested amount is the special value zero
             satPerVbyte = BigDecimal.valueOf((feesSummaryEntry.getMinFee() + feesSummaryEntry.getMaxFee()))
                     .divide(BigDecimal.valueOf(2), 1, RoundingMode.HALF_UP);
