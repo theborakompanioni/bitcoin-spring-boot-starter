@@ -31,7 +31,7 @@ public class BitgoFeeApiClientImplTest {
         assertThat(response.getCpfpFeePerKb(), is(greaterThanOrEqualTo(0L)));
         assertThat(response.getNumBlocks(), is(greaterThanOrEqualTo(0L)));
         assertThat(response.getConfidence(), is(greaterThanOrEqualTo(0L)));
-        assertThat(response.getMultiplier(), is(greaterThanOrEqualTo(0L)));
+        assertThat(response.getMultiplier(), is(greaterThanOrEqualTo(0d)));
 
         Map<String, Long> feeByBlockTargetMap = response.getFeeByBlockTargetMap();
         assertThat(feeByBlockTargetMap, is(notNullValue()));
@@ -55,7 +55,7 @@ public class BitgoFeeApiClientImplTest {
         assertThat(response.getFeePerKb(), is(greaterThanOrEqualTo(0L)));
         assertThat(response.getCpfpFeePerKb(), is(greaterThanOrEqualTo(0L)));
         assertThat(response.getConfidence(), is(greaterThanOrEqualTo(0L)));
-        assertThat(response.getMultiplier(), is(greaterThanOrEqualTo(0L)));
+        assertThat(response.getMultiplier(), is(greaterThanOrEqualTo(0d)));
 
         Map<String, Long> feeByBlockTargetMap = response.getFeeByBlockTargetMap();
         assertThat(feeByBlockTargetMap, is(notNullValue()));
