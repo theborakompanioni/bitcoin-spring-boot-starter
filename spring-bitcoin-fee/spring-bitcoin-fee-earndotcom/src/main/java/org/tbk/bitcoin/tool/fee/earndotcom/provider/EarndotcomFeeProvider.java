@@ -43,6 +43,7 @@ public class EarndotcomFeeProvider extends AbstractFeeProvider {
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
 
         TransactionFeesSummary transactionFeesSummary = this.client.transactionFeesSummary();
+
         Optional<FeesSummaryEntry> summaryEntryOrEmpty = feeSelectionStrategy.select(request, transactionFeesSummary);
 
         if (summaryEntryOrEmpty.isEmpty()) {
@@ -54,12 +55,13 @@ public class EarndotcomFeeProvider extends AbstractFeeProvider {
 
         final BigDecimal satPerVbyte;
         if (request.isTargetDurationZeroOrLess()) {
-            // take the maximum fee other pay if the requested amount is the special value zero
+            // if the requested amount is the special value zero just take the minimum fee in the response:
+            //the last entry has a very high range (e.g. min: 103, max: 3448) most of the time.
+            satPerVbyte = BigDecimal.valueOf(feesSummaryEntry.getMinFee());
+        } else {
+            // otherwise just take the average of min and max
             satPerVbyte = BigDecimal.valueOf((feesSummaryEntry.getMinFee() + feesSummaryEntry.getMaxFee()))
                     .divide(BigDecimal.valueOf(2), 1, RoundingMode.HALF_UP);
-        } else {
-            // otherwise take the min from the eligible entries
-            satPerVbyte = BigDecimal.valueOf(feesSummaryEntry.getMinFee());
         }
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
