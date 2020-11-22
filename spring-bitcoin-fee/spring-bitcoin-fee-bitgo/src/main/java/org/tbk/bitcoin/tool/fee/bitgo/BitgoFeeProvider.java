@@ -30,7 +30,14 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         // while bitgo returns a "confidence" property, it does not support it as request param
-        return request.getDesiredConfidence().isEmpty();
+        boolean isConfidenceEmpty = request.getDesiredConfidence().isEmpty();
+
+        // "bitgo" throws errors if block target is below 2.
+        // the "feeByBlockTarget" in the response is very unreliable
+        // (it contains other values than when requests with given "block target" param - strange.
+        boolean isBlockTargetSupported = request.getBlockTarget() >= 2;
+
+        return isConfidenceEmpty && isBlockTargetSupported;
     }
 
     @Override
