@@ -42,7 +42,7 @@ public class BitcoinFeeExampleApplication {
     }
 
     @Bean
-    @Profile("demo")
+    @Profile("demo-disabled-for-now")
     public ApplicationRunner mainRunner(FeeProvider feeProvider) {
         return args -> {
             log.info("=====================");
