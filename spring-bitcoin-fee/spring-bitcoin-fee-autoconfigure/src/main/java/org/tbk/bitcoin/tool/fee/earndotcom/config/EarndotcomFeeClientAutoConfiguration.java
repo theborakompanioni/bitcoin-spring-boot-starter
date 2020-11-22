@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.tool.fee.earndotcom.config;
 
-import com.google.common.base.Joiner;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -15,8 +14,7 @@ import org.tbk.bitcoin.tool.fee.earndotcom.client.EarndotcomApiClientImpl;
 import org.tbk.bitcoin.tool.fee.earndotcom.provider.EarndotcomFeeProvider;
 import org.tbk.bitcoin.tool.fee.earndotcom.provider.FeeSelectionStrategy;
 import org.tbk.bitcoin.tool.fee.earndotcom.provider.SimpleFeeSelectionStrategy;
-
-import java.util.Map;
+import org.tbk.bitcoin.tool.fee.util.MoreCacheBuilder;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,7 +25,6 @@ import static java.util.Objects.requireNonNull;
         "org.tbk.bitcoin.tool.fee.earndotcom.enabled"
 }, havingValue = "true", matchIfMissing = true)
 public class EarndotcomFeeClientAutoConfiguration {
-    private static final Joiner.MapJoiner cacheBuilderSpecMapJoiner = Joiner.on(",").withKeyValueSeparator("=");
 
     private final EarndotcomFeeClientAutoConfigProperties properties;
 
@@ -64,7 +61,7 @@ public class EarndotcomFeeClientAutoConfiguration {
     }
 
     private CacheBuilderSpec defaultFeesListCacheBuilderSpec() {
-        return toCacheBuilderSpec(ImmutableMap.<String, String>builder()
+        return MoreCacheBuilder.toCacheBuilderSpec(ImmutableMap.<String, String>builder()
                 .put("initialCapacity", Long.toString(1))
                 .put("maximumSize", Long.toString(1))
                 .put("expireAfterWrite", "30s")
@@ -72,14 +69,10 @@ public class EarndotcomFeeClientAutoConfiguration {
     }
 
     private CacheBuilderSpec defaultFeesRecommendedCacheBuilderSpec() {
-        return toCacheBuilderSpec(ImmutableMap.<String, String>builder()
+        return MoreCacheBuilder.toCacheBuilderSpec(ImmutableMap.<String, String>builder()
                 .put("initialCapacity", Long.toString(1))
                 .put("maximumSize", Long.toString(1))
                 .put("expireAfterWrite", "30s")
                 .build());
-    }
-
-    private CacheBuilderSpec toCacheBuilderSpec(Map<String, String> configValues) {
-        return CacheBuilderSpec.parse(cacheBuilderSpecMapJoiner.join(configValues));
     }
 }
