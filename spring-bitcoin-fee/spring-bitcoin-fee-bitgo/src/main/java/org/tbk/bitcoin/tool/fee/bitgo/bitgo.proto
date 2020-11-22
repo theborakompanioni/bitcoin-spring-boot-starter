@@ -52,7 +52,7 @@ message BtcTxFeeResponse {
     int64 num_blocks = 3 [json_name = "numBlocks"];
     // only for BTC, the confidence for the fee estimates as a percentage
     int64 confidence = 4 [json_name = "confidence"];
-    int64 multiplier = 5 [json_name = "multiplier"];
+    double multiplier = 5 [json_name = "multiplier"];
     // only for BTC, fee estimates stored as a key-value pair where the key is the block target (between 1 and 1000) and the value is the corresponding fee estimate (in baseunits per kilobyte)
     map<string, int64> fee_by_block_target = 6 [json_name = "feeByBlockTarget"];
 }
