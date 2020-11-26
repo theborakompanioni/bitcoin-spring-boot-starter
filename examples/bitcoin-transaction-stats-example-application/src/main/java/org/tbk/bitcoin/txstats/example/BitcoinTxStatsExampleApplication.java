@@ -313,6 +313,9 @@ public class BitcoinTxStatsExampleApplication {
                         log.info("Score check for tx {}", val.getTxId());
                     })
                     .flatMap(txScoreService::scoreTransaction)
+                    .onErrorContinue((throwable, causingValue) -> {
+                        log.error("error while handling " + causingValue, throwable);
+                    })
                     .subscribe(score -> {
                         String txId = score.getTx().getTxId().toString();
 
