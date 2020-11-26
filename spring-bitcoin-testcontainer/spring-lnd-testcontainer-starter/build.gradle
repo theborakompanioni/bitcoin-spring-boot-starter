@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
+    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
+
+    implementation project(':spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter')
+
+    testImplementation "io.projectreactor:reactor-core"
+}
