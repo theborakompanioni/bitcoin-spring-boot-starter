@@ -93,83 +93,29 @@
     }
     */
 
-    function renderFeeTable(table, json) {
-        generateTable(table, json);
-    }
-
-    function renderProviderTable(table, json) {
-        let providerNames = new Set();
-        for (let row of json.rows) {
-            for (let entry of row.entries) {
-                for (let recommendation of entry.fee_recommendations) {
-                    providerNames.add(recommendation.provider_name);
-                }
-            }
-        }
-
-        const columns = Array.from(providerNames.values()).map(val => {
-            return {
-                text: val
-            };
-        });
-
-        const rows = [];
-        for (let row of json.rows) {
-            const newRow = {
-                header: row.header,
-                entries: []
-            };
-
-            for (let entry of row.entries) {
-                for (let providerName of providerNames) {
-                    let providerRecommendation = null;
-                    for (let recommendation of entry.fee_recommendations) {
-                        if (recommendation.provider_name === providerName) {
-                            providerRecommendation = recommendation;
-                            break;
-                        }
-                    }
-
-                    if (providerRecommendation === null) {
-                        newRow.entries.push({
-                            text: "-"
-                        });
-                    } else {
-                        newRow.entries.push({
-                            text: "" + providerRecommendation.value
-                        });
-                    }
-                }
-            }
-
-            rows.push(newRow);
-        }
-
-        generateTable(table, {
-            columns: columns,
-            rows: rows
-        });
-    }
-
     const loadingIndicatorElement = document.getElementById("loading-indicator");
     loadingIndicatorElement.textContent = "loading...";
 
     const logContainerElement = document.getElementById("json");
     logContainerElement.textContent = "";
 
-    httpGetAsync("/api/v1/fee/table.json", (data) => {
-        loadingIndicatorElement.textContent = "";
-
-        const json = JSON.parse(data);
-        logContainerElement.textContent = JSON.stringify(json, null, 2);
+    httpGetAsync("/api/v1/fee/table.json", (feeTableJson) => {
+        const feeTable = JSON.parse(feeTableJson);
+        logContainerElement.textContent = JSON.stringify(feeTable, null, 2);
 
         const feeTableElement = document.getElementById("fee-table");
-        renderFeeTable(feeTableElement, json);
+        generateTable(feeTableElement, feeTable);
 
-        const providerTableElement = document.getElementById("provider-table");
-        renderProviderTable(providerTableElement, json);
+        httpGetAsync("/api/v1/fee/provider/table.json", (providerFeeTableJson) => {
+            loadingIndicatorElement.textContent = "";
+
+            const providerFeeTable = JSON.parse(providerFeeTableJson);
+
+            const providerTableElement = document.getElementById("provider-table");
+            generateTable(providerTableElement, providerFeeTable);
+        });
+
     });
-
 
 </script>
 </html>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tbk.bitcoin.fee.example.api.proto.FeeRecommendation;
 import org.tbk.bitcoin.fee.example.api.proto.FeeTableResponse;
+import org.tbk.bitcoin.fee.example.api.proto.FeeTableResponse.Row.RowEntry;
 import org.tbk.bitcoin.tool.fee.FeeProvider;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequestImpl;
@@ -33,26 +34,32 @@ import static com.google.common.base.Preconditions.checkArgument;
 @RequestMapping(value = "/api/v1/fee")
 @RequiredArgsConstructor
 public class FeeCtrl {
-    private static final String SINGLE_KEY_VALUE = "*";
-    private static final JsonFormat.Printer jsonPrinter = JsonFormat.printer();
+    private static final String FEE_TABLE_KEY = "FEE_TABLE";
+    private static final String PROVIDER_FEE_TABLE_KEY = "PROVIDER_FEE_TABLE";
 
     private final FeeProvider feeProvider;
+    private final JsonFormat.Printer jsonPrinter;
 
     private final LoadingCache<String, FeeTableResponse> tableResponseCache = CacheBuilder.newBuilder()
             .refreshAfterWrite(10, TimeUnit.MINUTES)
             .build(new CacheLoader<>() {
                 @Override
                 public FeeTableResponse load(String key) {
-                    checkArgument(SINGLE_KEY_VALUE.equals(key));
-                    return create();
+                    if (FEE_TABLE_KEY.equals(key)) {
+                        return createFeeTable();
+                    }
+                    if (PROVIDER_FEE_TABLE_KEY.equals(key)) {
+                        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
+                        return toProviderFeeTable(feeTableResponse);
+                    }
+                    throw new IllegalArgumentException("Key not supported: " + key);
                 }
             });
 
     @GetMapping("/table")
     public ResponseEntity<FeeTableResponse> table() {
 
-        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(SINGLE_KEY_VALUE);
-
+        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
 
         return ResponseEntity.ok(feeTableResponse);
     }
@@ -60,7 +67,7 @@ public class FeeCtrl {
     @GetMapping("/table.json")
     public ResponseEntity<String> tableJson() throws InvalidProtocolBufferException {
 
-        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(SINGLE_KEY_VALUE);
+        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
 
         String json = jsonPrinter.print(feeTableResponse);
 
@@ -68,7 +75,18 @@ public class FeeCtrl {
     }
 
 
-    private FeeTableResponse create() {
+    @GetMapping("/provider/table.json")
+    public ResponseEntity<String> providerTableJson() throws InvalidProtocolBufferException {
+
+        FeeTableResponse providerFeeTable = tableResponseCache.getUnchecked(PROVIDER_FEE_TABLE_KEY);
+
+        String json = jsonPrinter.print(providerFeeTable);
+
+        return ResponseEntity.ok(json);
+    }
+
+
+    private FeeTableResponse createFeeTable() {
         List<Duration> durations = ImmutableList.<Duration>builder()
                 .add(Duration.ZERO)
                 .add(Duration.ofMinutes(10))
@@ -121,8 +139,8 @@ public class FeeCtrl {
                                 .setHeader(FeeTableResponse.Row.RowHeader.newBuilder()
                                         .setText(val.getKey().toString())
                                         .build())
-                                .addEntry(FeeTableResponse.Row.RowEntry.newBuilder()
-                                        .setText("" + val.getValue().setScale(2, RoundingMode.UP))
+                                .addEntry(RowEntry.newBuilder()
+                                        .setText("" + val.getValue().setScale(2, RoundingMode.UP).toPlainString())
                                         .setValue(val.getValue().doubleValue())
                                         .addAllFeeRecommendation(durationToFeeRecommendations.get(val.getKey()).stream()
                                                 .map(r -> FeeRecommendation.newBuilder()
@@ -138,4 +156,55 @@ public class FeeCtrl {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+
+    public FeeTableResponse toProviderFeeTable(FeeTableResponse feeTable) {
+        Set<String> providerNames = feeTable.getRowList().stream()
+                .map(FeeTableResponse.Row::getEntryList)
+                .flatMap(Collection::stream)
+                .map(RowEntry::getFeeRecommendationList)
+                .flatMap(Collection::stream)
+                .map(FeeRecommendation::getProviderName)
+                .collect(Collectors.toSet());
+
+        List<FeeTableResponse.Column> columns = providerNames.stream()
+                .map(val -> FeeTableResponse.Column.newBuilder()
+                        .setText(val)
+                        .build())
+                .collect(Collectors.toList());
+
+        RowEntry missingEstimationRowEntry = RowEntry.newBuilder()
+                .setText("-")
+                .setValue(0d)
+                .build();
+
+        List<FeeTableResponse.Row> rows = feeTable.getRowList().stream()
+                .map(row -> {
+                    List<RowEntry> rowEntries = row.getEntryList().stream()
+                            .flatMap(entry -> providerNames.stream()
+                                    .map(provider -> entry.getFeeRecommendationList().stream()
+                                            .filter(rec -> provider.equals(rec.getProviderName()))
+                                            .findFirst()
+                                            .map(recommendation -> RowEntry.newBuilder()
+                                                    .setText("" + BigDecimal.valueOf(recommendation.getValue()).setScale(2, RoundingMode.UP).toPlainString())
+                                                    .setValue(recommendation.getValue())
+                                                    .addFeeRecommendation(recommendation)
+                                                    .build()
+                                            )
+                                            .orElse(missingEstimationRowEntry)))
+                            .collect(Collectors.toList());
+
+                    return FeeTableResponse.Row.newBuilder()
+                            .setHeader(row.getHeader())
+                            .addAllEntry(rowEntries)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return FeeTableResponse.newBuilder()
+                .addAllColumn(columns)
+                .addAllRow(rows)
+                .build();
+    }
+
 }
