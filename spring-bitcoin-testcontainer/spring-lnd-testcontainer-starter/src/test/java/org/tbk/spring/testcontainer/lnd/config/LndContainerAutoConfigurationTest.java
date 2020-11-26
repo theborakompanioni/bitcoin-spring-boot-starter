@@ -43,17 +43,18 @@ public class LndContainerAutoConfigurationTest {
         )
                 .withPropertyValues(
                         "org.tbk.spring.bitcoin.testcontainer.enabled=true",
-                        "org.tbk.spring.lnd.testcontainer.enabled=true"
-
-                        ,
-
                         "org.tbk.spring.bitcoin.testcontainer.rpcuser=myrpcuser",
                         "org.tbk.spring.bitcoin.testcontainer.rpcpassword=correcthorsebatterystaple",
                         "org.tbk.spring.bitcoin.testcontainer.exposed-ports=28332, 28333",
-                        "org.tbk.spring.bitcoin.testcontainer.commands=-zmqpubrawblock=tcp://0.0.0.0:28332, -zmqpubrawtx=tcp://0.0.0.0:28333"
+                        "org.tbk.spring.bitcoin.testcontainer.commands=" +
+                                "-zmqpubrawblock=tcp://0.0.0.0:28332, " +
+                                "-zmqpubrawtx=tcp://0.0.0.0:28333"
                         ,
-                        "org.tbk.spring.lnd.testcontainer.rpcuser=myrpcuser",
-                        "org.tbk.spring.lnd.testcontainer.rpcpassword=correcthorsebatterystaple"
+                        // ----------------------------------------------
+                        "org.tbk.spring.lnd.testcontainer.enabled=true",
+                        "org.tbk.spring.lnd.testcontainer.commands=" +
+                                "--bitcoind.rpcuser=myrpcuser, " +
+                                "--bitcoind.rpcpass=correcthorsebatterystaple"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("lndContainer"), is(true));

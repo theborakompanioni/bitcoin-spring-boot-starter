@@ -1,5 +1,7 @@
 
 # Resources
+- LightningJ: https://www.lightningj.org/
+- LightningJ (GitHub): https://github.com/lightningj-org/lightningj
 - Working with lnd and Docker: https://dev.lightning.community/guides/docker/
 - lnd docker readme.md
   - https://github.com/lightningnetwork/lnd/blob/master/docker/README.md

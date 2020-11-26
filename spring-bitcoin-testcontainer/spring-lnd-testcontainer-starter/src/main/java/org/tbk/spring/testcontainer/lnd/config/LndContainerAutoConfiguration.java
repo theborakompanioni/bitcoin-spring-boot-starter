@@ -88,79 +88,47 @@ public class LndContainerAutoConfiguration {
                 ;
     }
 
-    /*
-        --bitcoin.active \
---bitcoin.testnet \
---debuglevel=info \
---bitcoin.node=neutrino \
---neutrino.connect=testnet1-btcd.zaphq.io \
---neutrino.connect=testnet2-btcd.zaphq.io \
---autopilot.active \
---rpclisten=0.0.0.0:10009
------------
-LND_CHAIN: "btc"
-LND_ENVIRONMENT: "regtest"
-LND_EXPLORERURL: "http://nbxplorer:32838/"
-LND_EXTRA_ARGS: |
-restlisten=0.0.0.0:8080
-rpclisten=127.0.0.1:10008
-rpclisten=0.0.0.0:10009
-bitcoin.node=bitcoind
-bitcoind.rpchost=bitcoind:43782
-bitcoind.zmqpubrawblock=tcp://bitcoind:28332
-bitcoind.zmqpubrawtx=tcp://bitcoind:28333
-externalip=merchant_lnd:9735
-no-macaroons=1
--------------
-
-[void@localhost tmp]$ docker run -v lnd-data:/0.11.1-beta
---name=lnd-node -d
--p 9735:9735
--p 10009:10009
-lnzap/lnd:0.11.1-beta
---bitcoin.active
---bitcoin.regtest
---debuglevel=info
---bitcoin.node=bitcoind
---autopilot.active=false
---rpclisten=0.0.0.0:10009
+    /**
+     * Build command list.
+     * e.g. see https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
+     *
+     * @return
      */
     private List<String> buildCommandList() {
-        List<String> fixedCommands = ImmutableList.<String>builder()
-                .add("--noseedbackup")
-                //.add("--alias=tbk-lnd-testcontainer-regtest")
-                //.add("--debuglevel=debug")
-                //.add("--debughtlc=true")
-                //.add("--trickledelay=1000")
-                ////.add("--maxpendingchannels=10")
-                //.add("--color=#eeeeee")
-                // ---------
-                ////.add("--listen=9735")
+
+        List<String> requiredCommands = ImmutableList.<String>builder()
+                .add("--noseedbackup") // so no create/unlock wallet is needed ("lncli unlock")
+                //.add("--listen=9735")
                 //.add("--externalip=127.0.0.1:9735")
                 .add("--restlisten=0.0.0.0:8080")
                 .add("--rpclisten=0.0.0.0:10009")
-                // ---------
-                //.add("--bitcoin.defaultchanconfs=1")
+                .build();
+
+        List<String> optionalCommands = ImmutableList.<String>builder()
+                .add("--alias=tbk-lnd-testcontainer-regtest")
+                .add("--color=#eeeeee")
+                .add("--debuglevel=debug")
+                .add("--trickledelay=1000")
+                .build();
+
+        List<String> overridingDefaultsCommands = ImmutableList.<String>builder()
+                .add("--maxpendingchannels=10")
+                //.add("--autopilot.active=false") <-- fails with "bool flag `--autopilot.active' cannot have an argument"
+                .add("protocol.wumbo-channels=1")
+                .build();
+
+        List<String> bitcoinCommands = ImmutableList.<String>builder()
                 .add("--bitcoin.active")
                 .add("--bitcoin.regtest")
                 .add("--bitcoin.node=bitcoind")
-                //.add("--bitcoind.rpcuser=lndrpc")
-                //.add("--bitcoind.rpcpass=afixedpasswordbecauselndsuckswithcookiefile")
-                // ---
-                //.add("--bitcoind.rpchost=host.testcontainers.internal:8332")
-                //.add("--bitcoind.zmqpubrawblock=host.testcontainers.internal:28332")
-                //.add("--bitcoind.zmqpubrawtx=host.testcontainers.internal:28333")
+                .add("--bitcoin.defaultchanconfs=1")
                 .build();
 
         ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
-                .addAll(fixedCommands);
-
-        this.properties.getRpcuser()
-                .map(val -> String.format("--bitcoind.rpcuser=%s", val))
-                .ifPresent(commandsBuilder::add);
-        this.properties.getRpcpassword()
-                .map(val -> String.format("--bitcoind.rpcpass=%s", val))
-                .ifPresent(commandsBuilder::add);
+                .addAll(requiredCommands)
+                .addAll(optionalCommands)
+                .addAll(overridingDefaultsCommands)
+                .addAll(bitcoinCommands);
 
         commandsBuilder.addAll(this.properties.getCommands());
 
