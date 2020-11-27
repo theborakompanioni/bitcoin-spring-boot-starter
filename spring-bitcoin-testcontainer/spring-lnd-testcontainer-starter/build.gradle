@@ -5,6 +5,9 @@ plugins {
 dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
+    // currently a hard dependency on the bitcoind testcontainer package - try to make it an optional dependency!
+    implementation project(':spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter')
+
     implementation "com.google.guava:guava:${guavaVersion}"
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
@@ -15,12 +18,12 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
-    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
-    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
+    //testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
+    //testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    //testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
+    //testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
-    implementation project(':spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter')
+    testImplementation 'org.lightningj:lightningj:0.11.1-Beta'
 
     testImplementation "io.projectreactor:reactor-core"
 }

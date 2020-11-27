@@ -23,7 +23,6 @@ import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.lang.math.RandomUtils;
 import reactor.core.publisher.Flux;
 

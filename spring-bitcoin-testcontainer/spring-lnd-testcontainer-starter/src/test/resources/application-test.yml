@@ -41,16 +41,16 @@ org.tbk.spring.bitcoin.testcontainer:
     # Send trace/debug info to console instead of debug.log.
     - '-printtoconsole=1'
 
-org.tbk.bitcoin.jsonrpc:
-  network: regtest
-  rpchost: http://localhost
-  rpcport: 18443
-  rpcuser: myrpcuser
-  rpcpassword: correcthorsebatterystaple
+#org.tbk.bitcoin.jsonrpc:
+#  network: regtest
+#  rpchost: http://localhost
+#  rpcport: 18443
+#  rpcuser: myrpcuser
+#  rpcpassword: correcthorsebatterystaple
 
-org.tbk.bitcoin.zeromq:
-  network: regtest
-  zmqpubrawblock: tcp://localhost:28332
-  zmqpubrawtx: tcp://localhost:28333
-  zmqpubhashblock: tcp://localhost:28334
-  zmqpubhashtx: tcp://localhost:28335
+#org.tbk.bitcoin.zeromq:
+#  network: regtest
+#  zmqpubrawblock: tcp://localhost:28332
+#  zmqpubrawtx: tcp://localhost:28333
+#  zmqpubhashblock: tcp://localhost:28334
+#  zmqpubhashtx: tcp://localhost:28335
