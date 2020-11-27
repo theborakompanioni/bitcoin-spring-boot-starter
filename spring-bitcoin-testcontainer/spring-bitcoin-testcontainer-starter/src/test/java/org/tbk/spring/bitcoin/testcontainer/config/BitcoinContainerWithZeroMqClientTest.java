@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig;
+import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.lang.math.RandomUtils;
 import reactor.core.publisher.Flux;
@@ -63,7 +64,7 @@ public class BitcoinContainerWithZeroMqClientTest {
         @Bean
         public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
                                               BitcoinJsonRpcClientAutoConfigProperties properties,
-                                              @Qualifier("bitcoinContainer") GenericContainer<?> bitcoinContainer) {
+                                              BitcoindContainer<?> bitcoinContainer) {
             URI uri = URI.create(properties.getRpchost() + ":" + bitcoinContainer.getMappedPort(properties.getRpcport()));
             return new RpcConfig(bitcoinNetworkParameters, uri, properties.getRpcuser(), properties.getRpcpassword());
         }
@@ -76,7 +77,7 @@ public class BitcoinContainerWithZeroMqClientTest {
         @Bean
         public BitcoinZmqClientConfig bitcoinZmqClientConfig(
                 NetworkParameters bitcoinNetworkParameters,
-                @Qualifier("bitcoinContainer") GenericContainer<?> bitcoinContainer,
+                BitcoindContainer<?> bitcoinContainer,
                 BitcoinContainerProperties bitcoinContainerProperties) {
 
             List<String> customZeroMqSettings = bitcoinContainerProperties.getCommands().stream()
@@ -92,9 +93,11 @@ public class BitcoinContainerWithZeroMqClientTest {
                         .map(val -> Integer.parseInt(val, 10))
                         .findFirst();
 
-                return specifiedListeningPort
-                        .map(bitcoinContainer::getMappedPort)
-                        .map(val -> "tcp://localhost:" + val);
+                return specifiedListeningPort.map(port -> {
+                    String host = bitcoinContainer.getHost();
+                    Integer mappedPort = bitcoinContainer.getMappedPort(port);
+                    return "tcp://" + host + ":" + mappedPort;
+                });
             };
 
             Optional<String> pubRawBlockUrl = replacePortInUrl.apply("zmqpubrawblock");

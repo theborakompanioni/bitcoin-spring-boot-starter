@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
@@ -54,7 +55,7 @@ public class BitcoinContainerAutoConfiguration {
      * P2P: 18444
      */
     @Bean(name = "bitcoinContainer", initMethod = "start", destroyMethod = "stop")
-    public GenericContainer<?> bitcoinContainer() {
+    public BitcoindContainer bitcoinContainer() {
         List<String> commands = buildCommandList();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
@@ -72,7 +73,7 @@ public class BitcoinContainerAutoConfiguration {
                 .ports(hardcodedStandardPorts)
                 .build();
 
-        return new GenericContainer<>(dockerImageName)
+        return new BitcoindContainer<>(dockerImageName)
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .waitingFor(waitStrategy);

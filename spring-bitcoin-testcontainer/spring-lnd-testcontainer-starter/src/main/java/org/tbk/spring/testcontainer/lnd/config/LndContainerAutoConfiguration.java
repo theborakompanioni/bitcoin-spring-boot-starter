@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerAutoConfiguration;
 import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerProperties;
+import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.Container;
@@ -36,9 +37,9 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.spring.lnd.testcontainer.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoinContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
-    // currently only the image from "btcpayserver" is supported
+    // currently only the image from "lnzap" is supported
     private static final String DOCKER_IMAGE_NAME = "lnzap/lnd:0.11.1-beta";
-    //private static final String DOCKER_IMAGE_NAME = "btcpayserver/lnd:v0.11.0-beta";
+
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
     private final LndContainerProperties properties;
@@ -48,9 +49,7 @@ public class LndContainerAutoConfiguration {
     }
 
     @Bean(name = "lndContainer", initMethod = "start", destroyMethod = "stop")
-    public LndContainer lndContainer(
-            @Qualifier("bitcoinContainer") GenericContainer<?> bitcoinContainer,
-            BitcoinContainerProperties bitcoinContainerProperties) {
+    public LndContainer<?> lndContainer(BitcoindContainer<?> bitcoinContainer) {
 
         Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(18443));
         Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(28332));

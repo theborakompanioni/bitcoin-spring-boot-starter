@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.testcontainers.containers.GenericContainer;
+import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -24,7 +24,7 @@ public class BitcoinContainerAutoConfigurationTest {
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinContainer"), is(false));
                     try {
-                        context.getBean(GenericContainer.class);
+                        context.getBean(BitcoindContainer.class);
                         Assert.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
@@ -40,7 +40,7 @@ public class BitcoinContainerAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinContainer"), is(true));
-                    assertThat(context.getBean(GenericContainer.class), is(notNullValue()));
+                    assertThat(context.getBean(BitcoindContainer.class), is(notNullValue()));
                 });
     }
 
@@ -55,8 +55,7 @@ public class BitcoinContainerAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinContainer"), is(true));
-                    assertThat(context.getBean(GenericContainer.class), is(notNullValue()));
-
+                    assertThat(context.getBean(BitcoindContainer.class), is(notNullValue()));
 
                     BitcoinContainerProperties properties = context.getBean(BitcoinContainerProperties.class);
                     assertThat(properties, is(notNullValue()));
@@ -83,7 +82,7 @@ public class BitcoinContainerAutoConfigurationTest {
                     try {
                         context.start();
                         // triggers creation of container
-                        GenericContainer<?> ignoredOnPurpose = context.getBean(GenericContainer.class);
+                        BitcoindContainer<?> ignoredOnPurpose = context.getBean(BitcoindContainer.class);
                         Assert.fail("Should have failed to start application context");
                     } catch (Exception e) {
 

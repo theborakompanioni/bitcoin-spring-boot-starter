@@ -2,13 +2,12 @@ package org.tbk.spring.bitcoin.testcontainer.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.NetworkParameters;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig;
 import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerProperties;
-import org.testcontainers.containers.GenericContainer;
+import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class CustomTestcontainerZeroMqClientConfig {
     @Bean
     public BitcoinZmqClientConfig bitcoinZmqClientConfig(
             NetworkParameters bitcoinNetworkParameters,
-            @Qualifier("bitcoinContainer") GenericContainer<?> bitcoinContainer,
+            BitcoindContainer<?> bitcoinContainer,
             BitcoinContainerProperties bitcoinContainerProperties) {
 
         List<String> customZeroMqSettings = bitcoinContainerProperties.getCommands().stream()
@@ -43,9 +42,11 @@ public class CustomTestcontainerZeroMqClientConfig {
                     .map(val -> Integer.parseInt(val, 10))
                     .findFirst();
 
-            return specifiedListeningPort
-                    .map(bitcoinContainer::getMappedPort)
-                    .map(val -> "tcp://localhost:" + val);
+            return specifiedListeningPort.map(port -> {
+                String host = bitcoinContainer.getHost();
+                Integer mappedPort = bitcoinContainer.getMappedPort(port);
+                return "tcp://" + host + ":" + mappedPort;
+            });
         };
 
         Optional<String> pubRawBlockUrl = replacePortInUrl.apply("zmqpubrawblock");

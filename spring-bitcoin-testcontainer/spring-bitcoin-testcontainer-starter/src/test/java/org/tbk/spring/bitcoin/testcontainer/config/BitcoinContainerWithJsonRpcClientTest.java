@@ -11,7 +11,6 @@ import org.bitcoinj.core.Sha256Hash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -20,7 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
-import org.testcontainers.containers.GenericContainer;
+import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -55,7 +54,7 @@ public class BitcoinContainerWithJsonRpcClientTest {
         @Bean
         public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
                                               BitcoinJsonRpcClientAutoConfigProperties properties,
-                                              @Qualifier("bitcoinContainer") GenericContainer<?> bitcoinContainer) {
+                                              BitcoindContainer<?> bitcoinContainer) {
             URI uri = URI.create(properties.getRpchost() + ":" + bitcoinContainer.getMappedPort(properties.getRpcport()));
             return new RpcConfig(bitcoinNetworkParameters, uri, properties.getRpcuser(), properties.getRpcpassword());
         }
