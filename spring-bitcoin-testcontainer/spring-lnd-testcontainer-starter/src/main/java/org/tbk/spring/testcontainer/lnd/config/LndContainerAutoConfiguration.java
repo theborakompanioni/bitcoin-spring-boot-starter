@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerAutoConfiguration;
 import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerProperties;
+import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
@@ -47,7 +48,7 @@ public class LndContainerAutoConfiguration {
     }
 
     @Bean(name = "lndContainer", initMethod = "start", destroyMethod = "stop")
-    public GenericContainer<?> lndContainer(
+    public LndContainer lndContainer(
             @Qualifier("bitcoinContainer") GenericContainer<?> bitcoinContainer,
             BitcoinContainerProperties bitcoinContainerProperties) {
 
@@ -81,7 +82,7 @@ public class LndContainerAutoConfiguration {
                 .ports(hardcodedStandardPorts)
                 .build();
 
-        return new GenericContainer<>(dockerImageName)
+        return new LndContainer<>(dockerImageName)
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .waitingFor(waitStrategy)

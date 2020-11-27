@@ -11,6 +11,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.containers.GenericContainer;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class LndContainerApplicationTest {
 
     @Autowired(required = false)
     @Qualifier("lndContainer")
-    private GenericContainer<?> lndContainer;
+    private LndContainer<?> lndContainer;
 
     @Test
     public void contextLoads() throws IOException {

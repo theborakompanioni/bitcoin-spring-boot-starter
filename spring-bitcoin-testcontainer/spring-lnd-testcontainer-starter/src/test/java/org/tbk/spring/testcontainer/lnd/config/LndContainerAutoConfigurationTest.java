@@ -6,9 +6,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerAutoConfiguration;
+import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.containers.GenericContainer;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class LndContainerAutoConfigurationTest {
@@ -58,7 +60,7 @@ public class LndContainerAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("lndContainer"), is(true));
-                    assertThat(context.getBeansOfType(GenericContainer.class).values(), hasSize(2));
+                    assertThat(context.getBean(LndContainer.class), is(notNullValue()));
                 });
     }
 
