@@ -12,8 +12,8 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-starter'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 
-include 'spring-testcontainer:spring-bitcoin-testcontainer-starter'
-include 'spring-testcontainer:spring-bitcoin-testcontainer-example-application'
+include 'spring-testcontainer:spring-testcontainer-bitcoind-starter'
+include 'spring-testcontainer:spring-testcontainer-bitcoind-example-application'
 include 'spring-testcontainer:spring-testcontainer-lnd-starter'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
