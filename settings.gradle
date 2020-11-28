@@ -15,6 +15,7 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-starter'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-example-application'
 include 'spring-testcontainer:spring-testcontainer-lnd-starter'
+include 'spring-testcontainer:spring-testcontainer-neo4j-starter'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
 include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
@@ -37,7 +38,6 @@ include 'spring-bitcoin-fee:spring-bitcoin-fee-example-application'
 
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-core'
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter'
-include 'spring-bitcoin-neo4j:spring-neo4j-testcontainer-starter'
 
 include 'spring-jsr354:spring-jsr354-core'
 include 'spring-jsr354:spring-jsr354-autoconfigure'
