@@ -6,7 +6,7 @@ dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
     // currently a hard dependency on the bitcoind testcontainer package - try to make it an optional dependency!
-    implementation project(':spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter')
+    implementation project(':spring-testcontainer:spring-bitcoin-testcontainer-starter')
 
     implementation "com.google.guava:guava:${guavaVersion}"
 

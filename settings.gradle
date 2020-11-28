@@ -12,9 +12,9 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-starter'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 
-include 'spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-starter'
-include 'spring-bitcoin-testcontainer:spring-bitcoin-testcontainer-example-application'
-include 'spring-bitcoin-testcontainer:spring-lnd-testcontainer-starter'
+include 'spring-testcontainer:spring-bitcoin-testcontainer-starter'
+include 'spring-testcontainer:spring-bitcoin-testcontainer-example-application'
+include 'spring-testcontainer:spring-lnd-testcontainer-starter'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
 include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
