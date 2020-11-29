@@ -1,8 +1,6 @@
 package org.tbk.lightning.lnd.jsonrpc.config;
 
-import com.google.common.base.Strings;
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

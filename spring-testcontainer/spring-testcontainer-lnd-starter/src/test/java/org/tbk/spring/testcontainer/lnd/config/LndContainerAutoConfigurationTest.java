@@ -21,19 +21,17 @@ public class LndContainerAutoConfigurationTest {
         this.contextRunner.withUserConfiguration(
                 BitcoindContainerAutoConfiguration.class,
                 LndContainerAutoConfiguration.class
-        )
-                .withPropertyValues(
-                        "org.tbk.spring.testcontainer.lnd.enabled=false"
-                )
-                .run(context -> {
-                    assertThat(context.containsBean("lndContainer"), is(false));
-                    try {
-                        context.getBean(LndContainer.class);
-                        Assert.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
-                });
+        ).withPropertyValues(
+                "org.tbk.spring.testcontainer.lnd.enabled=false"
+        ).run(context -> {
+            assertThat(context.containsBean("lndContainer"), is(false));
+            try {
+                context.getBean(LndContainer.class);
+                Assert.fail("Should have thrown exception");
+            } catch (NoSuchBeanDefinitionException e) {
+                // continue
+            }
+        });
     }
 
     @Test
@@ -41,26 +39,24 @@ public class LndContainerAutoConfigurationTest {
         this.contextRunner.withUserConfiguration(
                 BitcoindContainerAutoConfiguration.class,
                 LndContainerAutoConfiguration.class
-        )
-                .withPropertyValues(
-                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
-                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
-                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
-                        "org.tbk.spring.testcontainer.bitcoind.exposed-ports=28332, 28333",
-                        "org.tbk.spring.testcontainer.bitcoind.commands=" +
-                                "-zmqpubrawblock=tcp://0.0.0.0:28332, " +
-                                "-zmqpubrawtx=tcp://0.0.0.0:28333"
-                        ,
-                        // ----------------------------------------------
-                        "org.tbk.spring.testcontainer.lnd.enabled=true",
-                        "org.tbk.spring.testcontainer.lnd.commands=" +
-                                "--bitcoind.rpcuser=myrpcuser, " +
-                                "--bitcoind.rpcpass=correcthorsebatterystaple"
-                )
-                .run(context -> {
-                    assertThat(context.containsBean("lndContainer"), is(true));
-                    assertThat(context.getBean(LndContainer.class), is(notNullValue()));
-                });
+        ).withPropertyValues(
+                "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
+                "org.tbk.spring.testcontainer.bitcoind.exposed-ports=28332, 28333",
+                "org.tbk.spring.testcontainer.bitcoind.commands=" +
+                        "-zmqpubrawblock=tcp://0.0.0.0:28332, " +
+                        "-zmqpubrawtx=tcp://0.0.0.0:28333"
+                ,
+                // ----------------------------------------------
+                "org.tbk.spring.testcontainer.lnd.enabled=true",
+                "org.tbk.spring.testcontainer.lnd.commands=" +
+                        "--bitcoind.rpcuser=myrpcuser, " +
+                        "--bitcoind.rpcpass=correcthorsebatterystaple"
+        ).run(context -> {
+            assertThat(context.containsBean("lndContainer"), is(true));
+            assertThat(context.getBean(LndContainer.class), is(notNullValue()));
+        });
     }
 
 }

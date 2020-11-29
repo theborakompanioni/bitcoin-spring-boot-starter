@@ -23,7 +23,6 @@ import org.tbk.lightning.lnd.jsonrpc.LndRpcConfigImpl;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
-import java.net.URI;
 import java.nio.file.Files;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -45,22 +44,6 @@ public class LndJsonRpcClientAutoConfiguration {
     @ConditionalOnMissingBean
     public LndJsonRpcClientFactory lndJsonRpcClientFactory() {
         return new LndJsonRpcClientFactoryImpl();
-    }
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.jsonrpc.rpchost",
-            "org.tbk.lightning.lnd.jsonrpc.rpcport"
-    })
-    public LndRpcConfig lndJsonRpcConfig(
-            @Qualifier("lndJsonRpcMacaroonContext") MacaroonContext lndJsonRpcMacaroonContext,
-            @Qualifier("lndJsonRpcSslContext") SslContext lndJsonRpcSslContext) {
-        return LndRpcConfigImpl.builder()
-                .rpchost(properties.getRpchost())
-                .rpcport(properties.getRpcport())
-                .macaroonContext(lndJsonRpcMacaroonContext)
-                .sslContext(lndJsonRpcSslContext)
-                .build();
     }
 
     @Bean("lndJsonRpcMacaroonContext")
@@ -96,6 +79,24 @@ public class LndJsonRpcClientAutoConfiguration {
 
         return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                 .trustManager(certFile)
+                .build();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty({
+            "org.tbk.lightning.lnd.jsonrpc.rpchost",
+            "org.tbk.lightning.lnd.jsonrpc.rpcport"
+    })
+    @ConditionalOnBean({MacaroonContext.class, SslContext.class})
+    public LndRpcConfig lndJsonRpcConfig(
+            @Qualifier("lndJsonRpcMacaroonContext") MacaroonContext lndJsonRpcMacaroonContext,
+            @Qualifier("lndJsonRpcSslContext") SslContext lndJsonRpcSslContext) {
+        return LndRpcConfigImpl.builder()
+                .rpchost(properties.getRpchost())
+                .rpcport(properties.getRpcport())
+                .macaroonContext(lndJsonRpcMacaroonContext)
+                .sslContext(lndJsonRpcSslContext)
                 .build();
     }
 

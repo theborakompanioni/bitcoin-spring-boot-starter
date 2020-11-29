@@ -23,6 +23,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.tbk.lightning.lnd.jsonrpc.LndRpcConfig;
+import org.tbk.lightning.lnd.jsonrpc.LndRpcConfigImpl;
+import org.tbk.lightning.lnd.jsonrpc.config.LndJsonRpcClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import reactor.core.publisher.Flux;
 
@@ -49,41 +52,28 @@ public class LndContainerApplicationTest {
         }
 
         @Configuration
-        public static class LightningjAutoConfiguration {
-            private static final String certFileInContainer = "/lnd/.lnd/tls.cert";
-            private static final String macaroonFileInContainer = "/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon";
+        public static class CustomTestcontainerLndJsonRpcConfiguration {
 
             @Bean
-            public SynchronousLndAPI lightningjSynchronousLndApi(LndContainer<?> lndContainer,
-                                                                 SslContext lightningjSslContext,
-                                                                 MacaroonContext lightningjMacaroonContext) {
+            public LndRpcConfig lndRpcConfig(LndJsonRpcClientAutoConfigProperties properties,
+                                             LndContainer<?> lndContainer,
+                                             MacaroonContext lndJsonRpcMacaroonContext,
+                                             SslContext lndJsonRpcSslContext) {
                 String host = lndContainer.getHost();
-                Integer mappedPort = lndContainer.getMappedPort(10009);
+                Integer mappedPort = lndContainer.getMappedPort(properties.getRpcport());
 
-                return new SynchronousLndAPI(
-                        host,
-                        mappedPort,
-                        lightningjSslContext,
-                        lightningjMacaroonContext);
+                return LndRpcConfigImpl.builder()
+                        .rpchost(host)
+                        .rpcport(mappedPort)
+                        .macaroonContext(lndJsonRpcMacaroonContext)
+                        .sslContext(lndJsonRpcSslContext)
+                        .build();
             }
 
             @Bean
-            public AsynchronousLndAPI lightningjAsynchronousLndApi(LndContainer<?> lndContainer,
-                                                                   SslContext lightningjSslContext,
-                                                                   MacaroonContext lightningjMacaroonContext) {
-                String host = lndContainer.getHost();
-                Integer mappedPort = lndContainer.getMappedPort(10009);
-
-                return new AsynchronousLndAPI(
-                        host,
-                        mappedPort,
-                        lightningjSslContext,
-                        lightningjMacaroonContext);
-            }
-
-            @Bean
-            public MacaroonContext lightningjMacaroonContext(LndContainer<?> lndContainer) {
-                return lndContainer.copyFileFromContainer(macaroonFileInContainer, inputStream -> {
+            public MacaroonContext lndJsonRpcMacaroonContext(LndJsonRpcClientAutoConfigProperties properties,
+                                                             LndContainer<?> lndContainer) {
+                return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
                     byte[] bytes = IOUtils.toByteArray(inputStream);
                     String hex = DatatypeConverter.printHexBinary(bytes);
                     return () -> hex;
@@ -91,9 +81,9 @@ public class LndContainerApplicationTest {
             }
 
             @Bean
-            public SslContext lightningjSslContext(LndContainer<?> lndContainer) {
-
-                return lndContainer.copyFileFromContainer(certFileInContainer, inputStream -> {
+            public SslContext lndJsonRpcSslContext(LndJsonRpcClientAutoConfigProperties properties,
+                                                   LndContainer<?> lndContainer) {
+                return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
                     return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                             .trustManager(inputStream)
                             .build();
@@ -103,15 +93,12 @@ public class LndContainerApplicationTest {
     }
 
     @Autowired(required = false)
-    @Qualifier("lndContainer")
     private LndContainer<?> lndContainer;
 
     @Autowired(required = false)
-    @Qualifier("lightningjSynchronousLndApi")
     private SynchronousLndAPI lndSyncApi;
 
     @Autowired(required = false)
-    @Qualifier("lightningjAsynchronousLndApi")
     private AsynchronousLndAPI lndAsyncApi;
 
     @Test

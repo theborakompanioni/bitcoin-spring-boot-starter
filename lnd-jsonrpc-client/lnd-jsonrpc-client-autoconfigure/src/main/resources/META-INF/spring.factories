@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.lightning.lng.jsonrpc.config.LndJsonRpcClientAutoConfiguration
+org.tbk.lightning.lnd.jsonrpc.config.LndJsonRpcClientAutoConfiguration

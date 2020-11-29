@@ -4,6 +4,15 @@ org.tbk.spring.testcontainer.lnd:
     - '--bitcoind.rpcuser=myrpcuser'
     - '--bitcoind.rpcpass=correcthorsebatterystaple'
 
+org.tbk.lightning.lnd.jsonrpc:
+  enabled: true
+  rpchost: localhost
+  rpcport: 10009
+  # path to the admin macaroon file within the container!
+  macaroonFilePath: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  # path to the tls cert file within the container!
+  certFilePath: '/lnd/.lnd/tls.cert'
+
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: myrpcuser
@@ -23,34 +32,3 @@ org.tbk.spring.testcontainer.bitcoind:
     - '-zmqpubhashblock=tcp://0.0.0.0:28334'
     # Enable publishing of transaction hashes to <address>.
     - '-zmqpubhashtx=tcp://0.0.0.0:28335'
-    # [rpc]
-    # Number of seconds after which an uncompleted RPC call will time out
-    - '-rpcservertimeout=10' # default is 30
-    # [debug]
-    # Enable debug logging for categories.
-    # '-debug=1' would log ALL messages
-    - '-debug=rpc,zmq'
-    # Log IP Addresses in debug output.
-    - '-logips=0'
-    # Append comment to the user agent string.
-    - '-uacomment=tbk-spring-bitcoin-testcontainer-example'
-    # Allows you to test address relay on localhost.
-    - '-addrmantest=1'
-    # Run checks every <n> transactions.
-    - '-checkmempool=0'
-    # Send trace/debug info to console instead of debug.log.
-    - '-printtoconsole=1'
-
-#org.tbk.bitcoin.jsonrpc:
-#  network: regtest
-#  rpchost: http://localhost
-#  rpcport: 18443
-#  rpcuser: myrpcuser
-#  rpcpassword: correcthorsebatterystaple
-
-#org.tbk.bitcoin.zeromq:
-#  network: regtest
-#  zmqpubrawblock: tcp://localhost:28332
-#  zmqpubrawtx: tcp://localhost:28333
-#  zmqpubhashblock: tcp://localhost:28334
-#  zmqpubhashtx: tcp://localhost:28335

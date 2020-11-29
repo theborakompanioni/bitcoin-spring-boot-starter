@@ -18,7 +18,8 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    testImplementation 'org.lightningj:lightningj:0.11.1-Beta'
+    testImplementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-autoconfigure')
+    testImplementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-starter')
 
     testImplementation "io.projectreactor:reactor-core"
 }
