@@ -4,6 +4,7 @@
 - LND config values: https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
 - LightningJ: https://www.lightningj.org/
 - LightningJ (GitHub): https://github.com/lightningj-org/lightningj
+- LND Overview and Developer Guide: https://dev.lightning.community/overview
 - Working with lnd and Docker: https://dev.lightning.community/guides/docker/
 - lnd docker readme.md
   - https://github.com/lightningnetwork/lnd/blob/master/docker/README.md
