@@ -89,13 +89,21 @@ org.tbk.bitcoin.jsonrpc.client:
 ```
 
 
-### spring-bitcoin-testcontainer
+### spring-testcontainer
+
+#### spring-testcontainer-bitcoind-starter
 A fast any easy way to start one or multiple Bitcoin Core Daemons within docker containers programmatically within
 your application.
 Please note, that **this module is intended to be used with regtest only**.
 
-It contains a spring boot starter module that can be used in combination with
+This spring boot starter module can be used in combination with
 [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client) and [bitcoin-zeromq-client](#bitcoin-zeromq-client).
+
+#### spring-testcontainer-lnd-starter
+A fast any easy way to start one or multiple lnd Daemons within docker containers programmatically within
+your application.
+Please note, that **this module is intended to be used with regtest only**.
+
 
 ### spring-bitcoin-fee
 A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
@@ -109,6 +117,16 @@ The following providers are implemented:
 - [x] Blockstream.info API
 - [x] BTC.com API
 - [x] earn.com API
+
+### spring-bitcoin-neo4j
+A module for storing and managing bitcoin related entities in neo4j. 
+
+#### spring-bitcoin-neo4j-example-application
+Start the application and open the neo4j browser.
+The port is random on every start.
+
+![Bitcoin Neo4j Example Application Screenshot](spring-bitcoin-neo4j/spring-bitcoin-neo4j-example-application/src/main/resources/static/screenshots/screenshot_neo4j_example.png)
+
 
 
 ### examples
@@ -151,12 +169,6 @@ Example output (2020-11-08):
 
 #### bitcoin-tx-stats-example-application
 Start the application and open url `http://localhost:8080/api/v1/tx/score/0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098`
-
-#### bitcoin-neo4j-example-application
-Start the application and open the neo4j browser.
-The port is random on every start.
-
-![Bitcoin Neo4j Example Application Screenshot](examples/bitcoin-neo4j-example-application/src/main/resources/static/screenshots/screenshot_neo4j_example.png)
 
 ## Development
 ### Requirements
