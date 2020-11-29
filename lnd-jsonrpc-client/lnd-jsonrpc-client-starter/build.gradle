@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+description = 'lnd jsonrpc client starter package'
+
+dependencies {
+    api project(':lnd-jsonrpc-client:lnd-jsonrpc-client-core')
+    implementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-autoconfigure')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

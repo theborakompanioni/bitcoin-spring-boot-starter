@@ -1,0 +1,9 @@
+plugins {
+    id 'java'
+}
+
+description = 'lnd jsonrpc client package'
+
+dependencies {
+    api 'org.lightningj:lightningj:0.11.1-Beta'
+}
