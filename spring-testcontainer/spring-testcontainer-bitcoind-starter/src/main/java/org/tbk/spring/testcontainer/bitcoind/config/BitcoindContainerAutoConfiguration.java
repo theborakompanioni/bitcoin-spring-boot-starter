@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.config;
+package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Builder;
@@ -22,16 +22,16 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(BitcoinContainerProperties.class)
-@ConditionalOnProperty(value = "org.tbk.spring.bitcoin.testcontainer.enabled", havingValue = "true")
-public class BitcoinContainerAutoConfiguration {
+@EnableConfigurationProperties(BitcoindContainerProperties.class)
+@ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind.enabled", havingValue = "true")
+public class BitcoindContainerAutoConfiguration {
     // currently only the image from "ruimarinho" is supported
     private static final String DOCKER_IMAGE_NAME = "ruimarinho/bitcoin-core:0.20.1-alpine";
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
-    private final BitcoinContainerProperties properties;
+    private final BitcoindContainerProperties properties;
 
-    public BitcoinContainerAutoConfiguration(BitcoinContainerProperties properties) {
+    public BitcoindContainerAutoConfiguration(BitcoindContainerProperties properties) {
         this.properties = requireNonNull(properties);
     }
 

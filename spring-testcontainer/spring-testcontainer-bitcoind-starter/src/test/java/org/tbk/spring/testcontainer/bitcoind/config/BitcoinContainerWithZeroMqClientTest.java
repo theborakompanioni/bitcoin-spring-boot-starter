@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.config;
+package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import com.msgilligan.bitcoinj.rpc.RpcConfig;
@@ -10,7 +10,6 @@ import org.bitcoinj.core.Sha256Hash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -77,9 +76,9 @@ public class BitcoinContainerWithZeroMqClientTest {
         public BitcoinZmqClientConfig bitcoinZmqClientConfig(
                 NetworkParameters bitcoinNetworkParameters,
                 BitcoindContainer<?> bitcoinContainer,
-                BitcoinContainerProperties bitcoinContainerProperties) {
+                BitcoindContainerProperties bitcoindContainerProperties) {
 
-            List<String> customZeroMqSettings = bitcoinContainerProperties.getCommands().stream()
+            List<String> customZeroMqSettings = bitcoindContainerProperties.getCommands().stream()
                     .filter(val -> val.startsWith("-zmqpub"))
                     .collect(Collectors.toList());
 

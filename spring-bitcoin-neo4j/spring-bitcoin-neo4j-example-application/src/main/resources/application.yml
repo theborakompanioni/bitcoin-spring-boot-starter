@@ -30,7 +30,7 @@ spring.data.neo4j:
   username: neo4j
   password: correct horse battery staple
 
-org.tbk.spring.neo4j.testcontainer:
+org.tbk.spring.testcontainer.neo4j:
   enabled: true
   image: 'neo4j:4.1.3'
 

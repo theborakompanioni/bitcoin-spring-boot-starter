@@ -1,5 +1,5 @@
 
-org.tbk.spring.bitcoin.testcontainer:
+org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: myrpcuser
   rpcpassword: correcthorsebatterystaple

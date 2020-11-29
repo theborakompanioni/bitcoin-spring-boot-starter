@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.config;
+package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;

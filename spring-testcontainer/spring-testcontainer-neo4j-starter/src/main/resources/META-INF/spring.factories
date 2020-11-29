@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.spring.neo4j.testcontainer.config.Neo4jContainerAutoConfiguration
+org.tbk.spring.testcontainer.neo4j.config.Neo4jContainerAutoConfiguration

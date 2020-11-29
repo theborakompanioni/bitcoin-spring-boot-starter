@@ -11,8 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
+import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
@@ -27,8 +27,8 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(LndContainerProperties.class)
-@ConditionalOnProperty(value = "org.tbk.spring.lnd.testcontainer.enabled", havingValue = "true")
-@AutoConfigureAfter(BitcoinContainerAutoConfiguration.class)
+@ConditionalOnProperty(value = "org.tbk.spring.testcontainer.lnd.enabled", havingValue = "true")
+@AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
     // currently only the image from "lnzap" is supported
     private static final String DOCKER_IMAGE_NAME = "lnzap/lnd:0.11.1-beta";

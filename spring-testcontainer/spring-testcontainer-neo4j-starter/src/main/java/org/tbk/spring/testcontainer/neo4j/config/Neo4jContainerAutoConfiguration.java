@@ -1,4 +1,4 @@
-package org.tbk.spring.neo4j.testcontainer.config;
+package org.tbk.spring.testcontainer.neo4j.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -18,12 +18,12 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(Neo4jContainerProperties.class)
-@ConditionalOnProperty(value = "org.tbk.spring.neo4j.testcontainer.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "org.tbk.spring.testcontainer.neo4j.enabled", havingValue = "true")
 @AutoConfigureBefore(Neo4jDataAutoConfiguration.class)
 public class Neo4jContainerAutoConfiguration {
     // testcontainers only supports 'neo4j' username atm.
     // throw loud and early if the spring autoconfigure properties mismatch!
-    // user must enable testcontainers via `org.tbk.spring.neo4j.testcontainer.enabled: true`
+    // user must enable testcontainers via `org.tbk.spring.testcontainer.neo4j.enabled: true`
     // so we can allow other usernames in production environments
     private static final String MANDATORY_USERNAME = "neo4j";
 

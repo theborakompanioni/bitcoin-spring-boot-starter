@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.config;
+package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.base.Throwables;
 import org.junit.Assert;
@@ -11,15 +11,15 @@ import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class BitcoinContainerAutoConfigurationTest {
+public class BitcoindContainerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
     public void noBeansAreCreated() {
-        this.contextRunner.withUserConfiguration(BitcoinContainerAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.spring.bitcoin.testcontainer.enabled=false"
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=false"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinContainer"), is(false));
@@ -34,9 +34,9 @@ public class BitcoinContainerAutoConfigurationTest {
 
     @Test
     public void beansAreCreated() {
-        this.contextRunner.withUserConfiguration(BitcoinContainerAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.spring.bitcoin.testcontainer.enabled=true"
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinContainer"), is(true));
@@ -46,18 +46,18 @@ public class BitcoinContainerAutoConfigurationTest {
 
     @Test
     public void beansWithCustomConfigAreCreated() {
-        this.contextRunner.withUserConfiguration(BitcoinContainerAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.spring.bitcoin.testcontainer.enabled=true",
-                        "org.tbk.spring.bitcoin.testcontainer.rpcuser=myrpcuser",
-                        "org.tbk.spring.bitcoin.testcontainer.rpcpassword=correcthorsebatterystaple",
-                        "org.tbk.spring.bitcoin.testcontainer.commands=-printtoconsole, -debug=1, -logips=1"
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
+                        "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinContainer"), is(true));
                     assertThat(context.getBean(BitcoindContainer.class), is(notNullValue()));
 
-                    BitcoinContainerProperties properties = context.getBean(BitcoinContainerProperties.class);
+                    BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
                     assertThat(properties, is(notNullValue()));
                     assertThat(properties.getRpcuser().orElseThrow(), is("myrpcuser"));
                     assertThat(properties.getRpcpassword().orElseThrow(), is("correcthorsebatterystaple"));
@@ -71,12 +71,12 @@ public class BitcoinContainerAutoConfigurationTest {
 
     @Test
     public void throwOnInvalidPropertiesValues() {
-        this.contextRunner.withUserConfiguration(BitcoinContainerAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.spring.bitcoin.testcontainer.enabled=true",
-                        "org.tbk.spring.bitcoin.testcontainer.rpcuser=myrpcuser",
-                        "org.tbk.spring.bitcoin.testcontainer.rpcpassword=unsupported password with whitespaces",
-                        "org.tbk.spring.bitcoin.testcontainer.commands=-printtoconsole, -debug=1, -logips=1"
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=unsupported password with whitespaces",
+                        "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
                     try {

@@ -21,7 +21,7 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 #logging.level.web: DEBUG
 
 
-org.tbk.spring.bitcoin.testcontainer:
+org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: myrpcuser
   rpcpassword: correcthorsebatterystaple

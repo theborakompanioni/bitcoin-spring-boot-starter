@@ -1,10 +1,10 @@
-org.tbk.spring.lnd.testcontainer:
+org.tbk.spring.testcontainer.lnd:
   enabled: true
   commands:
     - '--bitcoind.rpcuser=myrpcuser'
     - '--bitcoind.rpcpass=correcthorsebatterystaple'
 
-org.tbk.spring.bitcoin.testcontainer:
+org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: myrpcuser
   rpcpassword: correcthorsebatterystaple

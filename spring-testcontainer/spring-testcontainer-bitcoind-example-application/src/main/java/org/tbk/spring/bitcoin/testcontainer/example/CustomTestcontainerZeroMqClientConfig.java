@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig;
-import org.tbk.spring.bitcoin.testcontainer.config.BitcoinContainerProperties;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
+import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerProperties;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +27,9 @@ public class CustomTestcontainerZeroMqClientConfig {
     public BitcoinZmqClientConfig bitcoinZmqClientConfig(
             NetworkParameters bitcoinNetworkParameters,
             BitcoindContainer<?> bitcoinContainer,
-            BitcoinContainerProperties bitcoinContainerProperties) {
+            BitcoindContainerProperties bitcoindContainerProperties) {
 
-        List<String> customZeroMqSettings = bitcoinContainerProperties.getCommands().stream()
+        List<String> customZeroMqSettings = bitcoindContainerProperties.getCommands().stream()
                 .filter(val -> val.startsWith("-zmqpub"))
                 .collect(Collectors.toList());
 

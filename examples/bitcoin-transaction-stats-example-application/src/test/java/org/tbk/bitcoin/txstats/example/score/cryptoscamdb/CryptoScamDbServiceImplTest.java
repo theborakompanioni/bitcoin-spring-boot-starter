@@ -17,8 +17,8 @@ import static org.junit.Assert.assertThat;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
-        "org.tbk.spring.neo4j.testcontainer.enabled=false",
-        "org.tbk.spring.bitcoin.testcontainer.enabled=false"
+        "org.tbk.spring.testcontainer.neo4j.enabled=false",
+        "org.tbk.spring.testcontainer.bitcoind.enabled=false"
 })
 @ActiveProfiles("test")
 public class CryptoScamDbServiceImplTest {

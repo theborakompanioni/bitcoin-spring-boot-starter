@@ -1,4 +1,4 @@
-package org.tbk.spring.neo4j.testcontainer.config;
+package org.tbk.spring.testcontainer.neo4j.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Data
 @ConfigurationProperties(
-        prefix = "org.tbk.spring.neo4j.testcontainer",
+        prefix = "org.tbk.spring.testcontainer.neo4j",
         ignoreUnknownFields = false
 )
 public class Neo4jContainerProperties implements Validator {

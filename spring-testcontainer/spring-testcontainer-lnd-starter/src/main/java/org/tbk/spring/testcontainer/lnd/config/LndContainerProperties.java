@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Data
 @ConfigurationProperties(
-        prefix = "org.tbk.spring.lnd.testcontainer",
+        prefix = "org.tbk.spring.testcontainer.lnd",
         ignoreUnknownFields = false
 )
 public class LndContainerProperties implements Validator {

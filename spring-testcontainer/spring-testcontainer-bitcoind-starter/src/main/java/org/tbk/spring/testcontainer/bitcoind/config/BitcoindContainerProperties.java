@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.config;
+package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -14,10 +14,10 @@ import java.util.Optional;
 
 @Data
 @ConfigurationProperties(
-        prefix = "org.tbk.spring.bitcoin.testcontainer",
+        prefix = "org.tbk.spring.testcontainer.bitcoind",
         ignoreUnknownFields = false
 )
-public class BitcoinContainerProperties implements Validator {
+public class BitcoindContainerProperties implements Validator {
 
     /**
      * Whether the client should be enabled
@@ -60,7 +60,7 @@ public class BitcoinContainerProperties implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz == BitcoinContainerProperties.class;
+        return clazz == BitcoindContainerProperties.class;
     }
 
     /**
@@ -76,7 +76,7 @@ public class BitcoinContainerProperties implements Validator {
      */
     @Override
     public void validate(Object target, Errors errors) {
-        BitcoinContainerProperties properties = (BitcoinContainerProperties) target;
+        BitcoindContainerProperties properties = (BitcoindContainerProperties) target;
 
         String rpcuserValue = properties.getRpcuser().orElse(null);
         if (rpcuserValue != null) {
