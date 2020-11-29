@@ -27,14 +27,10 @@ public class LndContainerExampleApplicationConfig {
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
-            log.info("=================================================");
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
                 try {
                     BlockChainInfo blockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
-                    log.info("=================================================");
-                    log.info("bestblock: {}", blockChainInfo.getBestBlockHash());
-                    log.info("height: {}", blockChainInfo.getBlocks());
-                    log.info("chain: {}", blockChainInfo.getChain());
+                    log.info("[bitcoind] new best block: {}", blockChainInfo.getBestBlockHash());
                 } catch (IOException e) {
                     log.error("", e);
                 }
