@@ -25,10 +25,16 @@ public class BitcoinJsonRpcFeeApiClientImpl implements BitcoinJsonRpcFeeApiClien
                     .add(request.getConfTarget())
                     .build());
 
+            // "errors", when present, can be safely casted to List<String>
+            @SuppressWarnings("unchecked")
+            List<String> errors = Optional.ofNullable(estimatesmartfee.get("errors"))
+                    .map(val -> (List<String>) val)
+                    .orElseGet(Collections::emptyList);
+
             return EstimateSmartFeeResponse.newBuilder()
                     .setBlocks(Optional.ofNullable((Integer) estimatesmartfee.get("blocks")).orElse(0))
                     .setFeerate(Optional.ofNullable((Double) estimatesmartfee.get("feerate")).orElse(0d))
-                    .addAllError(Optional.ofNullable((List<String>) estimatesmartfee.get("errors")).orElseGet(Collections::emptyList))
+                    .addAllError(errors)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
