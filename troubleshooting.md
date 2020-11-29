@@ -17,3 +17,12 @@ sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy"
 ```
 For more information [see this article on how to configure Docker on Fedora](https://www.linuxuprising.com/2019/11/how-to-install-and-use-docker-on-fedora.html)
 
+
+#### 2) When I run an example application I get a "Can not connect to Ryuk: Connection refused" error?
+This happens to some users running Fedora OS. Please make sure you have ryuk (a testcontainer dependency) disabled.
+```
+export TESTCONTAINERS_RYUK_DISABLED=true
+```
+Or when starting from an IDE (e.g. IntelliJ) add
+`TESTCONTAINERS_RYUK_DISABLED=true` to the environment variables or the run configuration.
+
