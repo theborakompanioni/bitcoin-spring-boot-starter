@@ -94,7 +94,7 @@ public class ScheduledBitcoindRegtestMinerTest {
     private BitcoinClient bitcoinJsonRpcClient;
 
     @Test
-    public void testGetBlockChainInfo() throws IOException {
+    public void itShouldVeryifyNewBestBlockHashChangesWhenNewBlockIsFound() throws IOException {
         BlockChainInfo initBlockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
         assertThat(initBlockChainInfo.getChain(), is("regtest"));
 
@@ -102,6 +102,7 @@ public class ScheduledBitcoindRegtestMinerTest {
 
         Sha256Hash initBestBlockHash = initBlockChainInfo.getBestBlockHash();
 
+        // poll for a new block and returned the first arriving block - timeout if it takes too long
         Sha256Hash nextBestBlockHash = Flux.interval(Duration.ofMillis(100))
                 .map(i -> {
                     try {
@@ -116,9 +117,9 @@ public class ScheduledBitcoindRegtestMinerTest {
                 .blockFirst(Duration.ofSeconds(10));
 
         assertThat(nextBestBlockHash, is(notNullValue()));
-        assertThat(nextBestBlockHash, is(not(initBestBlockHash)));
+        assertThat("best block hash has changed", nextBestBlockHash, is(not(initBestBlockHash)));
 
         BlockChainInfo currentBlockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
-        assertThat(currentBlockChainInfo.getBlocks(), is(greaterThan(initBlocks)));
+        assertThat("a new block has been mined", currentBlockChainInfo.getBlocks(), is(greaterThan(initBlocks)));
     }
 }
