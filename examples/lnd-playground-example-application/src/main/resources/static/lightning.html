@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>lightning</title>
+
+    <link rel="stylesheet" href="/mvp.css">
+</head>
+<body>
+<header>
+    <h1>Bitcoin Lightning Network ⚡</h1>
+</header>
+<main>
+    <div id="loading-indicator">
+    </div>
+
+    <div id="lnd-info-container" class="hidden">
+        <pre>
+alias:      <b id="lnd-alias"></b>
+pubkey:     <b id="lnd-pubkey"></b>
+version:    <b id="lnd-version"></b>
+        </pre>
+    </div>
+
+    <div id="log-container">
+        <pre id="json"></pre>
+    </div>
+</main>
+</body>
+
+<script>
+    // e.g. generateTableHead(table, [{ text: "one" }, { text: "two" }, ..])
+    function generateTableHead(table, data) {
+        const thead = table.createTHead();
+        const row = thead.insertRow();
+        for (let key of data) {
+            const th = document.createElement("th");
+            const text = document.createTextNode(key.text);
+            th.appendChild(text);
+            row.appendChild(th);
+        }
+    }
+
+    // e.g. generateTableRow(table, [
+    //   { header: { text: "one" }, entries: [{ text: "1" }, { text: "2" }] },
+    //   { header: { text: "two" }, entries: [{ text: "3" }, { text: "4" }] },
+    // ])
+    function generateTableRow(table, data) {
+        const row = table.insertRow();
+
+        const th = document.createElement("th");
+        const text = document.createTextNode(data.header.text);
+        th.appendChild(text);
+        row.appendChild(th);
+
+        for (let entry of data.entries) {
+            let cell = row.insertCell();
+            let text = document.createTextNode(entry.text);
+            cell.appendChild(text);
+        }
+    }
+
+    function generateTable(table, data) {
+        let columnsStartingWithEmptyCell = [{text: ''}, data.columns].flat();
+        generateTableHead(table, columnsStartingWithEmptyCell);
+
+        const tbody = table.createTBody();
+        for (let row of data.rows) {
+            generateTableRow(tbody, row);
+        }
+    }
+
+    const httpGetAsync = (url, onSuccess, onError) => {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4) {
+                if (xmlHttp.status === 200) {
+                    onSuccess(xmlHttp.responseText);
+                } else {
+                    onError(xmlHttp);
+                }
+            }
+        }
+
+        xmlHttp.open("GET", url, true); // true for asynchronous
+        xmlHttp.send(null);
+    };
+
+    /*
+    const httpGetStatic = (url, onSuccess, onError) => {
+        const data = "{ \"columns\": [{ \"text\": \"(without conf value)\" }], \"rows\": [{ \"header\": { \"text\": \"PT0S\" }, \"entries\": [{ \"value\": 42.367200000000004, \"text\": \"42.37\", \"fee_recommendations\": [{ \"value\": 30.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 31.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 37.633, \"provider_name\": \"Blockcypher\" }, { \"value\": 14.203, \"provider_name\": \"blockstream.info\" }, { \"value\": 99.0, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT10M\" }, \"entries\": [{ \"value\": 23.044857142857143, \"text\": \"23.05\", \"fee_recommendations\": [{ \"value\": 30.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 22.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 9.0, \"provider_name\": \"Blockchair.com\" }, { \"value\": 37.611, \"provider_name\": \"Blockcypher\" }, { \"value\": 14.203, \"provider_name\": \"blockstream.info\" }, { \"value\": 1.0, \"provider_name\": \"btc.com\" }, { \"value\": 47.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT20M\" }, \"entries\": [{ \"value\": 25.591375, \"text\": \"25.60\", \"fee_recommendations\": [{ \"value\": 30.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 31.374, \"provider_name\": \"Bitcore\" }, { \"value\": 15.001, \"provider_name\": \"Bitgo\" }, { \"value\": 25.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 9.0, \"provider_name\": \"Blockchair.com\" }, { \"value\": 32.653, \"provider_name\": \"Blockcypher\" }, { \"value\": 14.203, \"provider_name\": \"blockstream.info\" }, { \"value\": 47.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT30M\" }, \"entries\": [{ \"value\": 24.052500000000002, \"text\": \"24.06\", \"fee_recommendations\": [{ \"value\": 30.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 31.374, \"provider_name\": \"Bitcore\" }, { \"value\": 9.669, \"provider_name\": \"Bitgo\" }, { \"value\": 25.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 9.0, \"provider_name\": \"Blockchair.com\" }, { \"value\": 27.674, \"provider_name\": \"Blockcypher\" }, { \"value\": 14.203, \"provider_name\": \"blockstream.info\" }, { \"value\": 45.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT1H\" }, \"entries\": [{ \"value\": 13.607142857142858, \"text\": \"13.61\", \"fee_recommendations\": [{ \"value\": 17.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 31.303, \"provider_name\": \"Bitcore\" }, { \"value\": 5.391, \"provider_name\": \"Bitgo\" }, { \"value\": 3.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 27.674, \"provider_name\": \"Blockcypher\" }, { \"value\": 5.382000000000001, \"provider_name\": \"blockstream.info\" }, { \"value\": 5.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT2H\" }, \"entries\": [{ \"value\": 8.150333333333334, \"text\": \"8.16\", \"fee_recommendations\": [{ \"value\": 9.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 31.303, \"provider_name\": \"Bitcore\" }, { \"value\": 3.016, \"provider_name\": \"Bitgo\" }, { \"value\": 3.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 1.083, \"provider_name\": \"blockstream.info\" }, { \"value\": 1.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT3H\" }, \"entries\": [{ \"value\": 4.929833333333334, \"text\": \"4.93\", \"fee_recommendations\": [{ \"value\": 8.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 13.046, \"provider_name\": \"Bitcore\" }, { \"value\": 3.016, \"provider_name\": \"Bitgo\" }, { \"value\": 3.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 1.017, \"provider_name\": \"blockstream.info\" }, { \"value\": 1.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT6H\" }, \"entries\": [{ \"value\": 3.1565, \"text\": \"3.16\", \"fee_recommendations\": [{ \"value\": 7.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 4.022, \"provider_name\": \"Bitcore\" }, { \"value\": 2.4, \"provider_name\": \"Bitgo\" }, { \"value\": 3.0, \"provider_name\": \"Blockchain.info\" }, { \"value\": 1.017, \"provider_name\": \"blockstream.info\" }, { \"value\": 1.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT12H\" }, \"entries\": [{ \"value\": 2.1868, \"text\": \"2.19\", \"fee_recommendations\": [{ \"value\": 3.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 3.017, \"provider_name\": \"Bitcore\" }, { \"value\": 2.4, \"provider_name\": \"Bitgo\" }, { \"value\": 1.017, \"provider_name\": \"blockstream.info\" }, { \"value\": 1.5, \"provider_name\": \"earn.com\" }] }] }, { \"header\": { \"text\": \"PT24H\" }, \"entries\": [{ \"value\": 1.97925, \"text\": \"1.98\", \"fee_recommendations\": [{ \"value\": 3.0, \"provider_name\": \"Bitcoinerlive\" }, { \"value\": 2.4, \"provider_name\": \"Bitgo\" }, { \"value\": 1.017, \"provider_name\": \"blockstream.info\" }, { \"value\": 1.5, \"provider_name\": \"earn.com\" }] }] }] }";
+        onSuccess(data);
+    }
+    */
+
+    const loadingIndicatorElement = document.getElementById("loading-indicator");
+    loadingIndicatorElement.textContent = "loading...";
+
+    const logContainerElement = document.getElementById("json");
+    logContainerElement.textContent = "";
+
+    httpGetAsync("/api/v1/lnd/info", (infoJson) => {
+        loadingIndicatorElement.textContent = "";
+
+        const infoMap = JSON.parse(infoJson);
+        logContainerElement.textContent = JSON.stringify(infoMap, null, 2);
+
+        let alias = infoMap.apiObject.allFields['lnrpc.GetInfoResponse.alias'];
+        let identityPubKey = infoMap.apiObject.allFields['lnrpc.GetInfoResponse.identity_pubkey'];
+        let blockHash = infoMap.apiObject.allFields['lnrpc.GetInfoResponse.block_hash'];
+        let version = infoMap.apiObject.allFields['lnrpc.GetInfoResponse.version'];
+
+        document.getElementById("lnd-alias").textContent = alias;
+        document.getElementById("lnd-pubkey").textContent = identityPubKey;
+        document.getElementById("lnd-version").textContent = version;
+    });
+
+</script>
+</html>

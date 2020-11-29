@@ -1,17 +1,14 @@
-package org.tbk.bitcoin.fee.example;
+package org.tbk.lightning.lnd.playground.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.protobuf.util.JsonFormat;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.protobuf.ProtobufJsonFormatHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -23,7 +20,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class BitcoinFeeExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
+public class LndPlaygroundExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",
@@ -45,28 +42,7 @@ public class BitcoinFeeExampleApplicationWebMvcConfigurer implements WebMvcConfi
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(0, protobufJsonFormatHttpMessageConverter(
-                protobufJsonParser(),
-                protobufJsonPrinter()
-        ));
-
         customizeJacksonMessageConverter(converters);
-    }
-
-    @Bean
-    public ProtobufJsonFormatHttpMessageConverter protobufJsonFormatHttpMessageConverter(JsonFormat.Parser jsonParser,
-                                                                                         JsonFormat.Printer jsonPrinter) {
-        return new ProtobufJsonFormatHttpMessageConverter(jsonParser, jsonPrinter);
-    }
-
-    @Bean
-    public JsonFormat.Printer protobufJsonPrinter() {
-        return JsonFormat.printer().sortingMapKeys();
-    }
-
-    @Bean
-    public JsonFormat.Parser protobufJsonParser() {
-        return JsonFormat.parser().ignoringUnknownFields();
     }
 
     /**
@@ -86,7 +62,6 @@ public class BitcoinFeeExampleApplicationWebMvcConfigurer implements WebMvcConfi
     private static void configureObjectMapper(ObjectMapper objectMapper) {
         SimpleModule internalModule = new SimpleModule("AppInternal")
                 .addSerializer(new BigDecimalToStringSerializer());
-
 
         objectMapper
                 .registerModule(internalModule)

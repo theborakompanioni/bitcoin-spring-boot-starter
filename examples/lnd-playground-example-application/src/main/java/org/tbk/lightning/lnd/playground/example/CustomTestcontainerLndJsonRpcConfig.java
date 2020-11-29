@@ -1,0 +1,60 @@
+package org.tbk.lightning.lnd.playground.example;
+
+import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
+import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
+import org.lightningj.lnd.wrapper.MacaroonContext;
+import org.lightningj.lnd.wrapper.SynchronousLndAPI;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.tbk.lightning.lnd.jsonrpc.LndRpcConfig;
+import org.tbk.lightning.lnd.jsonrpc.LndRpcConfigImpl;
+import org.tbk.lightning.lnd.jsonrpc.config.LndJsonRpcClientAutoConfigProperties;
+import org.tbk.spring.testcontainer.lnd.LndContainer;
+
+import javax.xml.bind.DatatypeConverter;
+
+@Slf4j
+@Configuration
+public class CustomTestcontainerLndJsonRpcConfig {
+
+    @Bean
+    public LndRpcConfig lndRpcConfig(LndJsonRpcClientAutoConfigProperties properties,
+                                     LndContainer<?> lndContainer,
+                                     MacaroonContext lndJsonRpcMacaroonContext,
+                                     SslContext lndJsonRpcSslContext) {
+        String host = lndContainer.getHost();
+        Integer mappedPort = lndContainer.getMappedPort(properties.getRpcport());
+
+        return LndRpcConfigImpl.builder()
+                .rpchost(host)
+                .rpcport(mappedPort)
+                .macaroonContext(lndJsonRpcMacaroonContext)
+                .sslContext(lndJsonRpcSslContext)
+                .build();
+    }
+
+    @Bean
+    public MacaroonContext lndJsonRpcMacaroonContext(LndJsonRpcClientAutoConfigProperties properties,
+                                                     LndContainer<?> lndContainer) {
+        return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+            String hex = DatatypeConverter.printHexBinary(bytes);
+            return () -> hex;
+        });
+    }
+
+    @Bean
+    public SslContext lndJsonRpcSslContext(LndJsonRpcClientAutoConfigProperties properties,
+                                           LndContainer<?> lndContainer) {
+        return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
+            return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
+                    .trustManager(inputStream)
+                    .build();
+        });
+    }
+}

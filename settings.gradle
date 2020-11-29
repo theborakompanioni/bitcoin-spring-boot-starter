@@ -59,3 +59,4 @@ include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:bitcoin-transaction-stats-example-application'
+include 'examples:lnd-playground-example-application'
