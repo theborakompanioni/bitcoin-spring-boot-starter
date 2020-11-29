@@ -1,0 +1,69 @@
+app.name: tbk-spring-boot-bitcoin-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-spring-boot-bitcoin-starter-demo'
+spring.profiles.active: production
+spring.http.log-request-details: false
+
+server.port: 8080
+server.use-forward-headers: true
+server.compression.enabled: true
+
+management.server.port: 9001
+management.server.servlet.context-path: /actuator
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+#logging.level.web: DEBUG
+
+org.tbk.spring.testcontainer.lnd:
+  enabled: true
+  commands:
+    - '--bitcoind.rpcuser=myrpcuser'
+    - '--bitcoind.rpcpass=correcthorsebatterystaple'
+
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc,zmq'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-spring-lnd-testcontainer-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple
+
+org.tbk.bitcoin.zeromq:
+  network: regtest
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333

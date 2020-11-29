@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.example.regtest;
+package org.tbk.spring.testcontainer.lnd.example.regtest;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;

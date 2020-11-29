@@ -18,11 +18,6 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    //testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
-    //testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-    //testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
-    //testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
-
     testImplementation 'org.lightningj:lightningj:0.11.1-Beta'
 
     testImplementation "io.projectreactor:reactor-core"
