@@ -123,7 +123,14 @@ subprojects {
         archiveClassifier.set('test')
         from sourceSets.test.output
     }
-    
+
+    clean {
+        delete fileTree("${projectDir}") {
+            include '**/*.log'
+            include '**/*.log.*.gz'
+        }
+    }
+
     test {
         environment "TESTCONTAINERS_RYUK_DISABLED", "true"
     }
