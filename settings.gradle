@@ -38,6 +38,8 @@ include 'spring-bitcoin-fee:spring-bitcoin-fee-example-application'
 
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-core'
 include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-starter'
+include 'spring-bitcoin-neo4j:spring-bitcoin-neo4j-example-application'
+
 
 include 'spring-jsr354:spring-jsr354-core'
 include 'spring-jsr354:spring-jsr354-autoconfigure'
@@ -52,5 +54,3 @@ include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:bitcoin-transaction-stats-example-application'
-include 'examples:bitcoin-neo4j-example-application'
-
