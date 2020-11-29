@@ -3,6 +3,9 @@ plugins {
 }
 
 dependencies {
+    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    api project(':spring-testcontainer:spring-testcontainer-bitcoind-helper')
+
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
     implementation "com.google.guava:guava:${guavaVersion}"

@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration
+org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration,\
+org.tbk.spring.testcontainer.bitcoind.regtest.BitcoindRegtestMinerAutoConfiguration

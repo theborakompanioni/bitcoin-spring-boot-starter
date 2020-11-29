@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.example;
+package org.tbk.spring.testcontainer.bitcoind.example;
 
 import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
@@ -21,11 +21,11 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @SpringBootApplication
-public class BitcoinContainerExampleApplication {
+public class BitcoindContainerExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(BitcoinContainerExampleApplication.class)
+                .sources(BitcoindContainerExampleApplication.class)
                 .listeners(applicationPidFileWriter())
                 .web(WebApplicationType.NONE)
                 .profiles("development", "local")
@@ -39,7 +39,7 @@ public class BitcoinContainerExampleApplication {
 
     private final BitcoinClient bitcoinJsonRpcClient;
 
-    public BitcoinContainerExampleApplication(BitcoinClient bitcoinJsonRpcClient) {
+    public BitcoindContainerExampleApplication(BitcoinClient bitcoinJsonRpcClient) {
         this.bitcoinJsonRpcClient = requireNonNull(bitcoinJsonRpcClient);
     }
 

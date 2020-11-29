@@ -1,4 +1,4 @@
-package org.tbk.spring.bitcoin.testcontainer.example;
+package org.tbk.spring.testcontainer.bitcoind.example;
 
 import com.msgilligan.bitcoinj.rpc.RpcConfig;
 import lombok.extern.slf4j.Slf4j;

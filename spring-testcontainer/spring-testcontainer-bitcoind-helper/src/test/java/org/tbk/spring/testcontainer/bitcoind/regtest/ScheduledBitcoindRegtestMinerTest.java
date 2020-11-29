@@ -70,8 +70,8 @@ public class ScheduledBitcoindRegtestMinerTest {
         @Bean("bitcoindRegtestMinerScheduler")
         public AbstractScheduledService.Scheduler bitcoindRegtestMinerScheduler() {
             return new AbstractScheduledService.CustomScheduler() {
-                private final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1);
-                private final Duration MAX_BLOCK_DURATION = Duration.ofMillis(2);
+                private final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1000);
+                private final Duration MAX_BLOCK_DURATION = Duration.ofMillis(3000);
 
                 @Override
                 protected Schedule getNextSchedule() {
@@ -97,7 +97,8 @@ public class ScheduledBitcoindRegtestMinerTest {
     public void testGetBlockChainInfo() throws IOException {
         BlockChainInfo initBlockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
         assertThat(initBlockChainInfo.getChain(), is("regtest"));
-        assertThat(initBlockChainInfo.getBlocks(), is(0));
+
+        int initBlocks = initBlockChainInfo.getBlocks();
 
         Sha256Hash initBestBlockHash = initBlockChainInfo.getBestBlockHash();
 
@@ -118,6 +119,6 @@ public class ScheduledBitcoindRegtestMinerTest {
         assertThat(nextBestBlockHash, is(not(initBestBlockHash)));
 
         BlockChainInfo currentBlockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
-        assertThat(currentBlockChainInfo.getBlocks(), is(greaterThan(0)));
+        assertThat(currentBlockChainInfo.getBlocks(), is(greaterThan(initBlocks)));
     }
 }

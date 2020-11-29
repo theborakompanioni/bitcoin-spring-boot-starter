@@ -35,6 +35,13 @@ org.tbk.spring.testcontainer.bitcoind:
     # Send trace/debug info to console instead of debug.log.
     - '-printtoconsole=1'
 
+# mine blocks every 1 - 10 seconds
+org.tbk.spring.testcontainer.bitcoind-regtest-miner:
+  enabled: true
+  next-block-duration:
+    min-duration-in-millis: 1000
+    max-duration-in-millis: 10000
+
 org.tbk.bitcoin.jsonrpc:
   network: regtest
   rpchost: http://localhost
