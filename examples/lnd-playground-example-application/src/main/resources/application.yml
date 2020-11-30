@@ -22,14 +22,17 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 
 org.tbk.spring.testcontainer.lnd:
   enabled: true
+  restport: 20080
+  rpcport: 20009
   commands:
-    - '--bitcoind.rpcuser=myrpcuser'
-    - '--bitcoind.rpcpass=correcthorsebatterystaple'
+    - '--alias=tbk-lnd-example-application'
+    - '--bitcoind.rpcuser=myoneandonlyrpcuser'
+    - '--bitcoind.rpcpass=correcthorsebatterystaple123'
 
 org.tbk.lightning.lnd.jsonrpc:
   enabled: true
   rpchost: localhost
-  rpcport: 10009
+  rpcport: 20009
   # path to the admin macaroon file within the container!
   macaroonFilePath: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!
@@ -37,8 +40,8 @@ org.tbk.lightning.lnd.jsonrpc:
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
-  rpcuser: myrpcuser
-  rpcpassword: correcthorsebatterystaple
+  rpcuser: myoneandonlyrpcuser
+  rpcpassword: correcthorsebatterystaple123
   exposed-ports:
     - 28332
     - 28333
@@ -75,8 +78,8 @@ org.tbk.bitcoin.jsonrpc:
   network: regtest
   rpchost: http://localhost
   rpcport: 18443
-  rpcuser: myrpcuser
-  rpcpassword: correcthorsebatterystaple
+  rpcuser: myoneandonlyrpcuser
+  rpcpassword: correcthorsebatterystaple123
 
 org.tbk.bitcoin.zeromq:
   network: regtest

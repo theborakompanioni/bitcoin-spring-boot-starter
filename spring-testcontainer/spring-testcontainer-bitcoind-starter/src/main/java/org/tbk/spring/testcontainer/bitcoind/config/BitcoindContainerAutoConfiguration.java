@@ -54,7 +54,7 @@ public class BitcoindContainerAutoConfiguration {
      * P2P: 18444
      */
     @Bean(name = "bitcoinContainer", initMethod = "start", destroyMethod = "stop")
-    public BitcoindContainer bitcoinContainer() {
+    public BitcoindContainer<?> bitcoinContainer() {
         List<String> commands = buildCommandList();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()

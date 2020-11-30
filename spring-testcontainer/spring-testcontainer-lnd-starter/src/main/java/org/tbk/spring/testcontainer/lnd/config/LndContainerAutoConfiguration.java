@@ -1,10 +1,7 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
 import com.google.common.collect.ImmutableList;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Singular;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,9 +16,11 @@ import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -48,9 +47,7 @@ public class LndContainerAutoConfiguration {
         Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(28332));
         Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(28333));
 
-//        String bitcoindHost = bitcoinContainer.getHost();
         String bitcoindHost = "host.testcontainers.internal";
-
 
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
@@ -60,8 +57,8 @@ public class LndContainerAutoConfiguration {
                 .build();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
-                .add(8080)
-                .add(10009)
+                .add(this.properties.getRpcport())
+                .add(this.properties.getRestport())
                 .build();
 
         List<Integer> exposedPorts = ImmutableList.<Integer>builder()
@@ -93,28 +90,28 @@ public class LndContainerAutoConfiguration {
                 .add("--noseedbackup") // so no create/unlock wallet is needed ("lncli unlock")
                 //.add("--listen=9735")
                 //.add("--externalip=127.0.0.1:9735")
-                .add("--restlisten=0.0.0.0:8080")
-                .add("--rpclisten=0.0.0.0:10009")
+                .add("--restlisten=0.0.0.0:" + this.properties.getRestport())
+                .add("--rpclisten=0.0.0.0:" + this.properties.getRpcport())
                 .build();
 
         List<String> optionalCommands = ImmutableList.<String>builder()
-                .add("--alias=tbk-lnd-testcontainer-regtest")
-                .add("--color=#eeeeee")
-                .add("--debuglevel=debug")
-                .add("--trickledelay=1000")
+                .add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-lnd-testcontainer-regtest"))
+                .add("--color=" + this.properties.getCommandValueByKey("color").orElse("#eeeeee"))
+                .add("--debuglevel=" + this.properties.getCommandValueByKey("debuglevel").orElse("debug"))
+                .add("--trickledelay=" + this.properties.getCommandValueByKey("trickledelay").orElse("1000"))
                 .build();
 
         List<String> overridingDefaultsCommands = ImmutableList.<String>builder()
-                .add("--maxpendingchannels=10")
+                .add("--maxpendingchannels=" + this.properties.getCommandValueByKey("maxpendingchannels").orElse("10"))
                 //.add("--autopilot.active=false") <-- fails with "bool flag `--autopilot.active' cannot have an argument"
-                .add("protocol.wumbo-channels=1")
+                //.add("protocol.wumbo-channels=1")
                 .build();
 
         List<String> bitcoinCommands = ImmutableList.<String>builder()
                 .add("--bitcoin.active")
                 .add("--bitcoin.regtest")
                 .add("--bitcoin.node=bitcoind")
-                .add("--bitcoin.defaultchanconfs=1")
+                .add("--bitcoin.defaultchanconfs=" + this.properties.getCommandValueByKey("bitcoin.defaultchanconfs").orElse("1"))
                 .build();
 
         ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
@@ -123,9 +120,23 @@ public class LndContainerAutoConfiguration {
                 .addAll(overridingDefaultsCommands)
                 .addAll(bitcoinCommands);
 
-        commandsBuilder.addAll(this.properties.getCommands());
+        List<String> predefinedKeys = commandsBuilder.build().stream()
+                .map(LndConfigEntry::valueOf)
+                .flatMap(Optional::stream)
+                .map(LndConfigEntry::getName)
+                .collect(Collectors.toList());
 
-        return commandsBuilder.build();
+        List<String> userGivenCommands = this.properties.getCommands();
+        List<String> allowedUserGivenCommands = userGivenCommands.stream()
+                .map(LndConfigEntry::valueOf)
+                .flatMap(Optional::stream)
+                .filter(it -> !predefinedKeys.contains(it.getName()))
+                .map(LndConfigEntry::toCommandString)
+                .collect(Collectors.toList());
+
+        return commandsBuilder
+                .addAll(allowedUserGivenCommands)
+                .build();
     }
 
     @Value
@@ -142,4 +153,45 @@ public class LndContainerAutoConfiguration {
                     .collect(Collectors.toSet());
         }
     }
+
+
+    @Value
+    @Builder
+    public static class LndConfigEntry {
+        public static Optional<LndConfigEntry> valueOf(String command) {
+            String commandPrefix = "--";
+            return Optional.ofNullable(command)
+                    .filter(it -> it.startsWith(commandPrefix))
+                    .map(it -> it.split(commandPrefix)[1])
+                    .map(it -> {
+                        boolean withoutValue = !it.contains("=");
+                        if (withoutValue) {
+                            return LndConfigEntry.builder()
+                                    .name(it)
+                                    .build();
+                        }
+
+                        String[] parts = it.split("=");
+
+                        return LndConfigEntry.builder()
+                                .name(parts[0])
+                                .value(parts[1])
+                                .build();
+                    });
+        }
+
+        @NonNull
+        String name;
+
+        String value;
+
+        public Optional<String> getValue() {
+            return Optional.ofNullable(value);
+        }
+
+        public String toCommandString() {
+            return "--" + this.name + getValue().map(it -> "=" + it).orElse("");
+        }
+    }
+
 }

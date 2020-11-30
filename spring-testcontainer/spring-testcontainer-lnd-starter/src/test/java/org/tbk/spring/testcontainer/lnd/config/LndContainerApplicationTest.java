@@ -118,7 +118,7 @@ public class LndContainerApplicationTest {
         GetInfoResponse info = lndSyncApi.getInfo();
         assertThat(info, is(notNullValue()));
         assertThat(info.getVersion(), startsWith("0.11.1-beta"));
-        assertThat(info.getAlias(), is("tbk-lnd-testcontainer-regtest"));
+        assertThat(info.getAlias(), is("tbk-lnd-starter-test"));
 
         assertThat(info.getChains(), hasSize(1));
         Chain chain = info.getChains().stream().findFirst().orElseThrow();
@@ -160,7 +160,7 @@ public class LndContainerApplicationTest {
 
         assertThat(info, is(notNullValue()));
         assertThat(info.getVersion(), startsWith("0.11.1-beta"));
-        assertThat(info.getAlias(), is("tbk-lnd-testcontainer-regtest"));
+        assertThat(info.getAlias(), is("tbk-lnd-starter-test"));
     }
 }
 
