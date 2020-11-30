@@ -10,6 +10,11 @@ import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.message.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.testcontainers.shaded.com.google.common.primitives.Longs;
+
+import javax.json.JsonObject;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -21,54 +26,70 @@ public class LndApi {
     private final SynchronousLndAPI lndApi;
 
     @GetMapping(value = "/info")
-    public ResponseEntity<GetInfoResponse> getInfo() throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> getInfo() throws StatusException, ValidationException {
         GetInfoResponse info = lndApi.getInfo();
-        return ResponseEntity.ok(info);
+        return ResponseEntity.ok(info.toJson().build());
     }
 
     @GetMapping(value = "/network/info")
-    public ResponseEntity<NetworkInfo> getNetworkInfo() throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> getNetworkInfo() throws StatusException, ValidationException {
         NetworkInfo networkInfo = lndApi.getNetworkInfo();
-        return ResponseEntity.ok(networkInfo);
+        return ResponseEntity.ok(networkInfo.toJson().build());
     }
 
     @GetMapping(value = "/recovery/info")
-    public ResponseEntity<GetRecoveryInfoResponse> getRecoveryInfo() throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> getRecoveryInfo() throws StatusException, ValidationException {
         GetRecoveryInfoResponse recoveryInfo = lndApi.getRecoveryInfo();
-        return ResponseEntity.ok(recoveryInfo);
+        return ResponseEntity.ok(recoveryInfo.toJson().build());
     }
 
     @GetMapping(value = "/fee/report")
-    public ResponseEntity<FeeReportResponse> feeReport() throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> feeReport() throws StatusException, ValidationException {
         FeeReportResponse feeReport = lndApi.feeReport();
-        return ResponseEntity.ok(feeReport);
+        return ResponseEntity.ok(feeReport.toJson().build());
     }
 
     @GetMapping(value = "/channel/balance")
-    public ResponseEntity<ChannelBalanceResponse> channelBalance() throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> channelBalance() throws StatusException, ValidationException {
         ChannelBalanceResponse channelBalance = lndApi.channelBalance();
-        return ResponseEntity.ok(channelBalance);
+        return ResponseEntity.ok(channelBalance.toJson().build());
     }
 
     @GetMapping(value = "/wallet/balance")
-    public ResponseEntity<WalletBalanceResponse> walletBalance() throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> walletBalance() throws StatusException, ValidationException {
         WalletBalanceResponse walletBalance = lndApi.walletBalance();
-        return ResponseEntity.ok(walletBalance);
+        return ResponseEntity.ok(walletBalance.toJson().build());
     }
 
     @GetMapping(value = "/invoice/{hash}")
-    public ResponseEntity<Invoice> lookupInvoice(String paymentHash) throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> lookupInvoice(String paymentHash) throws StatusException, ValidationException {
         PaymentHash request = new PaymentHash();
         request.setRHashStr(paymentHash);
 
         Invoice info = lndApi.lookupInvoice(request);
 
-        return ResponseEntity.ok(info);
+        return ResponseEntity.ok(info.toJson().build());
     }
 
     @PostMapping(value = "/invoice")
-    public ResponseEntity<AddInvoiceResponse> addInvoice(@RequestBody LightningApi.Invoice invoice) throws StatusException, ValidationException {
+    public ResponseEntity<JsonObject> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
+
+        String memo = Optional.ofNullable(body.get("memo"))
+                .map(Object::toString)
+                .orElse("");
+
+        long value = Optional.ofNullable(body.get("value"))
+                .map(Object::toString)
+                .map(it -> Longs.tryParse(it, 10))
+                .filter(it -> it > 0)
+                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive integer"));
+
+        LightningApi.Invoice invoice = LightningApi.Invoice.newBuilder()
+                .setValue(value)
+                .setMemo(memo)
+                .build();
+
         AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(invoice));
-        return ResponseEntity.ok(addInvoiceResponse);
+        return ResponseEntity.ok(addInvoiceResponse.toJson().build());
     }
 }
