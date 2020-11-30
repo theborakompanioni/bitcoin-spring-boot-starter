@@ -89,6 +89,20 @@ org.tbk.bitcoin.jsonrpc.client:
 ```
 
 
+### lnd-jsonrpc-client
+A module containing a spring boot starter for a [Lightningj](https://www.lightningj.org/) lnd gRPC API client.
+The starter will automatically create autowireable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
+
+```yaml
+org.tbk.lightning.lnd.jsonrpc:
+  enabled: true
+  rpchost: localhost
+  rpcport: 10009
+  macaroonFilePath: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  certFilePath: '/lnd/.lnd/tls.cert'
+```
+
+
 ### spring-testcontainer
 
 #### spring-testcontainer-bitcoind-starter
