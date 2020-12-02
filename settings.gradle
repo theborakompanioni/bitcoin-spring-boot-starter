@@ -16,6 +16,7 @@ include 'lnd-jsonrpc-client:lnd-jsonrpc-client-core'
 include 'lnd-jsonrpc-client:lnd-jsonrpc-client-autoconfigure'
 include 'lnd-jsonrpc-client:lnd-jsonrpc-client-starter'
 
+include 'spring-testcontainer:spring-testcontainer-core'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-helper'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-starter'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-example-application'

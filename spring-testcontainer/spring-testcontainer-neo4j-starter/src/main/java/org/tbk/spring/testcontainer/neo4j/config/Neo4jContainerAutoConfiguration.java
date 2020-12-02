@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.neo4j.config;
 
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -10,7 +11,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.containers.Neo4jContainer;
+import org.testcontainers.utility.DockerImageName;
+
+import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -48,7 +53,14 @@ public class Neo4jContainerAutoConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Neo4jContainer<?> neo4jContainer(Neo4jProperties neo4jProperties) {
-        return new Neo4jContainer<>(properties.getDockerImageName())
+        DockerImageName dockerImageName = properties.getDockerImageName();
+
+        String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
+                Integer.toHexString(System.identityHashCode(this)))
+                .replace("/", "-");
+
+        return new Neo4jContainer<>(dockerImageName)
+                .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withAdminPassword(neo4jProperties.getPassword());
     }
 }

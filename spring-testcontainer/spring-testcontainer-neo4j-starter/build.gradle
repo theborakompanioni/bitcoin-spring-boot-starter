@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    implementation project(':spring-testcontainer:spring-testcontainer-core')
+
     implementation "com.google.guava:guava:${guavaVersion}"
 
     implementation 'org.springframework.data:spring-data-neo4j'

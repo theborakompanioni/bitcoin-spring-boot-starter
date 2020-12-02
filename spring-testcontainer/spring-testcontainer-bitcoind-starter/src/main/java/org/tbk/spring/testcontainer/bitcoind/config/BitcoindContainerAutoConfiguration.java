@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
+import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -72,7 +73,12 @@ public class BitcoindContainerAutoConfiguration {
                 .ports(hardcodedStandardPorts)
                 .build();
 
+        String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
+                Integer.toHexString(System.identityHashCode(this)))
+                .replace("/", "-");
+
         return new BitcoindContainer<>(dockerImageName)
+                .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .waitingFor(waitStrategy);

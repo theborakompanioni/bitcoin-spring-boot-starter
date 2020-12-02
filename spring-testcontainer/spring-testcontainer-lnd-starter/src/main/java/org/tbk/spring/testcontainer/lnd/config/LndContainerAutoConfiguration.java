@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
+import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
@@ -18,6 +20,7 @@ import org.testcontainers.utility.DockerImageName;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -29,6 +32,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.lnd.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
+
     // currently only the image from "lnzap" is supported
     private static final String DOCKER_IMAGE_NAME = "lnzap/lnd:0.11.1-beta";
 
@@ -71,11 +75,15 @@ public class LndContainerAutoConfiguration {
                 .ports(hardcodedStandardPorts)
                 .build();
 
+        String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
+                Integer.toHexString(System.identityHashCode(this)))
+                .replace("/", "-");
+
         return new LndContainer<>(dockerImageName)
+                .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
-                .waitingFor(waitStrategy)
-                ;
+                .waitingFor(waitStrategy);
     }
 
     /**

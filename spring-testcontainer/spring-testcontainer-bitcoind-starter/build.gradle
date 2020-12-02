@@ -3,8 +3,10 @@ plugins {
 }
 
 dependencies {
-    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    implementation project(':spring-testcontainer:spring-testcontainer-core')
     api project(':spring-testcontainer:spring-testcontainer-bitcoind-helper')
+
+    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
 
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
