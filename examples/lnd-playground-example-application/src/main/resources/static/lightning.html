@@ -5,6 +5,14 @@
     <title>lightning</title>
 
     <link rel="stylesheet" href="/mvp.css">
+
+    <script src="/vanilla-qrcode.js"></script>
+
+    <style>
+        .width-100p {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -15,11 +23,12 @@
     </div>
 
     <div id="lnd-info-container" hidden>
-        <pre>
-alias:      <b id="lnd-alias"></b>
+<pre>alias:      <b id="lnd-alias"></b>
 pubkey:     <b id="lnd-pubkey"></b>
-version:    <b id="lnd-version"></b>
-        </pre>
+version:    <b id="lnd-version"></b></pre>
+
+        <div id="lnd-info-identity-pub-key-qrcode">
+        </div>
     </div>
 
     <div id="lnd-send-payment-container" hidden>
@@ -31,8 +40,11 @@ version:    <b id="lnd-version"></b>
 
         <button id="btn-lnd-add-invoice">Show payment QR code</button>
 
-        <input id="input-lnd-invoice" type="text"
-               value="" readonly="" hidden>
+        <input id="input-lnd-invoice" class="width-100p"
+               type="text" value="" readonly="" hidden>
+
+        <div id="lnd-invoice-qrcode-container">
+        </div>
     </div>
 
     <div id="log-container">
@@ -42,6 +54,11 @@ version:    <b id="lnd-version"></b>
 </body>
 
 <script>
+    const onLatestResponseData = (json) => {
+        const logContainerElement = document.getElementById("json");
+        logContainerElement.textContent = JSON.stringify(json, null, 2);
+    };
+
     const httpGetAsync = (url, onSuccess, onError) => {
         const xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
@@ -71,10 +88,6 @@ version:    <b id="lnd-version"></b>
     const loadingIndicatorElement = document.getElementById("loading-indicator");
     loadingIndicatorElement.textContent = "loading...";
 
-    const logContainerElement = document.getElementById("json");
-    logContainerElement.textContent = "";
-
-
     const inputLndInvoice = document.getElementById("input-lnd-invoice");
     const btnLndAddInvoice = document.getElementById("btn-lnd-add-invoice");
     btnLndAddInvoice.addEventListener("click", () => {
@@ -90,14 +103,34 @@ version:    <b id="lnd-version"></b>
 
         httpPostAsync("/api/v1/lnd/invoice", payload).then(async response => {
             const body = await response.json();
-            inputLndInvoice.value = body.paymentRequest.string;
+            onLatestResponseData(body);
+
+            const paymentRequest = body.paymentRequest.string;
+
+            // add plain payment request to input element
+            inputLndInvoice.value = paymentRequest;
+
+            // generate qr code from the plain payment request
+            var qr = new VanillaQR({
+                url: paymentRequest
+            });
+
+            const elemInvoiceQrCodeContainer = document.getElementById("lnd-invoice-qrcode-container");
+
+            // remove all previous generated payment request qrcodes
+            while (elemInvoiceQrCodeContainer.firstChild) {
+                elemInvoiceQrCodeContainer.removeChild(elemInvoiceQrCodeContainer.lastChild);
+            }
+
+            // add plain payment request as qrcode
+            elemInvoiceQrCodeContainer.prepend(qr.domElement);
         }).catch(error => {
             inputLndInvoice.value = "An error occurred";
         }).finally(() => {
             inputLndInvoice.removeAttribute("hidden");
             setTimeout(() => {
                 btnLndAddInvoice.removeAttribute("disabled");
-            }, 1000);
+            }, 133);
         });
     });
 
@@ -105,7 +138,7 @@ version:    <b id="lnd-version"></b>
         loadingIndicatorElement.textContent = "";
 
         const infoMap = JSON.parse(infoJson);
-        logContainerElement.textContent = JSON.stringify(infoMap, null, 2);
+        onLatestResponseData(infoMap);
 
         let alias = infoMap.alias.string;
         let identityPubKey = infoMap.identityPubkey.string;
@@ -117,9 +150,13 @@ version:    <b id="lnd-version"></b>
         document.getElementById("lnd-version").textContent = version;
         document.getElementById("lnd-info-container").removeAttribute("hidden");
 
+        var qr = new VanillaQR({
+            url: identityPubKey
+        });
+        document.getElementById("lnd-info-identity-pub-key-qrcode").appendChild(qr.domElement);
+
         document.getElementById("lnd-send-payment-container").removeAttribute("hidden");
     });
-
 
 </script>
 </html>
