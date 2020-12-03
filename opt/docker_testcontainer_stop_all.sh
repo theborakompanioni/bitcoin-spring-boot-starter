@@ -10,6 +10,9 @@
 # testcontainers/sshd - required if exposing host ports to containers
 
 
+docker stop $(docker ps -a | grep 'tbk-testcontainer-' | awk  '{ print $1 }')
+docker rm $(docker ps -a | grep 'tbk-testcontainer-' | awk  '{ print $1 }')
+
 # stop sshd of testcontainers
 docker stop $(docker ps -a | grep 'testcontainers/sshd' | awk  '{ print $1 }')
 docker rm $(docker ps -a | grep 'testcontainers/sshd' | awk  '{ print $1 }')
