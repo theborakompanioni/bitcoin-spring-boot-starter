@@ -1,6 +1,5 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -13,17 +12,14 @@ import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
-import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -194,7 +190,9 @@ public class LndContainerAutoConfiguration {
         }
 
         public String toCommandString() {
-            return "--" + this.name + getValue().map(it -> "=" + it).orElse("");
+            return "--" + this.name + getValue()
+                    .map(it -> "=" + it)
+                    .orElse("");
         }
     }
 

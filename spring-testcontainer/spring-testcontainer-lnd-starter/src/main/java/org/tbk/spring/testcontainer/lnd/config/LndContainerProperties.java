@@ -4,16 +4,16 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -100,17 +100,17 @@ public class LndContainerProperties implements Validator {
     }
 
     public Optional<String> getCommandValueByKey(String key) {
-        String commandPrefix = "--" + key;
+        String commandWithPrefix = "--" + key;
         return this.getCommands().stream()
-                .filter(it -> it.startsWith(commandPrefix))
+                .filter(it -> it.startsWith(commandWithPrefix))
                 .map(it -> {
-                    boolean withoutValue = commandPrefix.length() == it.length();
+                    boolean withoutValue = commandWithPrefix.length() == it.length();
                     if (withoutValue) {
                         return "";
                     }
 
-                    checkArgument('=' == it.charAt(commandPrefix.length()));
-                    return it.split(commandPrefix + "=")[1];
+                    checkArgument('=' == it.charAt(commandWithPrefix.length()));
+                    return it.split(commandWithPrefix + "=")[1];
                 })
                 .findFirst();
     }
