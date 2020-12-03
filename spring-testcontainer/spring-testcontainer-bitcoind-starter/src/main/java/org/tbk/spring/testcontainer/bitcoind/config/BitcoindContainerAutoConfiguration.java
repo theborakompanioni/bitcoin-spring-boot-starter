@@ -100,9 +100,22 @@ public class BitcoindContainerAutoConfiguration {
     }
 
     private List<String> buildCommandList() {
+
         List<String> fixedCommands = ImmutableList.<String>builder()
                 .add("-regtest=1")
+                // dns: Allow DNS lookups for -addnode, -seednode and -connect values.
+                .add("-dns=0")
+                // dnsseed: Query for peer addresses via DNS lookup, if low on addresses.
                 .add("-dnsseed=0")
+                // listen: Accept incoming connections from peers.
+                //.add("-listen=0")
+                // port: Listen for incoming connections on non-default port. (p2p)
+                //port=8888
+                // rest: Accept public REST requests.
+                //rest=1
+                // rpcport: Listen for JSON-RPC connections on this port
+                //rpcport=8282
+                // upnp: Use UPnP to map the listening port.
                 .add("-upnp=0")
                 .add("-txindex=1")
                 .add("-server=1")

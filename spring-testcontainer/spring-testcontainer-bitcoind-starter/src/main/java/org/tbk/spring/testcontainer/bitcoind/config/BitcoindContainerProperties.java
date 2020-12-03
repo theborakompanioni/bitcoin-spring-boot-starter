@@ -1,7 +1,9 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
@@ -11,13 +13,43 @@ import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+/**
+ * Mainnet
+ * JSON-RPC/REST: 8332
+ * P2P: 8333
+ * <p>
+ * Testnet
+ * Testnet JSON-RPC: 18332
+ * P2P: 18333
+ * <p>
+ * Regtest
+ * JSON-RPC/REST: 18443 (since 0.16+, otherwise 18332)
+ * P2P: 18444
+ */
 @Data
 @ConfigurationProperties(
         prefix = "org.tbk.spring.testcontainer.bitcoind",
         ignoreUnknownFields = false
 )
 public class BitcoindContainerProperties implements Validator {
+    private static final int MAINNET_DEFAULT_RPC_PORT = 8332;
+    private static final int MAINNET_DEFAULT_P2P_PORT = 8333;
+
+    private static final int TESTNET_DEFAULT_RPC_PORT = 18332;
+    private static final int TESTNET_DEFAULT_P2P_PORT = 18333;
+
+    private static final int REGTEST_DEFAULT_RPC_PORT = 18443;
+    private static final int REGTEST_DEFAULT_P2P_PORT = 18444;
+
+    @Beta
+    private static final Set<String> reservedCommands = ImmutableSet.<String>builder()
+            .add("rpcuser")
+            .add("rpcpassword")
+            .build();
 
     /**
      * Whether the client should be enabled
@@ -56,6 +88,22 @@ public class BitcoindContainerProperties implements Validator {
         return exposedPorts == null ?
                 Collections.emptyList() :
                 ImmutableList.copyOf(exposedPorts);
+    }
+
+    public Optional<String> getCommandValueByKey(String key) {
+        String commandWithPrefix = "-" + key;
+        return this.getCommands().stream()
+                .filter(it -> it.startsWith(commandWithPrefix))
+                .map(it -> {
+                    boolean withoutValue = commandWithPrefix.length() == it.length();
+                    if (withoutValue) {
+                        return "";
+                    }
+
+                    checkArgument('=' == it.charAt(commandWithPrefix.length()));
+                    return it.split(commandWithPrefix + "=")[1];
+                })
+                .findFirst();
     }
 
     @Override
@@ -99,6 +147,13 @@ public class BitcoindContainerProperties implements Validator {
                 errors.rejectValue("rpcpassword", "rpcpassword.unsupported", errorMessage);
             }
         }
+
+        reservedCommands.stream()
+                .filter(val -> properties.getCommandValueByKey(val).isPresent())
+                .forEach(reservedKey -> {
+                    String errorMessage = String.format("'commands' entry must not contain key '%s'", reservedKey);
+                    errors.rejectValue("commands", "commands.reserved", errorMessage);
+                });
 
         for (String command : properties.getCommands()) {
             if (Strings.isNullOrEmpty(command)) {
