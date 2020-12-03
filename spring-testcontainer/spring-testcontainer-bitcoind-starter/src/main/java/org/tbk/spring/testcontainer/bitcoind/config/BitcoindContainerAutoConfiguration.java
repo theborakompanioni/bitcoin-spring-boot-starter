@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -54,10 +56,11 @@ public class BitcoindContainerAutoConfiguration {
      * JSON-RPC/REST: 18443 (since 0.16+, otherwise 18332)
      * P2P: 18444
      */
-    @Bean(name = "bitcoinContainer", initMethod = "start", destroyMethod = "stop")
+    @Bean(name = "bitcoinContainer", destroyMethod = "stop")
     public BitcoindContainer<?> bitcoinContainer() {
         List<String> commands = buildCommandList();
 
+        // TODO: expose ports specified via auto configuration properties
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
                 .add(18443)
                 .add(18444)
@@ -77,11 +80,23 @@ public class BitcoindContainerAutoConfiguration {
                 Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
-        return new BitcoindContainer<>(dockerImageName)
+        BitcoindContainer<?> bitcoindContainer = new BitcoindContainer<>(dockerImageName)
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .waitingFor(waitStrategy);
+
+        bitcoindContainer.start();
+
+        checkState(bitcoindContainer.isRunning(), "'bitcoindContainer' must be running");
+
+        // expose all mapped ports of the host so other containers can communication with bitcoind.
+        // e.g. lnd needs access to rpc and zeromq ports.
+        bitcoindContainer.getExposedPorts().stream()
+                .map(bitcoindContainer::getMappedPort)
+                .forEach(Testcontainers::exposeHostPorts);
+
+        return bitcoindContainer;
     }
 
     private List<String> buildCommandList() {

@@ -45,19 +45,15 @@ public class LndContainerAutoConfiguration {
     }
 
     @Bean(name = "lndContainer", initMethod = "start", destroyMethod = "stop")
-    public LndContainer<?> lndContainer(BitcoindContainer<?> bitcoinContainer) {
-
-        Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(18443));
-        Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(28332));
-        Testcontainers.exposeHostPorts(bitcoinContainer.getMappedPort(28333));
-
+    public LndContainer<?> lndContainer(BitcoindContainer<?> bitcoindContainer) {
         String bitcoindHost = "host.testcontainers.internal";
 
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
-                .add("--bitcoind.rpchost=" + bitcoindHost + ":" + bitcoinContainer.getMappedPort(18443))
-                .add("--bitcoind.zmqpubrawblock=tcp://" + bitcoindHost + ":" + bitcoinContainer.getMappedPort(28332))
-                .add("--bitcoind.zmqpubrawtx=tcp://" + bitcoindHost + ":" + bitcoinContainer.getMappedPort(28333))
+                // TODO: expose ports specified via auto configuration properties
+                .add("--bitcoind.rpchost=" + bitcoindHost + ":" + bitcoindContainer.getMappedPort(18443))
+                .add("--bitcoind.zmqpubrawblock=tcp://" + bitcoindHost + ":" + bitcoindContainer.getMappedPort(28332))
+                .add("--bitcoind.zmqpubrawtx=tcp://" + bitcoindHost + ":" + bitcoindContainer.getMappedPort(28333))
                 .build();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
