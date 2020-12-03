@@ -1,10 +1,7 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.collect.ImmutableList;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Singular;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,6 +14,7 @@ import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -100,42 +98,67 @@ public class BitcoindContainerAutoConfiguration {
     }
 
     private List<String> buildCommandList() {
-
-        List<String> fixedCommands = ImmutableList.<String>builder()
-                .add("-regtest=1")
-                // dns: Allow DNS lookups for -addnode, -seednode and -connect values.
-                .add("-dns=0")
-                // dnsseed: Query for peer addresses via DNS lookup, if low on addresses.
-                .add("-dnsseed=0")
-                // listen: Accept incoming connections from peers.
-                //.add("-listen=0")
-                // port: Listen for incoming connections on non-default port. (p2p)
-                //port=8888
-                // rest: Accept public REST requests.
-                //rest=1
+        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder()
                 // rpcport: Listen for JSON-RPC connections on this port
                 //rpcport=8282
+                // port: Listen for incoming connections on non-default port. (p2p)
+                //port=8888
+                // listen: Accept incoming connections from peers. <-- check if this is mandatory "1"
+                //.add("-listen=0")
+                // rest: Accept public REST requests.
+                //rest=1
+                ;
+
+        Optional.of(this.properties.getChain())
+                .filter(it -> it != BitcoindContainerProperties.Chain.mainnet)
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .map(it -> "-chain=" + it)
+                .ifPresent(requiredCommandsBuilder::add);
+
+        List<String> overridingDefaults = ImmutableList.<String>builder()
+                // dns: Allow DNS lookups for -addnode, -seednode and -connect values.
+                .add("-dns=" + this.properties.getCommandValueByKey("dns").orElse("0"))
+                // dnsseed: Query for peer addresses via DNS lookup, if low on addresses.
+                .add("-dnsseed=" + this.properties.getCommandValueByKey("dnsseed").orElse("0"))
                 // upnp: Use UPnP to map the listening port.
-                .add("-upnp=0")
-                .add("-txindex=1")
-                .add("-server=1")
-                .add("-rpcbind=0.0.0.0")
-                .add("-rpcallowip=0.0.0.0/0")
+                .add("-upnp=" + this.properties.getCommandValueByKey("upnp").orElse("0"))
+                .add("-txindex=" + this.properties.getCommandValueByKey("txindex").orElse("1"))
+                .add("-server=" + this.properties.getCommandValueByKey("server").orElse("1"))
+                .add("-rpcbind=" + this.properties.getCommandValueByKey("rpcbind").orElse("0.0.0.0"))
+                .add("-rpcallowip=" + this.properties.getCommandValueByKey("rpcallowip").orElse("0.0.0.0/0"))
                 .build();
 
-        ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
-                .addAll(fixedCommands);
-
+        ImmutableList.Builder<String> optionalCommandsBuilder = ImmutableList.<String>builder();
         this.properties.getRpcuser()
                 .map(val -> String.format("-rpcuser=%s", val))
-                .ifPresent(commandsBuilder::add);
+                .ifPresent(optionalCommandsBuilder::add);
         this.properties.getRpcpassword()
                 .map(val -> String.format("-rpcpassword=%s", val))
-                .ifPresent(commandsBuilder::add);
+                .ifPresent(optionalCommandsBuilder::add);
 
-        commandsBuilder.addAll(this.properties.getCommands());
+        ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
+                .addAll(requiredCommandsBuilder.build())
+                .addAll(overridingDefaults)
+                .addAll(optionalCommandsBuilder.build());
 
-        return commandsBuilder.build();
+        List<String> predefinedKeys = commandsBuilder.build().stream()
+                .map(BitcoindConfigEntry::valueOf)
+                .flatMap(Optional::stream)
+                .map(BitcoindConfigEntry::getName)
+                .collect(Collectors.toList());
+
+        List<String> userGivenCommands = this.properties.getCommands();
+        List<String> allowedUserGivenCommands = userGivenCommands.stream()
+                .map(BitcoindConfigEntry::valueOf)
+                .flatMap(Optional::stream)
+                .filter(it -> !predefinedKeys.contains(it.getName()))
+                .map(BitcoindConfigEntry::toCommandString)
+                .collect(Collectors.toList());
+
+        return commandsBuilder
+                .addAll(allowedUserGivenCommands)
+                .build();
     }
 
     @Value
@@ -150,6 +173,48 @@ public class BitcoindContainerAutoConfiguration {
             return ports.stream()
                     .map(val -> waitStrategyTarget.getMappedPort(val))
                     .collect(Collectors.toSet());
+        }
+    }
+
+
+    @Value
+    @Builder
+    public static class BitcoindConfigEntry {
+        public static Optional<BitcoindConfigEntry> valueOf(String command) {
+            String commandPrefix = "-";
+            return Optional.ofNullable(command)
+                    .filter(it -> it.startsWith(commandPrefix))
+                    .map(it -> it.split(commandPrefix)[1])
+                    .map(it -> {
+                        boolean withoutValue = !it.contains("=");
+                        if (withoutValue) {
+                            return BitcoindConfigEntry.builder()
+                                    .name(it)
+                                    .build();
+                        }
+
+                        String[] parts = it.split("=");
+
+                        return BitcoindConfigEntry.builder()
+                                .name(parts[0])
+                                .value(parts[1])
+                                .build();
+                    });
+        }
+
+        @NonNull
+        String name;
+
+        String value;
+
+        public Optional<String> getValue() {
+            return Optional.ofNullable(value);
+        }
+
+        public String toCommandString() {
+            return "-" + this.name + getValue()
+                    .map(it -> "=" + it)
+                    .orElse("");
         }
     }
 }

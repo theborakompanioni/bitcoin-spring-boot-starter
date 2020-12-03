@@ -45,16 +45,29 @@ public class BitcoindContainerProperties implements Validator {
     private static final int REGTEST_DEFAULT_RPC_PORT = 18443;
     private static final int REGTEST_DEFAULT_P2P_PORT = 18444;
 
+    private static final Chain DEFAULT_CHAIN = Chain.regtest;
+
     @Beta
     private static final Set<String> reservedCommands = ImmutableSet.<String>builder()
             .add("rpcuser")
             .add("rpcpassword")
+            .add("chain")
+            .add("testnet")
+            .add("regtest")
             .build();
+
+    public enum Chain {
+        mainnet,
+        testnet,
+        regtest;
+    }
 
     /**
      * Whether the client should be enabled
      */
     private boolean enabled;
+
+    private Chain chain;
 
     /**
      * RPC username
@@ -69,6 +82,10 @@ public class BitcoindContainerProperties implements Validator {
     private List<String> commands;
 
     private List<Integer> exposedPorts;
+
+    public Chain getChain() {
+        return this.chain != null ? this.chain : DEFAULT_CHAIN;
+    }
 
     public Optional<String> getRpcuser() {
         return Optional.ofNullable(rpcuser);
@@ -113,7 +130,7 @@ public class BitcoindContainerProperties implements Validator {
 
     /**
      * Validate the container properties.
-     *
+     * <p>
      * Keep in mind that Testcontainers splits commands on whitespaces.
      * This means, every property that is part of a command, must not contain
      * whitespaces. Error early when user gave an "unsupported" value
