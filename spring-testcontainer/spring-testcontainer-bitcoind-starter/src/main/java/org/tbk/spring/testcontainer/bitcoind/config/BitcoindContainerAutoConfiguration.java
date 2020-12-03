@@ -8,14 +8,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
+import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -159,21 +158,6 @@ public class BitcoindContainerAutoConfiguration {
         return commandsBuilder
                 .addAll(allowedUserGivenCommands)
                 .build();
-    }
-
-    @Value
-    @Builder
-    @EqualsAndHashCode(callSuper = false)
-    public static class CustomHostPortWaitStrategy extends HostPortWaitStrategy {
-        @Singular("addPort")
-        List<Integer> ports;
-
-        @Override
-        protected Set<Integer> getLivenessCheckPorts() {
-            return ports.stream()
-                    .map(val -> waitStrategyTarget.getMappedPort(val))
-                    .collect(Collectors.toSet());
-        }
     }
 
 

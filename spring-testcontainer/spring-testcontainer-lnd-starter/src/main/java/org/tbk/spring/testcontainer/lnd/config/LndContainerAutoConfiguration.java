@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
+import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
@@ -138,22 +139,6 @@ public class LndContainerAutoConfiguration {
                 .addAll(allowedUserGivenCommands)
                 .build();
     }
-
-    @Value
-    @Builder
-    @EqualsAndHashCode(callSuper = false)
-    public static class CustomHostPortWaitStrategy extends HostPortWaitStrategy {
-        @Singular("addPort")
-        List<Integer> ports;
-
-        @Override
-        protected Set<Integer> getLivenessCheckPorts() {
-            return ports.stream()
-                    .map(val -> waitStrategyTarget.getMappedPort(val))
-                    .collect(Collectors.toSet());
-        }
-    }
-
 
     @Value
     @Builder
