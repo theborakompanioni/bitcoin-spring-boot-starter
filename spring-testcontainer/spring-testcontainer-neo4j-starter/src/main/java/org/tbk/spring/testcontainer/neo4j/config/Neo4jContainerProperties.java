@@ -16,7 +16,7 @@ import java.util.Optional;
 public class Neo4jContainerProperties implements Validator {
     private static final String imageNamespace = "neo4j";
 
-    private static final String defaultDockerImageVersion = "4.1.3";
+    private static final String defaultDockerImageVersion = "4.2.1";
 
     private static final DockerImageName defaultDockerImageName = DockerImageName
             .parse(imageNamespace + ":" + defaultDockerImageVersion);
