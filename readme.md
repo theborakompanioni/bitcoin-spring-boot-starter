@@ -136,8 +136,13 @@ The following providers are implemented:
 A module for storing and managing bitcoin related entities in neo4j. 
 
 #### spring-bitcoin-neo4j-example-application
-Start the application and open the neo4j browser.
-The port is random on every start.
+
+Start the application with
+```shell
+./gradlew -p spring-bitcoin-neo4j/spring-bitcoin-neo4j-example-application bootRun
+```
+
+... and open the neo4j browser. The port is random on every start.
 
 ![Bitcoin Neo4j Example Application Screenshot](spring-bitcoin-neo4j/spring-bitcoin-neo4j-example-application/src/main/resources/static/screenshots/screenshot_neo4j_example.png)
 
@@ -147,7 +152,13 @@ The port is random on every start.
 There are also some example applications showing basic usage of the functionality provided by these modules.
 
 #### bitcoin-exchange-rate-example-application
-Start the application and open url `http://localhost:8080/api/v1/exchange/latest?base=BTC&target=USD&provider=KRAKEN`
+Start the application with
+```shell
+./gradlew -p examples/bitcoin-exchange-rate-example-application bootRun
+```
+
+... and open the following url in your browser:
+`http://localhost:8080/api/v1/exchange/latest?base=BTC&target=USD&provider=KRAKEN`
 
 Example output (2020-11-08):
 ```json
@@ -182,7 +193,42 @@ Example output (2020-11-08):
 ```
 
 #### bitcoin-tx-stats-example-application
-Start the application and open url `http://localhost:8080/api/v1/tx/score/0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098`
+Start the application with
+```shell
+./gradlew -p examples/bitcoin-tx-stats-example-application bootRun
+```
+
+... and open the following url in your browser:
+`http://localhost:8080/api/v1/tx/score/0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098`
+
+
+#### lnd-playground-example-application
+Start the application with
+```shell
+./gradlew -p examples/lnd-playground-example-application bootRun
+```
+
+Example console output:
+```
+2020-12-06 14:11:37.616  INFO 10211 --- [  restartedMain] .l.l.p.e.LndPlaygroundExampleApplication : Started LndPlaygroundExampleApplication in 9.98 seconds (JVM running for 10.363)
+2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : =================================================
+2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] identity_pubkey: 02c91b5318a7658c5c473bf478963a5762ac1d56fcdd64fb1f55f148f478ffd601
+2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] alias: tbk-lnd-example-application
+2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] version: 0.11.1-beta commit=v0.11.1-beta-4-g3c4471f8818a07e63864d39a1c3352ce19e8f31d
+2020-12-06 14:11:39.526 DEBUG 10211 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT4.465S
+2020-12-06 14:11:39.801  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
+2020-12-06 14:11:39.801  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block height: 1
+2020-12-06 14:11:39.802  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block hash: 66bba000d25c37d3ee8b7457fa809def997a4d4bb3fe7bf0ab4079918a91ebe9
+2020-12-06 14:11:39.802  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] best header timestamp: 1607260299
+2020-12-06 14:11:39.830  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [bitcoind] new best block: 66bba000d25c37d3ee8b7457fa809def997a4d4bb3fe7bf0ab4079918a91ebe9
+2020-12-06 14:11:43.552 DEBUG 10211 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT6.626S
+2020-12-06 14:11:43.861  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
+2020-12-06 14:11:43.862  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block height: 2
+2020-12-06 14:11:43.862  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block hash: 0f09c81de5374e557d7820ee8a7c4f06db3f6343be3866d37bc775f0b7d164cf
+2020-12-06 14:11:43.862  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] best header timestamp: 1607260303
+2020-12-06 14:11:43.868  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [bitcoind] new best block: 0f09c81de5374e557d7820ee8a7c4f06db3f6343be3866d37bc775f0b7d164cf
+```
+
 
 ## Development
 ### Requirements

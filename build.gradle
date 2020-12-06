@@ -37,6 +37,8 @@ apply from: 'versions.gradle'
 
 group = 'io.github.theborakompanioni'
 
+def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
+
 configurations.all {
     resolutionStrategy {
         // check for updates in modules every build
@@ -128,11 +130,18 @@ subprojects {
         delete fileTree("${projectDir}") {
             include '**/*.log'
             include '**/*.log.*.gz'
+            include '**/*.log.*.tmp'
+        }
+    }
+
+    pluginManager.withPlugin('org.springframework.boot') {
+        bootRun {
+            environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
         }
     }
 
     test {
-        environment "TESTCONTAINERS_RYUK_DISABLED", "true"
+        environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
     }
     
     artifacts {
@@ -145,6 +154,7 @@ subprojects {
         plugins {
             grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
         }
+
         generateProtoTasks {
             all()*.plugins { grpc {} }
         }
