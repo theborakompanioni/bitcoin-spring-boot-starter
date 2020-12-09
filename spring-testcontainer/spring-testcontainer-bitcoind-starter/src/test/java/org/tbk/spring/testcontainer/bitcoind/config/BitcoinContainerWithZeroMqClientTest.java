@@ -54,50 +54,6 @@ public class BitcoinContainerWithZeroMqClientTest {
                     .web(WebApplicationType.NONE)
                     .run(args);
         }
-
-        /**
-         * Overwrite the default ports of the zeromq config as the mapping to the container
-         * can only be determined during runtime.
-         */
-        @Bean
-        public BitcoinZmqClientConfig bitcoinZmqClientConfig(
-                NetworkParameters bitcoinNetworkParameters,
-                BitcoindContainer<?> bitcoinContainer,
-                BitcoindContainerProperties bitcoindContainerProperties) {
-
-            List<String> customZeroMqSettings = bitcoindContainerProperties.getCommands().stream()
-                    .filter(val -> val.startsWith("-zmqpub"))
-                    .collect(Collectors.toList());
-
-            Function<String, Optional<String>> replacePortInUrl = name -> {
-                Optional<Integer> specifiedListeningPort = customZeroMqSettings.stream()
-                        .filter(val -> val.startsWith("-" + name + "="))
-                        .map(val -> val.substring(val.indexOf("=")))
-                        .map(val -> val.substring(val.indexOf("//")))
-                        .map(val -> val.substring(val.indexOf(":") + 1))
-                        .map(val -> Integer.parseInt(val, 10))
-                        .findFirst();
-
-                return specifiedListeningPort.map(port -> {
-                    String host = bitcoinContainer.getHost();
-                    Integer mappedPort = bitcoinContainer.getMappedPort(port);
-                    return "tcp://" + host + ":" + mappedPort;
-                });
-            };
-
-            Optional<String> pubRawBlockUrl = replacePortInUrl.apply("zmqpubrawblock");
-            Optional<String> pubRawTxUrl = replacePortInUrl.apply("zmqpubrawtx");
-            Optional<String> pubHashBlockUrl = replacePortInUrl.apply("zmqpubhashtx");
-            Optional<String> pubHashTxUrl = replacePortInUrl.apply("zmqpubhashtx");
-
-            return BitcoinZmqClientConfig.builder()
-                    .network(bitcoinNetworkParameters)
-                    .zmqpubrawblock(pubRawBlockUrl.orElse(null))
-                    .zmqpubrawtx(pubRawTxUrl.orElse(null))
-                    .zmqpubhashblock(pubHashBlockUrl.orElse(null))
-                    .zmqpubhashtx(pubHashTxUrl.orElse(null))
-                    .build();
-        }
     }
 
     @Autowired

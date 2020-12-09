@@ -8,6 +8,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.params.TestNet3Params;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,6 +21,7 @@ import org.tbk.bitcoin.zeromq.bitcoinj.BitcoinjTransactionPublisherFactory;
 import org.tbk.bitcoin.zeromq.client.BitcoinZeroMqTopics;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
+import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig.BitcoinZmqClientConfigBuilder;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,14 +39,19 @@ public class BitcoinZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BitcoinZmqClientConfig bitcoinZmqClientConfig() {
-        return BitcoinZmqClientConfig.builder()
+    public BitcoinZmqClientConfig bitcoinZmqClientConfig(
+            ObjectProvider<BitcoinZmqClientConfigBuilderCustomizer> bitcoinZmqClientConfigBuilderCustomizer) {
+
+        BitcoinZmqClientConfigBuilder configBuilder = BitcoinZmqClientConfig.builder()
                 .network(networkFromProperties())
                 .zmqpubhashblock(this.properties.getZmqpubhashblock().orElse(null))
                 .zmqpubhashtx(this.properties.getZmqpubhashtx().orElse(null))
                 .zmqpubrawblock(this.properties.getZmqpubrawblock().orElse(null))
-                .zmqpubrawtx(this.properties.getZmqpubrawtx().orElse(null))
-                .build();
+                .zmqpubrawtx(this.properties.getZmqpubrawtx().orElse(null));
+
+        bitcoinZmqClientConfigBuilderCustomizer.orderedStream().forEach(customizer -> customizer.customize(configBuilder));
+
+        return configBuilder.build();
     }
 
     private NetworkParameters networkFromProperties() {

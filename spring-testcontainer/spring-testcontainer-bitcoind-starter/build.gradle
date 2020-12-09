@@ -6,15 +6,16 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-core')
     api project(':spring-testcontainer:spring-testcontainer-bitcoind-helper')
 
-    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
-    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
-
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
     implementation "com.google.guava:guava:${guavaVersion}"
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation 'org.springframework.boot:spring-boot-starter'
+
+    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
+    compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
