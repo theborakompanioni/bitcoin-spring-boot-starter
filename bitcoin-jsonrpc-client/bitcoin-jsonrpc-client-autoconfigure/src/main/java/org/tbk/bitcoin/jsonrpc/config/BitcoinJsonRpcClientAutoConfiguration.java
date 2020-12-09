@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactory;
 import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactoryImpl;
 
-import java.net.URI;
-
 import static java.util.Objects.requireNonNull;
 
 @Configuration
@@ -61,13 +59,11 @@ public class BitcoinJsonRpcClientAutoConfiguration {
     })
     public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
                                           ObjectProvider<RpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
-        URI uri = URI.create(properties.getRpchost() + ":" + properties.getRpcport());
-
-        RpcConfigBuilder rpcConfigBuilder = new RpcConfigBuilder(bitcoinNetworkParameters, uri)
+        RpcConfigBuilder rpcConfigBuilder = new RpcConfigBuilder(bitcoinNetworkParameters, properties.getRpchost(), properties.getRpcport())
                 .username(properties.getRpcuser())
                 .password(properties.getRpcpassword());
 
-        rpcConfigBuilderCustomizer.forEach(customizer -> customizer.customize(rpcConfigBuilder));
+        rpcConfigBuilderCustomizer.orderedStream().forEach(customizer -> customizer.customize(rpcConfigBuilder));
 
         return rpcConfigBuilder.build();
     }

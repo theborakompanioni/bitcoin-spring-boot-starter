@@ -56,19 +56,6 @@ public class BitcoinContainerWithZeroMqClientTest {
         }
 
         /**
-         * Overwrite the default port of the rpc config as the mapping to the container
-         * can only be determined during runtime.
-         */
-        @Bean
-        public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
-                                              BitcoinJsonRpcClientAutoConfigProperties properties,
-                                              BitcoindContainer<?> bitcoinContainer) {
-            URI uri = URI.create(properties.getRpchost() + ":" + bitcoinContainer.getMappedPort(properties.getRpcport()));
-            return new RpcConfig(bitcoinNetworkParameters, uri, properties.getRpcuser(), properties.getRpcpassword());
-        }
-
-
-        /**
          * Overwrite the default ports of the zeromq config as the mapping to the container
          * can only be determined during runtime.
          */

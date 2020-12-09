@@ -12,7 +12,8 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class RpcConfigBuilder {
     @NonNull NetworkParameters netParams;
-    @NonNull URI uri;
+    @NonNull String host;
+    @NonNull Integer port;
     String username;
     String password;
 
@@ -21,8 +22,13 @@ public class RpcConfigBuilder {
         return this;
     }
 
-    public RpcConfigBuilder uri(@NonNull URI uri) {
-        this.uri = uri;
+    public RpcConfigBuilder host(@NonNull String host) {
+        this.host = host;
+        return this;
+    }
+
+    public RpcConfigBuilder port(int port) {
+        this.port = port;
         return this;
     }
 
@@ -37,6 +43,7 @@ public class RpcConfigBuilder {
     }
 
     public RpcConfig build() {
+        URI uri = URI.create(this.host + ":" + this.port);
         return new RpcConfig(netParams, uri, username, password);
     }
 }
