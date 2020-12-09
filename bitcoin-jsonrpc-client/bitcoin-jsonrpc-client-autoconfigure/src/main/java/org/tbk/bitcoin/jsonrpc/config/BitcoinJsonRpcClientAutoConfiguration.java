@@ -6,6 +6,7 @@ import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.params.TestNet3Params;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -58,9 +59,17 @@ public class BitcoinJsonRpcClientAutoConfiguration {
             "org.tbk.bitcoin.jsonrpc.rpchost",
             "org.tbk.bitcoin.jsonrpc.rpcport"
     })
-    public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters) {
+    public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
+                                          ObjectProvider<RpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
         URI uri = URI.create(properties.getRpchost() + ":" + properties.getRpcport());
-        return new RpcConfig(bitcoinNetworkParameters, uri, properties.getRpcuser(), properties.getRpcpassword());
+
+        RpcConfigBuilder rpcConfigBuilder = new RpcConfigBuilder(bitcoinNetworkParameters, uri)
+                .username(properties.getRpcuser())
+                .password(properties.getRpcpassword());
+
+        rpcConfigBuilderCustomizer.forEach(customizer -> customizer.customize(rpcConfigBuilder));
+
+        return rpcConfigBuilder.build();
     }
 
     @Bean

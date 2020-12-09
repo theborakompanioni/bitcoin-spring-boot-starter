@@ -1,14 +1,12 @@
 package org.tbk.spring.testcontainer.lnd.example;
 
-import com.msgilligan.bitcoinj.rpc.RpcConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.NetworkParameters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.tbk.bitcoin.jsonrpc.config.RpcConfigBuilderCustomizer;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
-
-import java.net.URI;
 
 @Slf4j
 @Configuration
@@ -19,10 +17,13 @@ public class CustomTestcontainerRpcClientConfig {
      * can only be determined during runtime.
      */
     @Bean
-    public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
-                                          BitcoinJsonRpcClientAutoConfigProperties properties,
-                                          BitcoindContainer<?> bitcoinContainer) {
-        URI uri = URI.create(properties.getRpchost() + ":" + bitcoinContainer.getMappedPort(properties.getRpcport()));
-        return new RpcConfig(bitcoinNetworkParameters, uri, properties.getRpcuser(), properties.getRpcpassword());
+    public RpcConfigBuilderCustomizer bitcoinJsonRpcConfigBuilderCustomizer(BitcoindContainer<?> bitcoinContainer) {
+        return config -> {
+            UriComponents uriComponents = UriComponentsBuilder.fromUri(config.getUri())
+                    .port(bitcoinContainer.getMappedPort(config.getUri().getPort()))
+                    .build();
+
+            config.uri(uriComponents.toUri());
+        };
     }
 }
