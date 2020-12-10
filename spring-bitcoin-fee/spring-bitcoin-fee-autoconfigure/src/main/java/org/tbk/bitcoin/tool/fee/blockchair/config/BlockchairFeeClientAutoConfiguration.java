@@ -14,6 +14,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BlockchairFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        BlockchairFeeApiClient.class,
+        BlockchairFeeProvider.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.blockchair.enabled"
@@ -27,14 +31,12 @@ public class BlockchairFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BlockchairFeeApiClient.class)
     @ConditionalOnMissingBean(BlockchairFeeApiClient.class)
     public BlockchairFeeApiClient blockchairFeeApiClient() {
         return new BlockchairFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
-    @ConditionalOnClass(BlockchairFeeProvider.class)
     @ConditionalOnMissingBean(BlockchairFeeProvider.class)
     public BlockchairFeeProvider blockchairFeeProvider(BlockchairFeeApiClient blockchairFeeApiClientb) {
         return new BlockchairFeeProvider(blockchairFeeApiClientb);

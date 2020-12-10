@@ -14,6 +14,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BitcoreFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        BitcoreFeeApiClient.class,
+        BitcoreFeeProvider.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.bitcore.enabled"
@@ -27,14 +31,12 @@ public class BitcoreFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BitcoreFeeApiClient.class)
     @ConditionalOnMissingBean(BitcoreFeeApiClient.class)
     public BitcoreFeeApiClient bitcoreFeeApiClient() {
         return new BitcoreFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
-    @ConditionalOnClass(BitcoreFeeProvider.class)
     @ConditionalOnMissingBean(BitcoreFeeProvider.class)
     public BitcoreFeeProvider BitcoreFeeProvider(BitcoreFeeApiClient bitcoreFeeApiClient) {
         return new BitcoreFeeProvider(bitcoreFeeApiClient);

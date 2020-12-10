@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfigBuilderCustomizer;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration

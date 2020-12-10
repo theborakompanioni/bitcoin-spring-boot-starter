@@ -18,6 +18,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BitgoFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        BitgoFeeApiClient.class,
+        BitgoFeeProvider.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.bitgo.enabled"
@@ -31,7 +35,6 @@ public class BitgoFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BitgoFeeApiClient.class)
     @ConditionalOnMissingBean(BitgoFeeApiClient.class)
     public BitgoFeeApiClient bitgoFeeApiClient() {
         BitgoFeeApiClientImpl bitgoFeeApiClient = new BitgoFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
@@ -43,7 +46,6 @@ public class BitgoFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BitgoFeeProvider.class)
     @ConditionalOnMissingBean(BitgoFeeProvider.class)
     public BitgoFeeProvider bitgoFeeProvider(BitgoFeeApiClient bitgoFeeApiClient) {
         return new BitgoFeeProvider(bitgoFeeApiClient);

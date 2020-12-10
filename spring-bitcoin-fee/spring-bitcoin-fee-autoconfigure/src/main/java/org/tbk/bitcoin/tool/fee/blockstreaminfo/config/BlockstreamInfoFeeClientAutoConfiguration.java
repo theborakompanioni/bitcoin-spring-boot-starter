@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.tool.fee.blockstreaminfo.config;
 
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,11 +14,14 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BlockstreamInfoFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        BlockstreamInfoFeeApiClient.class,
+        BlockstreamInfoFeeProvider.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.blockstreaminfo.enabled"
 }, havingValue = "true", matchIfMissing = true)
-// @AutoConfigureBefore
 public class BlockstreamInfoFeeClientAutoConfiguration {
 
     private final BlockstreamInfoFeeClientAutoConfigProperties properties;
@@ -29,14 +31,12 @@ public class BlockstreamInfoFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BlockstreamInfoFeeApiClient.class)
     @ConditionalOnMissingBean(BlockstreamInfoFeeApiClient.class)
     public BlockstreamInfoFeeApiClient blockstreamInfoFeeApiClient() {
         return new BlockstreamInfoFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
-    @ConditionalOnClass(BlockstreamInfoFeeProvider.class)
     @ConditionalOnMissingBean(BlockstreamInfoFeeProvider.class)
     public BlockstreamInfoFeeProvider blockstreamInfoFeeProvider(BlockstreamInfoFeeApiClient blockstreamInfoFeeApiClient) {
         return new BlockstreamInfoFeeProvider(blockstreamInfoFeeApiClient);

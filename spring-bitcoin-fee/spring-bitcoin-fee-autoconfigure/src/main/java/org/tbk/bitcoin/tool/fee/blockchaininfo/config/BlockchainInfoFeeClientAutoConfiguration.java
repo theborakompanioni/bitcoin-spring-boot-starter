@@ -14,6 +14,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BlockchainInfoFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        BlockchainInfoFeeApiClient.class,
+        BlockchainInfoFeeProvider.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.blockchaininfo.enabled"
@@ -27,14 +31,12 @@ public class BlockchainInfoFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BlockchainInfoFeeApiClient.class)
     @ConditionalOnMissingBean(BlockchainInfoFeeApiClient.class)
     public BlockchainInfoFeeApiClient blockchainInfoFeeApiClient() {
         return new BlockchainInfoFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
-    @ConditionalOnClass(BlockchainInfoFeeProvider.class)
     @ConditionalOnMissingBean(BlockchainInfoFeeProvider.class)
     public BlockchainInfoFeeProvider blockchainInfoFeeProvider(BlockchainInfoFeeApiClient blockchainInfoFeeApiClient) {
         return new BlockchainInfoFeeProvider(blockchainInfoFeeApiClient);

@@ -14,6 +14,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(BitcoinerliveFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        BitcoinerliveFeeApiClient.class,
+        BitcoinerliveFeeProvider.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.bitcoinerlive.enabled"
@@ -27,14 +31,12 @@ public class BitcoinerliveFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(BitcoinerliveFeeApiClient.class)
     @ConditionalOnMissingBean(BitcoinerliveFeeApiClient.class)
     public BitcoinerliveFeeApiClient bitcoinerliveFeeApiClient() {
         return new BitcoinerliveFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
-    @ConditionalOnClass(BitcoinerliveFeeProvider.class)
     @ConditionalOnMissingBean(BitcoinerliveFeeProvider.class)
     public BitcoinerliveFeeProvider bitcoinerliveFeeProvider(BitcoinerliveFeeApiClient bitcoinerliveFeeApiClient) {
         return new BitcoinerliveFeeProvider(bitcoinerliveFeeApiClient);

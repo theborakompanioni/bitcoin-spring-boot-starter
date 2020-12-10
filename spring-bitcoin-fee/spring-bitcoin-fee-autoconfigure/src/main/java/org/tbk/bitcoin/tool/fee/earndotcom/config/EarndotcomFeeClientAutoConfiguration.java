@@ -20,6 +20,11 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @EnableConfigurationProperties(EarndotcomFeeClientAutoConfigProperties.class)
+@ConditionalOnClass({
+        EarndotcomApiClient.class,
+        EarndotcomFeeProvider.class,
+        FeeSelectionStrategy.class
+})
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
         "org.tbk.bitcoin.tool.fee.earndotcom.enabled"
@@ -33,7 +38,6 @@ public class EarndotcomFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(EarndotcomApiClient.class)
     @ConditionalOnMissingBean(EarndotcomApiClient.class)
     public EarndotcomApiClient earndotcomApiClient() {
         EarndotcomApiClientImpl client = new EarndotcomApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
@@ -46,14 +50,12 @@ public class EarndotcomFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(FeeSelectionStrategy.class)
     @ConditionalOnMissingBean(FeeSelectionStrategy.class)
     public FeeSelectionStrategy earndotcomFeeSelectionStrategy() {
         return new SimpleFeeSelectionStrategy();
     }
 
     @Bean
-    @ConditionalOnClass(EarndotcomFeeProvider.class)
     @ConditionalOnMissingBean(EarndotcomFeeProvider.class)
     public EarndotcomFeeProvider earndotcomFeeProvider(EarndotcomApiClient earndotcomApiClient,
                                                        FeeSelectionStrategy earndotcomFeeSelectionStrategy) {
