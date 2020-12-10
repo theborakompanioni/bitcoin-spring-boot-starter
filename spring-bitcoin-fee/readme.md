@@ -10,7 +10,7 @@ See fee distribution: https://jochen-hoenicke.de/queue/#0,2h
 - License: [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
 - Changes: Removed some text. Focus on links, authentication, examples and unit of measurement. Add "last checked" date.
  
-- [x] Bitcoin Core JSON-RPC Api - estimatestmartfee
+- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
 - [x] bitcoiner.live API
 - [x] Bitgo API
 - [x] Bitcore API

@@ -108,7 +108,7 @@ org.tbk.lightning.lnd.jsonrpc:
 #### spring-testcontainer-bitcoind-starter
 A fast any easy way to start one or multiple Bitcoin Core Daemons within docker containers programmatically within
 your application.
-Please note, that **this module is intended to be used with regtest only**.
+Please note, that **this module is intended to be used in regtest mode only**.
 
 This spring boot starter module can be used in combination with
 [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client) and [bitcoin-zeromq-client](#bitcoin-zeromq-client).
@@ -116,16 +116,18 @@ This spring boot starter module can be used in combination with
 #### spring-testcontainer-lnd-starter
 A fast any easy way to start one or multiple lnd Daemons within docker containers programmatically within
 your application.
-Please note, that **this module is intended to be used with regtest only**.
+Please note, that **this module is intended to be used in regtest mode** and currently
+only works in combination with `spring-testcontainer-bitcoind-starter`.
 
 
 ### spring-bitcoin-fee
 A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
 The following providers are implemented:
+- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
 - [x] bitcoiner.live API
 - [x] Bitgo API
 - [x] Bitcore API
-- [x] Blockchain.info API
+- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
 - [x] Blockchair API
 - [x] BlockCypher API
 - [x] Blockstream.info API
@@ -210,23 +212,26 @@ Start the application with
 
 Example console output:
 ```
-2020-12-06 14:11:37.616  INFO 10211 --- [  restartedMain] .l.l.p.e.LndPlaygroundExampleApplication : Started LndPlaygroundExampleApplication in 9.98 seconds (JVM running for 10.363)
-2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] identity_pubkey: 02c91b5318a7658c5c473bf478963a5762ac1d56fcdd64fb1f55f148f478ffd601
-2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] alias: tbk-lnd-example-application
-2020-12-06 14:11:38.117  INFO 10211 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] version: 0.11.1-beta commit=v0.11.1-beta-4-g3c4471f8818a07e63864d39a1c3352ce19e8f31d
-2020-12-06 14:11:39.526 DEBUG 10211 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT4.465S
-2020-12-06 14:11:39.801  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2020-12-06 14:11:39.801  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block height: 1
-2020-12-06 14:11:39.802  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block hash: 66bba000d25c37d3ee8b7457fa809def997a4d4bb3fe7bf0ab4079918a91ebe9
-2020-12-06 14:11:39.802  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] best header timestamp: 1607260299
-2020-12-06 14:11:39.830  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [bitcoind] new best block: 66bba000d25c37d3ee8b7457fa809def997a4d4bb3fe7bf0ab4079918a91ebe9
-2020-12-06 14:11:43.552 DEBUG 10211 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT6.626S
-2020-12-06 14:11:43.861  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2020-12-06 14:11:43.862  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block height: 2
-2020-12-06 14:11:43.862  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block hash: 0f09c81de5374e557d7820ee8a7c4f06db3f6343be3866d37bc775f0b7d164cf
-2020-12-06 14:11:43.862  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] best header timestamp: 1607260303
-2020-12-06 14:11:43.868  INFO 10211 --- [g-pub-acdaab8-0] .e.LndPlaygroundExampleApplicationConfig : [bitcoind] new best block: 0f09c81de5374e557d7820ee8a7c4f06db3f6343be3866d37bc775f0b7d164cf
+2020-12-10 00:48:45.538  INFO 37837 --- [  restartedMain] t.s.t.l.e.LndContainerExampleApplication : Started LndContainerExampleApplication in 258.23 seconds (JVM running for 258.867)
+2020-12-10 00:48:45.969  INFO 37837 --- [  restartedMain] t.s.t.l.e.LndContainerExampleApplication : =================================================
+2020-12-10 00:48:45.969  INFO 37837 --- [  restartedMain] t.s.t.l.e.LndContainerExampleApplication : [lnd] identity_pubkey: 02c90d9086299b6f446365daff74fa5690b90a2ba18c9a077feeeeff73c5eabe4a
+2020-12-10 00:48:45.969  INFO 37837 --- [  restartedMain] t.s.t.l.e.LndContainerExampleApplication : [lnd] alias: tbk-lnd-example-application
+2020-12-10 00:48:45.970  INFO 37837 --- [  restartedMain] t.s.t.l.e.LndContainerExampleApplication : [lnd] version: 0.11.1-beta commit=v0.11.1-beta-4-g3c4471f8818a07e63864d39a1c3352ce19e8f31d
+2020-12-10 00:48:45.997  INFO 37837 --- [  restartedMain] t.s.t.l.e.LndContainerExampleApplication : =================================================
+2020-12-10 00:48:52.631 DEBUG 37837 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT9.962S
+2020-12-10 00:48:52.645  INFO 37837 --- [-pub-63f6c6f2-0] l.e.LndContainerExampleApplicationConfig : [bitcoind] new best block: 53d4d9117159a9359f14828b5c432d23400f30250c87e1fb9d3b25e163b0d9d2
+2020-12-10 00:48:52.906  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : =================================================
+2020-12-10 00:48:52.906  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : [lnd] block height: 1
+2020-12-10 00:48:52.906  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : [lnd] block hash: 53d4d9117159a9359f14828b5c432d23400f30250c87e1fb9d3b25e163b0d9d2
+2020-12-10 00:48:52.906  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : [lnd] best header timestamp: 1607557732
+2020-12-10 00:48:52.906  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : =================================================
+2020-12-10 00:49:01.653 DEBUG 37837 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT4.701S
+2020-12-10 00:49:01.664  INFO 37837 --- [-pub-63f6c6f2-0] l.e.LndContainerExampleApplicationConfig : [bitcoind] new best block: 1745d662e4a06eaa4ce86ee0631a96454aeb43e344518b8a3c64728170aa4c3e
+2020-12-10 00:49:01.917  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : =================================================
+2020-12-10 00:49:01.917  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : [lnd] block height: 2
+2020-12-10 00:49:01.917  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : [lnd] block hash: 1745d662e4a06eaa4ce86ee0631a96454aeb43e344518b8a3c64728170aa4c3e
+2020-12-10 00:49:01.917  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : [lnd] best header timestamp: 1607557741
+2020-12-10 00:49:01.917  INFO 37837 --- [-pub-63f6c6f2-0] t.s.t.l.e.LndContainerExampleApplication : =================================================
 ```
 
 
