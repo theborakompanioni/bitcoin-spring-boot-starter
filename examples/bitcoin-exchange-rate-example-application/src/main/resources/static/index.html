@@ -1,10 +1,583 @@
 <!DOCTYPE html>
-<html lang="en">
-<head >
-    <meta charset="UTF-8">
-    <title></title>
+<html class="no-js" lang="en">
+<head>
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>Bitcoin Moon API</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta http-equiv="Content-Security-Policy"
+          content="
+          default-src 'self' 'unsafe-inline'
+          img-src:
+          data:
+          blob:
+          wss:
+
+          localhost:*
+          ws://localhost:4200;
+    ">
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/vendor.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- script
+    ================================================== -->
+    <script src="js/modernizr.js"></script>
+    <script src="js/pace.min.js"></script>
+
+    <!-- favicons
+     ================================================== -->
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
-<body>
-<h1>It works!</h1>
+
+<body id="top">
+
+<!-- header
+================================================== -->
+<header class="main-header">
+
+    <div class="logo">
+        <a href="index.html">Bitcoin</a>
+    </div>
+
+    <a class="menu-toggle" href="#"><span>Menu</span></a>
+
+</header>
+
+<!-- main navigation
+================================================== -->
+<nav id="menu-nav-wrap">
+
+    <h3>Navigation</h3>
+    <ul class="nav-list">
+        <li><a class="smoothscroll" href="#intro" title="">Home</a></li>
+        <li><a class="smoothscroll" href="#features" title="">Features</a></li>
+        <li><a class="smoothscroll" href="#pricing" title="">Pricing</a></li>
+        <li><a class="smoothscroll" href="#subscribe" title="">Newsletter</a></li>
+        <li><a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
+            GitHub <i class="fa fa-github"></i>
+        </a></li>
+        <!--li><a class="smoothscroll" href="#infos" title="">Product Info</a></li>
+        <li><a class="smoothscroll" href="#stats" title="">Stats</a></li>
+        <li><a class="smoothscroll" href="#testimonials" title="">Testimonials</a></li>
+        <li><a class="smoothscroll" href="#download" title="">Download</a></li>-->
+    </ul>
+
+</nav> <!-- /menu-nav-wrap -->
+
+
+<!-- main content wrap
+================================================== -->
+<div id="main-content-wrap">
+
+
+    <!-- main content wrap
+    ================================================== -->
+    <section id="intro">
+
+        <!-- <div class="shadow-overlay"></div> -->
+
+        <div class="row intro-content">
+            <div class="col-twelve">
+
+                <h3 class="animate-intro"><em>Bitcoin only</em> <br/>Exchange Rate API</h3>
+
+
+                <h1 class="animate-intro">Bitcoin exchange rates and currency conversion APIs</h1>
+
+                <div class="buttons">
+                    <a class="button stroke smoothscroll animate-intro" href="#features" title="">Features</a>
+                    <a class="button stroke smoothscroll animate-intro" href="#pricing" title="">Pricing</a>
+                </div>
+            </div> <!-- /twelve -->
+        </div> <!-- /row -->
+
+    </section> <!-- /intro -->
+
+
+    <!-- stats
+    ================================================== -->
+    <section id="stats" class="count-up">
+
+        <div class="row">
+            <div class="col-twelve">
+
+                <div class="block-1-4 block-s-1-2 block-tab-1-2 block-mob-1-2 stats-list">
+
+                    <div class="bgrid stat">
+
+                        <div class="icon-part">
+                            <i class="icon-bitcoin-network"></i>
+                        </div>
+
+                        <h3 class="stat-count">1</h3>
+
+                        <h5 class="stat-title">
+                            Bitcoin only
+                        </h5>
+
+                    </div> <!-- /stat -->
+
+                    <div class="bgrid stat">
+
+                        <div class="icon-part">
+                            <i class="icon-location-pin-bank-2"></i>
+                        </div>
+
+                        <h3 class="stat-count">13</h3>
+
+                        <h5 class="stat-title">
+                            Fiat Currencies
+                        </h5>
+
+                    </div> <!-- /stat -->
+
+                    <div class="bgrid stat">
+
+                        <div class="icon-part">
+                            <i class="icon-wallet"></i>
+                        </div>
+
+                        <h3 class="stat-count">7</h3>
+
+                        <h5 class="stat-title">
+                            Exchanges
+                        </h5>
+
+                    </div> <!-- /stat -->
+
+                    <div class="bgrid stat">
+
+                        <div class="icon-part">
+                            <i class="icon-star-constellation"></i>
+                        </div>
+
+                        <h3 class="stat-count">1337</h3>
+
+                        <h5 class="stat-title">
+                            Stars
+                        </h5>
+
+                    </div> <!-- /stat -->
+
+                </div> <!-- /stats-list -->
+
+            </div> <!-- /twelve -->
+        </div> <!-- /row -->
+
+    </section> <!-- /stats -->
+
+    <!-- features
+    ================================================== -->
+    <section id="features">
+
+        <div class="row section-intro group animate-this">
+            <div class="col-twelve with-bottom-line">
+
+                <h2 class="">Features You'll Love.</h2>
+
+                <p class="lead">Lorem ipsum Tempor do Excepteur nulla aute deserunt reprehenderit aute commodo aliquip
+                    laboris velit eu esse exercitation ex fugiat pariatur aute consequat. Lorem ipsum Fugiat mollit quis
+                    qui. Lorem ipsum Duis Excepteur Duis magna fugiat incididunt qui id quis dolor nisi irure proident
+                    labore ut in incididunt eiusmod est anim.</p>
+
+            </div>
+        </div>
+
+        <div class="row features-wrap">
+
+            <div class="features-list block-1-3 block-s-1-2 block-tab-full">
+
+                <div class="bgrid feature animate-this">
+
+                    <span class="feature-count">01.</span>
+
+                    <div class="feature-content">
+
+                        <h3>Bitcoin only</h3>
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+                            aspernatur aut odit aut fugit.
+                        </p>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid feature animate-this">
+
+                    <span class="feature-count">02.</span>
+
+                    <div class="feature-content">
+
+                        <h3>Developers First</h3>
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+                            aspernatur aut odit aut fugit.
+                        </p>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid feature animate-this">
+
+                    <span class="feature-count">03.</span>
+
+                    <div class="feature-content">
+
+                        <h3>JSON & gRPC API</h3>
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+                            aspernatur aut odit aut fugit.
+                        </p>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid feature animate-this">
+
+                    <span class="feature-count">04.</span>
+
+                    <div class="feature-content">
+
+                        <h3>Real-Time & Historical Data</h3>
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+                            aspernatur aut odit aut fugit.
+                        </p>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid feature animate-this">
+
+                    <span class="feature-count">05.</span>
+
+                    <div class="feature-content">
+
+                        <h3>Documentation</h3>
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+                            aspernatur aut odit aut fugit.
+                        </p>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid feature animate-this">
+
+                    <span class="feature-count">06.</span>
+
+                    <div class="feature-content">
+
+                        <h3>Open Source</h3>
+
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                            architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+                            aspernatur aut odit aut fugit.
+                        </p>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+            </div> <!-- /features-list -->
+
+        </div> <!-- /features-wrap -->
+
+    </section> <!-- /features -->
+
+    <!-- pricing
+    ================================================== -->
+    <section id="pricing">
+
+        <div class="row section-intro animate-this">
+            <div class="col-twelve with-bottom-line">
+
+                <h2>Plans and Pricing.</h2>
+
+                <p class="lead">
+                    We also have a pay as you grow pricing model. Feel free to contact us!
+                </p>
+
+            </div>
+        </div>
+
+        <div class="row pricing-content">
+
+            <div class="pricing-tables block-1-3  group">
+
+                <div class="bgrid animate-this">
+
+                    <div class="price-block">
+
+                        <div class="top-part">
+
+                            <h3 class="plan-title">Free</h3>
+                            <p class="plan-price"><sup>$</sup>0</p>
+                            <p class="price-month">No hidden costs</p>
+
+                        </div>
+
+                        <div class="bottom-part">
+
+                            <ul class="features">
+                                <li><strong>1 000</strong> requests/day</li>
+                                <li><strong>1 day</strong> Historical Data</li>
+                                <li><strong>USD</strong> Target Currency</li>
+                                <li><strong>Kraken</strong> Exchange</li>
+                            </ul>
+
+                            <a class="button large" href="">Get free API key</a>
+
+                        </div>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid animate-this">
+
+                    <div class="price-block primary" data-info="popular">
+
+                        <div class="top-part">
+
+                            <h3 class="plan-title">Standard</h3>
+                            <p class="plan-price"><sup>$</sup>9</p>
+                            <p class="price-month">Per month</p>
+
+                        </div>
+
+                        <div class="bottom-part">
+
+                            <ul class="features">
+                                <li><strong>10 000</strong> requests/day</li>
+                                <li><strong>30 days</strong> Historical Data</li>
+                                <li><strong>3</strong> Target Currencies</li>
+                                <li><strong>5</strong> Exchanges</li>
+                            </ul>
+
+                            <a class="button large" href="">Get Started</a>
+
+                        </div>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+                <div class="bgrid animate-this">
+
+                    <div class="price-block">
+
+                        <div class="top-part">
+
+                            <h3 class="plan-title">Premium</h3>
+                            <p class="plan-price"><sup>$</sup>29</p>
+                            <p class="price-month">Per month</p>
+
+                        </div>
+
+                        <div class="bottom-part">
+
+                            <ul class="features">
+                                <li><strong>unlimited</strong> requests/day</li>
+                                <li><strong>unlimited</strong> Historical Data</li>
+                                <li><strong>all</strong> Target Currencies</li>
+                                <li><strong>all</strong> Exchanges</li>
+                            </ul>
+
+                            <a class="button large" href="">Get Started</a>
+
+                        </div>
+
+                    </div>
+
+                </div> <!-- /bgrid -->
+
+            </div> <!-- /pricing-tables -->
+
+        </div> <!-- /pricing-content -->
+
+    </section> <!-- Pricing -->
+
+    <!-- subscribe
+    ================================================== -->
+    <section id="subscribe">
+
+        <div class="row subscribe-content">
+            <div class="col-twelve">
+
+                <h2 class="h01 animate-this">Stay up-to-date and join our newsletter</h2>
+                <form id="mc-form" class="group" novalidate="true" autocomplete="off">
+
+                    <div class="row">
+                        <div class="col-eight tab-full left animate-this" data-animate="fadeInLeft">
+                            <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL"
+                                   placeholder="Enter Your Email" required="">
+                        </div>
+
+                        <div class="col-four tab-full right animate-this" data-animate="fadeInRight">
+                            <input type="submit" value="Get Notified" name="subscribe" class="button large">
+                        </div>
+                    </div> <!-- /row -->
+
+                    <label for="mce-EMAIL" class="subscribe-message"></label>
+
+                </form>
+
+            </div>
+        </div>
+
+    </section> <!-- /subscribe -->
+
+
+    <!-- infos
+    ================================================== -->
+    <section id="infos" class="animate-this">
+
+        <div class="info-entry">
+
+            <div class="row info-entry-content">
+
+                <div class="col-twelve">
+
+                    <h3>Exchange Rates</h3>
+
+                    <div class="table-responsive">
+
+                        <table id="exchange-rate-table">
+                            <thead>
+                            <tr>
+                                <th>Provider</th>
+                                <th>Exchange Rate</th>
+                                <th>Fiat Currency</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div id="exchange-rate-loading-indicator" class="loading-indicator"></div>
+
+                </div>
+
+            </div> <!--row -->
+        </div>
+
+    </section> <!-- /infos -->
+
+</div> <!-- /main-content-wrap -->
+
+
+<!-- footer
+================================================== -->
+<footer id="main-footer">
+
+    <div class="footer-social-wrap">
+        <div class="row">
+
+            <ul class="footer-social-list">
+                <li><a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
+                    <i class="fa fa-github"></i>
+                </a></li>
+                <li><a href="https://twitter.com/bitcoin">
+                    <i class="fa fa-twitter"></i>
+                </a></li>
+            </ul>
+
+        </div>
+    </div> <!-- /footer-social-wrap -->
+
+    <div class="footer-info-wrap">
+
+        <div class="row footer-info">
+
+            <div class="col-four tab-full">
+                <h4>General</h4>
+
+                <ul class="footer-link-list">
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Testimonials</a></li>
+                </ul>
+            </div>
+
+            <div class="col-four tab-full">
+                <h4>Developers</h4>
+
+                <ul class="footer-link-list">
+                    <li><a href="#">API</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
+                        GitHub <i class="fa fa-github"></i>
+                    </a></li>
+                </ul>
+            </div>
+
+            <div class="col-four tab-full collapse">
+                <h4>About</h4>
+
+                <ul class="footer-link-list">
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div> <!-- /footer-info-wrap -->
+
+    <div class="footer-bottom">
+
+        <div class="copyright">
+            <span>&copy; by tbk</span>
+            <span>Design by <a href="https://www.styleshout.com/">styleshout</a></span>
+        </div>
+    </div>
+
+</footer>
+
+<div id="go-top">
+    <a class="smoothscroll" title="Back to Top" href="#top"><i class="fa fa-long-arrow-up"></i></a>
+</div>
+
+<!-- preloader
+================================================== -->
+<div id="preloader">
+    <div id="loader"></div>
+</div>
+
+<!-- Java Script
+================================================== -->
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+
 </body>
+
 </html>
