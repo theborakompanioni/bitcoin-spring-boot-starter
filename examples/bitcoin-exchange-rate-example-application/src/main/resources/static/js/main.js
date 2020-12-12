@@ -356,8 +356,10 @@ const httpGetAsync = (url, onSuccess, onError) => {
     $(window).on('load', () => {
         // const baseUrl = ""; // if empty, will try to load from same base url the page is loaded
         const baseUrl = "http://localhost:8080";
-        const url = baseUrl + "/api/v1/exchange/latest?base=BTC&target=USD&target=EUR&target=GBP&target=JPY";
-        httpGetAsync(url, (body) => {
+        const exchangeRatesUrl = baseUrl + "/api/v1/exchange/latest?base=BTC&target=USD&target=EUR&target=GBP&target=JPY";
+        const currencyUrl = baseUrl + "/api/v1/currency";
+
+        httpGetAsync(exchangeRatesUrl, (body) => {
             const json = JSON.parse(body);
 
             const tbody = $('#exchange-rate-table > tbody:last-child');
@@ -372,6 +374,21 @@ const httpGetAsync = (url, onSuccess, onError) => {
                     '<td>' + rate.target + '</td>' +
                     '</tr>'
                 );
+            }
+
+        }, e => {
+            console.log(e);
+        });
+
+        httpGetAsync(currencyUrl, (body) => {
+            const json = JSON.parse(body);
+
+            const elem = $('#supported-currencies-container');
+
+            $('#supported-currencies-loading-indicator').hide();
+
+            for (let currency of json) {
+                elem.append('<span>' + currency.currencyCode + ', </span>');
             }
 
         }, e => {
