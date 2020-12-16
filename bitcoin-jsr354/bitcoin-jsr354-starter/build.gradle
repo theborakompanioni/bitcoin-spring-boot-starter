@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     api project(':bitcoin-jsr354:bitcoin-jsr354-currency')
-    api project(':bitcoin-jsr354:bitcoin-jsr354-exchange')
+    api project(':bitcoin-jsr354:bitcoin-jsr354-exchange-rate')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation 'org.springframework.boot:spring-boot-starter'

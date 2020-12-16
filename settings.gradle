@@ -25,7 +25,7 @@ include 'spring-testcontainer:spring-testcontainer-lnd-example-application'
 include 'spring-testcontainer:spring-testcontainer-neo4j-starter'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
-include 'bitcoin-jsr354:bitcoin-jsr354-exchange'
+include 'bitcoin-jsr354:bitcoin-jsr354-exchange-rate'
 include 'bitcoin-jsr354:bitcoin-jsr354-starter'
 
 include 'spring-bitcoin-fee:spring-bitcoin-fee-core'
