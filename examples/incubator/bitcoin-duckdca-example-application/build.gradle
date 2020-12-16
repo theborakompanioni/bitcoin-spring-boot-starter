@@ -1,0 +1,37 @@
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    maven {
+        url "https://dl.bintray.com/msgilligan/maven"
+    }
+}
+
+description = 'bitcoin duck dca example application package'
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    archiveClassifier.set('boot')
+}
+
+dependencies {
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-starter')
+    implementation project(':spring-jsr354:spring-jsr354-starter')
+    implementation project(':xchange-jsr354:xchange-jsr354-starter')
+
+    implementation "io.projectreactor:reactor-core"
+    implementation "org.javamoney:moneta:${monetaVersion}"
+
+    //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
+    //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
+
+    implementation 'org.zalando:jackson-datatype-money:1.2.0'
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
