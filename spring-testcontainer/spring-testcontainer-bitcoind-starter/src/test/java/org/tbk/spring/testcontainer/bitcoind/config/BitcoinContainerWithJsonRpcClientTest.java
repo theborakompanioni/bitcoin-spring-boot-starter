@@ -2,11 +2,9 @@ package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
-import com.msgilligan.bitcoinj.rpc.RpcConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,15 +13,14 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
-import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
-import java.net.URI;
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -85,10 +82,10 @@ public class BitcoinContainerWithJsonRpcClientTest {
         assertThat(balanceBefore, is(Coin.ZERO));
 
         List<Sha256Hash> initialMinedBlockHashes = bitcoinJsonRpcClient.generateToAddress(1, newAddress);
-        assertThat(initialMinedBlockHashes, hasSize(1));
+        assertThat("an additional block has been mined", initialMinedBlockHashes, hasSize(1));
 
         LongAdder counter = new LongAdder();
-        while (counter.longValue() < 100) {
+        while (counter.longValue() < 100L) {
             Coin balanceDuringMining = bitcoinJsonRpcClient.getBalance();
             assertThat("balance is zero till 100 blocks are mined", balanceDuringMining, is(Coin.ZERO));
 
@@ -96,7 +93,20 @@ public class BitcoinContainerWithJsonRpcClientTest {
             counter.add(newlyMinedBlocks.size());
         }
 
-        Coin balanceAfter = bitcoinJsonRpcClient.getBalance();
-        assertThat(balanceAfter, is(Coin.FIFTY_COINS));
+        // immediately after the block is mined, the rpc client sometimes
+        // reports the balance as zero for a short amount of time..
+        // solution: poll every 10ms for 10s as a short workaround
+        Coin balanceAfter = Flux.interval(Duration.ofMillis(10))
+                .map(foo -> {
+                    try {
+                        return bitcoinJsonRpcClient.getBalance();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .filter(val -> !val.isZero())
+                .blockFirst(Duration.ofSeconds(10));
+
+        assertThat("block reward is spendable after blocks are mined", balanceAfter, is(Coin.FIFTY_COINS));
     }
 }
