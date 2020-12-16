@@ -1,4 +1,5 @@
 [![Build Status](https://www.travis-ci.org/theborakompanioni/spring-boot-bitcoin-starter.svg?branch=master)](https://www.travis-ci.org/theborakompanioni/spring-boot-bitcoin-starter)
+[![Download](https://jitpack.io/v/theborakompanioni/spring-boot-bitcoin-starter.svg)](https://jitpack.io/#theborakompanioni/spring-boot-bitcoin-starter)
 [![License](https://img.shields.io/github/license/theborakompanioni/spring-boot-bitcoin-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/LICENSE)
 
 spring-boot-bitcoin-starter
@@ -7,7 +8,10 @@ spring-boot-bitcoin-starter
 Spring boot starter projects with convenient dependency descriptors for multiple Bitcoin related modules that you can 
 include in your application. Strong focus on [JSR354](https://github.com/JavaMoney/jsr354-api) and representing, 
 transporting, and performing comprehensive calculations with Bitcoin in financial applications and monetary computations.
-
+ 
+**Note: Most code is still experimental: do not use in production.**
+This project is a work in progress. Pull requests and issues are welcome.
+ 
 ## Modules
 ### bitcoin-jsr354
 Contains a JSR354 compliant `CurrentyUnit` implementation representing Bitcoin.
