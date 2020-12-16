@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Slf4j
 @Configuration
 @EnableWebSecurity
-public class BitcoinExchangeExampleWebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BitcoinExchangeRateExampleWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {

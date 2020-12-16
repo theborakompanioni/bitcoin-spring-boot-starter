@@ -17,7 +17,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class BitcoinExchangeExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
+public class BitcoinExchangeRateExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",
