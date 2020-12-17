@@ -118,12 +118,12 @@ const httpGetAsync = (url, onSuccess, onError) => {
        mainContents = $('#main-content-wrap, header');
 
 	// open-close menu by clicking on the menu icon
-	toggleButton.on('click', function(e){
+	toggleButton.on('click', function(e) {
 
 		e.preventDefault();
 
 		toggleButton.toggleClass('is-clicked');
-		siteBody.toggleClass('menu-is-open').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
+		siteBody.toggleClass('menu-is-open').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
 			// firefox transitions break when parent overflow is changed, 
 			// so we need to wait for the end of the trasition to give the body an overflow hidden
 			siteBody.toggleClass('overflow-hidden');
@@ -159,7 +159,7 @@ const httpGetAsync = (url, onSuccess, onError) => {
 	 * Stat Counter
 	 * ------------------------------------------------------ */
    var statSection = $("#stats"),
-       stats = $(".stat-count");
+       stats = $(".count-up-this");
 
    statSection.waypoint({
 
@@ -354,46 +354,64 @@ const httpGetAsync = (url, onSuccess, onError) => {
 	* Exchange Rates Table
 	* ------------------------------------------------------ */
     $(window).on('load', () => {
-        // const baseUrl = ""; // if empty, will try to load from same base url the page is loaded
+        const refreshBtn = $('#exchange-rate-refresh-btn');
+
+        //const baseUrl = ""; // if empty, will try to load from same base url the page is loaded
         const baseUrl = "http://localhost:8080";
         const exchangeRatesUrl = baseUrl + "/api/v1/exchange/latest?base=BTC&target=USD&target=EUR&target=GBP&target=JPY";
-        const currencyUrl = baseUrl + "/api/v1/currency";
 
-        httpGetAsync(exchangeRatesUrl, (body) => {
-            const json = JSON.parse(body);
-
+        const refreshExchangeRateTable = () => {
+            const refreshLoader = $('#exchange-rate-loading-indicator');
+            const errorContainer = $('#exchange-rate-error-container');
             const tbody = $('#exchange-rate-table > tbody:last-child');
 
-            $('#exchange-rate-loading-indicator').hide();
+            refreshLoader.show();
+            tbody.hide();
+            errorContainer.hide();
 
-            for (let rate of json.rates) {
-                tbody.append(
-                    '<tr>' +
-                    '<td>' + rate.provider + '</td>' +
-                    '<td>' + Number(rate.factor).toFixed(3) + '</td>' +
-                    '<td>' + rate.target + '</td>' +
-                    '</tr>'
+            httpGetAsync(exchangeRatesUrl, (body) => {
+                const json = JSON.parse(body);
+
+                tbody.empty(); // remove all child elements
+
+                for (let rate of json.rates) {
+                    tbody.append(
+                        '<tr>' +
+                        '<td>' + rate.provider + '</td>' +
+                        '<td>' + Number(rate.factor).toFixed(3) + '</td>' +
+                        '<td>' + rate.target + '</td>' +
+                        '</tr>'
+                    );
+                }
+
+                refreshLoader.hide();
+                tbody.show();
+
+            }, e => {
+                console.log(e);
+
+                const errorMessage = (!!e.statusText && e.statusText) ||
+                    (!!e.message && e.message) ||
+                    e;
+
+                errorContainer.empty();
+                errorContainer.append(
+                    '<p>' +
+                    '<span>Error while loading: ' + errorMessage + '</span>' +
+                    '</p>'
                 );
-            }
 
-        }, e => {
-            console.log(e);
+                refreshLoader.hide();
+                errorContainer.show();
+            });
+        };
+
+        refreshBtn.on('click', event => {
+            event.preventDefault();
+            refreshExchangeRateTable();
         });
 
-        httpGetAsync(currencyUrl, (body) => {
-            const json = JSON.parse(body);
-
-            const elem = $('#supported-currencies-container');
-
-            $('#supported-currencies-loading-indicator').hide();
-
-            for (let currency of json) {
-                elem.append('<span>' + currency.currencyCode + ', </span>');
-            }
-
-        }, e => {
-            console.log(e);
-        });
+        refreshBtn.click();
     });
 
 })(jQuery);

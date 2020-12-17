@@ -8,18 +8,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <meta http-equiv="Content-Security-Policy"
-          content="
-          default-src 'self' 'unsafe-inline'
-          img-src:
-          data:
-          blob:
-          wss:
-
-          localhost:*
-          ws://localhost:4200;
-    ">
-
     <!-- mobile specific metas
     ================================================== -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -118,7 +106,9 @@
                             <i class="icon-bitcoin-network"></i>
                         </div>
 
-                        <h3 class="stat-count">1</h3>
+                        <h3 class="stat-count">
+                            <i class="icon-check-box"></i>
+                        </h3>
 
                         <h5 class="stat-title">
                             Bitcoin only
@@ -132,7 +122,7 @@
                             <i class="icon-location-pin-bank-2"></i>
                         </div>
 
-                        <h3 class="stat-count">229</h3>
+                        <h3 class="stat-count count-up-this">7</h3>
 
                         <h5 class="stat-title">
                             Fiat Currencies
@@ -146,7 +136,7 @@
                             <i class="icon-wallet"></i>
                         </div>
 
-                        <h3 class="stat-count">6</h3>
+                        <h3 class="stat-count count-up-this">5</h3>
 
                         <h5 class="stat-title">
                             Exchanges
@@ -160,7 +150,7 @@
                             <i class="icon-star-constellation"></i>
                         </div>
 
-                        <h3 class="stat-count">1337</h3>
+                        <h3 class="stat-count count-up-this">1337</h3>
 
                         <h5 class="stat-title">
                             Stars
@@ -320,7 +310,8 @@
                 <h2>Plans and Pricing.</h2>
 
                 <p class="lead">
-                    We also have a pay as you grow pricing model. Feel free to contact us!
+                    Check out pay as you grow pricing models if you need custom pricing. <br />
+                    Feel free to contact us!
                 </p>
 
             </div>
@@ -464,26 +455,12 @@
 
                 <div class="col-twelve">
 
-                    <h3>Supported Currencies</h3>
-
-                    <div id="supported-currencies-container" class="text-part">
-
-                    </div>
-
-                    <div id="supported-currencies-loading-indicator" class="loading-indicator"></div>
-
+                    <h3 style="display: inline-block;">Exchange Rates</h3>
+                    <button id="exchange-rate-refresh-btn" class="button" style="float: right">Refresh</button>
                 </div>
-
-            </div> <!--row -->
-        </div>
-
-        <div class="info-entry">
-
-            <div class="row info-entry-content">
 
                 <div class="col-twelve">
 
-                    <h3>Exchange Rates</h3>
 
                     <div class="table-responsive">
 
@@ -502,6 +479,7 @@
                     </div>
 
                     <div id="exchange-rate-loading-indicator" class="loading-indicator"></div>
+                    <div id="exchange-rate-error-container"></div>
 
                 </div>
 
@@ -521,12 +499,16 @@
         <div class="row">
 
             <ul class="footer-social-list">
-                <li><a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
-                    <i class="fa fa-github"></i>
-                </a></li>
-                <li><a href="https://twitter.com/bitcoin">
-                    <i class="fa fa-twitter"></i>
-                </a></li>
+                <li>
+                    <a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
+                        <i class="fa fa-github"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/bitcoin">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
             </ul>
 
         </div>
@@ -551,9 +533,11 @@
                 <ul class="footer-link-list">
                     <li><a href="#">API</a></li>
                     <li><a href="#">Documentation</a></li>
-                    <li><a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
-                        GitHub <i class="fa fa-github"></i>
-                    </a></li>
+                    <li>
+                        <a href="https://github.com/theborakompanioni/spring-boot-bitcoin-starter">
+                            GitHub <i class="fa fa-github"></i>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
