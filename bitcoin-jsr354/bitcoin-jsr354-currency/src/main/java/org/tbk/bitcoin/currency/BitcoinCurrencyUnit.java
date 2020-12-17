@@ -2,7 +2,6 @@ package org.tbk.bitcoin.currency;
 
 import javax.money.CurrencyContext;
 import javax.money.CurrencyUnit;
-
 import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
@@ -40,8 +39,17 @@ public final class BitcoinCurrencyUnit implements CurrencyUnit, Serializable, Co
 
     @Override
     public int compareTo(CurrencyUnit other) {
-        requireNonNull(other);
-
         return this.getCurrencyCode().compareTo(other.getCurrencyCode());
+    }
+
+    /**
+     * Does the same what {@link java.util.Currency} would do:
+     * Returns the unofficial ISO 4217 currency code of bitcoin.
+     *
+     * @return unofficial ISO 4217 currency code of bitcoin
+     */
+    @Override
+    public String toString() {
+        return getCurrencyCode();
     }
 }
