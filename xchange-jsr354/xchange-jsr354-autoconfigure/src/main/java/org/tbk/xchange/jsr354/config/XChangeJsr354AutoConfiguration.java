@@ -3,7 +3,6 @@ package org.tbk.xchange.jsr354.config;
 import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
-import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitfinex.BitfinexExchange;
 import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.bittrex.BittrexExchange;
@@ -14,33 +13,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.xchange.jsr354.MoreProviderContexts;
 import org.tbk.xchange.jsr354.XChangeExchangeRateProvider;
 
 import javax.money.convert.ProviderContext;
-import javax.money.convert.ProviderContextBuilder;
-import javax.money.convert.RateType;
-import java.util.Optional;
+
+import static org.tbk.xchange.jsr354.MoreProviderContexts.createSimpleProviderContextBuilder;
 
 @Slf4j
 @Configuration
 @ConditionalOnClass(Exchange.class)
 public class XChangeJsr354AutoConfiguration {
-
-    private static ProviderContext createCommonProviderContext(Exchange exchange) {
-        String providerClassName = exchange.getClass().getSimpleName();
-        String providerId = providerClassName
-                .replace("Exchange", "")
-                .toUpperCase();
-
-        ExchangeSpecification specification = exchange.getDefaultExchangeSpecification();
-        String exchangeName = Optional.ofNullable(specification.getExchangeName()).orElse(providerClassName);
-        String exchangeDescription = Optional.ofNullable(specification.getExchangeDescription()).orElse("");
-
-        return ProviderContextBuilder.of(providerId, RateType.DEFERRED)
-                .set("providerName", exchangeName)
-                .set("providerDescription", exchangeDescription)
-                .build();
-    }
 
     @Configuration
     @ConditionalOnClass(BitstampExchange.class)
@@ -54,7 +37,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Bean
         public XChangeExchangeRateProvider bitstampExchangeRateProvider(BitstampExchange exchange) {
-            ProviderContext providerContext = createCommonProviderContext(exchange);
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
             return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
@@ -71,7 +54,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Bean
         public XChangeExchangeRateProvider bitfinexExchangeRateProvider(BitfinexExchange exchange) {
-            ProviderContext providerContext = createCommonProviderContext(exchange);
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
             return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
@@ -88,7 +71,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Bean
         public XChangeExchangeRateProvider bittrexExchangeRateProvider(BittrexExchange exchange) {
-            ProviderContext providerContext = createCommonProviderContext(exchange);
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
             return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
@@ -105,7 +88,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Bean
         public XChangeExchangeRateProvider geminiExchangeRateProvider(GeminiExchange exchange) {
-            ProviderContext providerContext = createCommonProviderContext(exchange);
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
             return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
@@ -122,7 +105,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Bean
         public XChangeExchangeRateProvider krakenExchangeRateProvider(KrakenExchange exchange) {
-            ProviderContext providerContext = createCommonProviderContext(exchange);
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
             return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
@@ -139,7 +122,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Bean
         public XChangeExchangeRateProvider theRockExchangeRateProvider(TheRockExchange exchange) {
-            ProviderContext providerContext = createCommonProviderContext(exchange);
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
             return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
