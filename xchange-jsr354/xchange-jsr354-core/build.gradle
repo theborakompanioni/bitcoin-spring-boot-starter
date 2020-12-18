@@ -5,8 +5,11 @@ plugins {
 dependencies {
     api "javax.money:money-api:${jsr354Version}"
 
-    implementation "org.javamoney:moneta:${monetaVersion}"
-    implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
+    // must be exposed because of class AbstractRateProvider
+    api "org.javamoney:moneta:${monetaVersion}"
+
+    // must be exposed because of e.g. class Exchange
+    api "org.knowm.xchange:xchange-core:${xChangeVersion}"
 
     // import "BTC" as jsr354 CurrencyUnit
     testImplementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')

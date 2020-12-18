@@ -15,6 +15,7 @@ import javax.money.Monetary;
 import javax.money.convert.ConversionQuery;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRate;
+import javax.money.convert.ExchangeRateProvider;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class BitcoinExchangeRateExampleApplication {
     }
 
     @Bean
-    public CommandLineRunner exchangeRateDemoRunner(List<XChangeExchangeRateProvider> XChangeExchangeRateProviders) {
+    public CommandLineRunner exchangeRateDemoRunner(List<ExchangeRateProvider> XChangeExchangeRateProviders) {
         return args -> {
             if (XChangeExchangeRateProviders.isEmpty()) {
                 log.warn("No XChangeExchangeRateProviders found.");
@@ -57,7 +58,7 @@ public class BitcoinExchangeRateExampleApplication {
             log.info("ConversionQuery: {}", conversionQuery);
             log.info("Available provider count: {}", XChangeExchangeRateProviders.size());
 
-            List<XChangeExchangeRateProvider> eligibleProvider = XChangeExchangeRateProviders.stream()
+            List<ExchangeRateProvider> eligibleProvider = XChangeExchangeRateProviders.stream()
                     .filter(it -> it.isAvailable(conversionQuery))
                     .collect(Collectors.toList());
 

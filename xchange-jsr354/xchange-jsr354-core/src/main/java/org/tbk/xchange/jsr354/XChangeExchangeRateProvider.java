@@ -1,9 +1,5 @@
 package org.tbk.xchange.jsr354;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.javamoney.moneta.convert.ExchangeRateBuilder;
@@ -11,7 +7,6 @@ import org.javamoney.moneta.spi.AbstractRateProvider;
 import org.javamoney.moneta.spi.DefaultNumberValue;
 import org.javamoney.moneta.spi.LazyBoundCurrencyConversion;
 import org.knowm.xchange.Exchange;
-import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
 
@@ -20,29 +15,15 @@ import javax.money.NumberValue;
 import javax.money.convert.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class XChangeExchangeRateProvider extends AbstractRateProvider implements ExchangeRateProvider {
-
-    private static final Duration defaultExpireAfterWriteDuration = Duration.ofSeconds(10);
-
-    private final LoadingCache<CurrencyPair, Ticker> cache = CacheBuilder.newBuilder()
-            .expireAfterWrite(defaultExpireAfterWriteDuration)
-            .build(new CacheLoader<>() {
-                @Override
-                public Ticker load(CurrencyPair currencyPair) throws Exception {
-                    return exchange.getMarketDataService().getTicker(currencyPair);
-                }
-            });
 
     private final Exchange exchange;
 
@@ -102,6 +83,11 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
         return new LazyBoundCurrencyConversion(conversionQuery, this, multiRateConversionContext);
     }
 
+    @Override
+    public String toString() {
+        return this.getContext().toString();
+    }
+
     private boolean isCurrencyPairOrReverseAvailable(CurrencyPair currencyPair) {
         boolean currencyPairAvailable = this.isCurrencyPairAvailable(currencyPair);
         if (currencyPairAvailable) {
@@ -129,7 +115,7 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
                 return Optional.empty();
             }
 
-            Ticker ticker = cache.get(currencyPair);
+            Ticker ticker = exchange.getMarketDataService().getTicker(currencyPair);
 
             ConversionContext conversionContext = createConversionContextFromTicker(ticker);
 
@@ -149,11 +135,10 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
 
                 return Optional.of(exchangeRate);
             }
-        } catch (ExecutionException | UncheckedExecutionException e) {
-            String errorMessage = String.format("Exception while fetching exchange rate of %s from exchange %s", currencyPair, exchange);
-            log.warn(errorMessage, e);
         } catch (Exception e) {
-            log.warn("", e);
+            String errorMessage = String.format("Exception while fetching exchange rate of %s from exchange %s", currencyPair, exchange);
+
+            log.warn(errorMessage, e);
         }
 
         return Optional.empty();

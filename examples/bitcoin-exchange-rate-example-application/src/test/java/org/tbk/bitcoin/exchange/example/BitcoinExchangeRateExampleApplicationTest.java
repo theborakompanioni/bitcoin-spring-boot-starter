@@ -16,6 +16,7 @@ import javax.money.convert.*;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -63,9 +64,9 @@ public class BitcoinExchangeRateExampleApplicationTest {
 
     @Test
     public void canFetchAllExchangeRatesForBitcoin() {
-        final Map<String, XChangeExchangeRateProvider> beansOfType = applicationContext.getBeansOfType(XChangeExchangeRateProvider.class);
+        Map<String, ExchangeRateProvider> beansOfType = applicationContext.getBeansOfType(ExchangeRateProvider.class);
 
-        Collection<XChangeExchangeRateProvider> providers = beansOfType.values();
+        Collection<ExchangeRateProvider> providers = beansOfType.values();
         assertThat(providers, hasSize(greaterThan(0)));
 
         CurrencyUnit btc = Monetary.getCurrency("BTC");
@@ -76,7 +77,12 @@ public class BitcoinExchangeRateExampleApplicationTest {
                 .setTermCurrency(usd)
                 .build();
 
-        providers.forEach(provider -> {
+        Collection<ExchangeRateProvider> eligibleProvider = providers.stream()
+                .filter(it -> it.isAvailable(conversionQuery))
+                .collect(Collectors.toList());
+        assertThat(eligibleProvider, hasSize(greaterThan(0)));
+
+        eligibleProvider.forEach(provider -> {
             ExchangeRate exchangeRate = provider.getExchangeRate(conversionQuery);
             assertThat(exchangeRate, is(notNullValue()));
 
