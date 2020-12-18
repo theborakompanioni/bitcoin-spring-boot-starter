@@ -7,4 +7,10 @@ dependencies {
 
     implementation "org.javamoney:moneta:${monetaVersion}"
     implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
+
+    // import "BTC" as jsr354 CurrencyUnit
+    testImplementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
+
+    // use kraken as the exchange in all tests
+    testImplementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
 }
