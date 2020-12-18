@@ -2,6 +2,7 @@ package org.tbk.bitcoin.exchange.example.api.rate;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,6 @@ import org.tbk.bitcoin.exchange.example.api.rate.ExchangeRateResponseImpl.Exchan
 import reactor.core.publisher.Flux;
 
 import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import javax.money.MonetaryException;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRateProvider;
@@ -20,12 +20,11 @@ import javax.money.convert.MonetaryConversions;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/exchange")
 @RequiredArgsConstructor
@@ -73,19 +72,24 @@ public class ExchangeRateCtrl {
                 .map(conversionQueryBuilder::setTermCurrency)
                 .map(ConversionQueryBuilder::build)
                 .flatMap(conversionQuery -> {
-                    Flux<ExchangeRateProvider> provider = Optional.of(exchangeRateProviders)
+                    Flux<ExchangeRateProvider> providers = Optional.of(exchangeRateProviders)
                             .filter(val -> !val.isEmpty())
                             .map(Flux::fromIterable)
                             .orElseGet(() -> Flux.fromIterable(MonetaryConversions.getDefaultConversionProviderChain())
                                     .map(MonetaryConversions::getExchangeRateProvider));
 
-                    return provider.flatMap(val -> {
-                        try {
-                            return Flux.just(val.getExchangeRate(conversionQuery));
-                        } catch (Exception e) {
-                            return Flux.empty();
-                        }
-                    });
+                    return providers
+                            .filter(provider -> provider.isAvailable(conversionQuery))
+                            .flatMap(provider -> {
+                                try {
+                                    return Flux.just(provider.getExchangeRate(conversionQuery));
+                                } catch (Exception e) {
+                                    log.debug("exception while getting exchange rate {} from provider {}: {}",
+                                            conversionQuery, provider,  e.getMessage());
+
+                                    return Flux.empty();
+                                }
+                            });
                 })
                 .map(exchangeRate -> ExchangeRateImpl.toDto(exchangeRate).build())
                 .collectList()

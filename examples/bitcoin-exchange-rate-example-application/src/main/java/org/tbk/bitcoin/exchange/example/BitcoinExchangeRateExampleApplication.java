@@ -12,9 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.tbk.xchange.jsr354.XChangeExchangeRateProvider;
 
 import javax.money.Monetary;
+import javax.money.convert.ConversionQuery;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootApplication
@@ -45,15 +47,27 @@ public class BitcoinExchangeRateExampleApplication {
                 return;
             }
 
-            XChangeExchangeRateProviders.forEach(xChangeExchangeRateProvider -> {
-                log.info("======================================================");
+            ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
+                    .setBaseCurrency(Monetary.getCurrency("BTC"))
+                    .setTermCurrency(Monetary.getCurrency("USD"));
+
+            ConversionQuery conversionQuery = conversionQueryBuilder.build();
+
+            log.info("======================================================");
+            log.info("ConversionQuery: {}", conversionQuery);
+            log.info("Available provider count: {}", XChangeExchangeRateProviders.size());
+
+            List<XChangeExchangeRateProvider> eligibleProvider = XChangeExchangeRateProviders.stream()
+                    .filter(it -> it.isAvailable(conversionQuery))
+                    .collect(Collectors.toList());
+
+            log.info("Eligible provider count: {}", eligibleProvider.size());
+
+            eligibleProvider.forEach(xChangeExchangeRateProvider -> {
+                log.info("------------------------------------------------------");
                 log.info("Provider: {}", xChangeExchangeRateProvider.getContext());
 
-                ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
-                        .setBaseCurrency(Monetary.getCurrency("BTC"))
-                        .setTermCurrency(Monetary.getCurrency("USD"));
-
-                final ExchangeRate exchangeRate = xChangeExchangeRateProvider.getExchangeRate(conversionQueryBuilder.build());
+                final ExchangeRate exchangeRate = xChangeExchangeRateProvider.getExchangeRate(conversionQuery);
 
                 log.info("exchangeRate: {}", exchangeRate);
             });
