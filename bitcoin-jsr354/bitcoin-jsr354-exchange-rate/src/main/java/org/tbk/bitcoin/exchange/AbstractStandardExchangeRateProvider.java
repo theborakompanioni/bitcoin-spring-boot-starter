@@ -6,6 +6,7 @@ import org.javamoney.moneta.spi.AbstractRateProvider;
 
 import javax.money.CurrencyUnit;
 import javax.money.convert.*;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -22,7 +23,7 @@ abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider
     protected abstract CurrencyUnit getStandardCurrencyUnit();
 
     @Override
-    public ExchangeRate getExchangeRate(ConversionQuery conversionQuery) {
+    public boolean isAvailable(ConversionQuery conversionQuery) {
         CurrencyUnit standardCurrencyUnit = getStandardCurrencyUnit();
 
         CurrencyUnit baseCurrencyUnit = conversionQuery.getBaseCurrency();
@@ -34,7 +35,7 @@ abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider
         if (isDirectStdQuery) {
             // do not handle XXX -> STD or STD -> XXX conversions!
             // a downstream provider should take care of these
-            return null;
+            return false;
         }
 
         ConversionQuery stdToBase = conversionQuery.toBuilder()
@@ -42,7 +43,46 @@ abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider
                 .setTermCurrency(baseCurrencyUnit)
                 .build();
 
+        boolean stdToBaseExchangeRateAvailable = Optional.ofNullable(MonetaryConversions.getExchangeRateProvider(stdToBase))
+                .map(it -> it.isAvailable(stdToBase))
+                .orElse(false);
+
+        if (!stdToBaseExchangeRateAvailable) {
+            // leave method early if one rate is not available
+            // we need both rates to support the conversion
+            return false;
+        }
+
+        ConversionQuery stdToTarget = conversionQuery.toBuilder()
+                .setBaseCurrency(standardCurrencyUnit)
+                .setTermCurrency(targetCurrencyUnit)
+                .build();
+
+        boolean stdToTargetExchangeRateAvailable = Optional.ofNullable(MonetaryConversions.getExchangeRateProvider(stdToTarget))
+                .map(it -> it.isAvailable(stdToTarget))
+                .orElse(false);
+
+        return stdToTargetExchangeRateAvailable;
+    }
+
+    @Override
+    public ExchangeRate getExchangeRate(ConversionQuery conversionQuery) {
+        if (!isAvailable(conversionQuery)) {
+            return null;
+        }
+
+        CurrencyUnit standardCurrencyUnit = getStandardCurrencyUnit();
+
+        CurrencyUnit baseCurrencyUnit = conversionQuery.getBaseCurrency();
+        CurrencyUnit targetCurrencyUnit = conversionQuery.getCurrency();
+
+        ConversionQuery stdToBase = conversionQuery.toBuilder()
+                .setBaseCurrency(standardCurrencyUnit)
+                .setTermCurrency(baseCurrencyUnit)
+                .build();
+
         ExchangeRate stdToBaseExchangeRate = Optional.ofNullable(MonetaryConversions.getExchangeRateProvider(stdToBase))
+                .filter(val -> val.isAvailable(stdToBase))
                 .map(val -> val.getExchangeRate(stdToBase))
                 .orElse(null);
 
@@ -56,6 +96,7 @@ abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider
                 .build();
 
         ExchangeRate stdToTargetExchangeRate = Optional.ofNullable(MonetaryConversions.getExchangeRateProvider(stdToTarget))
+                .filter(val -> val.isAvailable(stdToTarget))
                 .map(val -> val.getExchangeRate(stdToTarget))
                 .orElse(null);
 
