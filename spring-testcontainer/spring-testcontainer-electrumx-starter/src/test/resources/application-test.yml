@@ -1,0 +1,11 @@
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true
+  rpcuser: this-is-my-rpc-user-20201218
+  rpcpass: correct_horse_battery_staple_20201218
+  rpchost: localhost
+  rpcport: 18443
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user-20201218
+  rpcpassword: correct_horse_battery_staple_20201218
