@@ -3,6 +3,7 @@ package org.tbk.xchange.jsr354;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.javamoney.moneta.convert.ExchangeRateBuilder;
@@ -22,6 +23,7 @@ import java.math.MathContext;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -42,53 +44,114 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
                 }
             });
 
-    @NonNull
     private final Exchange exchange;
 
     public XChangeExchangeRateProvider(ProviderContext providerContext, Exchange exchange) {
         super(providerContext);
-        this.exchange = exchange;
+
+        this.exchange = requireNonNull(exchange);
+    }
+
+    @Override
+    public boolean isAvailable(@NonNull ConversionQuery conversionQuery) {
+        try {
+            Optional<CurrencyPair> currencyPairOrEmpty = MoreCurrencyPairs.toCurrencyPair(conversionQuery);
+
+            return currencyPairOrEmpty
+                    .map(this::isCurrencyPairOrReverseAvailable)
+                    .orElse(false);
+        } catch (Exception e) {
+            log.warn("Exception while check if conversion query is available", e);
+            return false;
+        }
     }
 
     @Override
     public ExchangeRate getExchangeRate(ConversionQuery conversionQuery) {
-        CurrencyUnit targetCurrencyUnit = conversionQuery.getCurrency();
         CurrencyUnit baseCurrencyUnit = conversionQuery.getBaseCurrency();
+        CurrencyUnit targetCurrencyUnit = conversionQuery.getCurrency();
 
-        Optional<ExchangeRate> exchangeRateOrEmpty = getExchangeRateIfAvailable(baseCurrencyUnit, targetCurrencyUnit)
-                .or(() -> getExchangeRateIfAvailable(targetCurrencyUnit, baseCurrencyUnit).map(this::reverse));
+        // if any of base or target currency is null we cannot get the rate from xchange exchanges
+        if (baseCurrencyUnit == null || targetCurrencyUnit == null) {
+            ConversionContext failedConversionContext = createConversionContextBuilder(RateType.ANY).build();
+            throw new CurrencyConversionException(baseCurrencyUnit, targetCurrencyUnit, failedConversionContext);
+        }
 
-        return exchangeRateOrEmpty.orElse(null);
+        Optional<ExchangeRate> exchangeRateOrEmpty = getExchangeRateIfAvailable(baseCurrencyUnit, targetCurrencyUnit);
+        Optional<ExchangeRate> exchangeRateOrReversedEmpty = exchangeRateOrEmpty.or(() -> {
+            // fallback: if the rate is not available, try to get the reverse exchange rate instead
+            return getExchangeRateIfAvailable(targetCurrencyUnit, baseCurrencyUnit)
+                    .map(this::reverse);
+        });
+
+        return exchangeRateOrReversedEmpty.orElseThrow(() -> {
+            ConversionContext failedConversionContext = createConversionContextBuilder(RateType.ANY).build();
+            return new CurrencyConversionException(baseCurrencyUnit, targetCurrencyUnit, failedConversionContext);
+        });
+    }
+
+    @Override
+    public CurrencyConversion getCurrencyConversion(ConversionQuery conversionQuery) {
+        if (getContext().getRateTypes().size() == 1) {
+            RateType rateType = getContext().getRateTypes().iterator().next();
+            ConversionContext singleRateConversionContext = createConversionContextBuilder(rateType).build();
+            return new LazyBoundCurrencyConversion(conversionQuery, this, singleRateConversionContext);
+        }
+
+        ConversionContext multiRateConversionContext = createConversionContextBuilder(RateType.ANY).build();
+        return new LazyBoundCurrencyConversion(conversionQuery, this, multiRateConversionContext);
+    }
+
+    private boolean isCurrencyPairOrReverseAvailable(CurrencyPair currencyPair) {
+        boolean currencyPairAvailable = this.isCurrencyPairAvailable(currencyPair);
+        if (currencyPairAvailable) {
+            return true;
+        }
+
+        CurrencyPair reverseCurrencyPair = MoreCurrencyPairs.reverse(currencyPair);
+        return this.isCurrencyPairAvailable(reverseCurrencyPair);
+    }
+
+    private boolean isCurrencyPairAvailable(CurrencyPair currencyPair) {
+        try {
+            return exchange.getExchangeSymbols().contains(currencyPair);
+        } catch (Exception e) {
+            log.warn("currency pair {} is not available on exchange {}: {}", currencyPair, exchange, e.getMessage());
+            return false;
+        }
     }
 
     private Optional<ExchangeRate> getExchangeRateIfAvailable(CurrencyUnit baseCurrencyUnit, CurrencyUnit targetCurrencyUnit) {
+        CurrencyPair currencyPair = MoreCurrencyPairs.toCurrencyPair(baseCurrencyUnit, targetCurrencyUnit);
+
         try {
-            Currency baseCurrency = Currency.getInstance(baseCurrencyUnit.getCurrencyCode());
-            Currency targetCurrency = Currency.getInstance(targetCurrencyUnit.getCurrencyCode());
-
-            CurrencyPair currencyPair = new CurrencyPair(baseCurrency, targetCurrency);
-            if (isConversionAvailable(currencyPair)) {
-                Ticker ticker = cache.get(currencyPair);
-
-                ConversionContext conversionContext = createConversionContextFromTicker(ticker);
-
-                Optional<NumberValue> exchangeRateValueOrEmpty = Optional.ofNullable(ticker.getLast())
-                        .or(() -> Optional.ofNullable(ticker.getAsk()))
-                        .or(() -> Optional.ofNullable(ticker.getBid()))
-                        // filter zero as some exchanges return 0 when tey do not support the currency pair
-                        .filter(val -> BigDecimal.ZERO.compareTo(val) != 0)
-                        .map(DefaultNumberValue::of);
-
-                if (exchangeRateValueOrEmpty.isPresent()) {
-                    ExchangeRate exchangeRate = new ExchangeRateBuilder(conversionContext)
-                            .setBase(baseCurrencyUnit)
-                            .setTerm(targetCurrencyUnit)
-                            .setFactor(exchangeRateValueOrEmpty.get())
-                            .build();
-
-                    return Optional.of(exchangeRate);
-                }
+            if (!isCurrencyPairAvailable(currencyPair)) {
+                return Optional.empty();
             }
+
+            Ticker ticker = cache.get(currencyPair);
+
+            ConversionContext conversionContext = createConversionContextFromTicker(ticker);
+
+            Optional<NumberValue> exchangeRateValueOrEmpty = Optional.ofNullable(ticker.getLast())
+                    .or(() -> Optional.ofNullable(ticker.getAsk()))
+                    .or(() -> Optional.ofNullable(ticker.getBid()))
+                    // filter zero as some exchanges return 0 when they do not support the currency pair
+                    .filter(val -> BigDecimal.ZERO.compareTo(val) != 0)
+                    .map(DefaultNumberValue::of);
+
+            if (exchangeRateValueOrEmpty.isPresent()) {
+                ExchangeRate exchangeRate = new ExchangeRateBuilder(conversionContext)
+                        .setBase(baseCurrencyUnit)
+                        .setTerm(targetCurrencyUnit)
+                        .setFactor(exchangeRateValueOrEmpty.get())
+                        .build();
+
+                return Optional.of(exchangeRate);
+            }
+        } catch (ExecutionException | UncheckedExecutionException e) {
+            String errorMessage = String.format("Exception while fetching exchange rate of %s from exchange %s", currencyPair, exchange);
+            log.warn(errorMessage, e);
         } catch (Exception e) {
             log.warn("", e);
         }
@@ -97,34 +160,22 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider implements
     }
 
     private ConversionContext createConversionContextFromTicker(Ticker ticker) {
-        ConversionContextBuilder builder = ConversionContextBuilder.create(this.getContext(), RateType.DEFERRED);
+        ConversionContextBuilder builder = createConversionContextBuilder(RateType.DEFERRED);
         TickerHelper.createInfoMap(ticker).forEach(builder::set);
         return builder.build();
     }
 
-    private boolean isConversionAvailable(CurrencyPair currencyPair) {
-        try {
-            Ticker ticker = cache.get(currencyPair);
-            return true;
-        } catch (ExecutionException e) {
-            return false;
-        }
-    }
-
-    @Override
-    public CurrencyConversion getCurrencyConversion(ConversionQuery conversionQuery) {
-        if (getContext().getRateTypes().size() == 1) {
-            return new LazyBoundCurrencyConversion(conversionQuery, this, ConversionContext
-                    .of(getContext().getProviderName(), getContext().getRateTypes().iterator().next()));
-        }
-        return new LazyBoundCurrencyConversion(conversionQuery, this,
-                ConversionContext.of(getContext().getProviderName(), RateType.ANY));
+    private ConversionContextBuilder createConversionContextBuilder(RateType type) {
+        return ConversionContextBuilder.create(this.getContext(), type);
     }
 
     private ExchangeRate reverse(ExchangeRate rate) {
-        requireNonNull(rate);
-        return new ExchangeRateBuilder(rate).setRate(rate).setBase(rate.getCurrency()).setTerm(rate.getBaseCurrency())
-                .setFactor(divide(DefaultNumberValue.ONE, rate.getFactor(), MathContext.DECIMAL64)).build();
+        return new ExchangeRateBuilder(rate)
+                .setRate(rate)
+                .setBase(rate.getCurrency())
+                .setTerm(rate.getBaseCurrency())
+                .setFactor(divide(DefaultNumberValue.ONE, rate.getFactor(), MathContext.DECIMAL64))
+                .build();
     }
 
     private static final class TickerHelper {
