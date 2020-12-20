@@ -5,6 +5,7 @@ import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.Address;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -31,17 +33,36 @@ public class BitcoindRegtestMinerAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
+    @Bean
     @ConditionalOnBean({BitcoinClient.class})
-    @ConditionalOnMissingBean(ScheduledBitcoindRegtestMiner.class)
-    @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
-    public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient,
-                                                                       @Qualifier("bitcoindRegtestMinerScheduler")
-                                                                               AbstractScheduledService.Scheduler scheduler) {
-        return new ScheduledBitcoindRegtestMiner(bitcoinJsonRpcClient, scheduler);
+    @ConditionalOnMissingBean(CoinbaseRewardAddressSupplier.class)
+    @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind-regtest-miner.coinbase-reward-address")
+    public CoinbaseRewardAddressSupplier staticCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
+        return this.properties.getCoinbaseRewardAddress()
+                .map(it -> Address.fromString(bitcoinJsonRpcClient.getNetParams(), it))
+                .map(StaticCoinbaseRewardAddressSupplier::new)
+                .orElseThrow(() -> new IllegalStateException("Cannot create CoinbaseRewardAddressSupplier from static address"));
     }
 
-    @ConditionalOnMissingBean(name = "bitcoindRegtestMinerScheduler")
+    @Bean
+    @ConditionalOnBean({BitcoinClient.class})
+    @ConditionalOnMissingBean(CoinbaseRewardAddressSupplier.class)
+    public CoinbaseRewardAddressSupplier bitcoinClientCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
+        return new BitcoinClientCoinbaseRewardAddressSupplier(bitcoinJsonRpcClient);
+    }
+
+    @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
+    @ConditionalOnBean({BitcoinClient.class})
+    @ConditionalOnMissingBean(ScheduledBitcoindRegtestMiner.class)
+    public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient,
+                                                                       @Qualifier("bitcoindRegtestMinerScheduler")
+                                                                               AbstractScheduledService.Scheduler scheduler,
+                                                                       CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+        return new ScheduledBitcoindRegtestMiner(bitcoinJsonRpcClient, scheduler, coinbaseRewardAddressSupplier);
+    }
+
     @Bean("bitcoindRegtestMinerScheduler")
+    @ConditionalOnMissingBean(name = "bitcoindRegtestMinerScheduler")
     public AbstractScheduledService.Scheduler bitcoindRegtestMinerScheduler() {
         Duration minDuration = properties.getNextBlockDuration().getMinDuration();
         Duration maxDuration = properties.getNextBlockDuration().getMaxDuration();

@@ -4,11 +4,12 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Sha256Hash;
 
-import java.io.IOException;
 import java.time.Duration;
-import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,39 +20,36 @@ public class ScheduledBitcoindRegtestMiner extends AbstractScheduledService {
 
     private final Scheduler scheduler;
     private final BitcoinClient client;
-    private final Address addressOrNull;
+    private final CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
 
     public ScheduledBitcoindRegtestMiner(BitcoinClient client) {
         this(client, DEFAULT_SCHEDULER);
     }
 
     public ScheduledBitcoindRegtestMiner(BitcoinClient client, Scheduler scheduler) {
-        this(client, scheduler, null);
+        this(client, scheduler, new BitcoinClientCoinbaseRewardAddressSupplier(client));
     }
 
-    public ScheduledBitcoindRegtestMiner(BitcoinClient client, Scheduler scheduler, Address address) {
+    public ScheduledBitcoindRegtestMiner(BitcoinClient client, Scheduler scheduler, CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         this.client = requireNonNull(client);
         this.scheduler = requireNonNull(scheduler);
-        this.addressOrNull = address;
+        this.coinbaseRewardAddressSupplier = requireNonNull(coinbaseRewardAddressSupplier);
     }
 
     @Override
     protected void runOneIteration() throws Exception {
-        Address address = Optional.ofNullable(addressOrNull)
-                .orElseGet(() -> {
-                    try {
-                        return client.getNewAddress();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        Address coinbaseRewardAddress = this.coinbaseRewardAddressSupplier.get();
 
-        this.client.generateToAddress(1, address);
+        log.debug("Trying to mine one block with coinbase reward for address {}", coinbaseRewardAddress);
+
+        List<Sha256Hash> sha256Hashes = this.client.generateToAddress(1, coinbaseRewardAddress);
+
+        log.debug("Mined {} blocks with coinbase reward for address {}", sha256Hashes.size(), coinbaseRewardAddress);
     }
 
     @Override
     protected Scheduler scheduler() {
-        return scheduler;
+        return this.scheduler;
     }
 }
 

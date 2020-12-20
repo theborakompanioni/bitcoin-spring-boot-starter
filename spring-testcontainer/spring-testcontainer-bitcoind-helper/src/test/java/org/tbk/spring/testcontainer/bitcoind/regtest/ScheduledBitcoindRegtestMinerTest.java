@@ -82,7 +82,7 @@ public class ScheduledBitcoindRegtestMinerTest {
     private BitcoinClient bitcoinJsonRpcClient;
 
     @Test
-    public void itShouldVeryifyNewBestBlockHashChangesWhenNewBlockIsFound() throws IOException {
+    public void itShouldVerifyNewBestBlockHashChangesWhenNewBlockIsFound() throws IOException {
         BlockChainInfo initBlockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
         assertThat(initBlockChainInfo.getChain(), is("regtest"));
 
