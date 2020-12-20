@@ -6,6 +6,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
+import org.tbk.spring.testcontainer.electrumx.config.ElectrumxContainerAutoConfiguration;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -37,6 +38,7 @@ public class ElectrumDaemonContainerAutoConfigurationTest {
     public void beansAreCreated() {
         this.contextRunner.withUserConfiguration(
                 BitcoindContainerAutoConfiguration.class,
+                ElectrumxContainerAutoConfiguration.class,
                 ElectrumDaemonContainerAutoConfiguration.class
         ).withPropertyValues(
                 "org.tbk.spring.testcontainer.bitcoind.enabled=true",
@@ -55,5 +57,4 @@ public class ElectrumDaemonContainerAutoConfigurationTest {
             assertThat(context.getBean(ElectrumDaemonContainer.class), is(notNullValue()));
         });
     }
-
 }
