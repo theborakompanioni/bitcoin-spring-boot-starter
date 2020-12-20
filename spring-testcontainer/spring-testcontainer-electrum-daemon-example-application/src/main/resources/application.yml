@@ -1,0 +1,99 @@
+app.name: tbk-spring-boot-bitcoin-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-spring-boot-bitcoin-starter-demo'
+spring.profiles.active: production
+spring.http.log-request-details: false
+
+server.port: 8080
+server.use-forward-headers: true
+server.compression.enabled: true
+
+management.server.port: 9001
+management.server.servlet.context-path: /actuator
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+#logging.level.web: DEBUG
+
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: true
+
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpass: correct_horse_battery_staple_99
+  rpchost: localhost
+  rpcport: 18443
+
+org.tbk.spring.testcontainer.lnd:
+  enabled: true
+  restport: 19080
+  rpcport: 19009
+  commands:
+    - '--alias=tbk-lnd-example-application'
+    - '--bitcoind.rpcuser=this-is-my-rpc-user99'
+    - '--bitcoind.rpcpass=correct_horse_battery_staple_99'
+
+org.tbk.lightning.lnd.jsonrpc:
+  enabled: true
+  rpchost: localhost
+  rpcport: 19009
+  # path to the admin macaroon file within the container!
+  macaroonFilePath: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  # path to the tls cert file within the container!
+  certFilePath: '/lnd/.lnd/tls.cert'
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc,zmq'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-spring-lnd-testcontainer-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+# mine blocks every 1 - 10 seconds
+org.tbk.spring.testcontainer.bitcoind-regtest-miner:
+  enabled: true
+  # secret to address: rally now menu link disorder video rent excess twice hamster toy hub
+  coinbase-reward-address: bcrt1qthhe76v4me5wckv88ywc3k3nga624wm0t4flyw
+  next-block-duration:
+    min-duration-in-millis: 1000
+    max-duration-in-millis: 10000
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99
+
+org.tbk.bitcoin.zeromq:
+  network: regtest
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333
