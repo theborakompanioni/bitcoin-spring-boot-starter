@@ -16,7 +16,6 @@ import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfigu
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
-import org.testcontainers.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
@@ -106,9 +105,7 @@ public class ElectrumxContainerAutoConfiguration {
         electrumxContainer.start();
 
         // expose all mapped ports of the host so other containers can communication with electrumx
-        electrumxContainer.getExposedPorts().stream()
-                .map(electrumxContainer::getMappedPort)
-                .forEach(Testcontainers::exposeHostPorts);
+        MoreTestcontainers.exposeAllPortsToOtherContainers(electrumxContainer);
 
         return electrumxContainer;
     }
@@ -153,7 +150,7 @@ public class ElectrumxContainerAutoConfiguration {
                 // .addAll(optionalCommands)
                 // .addAll(overridingDefaultsCommands)
                 // .addAll(bitcoinCommands)
-        ;
+                ;
 
         List<String> predefinedKeys = commandsBuilder.build().stream()
                 .map(ElectrumXConfigEntry::valueOf)

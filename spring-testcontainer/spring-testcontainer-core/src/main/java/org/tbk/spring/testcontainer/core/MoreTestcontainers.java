@@ -4,18 +4,40 @@ import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.base.CharMatcher;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.ContainerState;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 public final class MoreTestcontainers {
+
+    private static final String testcontainersInternalHost = "host.testcontainers.internal";
+
     private static final String DEFAULT_CONTAINER_NAME_PREFIX = "tbk-testcontainer-";
 
     private static final TbkContainerCmdModifiers cmdModifiers = new TbkContainerCmdModifiers(DEFAULT_CONTAINER_NAME_PREFIX);
 
     private MoreTestcontainers() {
         throw new UnsupportedOperationException();
+    }
+
+    public static String testcontainersInternalHost() {
+        return testcontainersInternalHost;
+    }
+
+    public static void exposeAllPortsToOtherContainers(ContainerState containerState) {
+        // expose all mapped ports of the host so other containers can communication with the given container
+        exposePortsToOtherContainers(containerState, containerState.getExposedPorts());
+    }
+
+    public static void exposePortsToOtherContainers(ContainerState containerState, Collection<Integer> ports) {
+        containerState.getExposedPorts().stream()
+                .filter(port -> ports.stream().anyMatch(it -> it.equals(port)))
+                .map(containerState::getMappedPort)
+                .forEach(Testcontainers::exposeHostPorts);
     }
 
     public static TbkContainerCmdModifiers cmdModifiers() {

@@ -89,9 +89,7 @@ public class BitcoindContainerAutoConfiguration {
 
         // expose all mapped ports of the host so other containers can communication with bitcoind.
         // e.g. lnd needs access to rpc and zeromq ports.
-        bitcoindContainer.getExposedPorts().stream()
-                .map(bitcoindContainer::getMappedPort)
-                .forEach(Testcontainers::exposeHostPorts);
+        MoreTestcontainers.exposeAllPortsToOtherContainers(bitcoindContainer);
 
         return bitcoindContainer;
     }
