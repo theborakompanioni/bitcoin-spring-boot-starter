@@ -24,6 +24,7 @@ include 'spring-testcontainer:spring-testcontainer-lnd-starter'
 include 'spring-testcontainer:spring-testcontainer-lnd-example-application'
 include 'spring-testcontainer:spring-testcontainer-neo4j-starter'
 include 'spring-testcontainer:spring-testcontainer-electrum-daemon-starter'
+include 'spring-testcontainer:spring-testcontainer-electrum-daemon-example-application'
 include 'spring-testcontainer:spring-testcontainer-electrumx-starter'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
