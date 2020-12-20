@@ -16,6 +16,7 @@ import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfigu
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class ElectrumxContainerAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
-    @Bean(name = "electrumxContainer", initMethod = "start", destroyMethod = "stop")
+    @Bean(name = "electrumxContainer", destroyMethod = "stop")
     public ElectrumxContainer<?> electrumxContainer(BitcoindContainer<?> bitcoindContainer) {
         String bitcoindHost = "host.testcontainers.internal";
 
@@ -55,6 +56,10 @@ public class ElectrumxContainerAutoConfiguration {
                 .build();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
+                .add(8000)
+                .add(50001)
+                .add(50002)
+                .add(50004)
                 // .add(this.properties.getRpcport())
                 // .add(this.properties.getRestport())
                 .build();
@@ -91,12 +96,21 @@ public class ElectrumxContainerAutoConfiguration {
                 .put("NET", "regtest")
                 .build();
 
-        return new ElectrumxContainer<>(dockerImageName)
+        ElectrumxContainer<?> electrumxContainer = new ElectrumxContainer<>(dockerImageName)
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .withEnv(env)
                 .waitingFor(waitStrategy);
+
+        electrumxContainer.start();
+
+        // expose all mapped ports of the host so other containers can communication with electrumx
+        electrumxContainer.getExposedPorts().stream()
+                .map(electrumxContainer::getMappedPort)
+                .forEach(Testcontainers::exposeHostPorts);
+
+        return electrumxContainer;
     }
 
     /**
