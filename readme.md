@@ -6,11 +6,12 @@ spring-boot-bitcoin-starter
 ===
 
 Spring boot starter projects with convenient dependency descriptors for multiple Bitcoin related modules that you can 
-include in your application. Strong focus on [JSR354](https://github.com/JavaMoney/jsr354-api) and representing, 
-transporting, and performing comprehensive calculations with Bitcoin in financial applications and monetary computations.
+include in your application. Strong focus on integration and regression testing your own application or module.
+Included are features for representing, transporting, and performing comprehensive calculations and tests
+with Bitcoin in financial applications and monetary computations.
  
-**Note: Most code is still experimental: do not use in production.**
-This project is a work in progress. Pull requests and issues are welcome.
+**Note**: Most code is still experimental - **do not use in production**.
+This project is under active development. Pull requests and issues are welcome.
  
 ## Modules
 ### bitcoin-jsr354
@@ -123,6 +124,17 @@ your application.
 Please note, that **this module is intended to be used in regtest mode** and currently
 only works in combination with `spring-testcontainer-bitcoind-starter`.
 
+#### spring-testcontainer-electrumx-starter
+A fast any easy way to start one or multiple electrumx instances within docker containers programmatically within
+your application.
+Please note, that **this module is intended to be used in regtest mode** and currently
+only works in combination with `spring-testcontainer-bitcoind-starter`.
+
+#### spring-testcontainer-electrum-daemon-starter
+A fast any easy way to start one or multiple electrum-daemon Daemons within docker containers programmatically within
+your application.
+Please note, that **this module is intended to be used in regtest mode** and currently
+only works in combination with `spring-testcontainer-electrumx-starter` and `spring-testcontainer-bitcoind-starter`.
 
 ### spring-bitcoin-fee
 A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
@@ -255,8 +267,13 @@ Optional: To enable all features the node should publish `rawtx` and `rawblock` 
 
 # Resources
 - Bitcoin: https://bitcoin.org/en/getting-started
+- Lightning Network: https://lightning.network/
 - JSR354 (GitHub): https://github.com/JavaMoney/jsr354-api
 - Spring Boot (GitHub): https://github.com/spring-projects/spring-boot
+---
+- lnd (GitHub): https://github.com/LightningNetwork/lnd
+- ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx
+- Electrum Client (GitHub): https://github.com/spesmilo/electrum
 - XChange (GitHub): https://github.com/knowm/XChange
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
