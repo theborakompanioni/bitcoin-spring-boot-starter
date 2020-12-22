@@ -2,9 +2,6 @@ package org.tbk.spring.testcontainer.electrumx.config;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,10 +16,9 @@ import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
 
 @Slf4j
 @Configuration
@@ -44,8 +40,6 @@ public class ElectrumxContainerAutoConfiguration {
 
     @Bean(name = "electrumxContainer", destroyMethod = "stop")
     public ElectrumxContainer<?> electrumxContainer(BitcoindContainer<?> bitcoindContainer) {
-        String bitcoindHost = "host.testcontainers.internal";
-
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
                 .add(8000)
                 .add(50001)
@@ -67,12 +61,16 @@ public class ElectrumxContainerAutoConfiguration {
                 Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
-        String daemonUrl = String.format("http://%s:%s@%s:%d",
-                this.properties.getRpcuser(), this.properties.getRpcpass(),
-                bitcoindHost, bitcoindContainer.getMappedPort(this.properties.getRpcport()));
+        String bitcoindDaemonUrl = buildInternalContainerUrl(
+                bitcoindContainer,
+                "http",
+                this.properties.getRpcuser(),
+                this.properties.getRpcpass(),
+                this.properties.getRpcport()
+        );
 
         ImmutableMap<String, String> env = ImmutableMap.<String, String>builder()
-                .put("DAEMON_URL", daemonUrl)
+                .put("DAEMON_URL", bitcoindDaemonUrl)
                 // TODO: make coin configurable
                 // following fails with "electrumx.lib.coins.CoinError: unknown coin BitcoinRegtest and network regtest combination"
                 //.put("COIN", "BitcoinRegtest")

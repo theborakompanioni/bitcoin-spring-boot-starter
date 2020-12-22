@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
 @Configuration
@@ -105,8 +106,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
             electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "log_to_file", "true");
             electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "oneserver", "true");
 
-            String electrumxHost = "host.testcontainers.internal";
-            String serverUrl = String.format("%s:%s:s", electrumxHost, electrumxContainer.getMappedPort(50002));
+            String serverUrl = String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumxContainer, 50002));
             electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "server", serverUrl);
 
 

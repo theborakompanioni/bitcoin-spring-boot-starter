@@ -13,15 +13,15 @@ import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfigu
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
-import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
 @Configuration
@@ -43,14 +43,12 @@ public class LndContainerAutoConfiguration {
 
     @Bean(name = "lndContainer", initMethod = "start", destroyMethod = "stop")
     public LndContainer<?> lndContainer(BitcoindContainer<?> bitcoindContainer) {
-        String bitcoindHost = "host.testcontainers.internal";
-
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
                 // TODO: expose ports specified via auto configuration properties
-                .add("--bitcoind.rpchost=" + bitcoindHost + ":" + bitcoindContainer.getMappedPort(18443))
-                .add("--bitcoind.zmqpubrawblock=tcp://" + bitcoindHost + ":" + bitcoindContainer.getMappedPort(28332))
-                .add("--bitcoind.zmqpubrawtx=tcp://" + bitcoindHost + ":" + bitcoindContainer.getMappedPort(28333))
+                .add("--bitcoind.rpchost=" + buildInternalContainerUrlWithoutProtocol(bitcoindContainer, 18443))
+                .add("--bitcoind.zmqpubrawblock=" + buildInternalContainerUrl(bitcoindContainer, "tcp", 28332))
+                .add("--bitcoind.zmqpubrawtx=" + buildInternalContainerUrl(bitcoindContainer, "tcp", 28333))
                 .build();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()

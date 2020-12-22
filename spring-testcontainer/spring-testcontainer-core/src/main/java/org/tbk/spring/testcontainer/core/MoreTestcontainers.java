@@ -24,8 +24,19 @@ public final class MoreTestcontainers {
         throw new UnsupportedOperationException();
     }
 
-    public static String testcontainersInternalHost() {
+    private static String testcontainersInternalHost() {
         return testcontainersInternalHost;
+    }
+
+    public static String buildInternalContainerUrl(ContainerState containerState, String protocol, int port) {
+        return String.format("%s://%s", protocol, buildInternalContainerUrlWithoutProtocol(containerState, port));
+    }
+    public static String buildInternalContainerUrl(ContainerState containerState, String protocol, String user, String password, int port) {
+        return String.format("%s://%s:%s@%s", protocol, user, password, buildInternalContainerUrlWithoutProtocol(containerState, port));
+    }
+
+    public static String buildInternalContainerUrlWithoutProtocol(ContainerState containerState, int port) {
+        return String.format("%s:%d", testcontainersInternalHost(), containerState.getMappedPort(port));
     }
 
     public static void exposeAllPortsToOtherContainers(ContainerState containerState) {
