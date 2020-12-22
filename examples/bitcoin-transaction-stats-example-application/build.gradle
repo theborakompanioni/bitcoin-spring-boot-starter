@@ -33,8 +33,8 @@ dependencies {
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
 
-    implementation "org.apache.httpcomponents:httpclient:${httpComponentsVersion}"
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
 
     implementation 'org.zalando:jackson-datatype-money:1.2.0'
 

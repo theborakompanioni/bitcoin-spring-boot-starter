@@ -7,6 +7,6 @@ description = 'bitgo.com bitcoin fee client package'
 dependencies {
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-core')
 
-    implementation "org.apache.httpcomponents:httpclient:${httpComponentsVersion}"
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
 }

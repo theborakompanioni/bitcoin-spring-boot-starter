@@ -8,7 +8,8 @@ ext {
     guavaVersion = '30.1-jre'
     jeroMqVersion = '0.5.2'
     testcontainersVersion = '1.15.1'
-    httpComponentsVersion = '4.4.1'
+    httpComponentsVersion = '4.4.14'
+    httpComponentsClientVersion = '4.5.13'
     grpcVersion = '1.28.0'
     protobufVersion = '3.11.4'
     protocVersion = protobufVersion
