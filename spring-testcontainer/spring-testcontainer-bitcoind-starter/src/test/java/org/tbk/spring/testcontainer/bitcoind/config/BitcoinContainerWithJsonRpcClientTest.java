@@ -84,13 +84,11 @@ public class BitcoinContainerWithJsonRpcClientTest {
         List<Sha256Hash> initialMinedBlockHashes = bitcoinJsonRpcClient.generateToAddress(1, newAddress);
         assertThat("an additional block has been mined", initialMinedBlockHashes, hasSize(1));
 
-        LongAdder counter = new LongAdder();
-        while (counter.longValue() < 100L) {
-            Coin balanceDuringMining = bitcoinJsonRpcClient.getBalance();
-            assertThat("balance is zero till 100 blocks are mined", balanceDuringMining, is(Coin.ZERO));
-
+        // mine a 100 blocks in order for the coinbase transaction to be spendable
+        long counter = 0L;
+        while (counter < 100L) {
             List<Sha256Hash> newlyMinedBlocks = bitcoinJsonRpcClient.generateToAddress(1, newAddress);
-            counter.add(newlyMinedBlocks.size());
+            counter += newlyMinedBlocks.size();
         }
 
         // immediately after the block is mined, the rpc client sometimes
