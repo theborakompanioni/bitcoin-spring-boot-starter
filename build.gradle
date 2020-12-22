@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 buildscript {
     ext {
         springBootVersion = '2.3.7.RELEASE'
-        protobufGradleVersion = '0.8.12'
+        protobufGradleVersion = '0.8.14'
     }
     repositories {
         jcenter()
