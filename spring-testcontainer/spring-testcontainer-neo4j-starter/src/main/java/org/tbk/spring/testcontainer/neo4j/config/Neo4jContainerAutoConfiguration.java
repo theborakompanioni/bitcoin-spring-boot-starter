@@ -1,21 +1,16 @@
 package org.tbk.spring.testcontainer.neo4j.config;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.containers.Neo4jContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -45,7 +40,7 @@ public class Neo4jContainerAutoConfiguration {
         checkArgument(hasCorrectUsername, "Username MUST be 'neo4j' - otherwise testcontainers won't work.");
 
         Neo4jProperties props = new Neo4jProperties();
-        props.setUri("bolt://localhost:" + neo4jContainer.getMappedPort(7687));
+        props.setUri("bolt://localhost:" + neo4jContainer.getMappedPort(Neo4jContainerProperties.DEFAULT_PORT));
         props.setUsername(MANDATORY_USERNAME);
         props.setPassword(neo4jContainer.getAdminPassword());
         return props.createConfiguration();

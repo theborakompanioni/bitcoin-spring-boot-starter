@@ -3,17 +3,16 @@ package org.tbk.spring.testcontainer.bitcoind.config;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -31,11 +30,12 @@ import static com.google.common.base.Preconditions.checkArgument;
  * P2P: 18444
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ConfigurationProperties(
         prefix = "org.tbk.spring.testcontainer.bitcoind",
         ignoreUnknownFields = false
 )
-public class BitcoindContainerProperties implements Validator {
+public class BitcoindContainerProperties extends AbstractContainerProperties implements Validator {
     private static final int MAINNET_DEFAULT_RPC_PORT = 8332;
     private static final int MAINNET_DEFAULT_P2P_PORT = 8333;
 
@@ -48,7 +48,7 @@ public class BitcoindContainerProperties implements Validator {
     private static final Chain DEFAULT_CHAIN = Chain.regtest;
 
     @Beta
-    private static final Set<String> reservedCommands = ImmutableSet.<String>builder()
+    private static final List<String> reservedCommands = ImmutableList.<String>builder()
             .add("rpcuser")
             .add("rpcpassword")
             .add("chain")
@@ -62,10 +62,9 @@ public class BitcoindContainerProperties implements Validator {
         regtest;
     }
 
-    /**
-     * Whether the client should be enabled
-     */
-    private boolean enabled;
+    public BitcoindContainerProperties() {
+        super(reservedCommands);
+    }
 
     private Chain chain;
 
@@ -79,10 +78,6 @@ public class BitcoindContainerProperties implements Validator {
      */
     private String rpcpassword;
 
-    private List<String> commands;
-
-    private List<Integer> exposedPorts;
-
     public Chain getChain() {
         return this.chain != null ? this.chain : DEFAULT_CHAIN;
     }
@@ -93,18 +88,6 @@ public class BitcoindContainerProperties implements Validator {
 
     public Optional<String> getRpcpassword() {
         return Optional.ofNullable(rpcpassword);
-    }
-
-    public List<String> getCommands() {
-        return commands == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(commands);
-    }
-
-    public List<Integer> getExposedPorts() {
-        return exposedPorts == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(exposedPorts);
     }
 
     public Optional<String> getCommandValueByKey(String key) {
@@ -132,12 +115,9 @@ public class BitcoindContainerProperties implements Validator {
      * Validate the container properties.
      * <p>
      * Keep in mind that Testcontainers splits commands on whitespaces.
-     * This means, every property that is part of a command, must not contain
-     * whitespaces. Error early when user gave an "unsupported" value
-     * (the value might be "valid" but it is just not supported. e.g. rpcpassword with a whitespace :/ )
-     *
-     * @param target
-     * @param errors
+     * This means, every property that is part of a command, must not contain whitespaces.
+     * <p>
+     * {@inheritDoc}
      */
     @Override
     public void validate(Object target, Errors errors) {

@@ -5,9 +5,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
 import java.util.Collections;
@@ -18,29 +21,17 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ConfigurationProperties(
         prefix = "org.tbk.spring.testcontainer.lnd",
         ignoreUnknownFields = false
 )
-public class LndContainerProperties implements Validator {
+public class LndContainerProperties extends AbstractContainerProperties implements Validator {
     private static final int DEFAULT_REST_PORT = 8080;
     private static final int DEFAULT_RPC_PORT = 10009;
 
-    /**
-     * a list of reserved commands
-     * <p>
-     * some commands must have predefined values during the bootstrapping of the container.
-     * e.g.
-     * - `--bitcoin.active`
-     * - `--bitcoin.regtest`
-     * - `--bitcoin.node=bitcoind`
-     * <p>
-     * these commands should be disallowed to be specified by a user.
-     * <p>
-     * this behaviour is subject to change. i do not like it.
-     */
     @Beta
-    private static final Set<String> reservedCommands = ImmutableSet.<String>builder()
+    private static final List<String> reservedCommands = ImmutableList.<String>builder()
             .add("restlisten")
             .add("rpclisten")
             .add("noseedbackup")
@@ -52,10 +43,9 @@ public class LndContainerProperties implements Validator {
             .add("bitcoin.zmqpubrawtx")
             .build();
 
-    /**
-     * Whether the client should be enabled
-     */
-    private boolean enabled;
+    public LndContainerProperties() {
+        super(reservedCommands);
+    }
 
     /**
      * Specify the port to listen on for gRPC connections.
@@ -66,10 +56,6 @@ public class LndContainerProperties implements Validator {
      * Specify the port to listen on for REST connections.
      */
     private Integer restport;
-
-    private List<String> commands;
-
-    private List<Integer> exposedPorts;
 
     public int getRpcport() {
         return rpcport != null ? rpcport : DEFAULT_RPC_PORT;
@@ -87,18 +73,7 @@ public class LndContainerProperties implements Validator {
         return getCommandValueByKey("bitcoind.rpcpass");
     }
 
-    public List<String> getCommands() {
-        return commands == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(commands);
-    }
-
-    public List<Integer> getExposedPorts() {
-        return exposedPorts == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(exposedPorts);
-    }
-
+    @Override
     public Optional<String> getCommandValueByKey(String key) {
         String commandWithPrefix = "--" + key;
         return this.getCommands().stream()
@@ -115,7 +90,6 @@ public class LndContainerProperties implements Validator {
                 .findFirst();
     }
 
-
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz == LndContainerProperties.class;
@@ -125,12 +99,9 @@ public class LndContainerProperties implements Validator {
      * Validate the container properties.
      * <p>
      * Keep in mind that Testcontainers splits commands on whitespaces.
-     * This means, every property that is part of a command, must not contain
-     * whitespaces. Error early when user gave an "unsupported" value
-     * (the value might be "valid" but it is just not supported. e.g. rpcpassword with a whitespace :/ )
-     *
-     * @param target
-     * @param errors
+     * This means, every property that is part of a command, must not contain whitespaces.
+     * <p>
+     * {@inheritDoc}
      */
     @Override
     public void validate(Object target, Errors errors) {
@@ -158,13 +129,6 @@ public class LndContainerProperties implements Validator {
             }
         }
 
-        reservedCommands.stream()
-                .filter(val -> properties.getCommandValueByKey(val).isPresent())
-                .forEach(reservedKey -> {
-                    String errorMessage = String.format("'commands' entry must not contain key '%s'", reservedKey);
-                    errors.rejectValue("commands", "commands.reserved", errorMessage);
-                });
-
         // alias must not be longer than 32, otherwise lnd errors with e.g. "max is 32, got 41"
         properties.getCommandValueByKey("alias").ifPresent(it -> {
             if (it.length() > 32) {
@@ -172,6 +136,13 @@ public class LndContainerProperties implements Validator {
                 errors.rejectValue("alias", "alias.length", errorMessage);
             }
         });
+
+        reservedCommands.stream()
+                .filter(val -> properties.getCommandValueByKey(val).isPresent())
+                .forEach(reservedKey -> {
+                    String errorMessage = String.format("'commands' entry must not contain key '%s'", reservedKey);
+                    errors.rejectValue("commands", "commands.reserved", errorMessage);
+                });
 
         for (String command : properties.getCommands()) {
             if (Strings.isNullOrEmpty(command)) {

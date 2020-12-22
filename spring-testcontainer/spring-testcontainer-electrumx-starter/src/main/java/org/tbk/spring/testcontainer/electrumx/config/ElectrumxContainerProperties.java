@@ -1,26 +1,22 @@
 package org.tbk.spring.testcontainer.electrumx.config;
 
-import com.google.common.collect.ImmutableList;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ConfigurationProperties(
         prefix = "org.tbk.spring.testcontainer.electrumx",
         ignoreUnknownFields = false
 )
-public class ElectrumxContainerProperties implements Validator {
-
-    /**
-     * Whether the client should be enabled
-     */
-    private boolean enabled;
+public class ElectrumxContainerProperties extends AbstractContainerProperties implements Validator {
 
     /**
      * Specify the user to use on for RPC connections to bitcoind.
@@ -42,12 +38,9 @@ public class ElectrumxContainerProperties implements Validator {
      */
     private Integer rpcport;
 
-    private List<Integer> exposedPorts;
-
-    public List<Integer> getExposedPorts() {
-        return exposedPorts == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(exposedPorts);
+    @Override
+    public Optional<String> getCommandValueByKey(String key) {
+        return Optional.empty();
     }
 
     @Override

@@ -14,6 +14,8 @@ import java.util.Optional;
         ignoreUnknownFields = false
 )
 public class Neo4jContainerProperties implements Validator {
+    static final int DEFAULT_PORT = 7687;
+
     private static final String imageNamespace = "neo4j";
 
     private static final String defaultDockerImageVersion = "4.2.1";
@@ -25,14 +27,14 @@ public class Neo4jContainerProperties implements Validator {
 
     private String image;
 
-    public Optional<String> getImage() {
-        return Optional.ofNullable(image);
-    }
-
     public DockerImageName getDockerImageName() {
-        return Optional.ofNullable(image)
+        return getImage()
                 .map(DockerImageName::parse)
                 .orElse(defaultDockerImageName);
+    }
+
+    private Optional<String> getImage() {
+        return Optional.ofNullable(image);
     }
 
     @Override
