@@ -129,7 +129,6 @@ public class ElectrumDaemonContainerAutoConfiguration {
 
             electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "stop");
 
-            setupWalletDirectoriesHack(electrumDaemonContainer, env);
             setupConnectingToLocalElectrumxServerHack(electrumxContainer, networkFlag, electrumDaemonContainer);
 
             electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "start");
@@ -151,27 +150,6 @@ public class ElectrumDaemonContainerAutoConfiguration {
                 .put("ELECTRUM_HOME", "/home/electrum")
                 .put("ELECTRUM_PASSWORD", "test")
                 .build();
-    }
-
-
-    private void setupWalletDirectoriesHack(ElectrumDaemonContainer<?> electrumDaemonContainer, Map<String, String> env) {
-        try {
-            String home = Optional.ofNullable(env.get("ELECTRUM_HOME"))
-                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_HOME"));
-            String electrumDir = home + "/.electrum";
-
-            String username = Optional.ofNullable(env.get("ELECTRUM_USER"))
-                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_USER"));
-
-            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/wallets/");
-            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/testnet/wallets/");
-            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/regtest/wallets/");
-            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/simnet/wallets/");
-            electrumDaemonContainer.execInContainer("chown", "-R", username, electrumDir);
-
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException("Error while adapting electrum-daemon: setup wallet directories failed", e);
-        }
     }
 
     /**
