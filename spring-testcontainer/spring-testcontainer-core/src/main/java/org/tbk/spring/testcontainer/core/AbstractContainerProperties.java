@@ -1,9 +1,13 @@
 package org.tbk.spring.testcontainer.core;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import static com.google.common.base.MoreObjects.firstNonNull;
 
 // TODO: once an upgrade to spring boot 2.4.0 was made, this class should extend the "Validator" interface
 //   in this version of spring boot the "validator" related classes are in an own module and can be integrated better
@@ -11,18 +15,27 @@ public abstract class AbstractContainerProperties implements ContainerProperties
 
     private boolean enabled;
 
-    private List<String> reservedCommands;
+    private final List<String> reservedCommands;
+
+    private final Map<String, String> defaultEnvironment;
 
     private List<String> commands;
 
     private List<Integer> exposedPorts;
+
+    private Map<String, String> environment;
 
     protected AbstractContainerProperties() {
         this(Collections.emptyList());
     }
 
     protected AbstractContainerProperties(List<String> reservedCommands) {
+        this(reservedCommands, Collections.emptyMap());
+    }
+
+    protected AbstractContainerProperties(List<String> reservedCommands, Map<String, String> defaultEnvironment) {
         this.reservedCommands = ImmutableList.copyOf(reservedCommands);
+        this.defaultEnvironment = ImmutableMap.copyOf(defaultEnvironment);
     }
 
     @Override
@@ -36,17 +49,32 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     @Override
+    public final Map<String, String> getDefaultEnvironment() {
+        return this.defaultEnvironment;
+    }
+
+    @Override
     public final List<String> getCommands() {
-        return commands == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(commands);
+        return ImmutableList.copyOf(firstNonNull(this.commands, Collections.emptyList()));
     }
 
     @Override
     public final List<Integer> getExposedPorts() {
-        return exposedPorts == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(exposedPorts);
+        return ImmutableList.copyOf(firstNonNull(this.exposedPorts, Collections.emptyList()));
+    }
+
+    @Override
+    public final Map<String, String> getEnvironment() {
+        return ImmutableMap.copyOf(firstNonNull(this.environment, Collections.emptyMap()));
+    }
+
+    public Map<String, String> getEnvironmentWithDefaults() {
+        Map<String, String> userGivenEnvVars = ImmutableMap.copyOf(firstNonNull(this.environment, Collections.emptyMap()));
+
+        return ImmutableMap.<String, String>builder()
+                .putAll(this.getDefaultEnvironment())
+                .putAll(userGivenEnvVars)
+                .build();
     }
 
     public void setEnabled(boolean enabled) {
@@ -54,15 +82,15 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     public void setCommands(List<String> commands) {
-        this.commands = commands == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(commands);
+        this.commands = ImmutableList.copyOf(firstNonNull(commands, Collections.emptyList()));
     }
 
     public void setExposedPorts(List<Integer> exposedPorts) {
-        this.exposedPorts = exposedPorts == null ?
-                Collections.emptyList() :
-                ImmutableList.copyOf(exposedPorts);
+        this.exposedPorts = ImmutableList.copyOf(firstNonNull(exposedPorts, Collections.emptyList()));
+    }
+
+    public void setEnvironment(Map<String, String> environment) {
+        this.environment = ImmutableMap.copyOf(firstNonNull(environment, Collections.emptyMap()));
     }
 }
 

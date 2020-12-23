@@ -1,13 +1,11 @@
 package org.tbk.spring.testcontainer.core;
 
 import com.google.common.annotations.Beta;
-import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 public interface ContainerProperties {
 
@@ -25,8 +23,13 @@ public interface ContainerProperties {
         return Collections.emptyList();
     }
 
+    @Beta
+    default Map<String, String> getDefaultEnvironment() {
+        return Collections.emptyMap();
+    }
+
     /**
-     * Whether the autconfiguration should be enabled
+     * Whether the autoconfiguration should be enabled
      */
     boolean isEnabled();
 
@@ -38,10 +41,10 @@ public interface ContainerProperties {
         return Collections.emptyList();
     }
 
-    Optional<String> getCommandValueByKey(String key);
-
-    private static boolean containsWhitespaces(String value) {
-        return CharMatcher.WHITESPACE.matchesAnyOf(value);
+    default Map<String, String> getEnvironment() {
+        return Collections.emptyMap();
     }
+
+    Optional<String> getCommandValueByKey(String key);
 }
 
