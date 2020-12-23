@@ -4,6 +4,7 @@ import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
+import org.bitcoinj.core.Sha256Hash;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
@@ -21,7 +22,6 @@ import java.time.Duration;
 @Slf4j
 @Configuration
 public class LndPlaygroundExampleApplicationConfig {
-
 
     @Bean
     public ApplicationRunner mainRunner(SynchronousLndAPI lndApi) {
@@ -62,8 +62,8 @@ public class LndPlaygroundExampleApplicationConfig {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
                 try {
-                    BlockChainInfo blockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
-                    log.info("[bitcoind] new best block: {}", blockChainInfo.getBestBlockHash());
+                    BlockChainInfo info = bitcoinJsonRpcClient.getBlockChainInfo();
+                    log.info("[bitcoind] new best block (height: {}): {}", info.getBlocks(), info.getBestBlockHash());
                 } catch (IOException e) {
                     log.error("", e);
                 }

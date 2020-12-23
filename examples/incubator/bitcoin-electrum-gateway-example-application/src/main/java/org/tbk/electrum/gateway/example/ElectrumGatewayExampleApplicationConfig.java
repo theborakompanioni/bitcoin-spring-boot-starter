@@ -26,8 +26,8 @@ public class ElectrumGatewayExampleApplicationConfig {
 
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
                 try {
-                    BlockChainInfo blockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
-                    log.info("[bitcoind] new best block: {}", blockChainInfo.getBestBlockHash());
+                    BlockChainInfo info = bitcoinJsonRpcClient.getBlockChainInfo();
+                    log.info("[bitcoind] new best block (height: {}): {}", info.getBlocks(), info.getBestBlockHash());
                 } catch (IOException e) {
                     log.error("", e);
                 }
