@@ -19,17 +19,12 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
     private static final int DEFAULT_RPC_PORT = 7000;
 
     /**
-     * Specify the port to open for incoming RPC connections.
-     */
-    private Integer rpcport;
-
-    /**
      * (Optional) Specify the wallet that electrum should open on startup.
      */
     private String defaultWallet;
 
     public int getRpcPort() {
-        return Optional.ofNullable(rpcport).orElse(DEFAULT_RPC_PORT);
+        return DEFAULT_RPC_PORT;
     }
 
     public Optional<String> getDefaultWallet() {
