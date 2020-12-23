@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.electrumd.config;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,7 +8,11 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -16,19 +21,36 @@ import java.util.Optional;
         ignoreUnknownFields = false
 )
 public class ElectrumDaemonContainerProperties extends AbstractContainerProperties implements Validator {
-    private static final int DEFAULT_RPC_PORT = 7000;
+    private static final String ELECTRUM_HOME_ENV_NAME = "ELECTRUM_HOME";
+    private static final String ELECTRUM_NETWORK_ENV_NAME = "ELECTRUM_NETWORK";
+
+    private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
+            .put("ELECTRUM_USER", "electrum")
+            .put(ELECTRUM_HOME_ENV_NAME, "/home/electrum")
+            .put("ELECTRUM_PASSWORD", "test")
+            .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
+            .build();
 
     /**
      * (Optional) Specify the wallet that electrum should open on startup.
      */
     private String defaultWallet;
 
-    public int getRpcPort() {
-        return DEFAULT_RPC_PORT;
+
+    public ElectrumDaemonContainerProperties() {
+        super(Collections.emptyList(), defaultEnvironment);
     }
 
     public Optional<String> getDefaultWallet() {
         return Optional.ofNullable(defaultWallet);
+    }
+
+    public String getNetwork() {
+        return requireNonNull(getEnvironmentWithDefaults().get(ELECTRUM_NETWORK_ENV_NAME));
+    }
+
+    public String getElectrumHomeDir() {
+        return requireNonNull(getEnvironmentWithDefaults().get(ELECTRUM_HOME_ENV_NAME));
     }
 
     @Override

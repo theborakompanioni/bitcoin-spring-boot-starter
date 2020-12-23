@@ -133,8 +133,8 @@ Please note, that **this module is intended to be used in regtest mode**.
 #### spring-testcontainer-electrum-daemon-starter
 A fast any easy way to start one or multiple electrum-daemon Daemons within docker containers programmatically within
 your application.
-Please note, that **this module is intended to be used in regtest mode** and currently
-only works in combination with `spring-testcontainer-electrumx-starter`.
+It can be used in combination with `spring-testcontainer-electrumx-starter`!
+Please note, that **this module is intended to be used in regtest mode**.
 
 ### spring-bitcoin-fee
 A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
