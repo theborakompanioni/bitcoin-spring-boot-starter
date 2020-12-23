@@ -26,10 +26,16 @@ org.tbk.spring.testcontainer.electrum-daemon:
 
 org.tbk.spring.testcontainer.electrumx:
   enabled: true
-  rpcuser: this-is-my-rpc-user99
-  rpcpass: correct_horse_battery_staple_99
   rpchost: localhost
   rpcport: 18443
+  rpcuser: this-is-my-rpc-user99
+  rpcpass: correct_horse_battery_staple_99
+  environment:
+    NET: regtest
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true

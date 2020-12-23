@@ -31,12 +31,21 @@ public final class MoreTestcontainers {
     public static String buildInternalContainerUrl(ContainerState containerState, String protocol, int port) {
         return String.format("%s://%s", protocol, buildInternalContainerUrlWithoutProtocol(containerState, port));
     }
+
+    public static String buildInternalHostUrl(String protocol, String user, String password, int port) {
+        return String.format("%s://%s:%s@%s", protocol, user, password, buildHostUrlWithoutProtocol(port));
+    }
+
     public static String buildInternalContainerUrl(ContainerState containerState, String protocol, String user, String password, int port) {
         return String.format("%s://%s:%s@%s", protocol, user, password, buildInternalContainerUrlWithoutProtocol(containerState, port));
     }
 
     public static String buildInternalContainerUrlWithoutProtocol(ContainerState containerState, int port) {
-        return String.format("%s:%d", testcontainersInternalHost(), containerState.getMappedPort(port));
+        return buildHostUrlWithoutProtocol(containerState.getMappedPort(port));
+    }
+
+    public static String buildHostUrlWithoutProtocol(int port) {
+        return String.format("%s:%d", testcontainersInternalHost(), port);
     }
 
     public static void exposeAllPortsToOtherContainers(ContainerState containerState) {

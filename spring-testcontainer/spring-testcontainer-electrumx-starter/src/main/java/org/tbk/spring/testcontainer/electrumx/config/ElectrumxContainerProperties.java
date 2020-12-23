@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.electrumx.config;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,6 +9,8 @@ import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 @Data
@@ -18,6 +21,14 @@ import java.util.Optional;
 )
 public class ElectrumxContainerProperties extends AbstractContainerProperties implements Validator {
 
+    private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
+            .put("COIN", "BitcoinSegwit")
+            .put("NET", "regtest")
+            .put("PEER_DISCOVERY", "self")
+            .put("PEER_ANNOUNCE", "")
+            // "lowered maximum sessions from 1,000 to 674 because your open file limit is 1,024"
+            .put("MAX_SESSIONS", "250")
+            .build();
     /**
      * Specify the user to use on for RPC connections to bitcoind.
      */
@@ -37,6 +48,10 @@ public class ElectrumxContainerProperties extends AbstractContainerProperties im
      * Specify the port to use on for RPC connections to bitcoind.
      */
     private Integer rpcport;
+
+    public ElectrumxContainerProperties() {
+        super(Collections.emptyList(), defaultEnvironment);
+    }
 
     @Override
     public Optional<String> getCommandValueByKey(String key) {
@@ -84,7 +99,6 @@ public class ElectrumxContainerProperties extends AbstractContainerProperties im
             errors.rejectValue("rpcpass", "rpcpass.unsupported", errorMessage);
         }
 
-
         String rpchostValue = properties.getRpchost();
         if (rpchostValue == null) {
             String errorMessage = "'rpchost' must not be null";
@@ -95,6 +109,15 @@ public class ElectrumxContainerProperties extends AbstractContainerProperties im
         } else if (containsWhitespaces(rpchostValue)) {
             String errorMessage = "'rpchost' must not contain whitespaces - unsupported value";
             errors.rejectValue("rpchost", "rpchost.unsupported", errorMessage);
+        }
+
+
+        Map<String, String> environment = properties.getEnvironment();
+
+        String daemonUrlEnvValue = environment.get("DAEMON_URL");
+        if (daemonUrlEnvValue != null) {
+            String errorMessage = "'DAEMON_URL' env var is not allowed";
+            errors.rejectValue("environment", "environment.invalid", errorMessage);
         }
     }
 

@@ -29,6 +29,12 @@ org.tbk.spring.testcontainer.electrumx:
   rpcpass: correct_horse_battery_staple_99
   rpchost: localhost
   rpcport: 18443
+  environment:
+    NET: regtest
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
 
 org.tbk.spring.testcontainer.lnd:
   enabled: true
