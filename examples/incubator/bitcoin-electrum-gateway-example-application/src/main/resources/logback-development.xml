@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <logger name="org.tbk.spring.testcontainer.bitcoind" level="DEBUG"/>
+    <logger name="org.tbk.spring.testcontainer.lnd" level="DEBUG"/>
+    <logger name="org.tbk.spring.testcontainer.electrumx" level="DEBUG"/>
+    <logger name="org.tbk.spring.testcontainer.electrumd" level="DEBUG"/>
+
+    <logger name="org.tbk.electrum.gateway.example" level="DEBUG"/>
+</configuration>
