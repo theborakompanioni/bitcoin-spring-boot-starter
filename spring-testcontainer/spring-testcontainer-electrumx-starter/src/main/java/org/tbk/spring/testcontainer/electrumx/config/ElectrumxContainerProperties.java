@@ -75,13 +75,26 @@ public class ElectrumxContainerProperties extends AbstractContainerProperties im
         String rpcpasswordValue = properties.getRpcpass();
         if (rpcpasswordValue == null) {
             String errorMessage = "'rpcpass' must not be null";
-            errors.rejectValue("rpcpass", "rpcuser.invalid", errorMessage);
+            errors.rejectValue("rpcpass", "rpcpass.invalid", errorMessage);
         } else if (rpcpasswordValue.isBlank()) {
             String errorMessage = "'rpcpass' must not be empty";
-            errors.rejectValue("rpcpass", "rpcpassword.invalid", errorMessage);
+            errors.rejectValue("rpcpass", "rpcpass.invalid", errorMessage);
         } else if (containsWhitespaces(rpcpasswordValue)) {
             String errorMessage = "'rpcpass' must not contain whitespaces - unsupported value";
-            errors.rejectValue("rpcpass", "rpcpassword.unsupported", errorMessage);
+            errors.rejectValue("rpcpass", "rpcpass.unsupported", errorMessage);
+        }
+
+
+        String rpchostValue = properties.getRpchost();
+        if (rpchostValue == null) {
+            String errorMessage = "'rpchost' must not be null";
+            errors.rejectValue("rpchost", "rpchost.invalid", errorMessage);
+        } else if (rpchostValue.isBlank()) {
+            String errorMessage = "'rpchost' must not be empty";
+            errors.rejectValue("rpchost", "rpchost.invalid", errorMessage);
+        } else if (containsWhitespaces(rpchostValue)) {
+            String errorMessage = "'rpchost' must not contain whitespaces - unsupported value";
+            errors.rejectValue("rpchost", "rpchost.unsupported", errorMessage);
         }
     }
 

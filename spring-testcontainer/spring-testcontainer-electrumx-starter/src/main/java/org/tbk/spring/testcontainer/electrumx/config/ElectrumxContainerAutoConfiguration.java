@@ -16,6 +16,7 @@ import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
@@ -61,27 +62,7 @@ public class ElectrumxContainerAutoConfiguration {
                 Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
-        String bitcoindDaemonUrl = buildInternalContainerUrl(
-                bitcoindContainer,
-                "http",
-                this.properties.getRpcuser(),
-                this.properties.getRpcpass(),
-                this.properties.getRpcport()
-        );
-
-        ImmutableMap<String, String> env = ImmutableMap.<String, String>builder()
-                .put("DAEMON_URL", bitcoindDaemonUrl)
-                // TODO: make coin configurable
-                // following fails with "electrumx.lib.coins.CoinError: unknown coin BitcoinRegtest and network regtest combination"
-                //.put("COIN", "BitcoinRegtest")
-                //.put("NET", "regtest")
-                // following fails with "electrumx.lib.coins.CoinError: unknown coin Bitcoin and network regtest combination"
-                //.put("COIN", "Bitcoin")
-                //.put("NET", "regtest")
-                // why does this work? -> BitcoinSegwit/regtest?! wtf?
-                .put("COIN", "BitcoinSegwit")
-                .put("NET", "regtest")
-                .build();
+        Map<String, String> env = buildEnvMap(bitcoindContainer);
 
         ElectrumxContainer<?> electrumxContainer = new ElectrumxContainer<>(dockerImageName)
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
@@ -96,4 +77,23 @@ public class ElectrumxContainerAutoConfiguration {
 
         return electrumxContainer;
     }
+
+    private Map<String, String> buildEnvMap(BitcoindContainer<?> bitcoindContainer) {
+        String bitcoindDaemonUrl = buildInternalContainerUrl(
+                bitcoindContainer,
+                "http",
+                this.properties.getRpcuser(),
+                this.properties.getRpcpass(),
+                this.properties.getRpcport()
+        );
+
+        return ImmutableMap.<String, String>builder()
+                .put("DAEMON_URL", bitcoindDaemonUrl)
+                .put("COIN", "BitcoinSegwit")
+                .put("NET", "regtest")
+                .put("PEER_DISCOVERY", "self")
+                .put("PEER_ANNOUNCE", "")
+                .build();
+    }
+
 }
