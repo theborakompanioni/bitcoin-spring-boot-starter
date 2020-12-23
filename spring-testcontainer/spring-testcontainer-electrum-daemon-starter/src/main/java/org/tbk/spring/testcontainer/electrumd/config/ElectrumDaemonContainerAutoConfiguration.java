@@ -12,6 +12,7 @@ import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,24 +65,113 @@ public class ElectrumDaemonContainerAutoConfiguration {
                 .put("ELECTRUM_NETWORK", network)
                 .build();
 
+        String home = Optional.ofNullable(env.get("ELECTRUM_HOME"))
+                .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_HOME"));
+
         ElectrumDaemonContainer<?> electrumDaemonContainer = new ElectrumDaemonContainer<>(dockerImageName)
+                .withWorkingDirectory(home)
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withEnv(env)
                 .waitingFor(waitStrategy);
 
+        copyWalletToContainerIfNecessary(electrumDaemonContainer, env);
+
         electrumDaemonContainer.start();
 
-        restartWithConnectingToLocalElectrumxServerHack(electrumxContainer, network, electrumDaemonContainer);
+        restartDaemonWithCustomizedSettings(electrumxContainer, electrumDaemonContainer, env);
 
         return electrumDaemonContainer;
     }
 
+    private void copyWalletToContainerIfNecessary(ElectrumDaemonContainer<?> electrumDaemonContainer, Map<String, String> env) {
+        Optional<MountableFile> mountableWalletOrEmpty = this.properties.getDefaultWallet()
+                .map(MountableFile::forClasspathResource);
+
+        if (mountableWalletOrEmpty.isPresent()) {
+            String home = Optional.ofNullable(env.get("ELECTRUM_HOME"))
+                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_HOME"));
+
+            String electrumNetwork = Optional.ofNullable(env.get("ELECTRUM_NETWORK"))
+                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_NETWORK"));
+
+            // There are different wallet directories per network:
+            // - mainnet: /home/electrum/.electrum/wallets,
+            // - testnet: /home/electrum/.electrum/testnet/wallets
+            // - regtest: /home/electrum/.electrum/regtest/wallets
+            // - regtest: /home/electrum/.electrum/simnet/wallets
+            String networkWalletDir = home + "/.electrum" + Optional.of(electrumNetwork)
+                    .filter(it -> !"mainnet".equals(it))
+                    .map(it -> "/" + it + "/wallets")
+                    .orElse("/wallets");
+
+            String containerWalletFilePath = networkWalletDir + "/default_wallet";
+
+            MountableFile mountableWallet = mountableWalletOrEmpty.get();
+            if (log.isDebugEnabled()) {
+                String filesystemPath = mountableWallet.getFilesystemPath();
+                log.debug("copy file to container: {} -> {}", filesystemPath, containerWalletFilePath);
+            }
+
+            electrumDaemonContainer.withCopyFileToContainer(mountableWallet, containerWalletFilePath);
+        }
+    }
+
+    private void restartDaemonWithCustomizedSettings(ElectrumxContainer<?> electrumxContainer, ElectrumDaemonContainer<?> electrumDaemonContainer, ImmutableMap<String, String> env) {
+        try {
+            String electrumNetwork = Optional.ofNullable(env.get("ELECTRUM_NETWORK"))
+                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_NETWORK"));
+
+            String networkFlag = Optional.of(electrumNetwork)
+                    .filter(it -> !"mainnet".equals(it))
+                    .map(it -> "--" + it)
+                    .orElse("");
+
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "stop");
+
+            setupWalletDirectoriesHack(electrumDaemonContainer, env);
+            setupConnectingToLocalElectrumxServerHack(electrumxContainer, networkFlag, electrumDaemonContainer);
+
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "start");
+
+            if (this.properties.getDefaultWallet().isPresent()) {
+                Thread.sleep(3000); // let the daemon some time to startup; 3000ms seems to be enough
+
+                electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "load_wallet");
+            }
+
+        } catch (InterruptedException | IOException e) {
+            throw new RuntimeException("Error while adapting electrum-daemon: restart with auto-loaded wallets failed", e);
+        }
+    }
+
     private Map<String, String> buildEnvMap() {
         return ImmutableMap.<String, String>builder()
-                .put("ELECTRUM_USER", "test")
+                .put("ELECTRUM_USER", "electrum")
+                .put("ELECTRUM_HOME", "/home/electrum")
                 .put("ELECTRUM_PASSWORD", "test")
                 .build();
+    }
+
+
+    private void setupWalletDirectoriesHack(ElectrumDaemonContainer<?> electrumDaemonContainer, Map<String, String> env) {
+        try {
+            String home = Optional.ofNullable(env.get("ELECTRUM_HOME"))
+                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_HOME"));
+            String electrumDir = home + "/.electrum";
+
+            String username = Optional.ofNullable(env.get("ELECTRUM_USER"))
+                    .orElseThrow(() -> new IllegalStateException("Cannot find env ELECTRUM_USER"));
+
+            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/wallets/");
+            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/testnet/wallets/");
+            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/regtest/wallets/");
+            electrumDaemonContainer.execInContainer("mkdir", "-p", electrumDir + "/simnet/wallets/");
+            electrumDaemonContainer.execInContainer("chown", "-R", username, electrumDir);
+
+        } catch (InterruptedException | IOException e) {
+            throw new RuntimeException("Error while adapting electrum-daemon: setup wallet directories failed", e);
+        }
     }
 
     /**
@@ -91,29 +181,19 @@ public class ElectrumDaemonContainerAutoConfiguration {
      * the proper settings.
      * TODO: try to make the docker setup more customizable e.g. like lnzap/docker-lnd does.
      */
-    private void restartWithConnectingToLocalElectrumxServerHack(ElectrumxContainer<?> electrumxContainer, String network, ElectrumDaemonContainer<?> electrumDaemonContainer) {
+    private void setupConnectingToLocalElectrumxServerHack(ElectrumxContainer<?> electrumxContainer, String networkFlag, ElectrumDaemonContainer<?> electrumDaemonContainer) {
         try {
-            String networkFlag = Optional.of(network)
-                    .filter(it -> !"mainnet".equals(it))
-                    .map(it -> "--" + it)
-                    .orElse("");
-
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "stop");
-
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "dont_show_testnet_warning", "true");
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "check_updates", "false");
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "auto_connect", "true");
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "log_to_file", "true");
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "oneserver", "true");
-
             String serverUrl = String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumxContainer, 50002));
             electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "server", serverUrl);
 
-
-            electrumDaemonContainer.execInContainer("electrum", networkFlag, "daemon", "start");
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "oneserver", "true");
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "auto_connect", "true");
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "log_to_file", "true");
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "check_updates", "false");
+            electrumDaemonContainer.execInContainer("electrum", networkFlag, "setconfig", "dont_show_testnet_warning", "true");
 
         } catch (InterruptedException | IOException e) {
-            throw new RuntimeException("Error while adapting electrum-daemon-container", e);
+            throw new RuntimeException("Error while adapting electrum-daemon: setup local server failed", e);
         }
     }
 

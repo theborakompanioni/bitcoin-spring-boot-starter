@@ -23,8 +23,17 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
      */
     private Integer rpcport;
 
+    /**
+     * (Optional) Specify the wallet that electrum should open on startup.
+     */
+    private String defaultWallet;
+
     public int getRpcPort() {
         return Optional.ofNullable(rpcport).orElse(DEFAULT_RPC_PORT);
+    }
+
+    public Optional<String> getDefaultWallet() {
+        return Optional.ofNullable(defaultWallet);
     }
 
     @Override
