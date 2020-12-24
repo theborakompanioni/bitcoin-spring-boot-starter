@@ -8,4 +8,6 @@
     <logger name="org.tbk.spring.testcontainer.electrumd" level="DEBUG"/>
 
     <logger name="org.tbk.electrum.gateway.example" level="DEBUG"/>
+    <logger name="org.tbk.electrum.gateway.example.watch" level="INFO"/>
+
 </configuration>

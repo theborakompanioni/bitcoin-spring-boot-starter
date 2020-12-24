@@ -20,9 +20,21 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
 
+my.application:
+  # an address from "second_wallet" with key:
+  # castle else craft crush glass leisure client click embrace original bar senior
+  destinationAddress: bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j
+  initial-delay: 0
+  delay: 30
+  time-unit: SECONDS
+
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   default-wallet: electrum/wallets/regtest/default_wallet
+  environment:
+    ELECTRUM_NETWORK: regtest
+    ELECTRUM_USER: electrum
+    ELECTRUM_PASSWORD: correct_horse_battery_staple_20201224
 
 org.tbk.spring.testcontainer.electrumx:
   enabled: true
@@ -86,3 +98,10 @@ org.tbk.bitcoin.zeromq:
   network: regtest
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333
+
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 7000
+  rpcuser: electrum
+  rpcpassword: correct_horse_battery_staple_20201224
