@@ -30,7 +30,7 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
     private final ElectrumClient client;
     private final Options options;
 
-    private AtomicReference<TxoValue> incoming = new AtomicReference<>();
+    private final AtomicReference<TxoValue> incoming = new AtomicReference<>();
 
     public ElectrumDaemonWalletSendBalance(ElectrumClient client, Options options) {
         this.client = requireNonNull(client);
@@ -65,9 +65,7 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
             return false;
         }
 
-
         log.info("found end balance: {}", summary.getEndBalance().getValue());
-        log.info("history: {}", history);
 
         RawTx unsignedTransaction = client
                 .createUnsignedTransactionSendingEntireBalance(options.getDestinationAddress());
@@ -75,7 +73,6 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
         RawTx rawTx = client.signTransaction(unsignedTransaction, options.getWalletPassphrase());
 
         log.info("rawTx (signed): {}", rawTx);
-        log.info("rawTx (signed, hex): {}", rawTx.getHex());
 
         String broadcast = client.broadcast(rawTx);
 
