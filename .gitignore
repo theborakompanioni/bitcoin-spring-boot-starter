@@ -100,4 +100,5 @@ application-management.port
 *.tmp
 **/*-local.yml
 *.dat
+*.hprof
 .resourceCache/
