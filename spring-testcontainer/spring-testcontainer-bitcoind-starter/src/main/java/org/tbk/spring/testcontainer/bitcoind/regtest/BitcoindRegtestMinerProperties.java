@@ -1,7 +1,11 @@
 package org.tbk.spring.testcontainer.bitcoind.regtest;
 
+import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerProperties;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -11,7 +15,7 @@ import java.util.Optional;
         prefix = "org.tbk.spring.testcontainer.bitcoind-regtest-miner",
         ignoreUnknownFields = false
 )
-public class BitcoindRegtestMinerProperties {
+public class BitcoindRegtestMinerProperties implements Validator {
     private static final NextBlockDurationProperties DEFAULT_NEXT_BLOCK_DURATION = new NextBlockDurationProperties() {{
         setMinDurationInMillis(1_000L);
         setMaxDurationInMillis(10_000L);
@@ -28,6 +32,8 @@ public class BitcoindRegtestMinerProperties {
      */
     private String coinbaseRewardAddress;
 
+    private int mineInitialAmountOfBlocks = 0;
+
     NextBlockDurationProperties nextBlockDuration;
 
     public Optional<String> getCoinbaseRewardAddress() {
@@ -39,13 +45,28 @@ public class BitcoindRegtestMinerProperties {
                 .orElse(DEFAULT_NEXT_BLOCK_DURATION);
     }
 
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return clazz == BitcoindRegtestMinerProperties.class;
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        BitcoindRegtestMinerProperties properties = (BitcoindRegtestMinerProperties) target;
+
+        if (mineInitialAmountOfBlocks < 0) {
+            String errorMessage = String.format("'mineInitialAmountOfBlocks' must not be less than zero - invalid value: %d", properties.getMineInitialAmountOfBlocks());
+            errors.rejectValue("mineInitialAmountOfBlocks", "mineInitialAmountOfBlocks.invalid", errorMessage);
+        }
+    }
+
     @Data
     public static class NextBlockDurationProperties {
         private static final long DEFAULT_MIN_DURATION_IN_MILLIS = 1_000L;
         private static final long DEFAULT_MAX_DURATION_IN_MILLIS = 60_000L;
 
-        Long minDurationInMillis;
-        Long maxDurationInMillis;
+        private Long minDurationInMillis;
+        private Long maxDurationInMillis;
 
         public long getMinDurationInMillis() {
             return Optional.ofNullable(minDurationInMillis)

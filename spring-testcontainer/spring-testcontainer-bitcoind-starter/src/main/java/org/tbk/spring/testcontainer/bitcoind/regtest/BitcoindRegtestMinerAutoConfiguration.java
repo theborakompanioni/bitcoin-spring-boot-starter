@@ -1,11 +1,13 @@
 package org.tbk.spring.testcontainer.bitcoind.regtest;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -15,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -60,6 +61,37 @@ public class BitcoindRegtestMinerAutoConfiguration {
                                                                        CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         return new ScheduledBitcoindRegtestMiner(bitcoinJsonRpcClient, scheduler, coinbaseRewardAddressSupplier);
     }
+
+    @Bean
+    @ConditionalOnBean({ScheduledBitcoindRegtestMiner.class})
+    public InitializingBean scheduledBitcoindRegtestMinerPreminer(ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner) {
+
+        int numberOfBlocksToMine = properties.getMineInitialAmountOfBlocks();
+
+        if (numberOfBlocksToMine == 0) {
+            return () -> {
+                log.debug("Will not mine initial number of blocks as 'numberOfBlocksToMine' is zero.");
+            };
+        }
+
+        return () -> {
+            log.info("Will mine an initial number of {} blocks.", numberOfBlocksToMine);
+
+            Stopwatch stopwatch = Stopwatch.createStarted();
+
+            scheduledBitcoindRegtestMiner.awaitRunning();
+
+            int counter = 0;
+            while (counter < numberOfBlocksToMine) {
+                scheduledBitcoindRegtestMiner.runOneIteration();
+                counter++;
+            }
+
+            log.info("Mined initial number of {} blocks in {}", counter, stopwatch);
+            stopwatch.stop();
+        };
+    }
+
 
     @Bean("bitcoindRegtestMinerScheduler")
     @ConditionalOnMissingBean(name = "bitcoindRegtestMinerScheduler")
