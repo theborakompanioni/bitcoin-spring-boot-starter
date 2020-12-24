@@ -11,6 +11,8 @@ dependencies {
     // currently a hard dependency on the electrumx testcontainer package - try to make it an optional dependency!
     implementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
 
+    compileOnly project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure')
+
     implementation "com.google.guava:guava:${guavaVersion}"
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
