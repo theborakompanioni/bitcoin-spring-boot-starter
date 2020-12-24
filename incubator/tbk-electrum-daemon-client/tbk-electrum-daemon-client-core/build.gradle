@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+description = 'electrum daemon jsonrpc client package'
+
+dependencies {
+    api 'com.github.arteam:simple-json-rpc-client:1.2'
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation "commons-logging:commons-logging:1.2"
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+}

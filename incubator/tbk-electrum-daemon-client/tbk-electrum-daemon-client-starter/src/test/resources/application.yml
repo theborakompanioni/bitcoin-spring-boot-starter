@@ -1,0 +1,6 @@
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 123456
+  rpcuser: user
+  rpcpassword: correct horse battery staple

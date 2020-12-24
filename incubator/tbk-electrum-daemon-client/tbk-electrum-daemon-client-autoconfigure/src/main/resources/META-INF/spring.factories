@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.tbk.electrum.config.ElectrumDaemonJsonrpcClientAutoConfiguration

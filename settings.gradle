@@ -61,6 +61,10 @@ include 'xchange-jsr354:xchange-jsr354-starter'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-util'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
+include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core'
+include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
+include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter'
+
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:bitcoin-transaction-stats-example-application'
 include 'examples:lnd-playground-example-application'
