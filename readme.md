@@ -150,22 +150,6 @@ The following providers are implemented:
 - [x] BTC.com API
 - [x] earn.com API
 
-### spring-bitcoin-neo4j
-A module for storing and managing bitcoin related entities in neo4j. 
-
-#### spring-bitcoin-neo4j-example-application
-
-Start the application with
-```shell
-./gradlew -p spring-bitcoin-neo4j/spring-bitcoin-neo4j-example-application bootRun
-```
-
-... and open the neo4j browser. The port is random on every start.
-
-![Bitcoin Neo4j Example Application Screenshot](spring-bitcoin-neo4j/spring-bitcoin-neo4j-example-application/src/main/resources/static/screenshots/screenshot_neo4j_example.png)
-
-
-
 ### examples
 There are also some example applications showing basic usage of the functionality provided by these modules.
 
@@ -209,16 +193,6 @@ Example output (2020-11-08):
   } ]
 }
 ```
-
-#### bitcoin-tx-stats-example-application
-Start the application with
-```shell
-./gradlew -p examples/bitcoin-tx-stats-example-application bootRun
-```
-
-... and open the following url in your browser:
-`http://localhost:8080/api/v1/tx/score/0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098`
-
 
 #### lnd-playground-example-application
 Start the application with
@@ -279,7 +253,6 @@ Optional: To enable all features the node should publish `rawtx` and `rawblock` 
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
 - Bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
-- Neo4j (GitHub): https://github.com/neo4j/neo4j
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
 - Protocol Buffers: https://developers.google.com/protocol-buffers
 
