@@ -1,7 +1,0 @@
-plugins {
-    id 'java'
-}
-
-dependencies {
-    api 'org.springframework.data:spring-data-neo4j'
-}
