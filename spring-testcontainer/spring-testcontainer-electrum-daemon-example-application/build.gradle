@@ -16,8 +16,8 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
 
-    implementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-autoconfigure')
-    implementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-starter')
+    implementation project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
+    implementation project(':lnd-grpc-client:lnd-grpc-client-starter')
 
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')

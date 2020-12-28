@@ -94,7 +94,7 @@ org.tbk.bitcoin.jsonrpc.client:
 ```
 
 
-### lnd-jsonrpc-client
+### lnd-grpc-client
 A module containing a spring boot starter for a [Lightningj](https://www.lightningj.org/) lnd gRPC API client.
 The starter will automatically create autowireable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
 

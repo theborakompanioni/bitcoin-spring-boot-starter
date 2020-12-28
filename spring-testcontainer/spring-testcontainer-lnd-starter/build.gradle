@@ -19,8 +19,8 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    testImplementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-autoconfigure')
-    testImplementation project(':lnd-jsonrpc-client:lnd-jsonrpc-client-starter')
+    testImplementation project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
+    testImplementation project(':lnd-grpc-client:lnd-grpc-client-starter')
 
     testImplementation "io.projectreactor:reactor-core"
 }

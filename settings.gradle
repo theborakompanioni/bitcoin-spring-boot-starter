@@ -12,9 +12,9 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-starter'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 
-include 'lnd-jsonrpc-client:lnd-jsonrpc-client-core'
-include 'lnd-jsonrpc-client:lnd-jsonrpc-client-autoconfigure'
-include 'lnd-jsonrpc-client:lnd-jsonrpc-client-starter'
+include 'lnd-grpc-client:lnd-grpc-client-core'
+include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
+include 'lnd-grpc-client:lnd-grpc-client-starter'
 
 include 'spring-testcontainer:spring-testcontainer-core'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-helper'

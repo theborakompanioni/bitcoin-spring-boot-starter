@@ -5,7 +5,7 @@ plugins {
 description = 'lnd jsonrpc client autoconfigure package'
 
 dependencies {
-    api project(':lnd-jsonrpc-client:lnd-jsonrpc-client-core')
+    api project(':lnd-grpc-client:lnd-grpc-client-core')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
