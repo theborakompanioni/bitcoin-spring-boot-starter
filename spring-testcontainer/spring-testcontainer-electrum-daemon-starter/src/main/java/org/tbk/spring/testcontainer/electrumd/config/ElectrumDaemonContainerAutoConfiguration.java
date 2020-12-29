@@ -3,6 +3,7 @@ package org.tbk.spring.testcontainer.electrumd.config;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -11,11 +12,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.electrumx.config.ElectrumxContainerAutoConfiguration;
+import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
+import org.tbk.spring.testcontainer.eps.config.ElectrumPersonalServerContainerAutoConfiguration;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
@@ -35,7 +39,11 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 @Configuration
 @EnableConfigurationProperties(ElectrumDaemonContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.electrum-daemon.enabled", havingValue = "true")
-@AutoConfigureAfter(ElectrumxContainerAutoConfiguration.class)
+@AutoConfigureAfter({
+        BitcoindContainerAutoConfiguration.class,
+        ElectrumxContainerAutoConfiguration.class,
+        ElectrumPersonalServerContainerAutoConfiguration.class
+})
 public class ElectrumDaemonContainerAutoConfiguration {
 
     // currently only the image from "osminogin" is supported
@@ -55,20 +63,8 @@ public class ElectrumDaemonContainerAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
-
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
-    @ConditionalOnMissingBean(ElectrumxContainer.class)
-    public ElectrumDaemonContainer<?> electrumDaemonContainer(@Qualifier("electrumDaemonContainerWaitStrategy") WaitStrategy waitStrategy) {
-        ElectrumDaemonContainer<?> electrumDaemonContainer = createStartedElectrumDaemonContainer(waitStrategy);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Started {} with exposed ports {}", electrumDaemonContainer.getContainerName(), electrumDaemonContainer.getExposedPorts());
-        }
-
-        return electrumDaemonContainer;
-    }
-
-    @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
+    @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumxContainer.class)
     public ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumxTestcontainer(@Qualifier("electrumDaemonContainerWaitStrategy") WaitStrategy waitStrategy,
                                                                                         ElectrumxContainer<?> electrumxContainer) {
@@ -79,9 +75,27 @@ public class ElectrumDaemonContainerAutoConfiguration {
 
         ElectrumDaemonContainer<?> electrumDaemonContainer = createStartedElectrumDaemonContainer(waitStrategy, () -> Optional.of(serverUrl));
 
-        if (log.isDebugEnabled()) {
-            log.debug("Started {} with exposed ports {}", electrumDaemonContainer.getContainerName(), electrumDaemonContainer.getExposedPorts());
-        }
+        return electrumDaemonContainer;
+    }
+
+    @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
+    @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
+    @ConditionalOnBean(ElectrumPersonalServerContainer.class)
+    public ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(
+            @Qualifier("electrumDaemonContainerWaitStrategy") WaitStrategy waitStrategy,
+            ElectrumPersonalServerContainer<?> electrumPersonlServerContainer) {
+
+        String serverUrl = String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumPersonlServerContainer, 50002));
+
+        ElectrumDaemonContainer<?> electrumDaemonContainer = createStartedElectrumDaemonContainer(waitStrategy, () -> Optional.of(serverUrl));
+
+        return electrumDaemonContainer;
+    }
+
+    @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
+    @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
+    public ElectrumDaemonContainer<?> electrumDaemonContainer(@Qualifier("electrumDaemonContainerWaitStrategy") WaitStrategy waitStrategy) {
+        ElectrumDaemonContainer<?> electrumDaemonContainer = createStartedElectrumDaemonContainer(waitStrategy);
 
         return electrumDaemonContainer;
     }
@@ -92,6 +106,16 @@ public class ElectrumDaemonContainerAutoConfiguration {
         return CustomHostPortWaitStrategy.builder()
                 .ports(hardcodedStandardPorts)
                 .build();
+    }
+
+    @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
+    @ConditionalOnBean(ElectrumDaemonContainer.class)
+    public InitializingBean electrumDaemonContainerInitLogger(ElectrumDaemonContainer electrumDaemonContainer) {
+        return () -> {
+            if (log.isDebugEnabled()) {
+                log.debug("Started {} with exposed ports {}", electrumDaemonContainer.getContainerName(), electrumDaemonContainer.getExposedPorts());
+            }
+        };
     }
 
     private void verifyCompatibilityWithElectrumx(ElectrumxContainer<?> electrumxContainer) {
