@@ -156,7 +156,7 @@ public class LndContainerApplicationTest {
             }
         });
 
-        GetInfoResponse info = infoResponseFlux.blockLast(Duration.ofSeconds(10));
+        GetInfoResponse info = infoResponseFlux.blockFirst(Duration.ofSeconds(15));
 
         assertThat(info, is(notNullValue()));
         assertThat(info.getVersion(), startsWith("0.11.1-beta"));
