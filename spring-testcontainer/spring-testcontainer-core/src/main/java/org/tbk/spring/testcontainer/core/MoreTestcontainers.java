@@ -24,7 +24,7 @@ public final class MoreTestcontainers {
         throw new UnsupportedOperationException();
     }
 
-    private static String testcontainersInternalHost() {
+    public static String testcontainersInternalHost() {
         return testcontainersInternalHost;
     }
 
