@@ -25,6 +25,7 @@ include 'spring-testcontainer:spring-testcontainer-lnd-example-application'
 include 'spring-testcontainer:spring-testcontainer-electrum-daemon-starter'
 include 'spring-testcontainer:spring-testcontainer-electrum-daemon-example-application'
 include 'spring-testcontainer:spring-testcontainer-electrumx-starter'
+include 'spring-testcontainer:spring-testcontainer-electrum-personal-server-starter'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
 include 'bitcoin-jsr354:bitcoin-jsr354-exchange-rate'

@@ -1,0 +1,31 @@
+org.tbk.spring.testcontainer.eps:
+  enabled: true
+  rpcuser: this-is-my-rpc-user-20201218
+  rpcpass: correct_horse_battery_staple_20201218
+  rpchost: localhost
+  rpcport: 18443
+  # secret of master public key: across distance search gym explain fruit sense tiny decrease ribbon day course
+  environment:
+    EPS_CONFIG: |
+      poll_interval_listening = 600
+      poll_interval_connected = 5
+      initial_import_count = 1000
+      gap_limit = 25
+      wallet_filename =
+      [electrum-server]
+      host = 0.0.0.0
+      port = 50002
+      broadcast_method = own-node
+      ip_whitelist = *
+      disable_mempool_fee_histogram = true
+      [master-public-keys]
+      wallet = vpub5V17qQVLhXAEy4y91toYh92WjqzWqXFRknbHdMY1RLE7GR4pAbKDCbHE8nSBgesE5aQt7XjYg4n1FRgjrs4KFwQBfC4kV8SjmvabK6cDrwo
+      [logging]
+      log_level_stdout = DEBUG
+      append_log = true
+
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user-20201218
+  rpcpassword: correct_horse_battery_staple_20201218

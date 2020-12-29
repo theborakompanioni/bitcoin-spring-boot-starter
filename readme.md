@@ -125,8 +125,14 @@ Please note, that **this module is intended to be used in regtest mode** and cur
 only works in combination with `spring-testcontainer-bitcoind-starter`.
 
 #### spring-testcontainer-electrumx-starter
-A fast any easy way to start one or multiple electrumx instances within docker containers programmatically within
-your application.
+A fast any easy way to start one or multiple [ElectrumX](https://github.com/spesmilo/electrumx) 
+instances within docker containers programmatically within your application.
+It can be used in combination with `spring-testcontainer-bitcoind-starter`!
+Please note, that **this module is intended to be used in regtest mode**.
+
+#### spring-testcontainer-electrum-personal-server-starter
+A fast any easy way to start one or multiple [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) 
+instances within docker containers programmatically within your application.
 It can be used in combination with `spring-testcontainer-bitcoind-starter`!
 Please note, that **this module is intended to be used in regtest mode**.
 
@@ -247,6 +253,7 @@ Optional: To enable all features the node should publish `rawtx` and `rawblock` 
 ---
 - lnd (GitHub): https://github.com/LightningNetwork/lnd
 - ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx
+- Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server
 - Electrum Client (GitHub): https://github.com/spesmilo/electrum
 - XChange (GitHub): https://github.com/knowm/XChange
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
