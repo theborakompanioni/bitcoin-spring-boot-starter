@@ -60,6 +60,7 @@ subprojects {
     apply plugin: 'nebula.info'
     apply plugin: 'com.google.protobuf'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'nebula.integtest-standalone'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -142,6 +143,10 @@ subprojects {
     }
 
     test {
+        environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
+    }
+
+    integrationTest {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
     }
     
