@@ -2,14 +2,6 @@ apply plugin: 'org.springframework.boot'
 
 description = 'bitcoin jsonrpc client example application package'
 
-jar {
-    enabled = true
-}
-
-bootJar {
-    archiveClassifier.set('boot')
-}
-
 dependencies {
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
 

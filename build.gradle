@@ -137,6 +137,14 @@ subprojects {
     }
 
     pluginManager.withPlugin('org.springframework.boot') {
+        jar {
+            enabled = true
+        }
+
+        bootJar {
+            archiveClassifier.set('boot')
+        }
+
         bootRun {
             environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
         }

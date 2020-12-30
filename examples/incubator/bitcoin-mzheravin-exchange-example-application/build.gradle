@@ -8,14 +8,6 @@ repositories {
 
 description = 'bitcoin exchange rate example application package'
 
-jar {
-    enabled = true
-}
-
-bootJar {
-    archiveClassifier.set('boot')
-}
-
 dependencies {
     implementation project(':bitcoin-jsr354:bitcoin-jsr354-starter')
     implementation project(':spring-jsr354:spring-jsr354-starter')

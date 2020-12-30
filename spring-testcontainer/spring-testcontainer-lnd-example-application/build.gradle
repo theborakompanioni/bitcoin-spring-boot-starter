@@ -2,14 +2,6 @@ apply plugin: 'org.springframework.boot'
 
 description = 'lnd testcontainer example application package'
 
-jar {
-    enabled = true
-}
-
-bootJar {
-    archiveClassifier.set('boot')
-}
-
 dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')

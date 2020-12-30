@@ -2,14 +2,6 @@ apply plugin: 'org.springframework.boot'
 
 description = 'bitcoin fee example application package'
 
-jar {
-    enabled = true
-}
-
-bootJar {
-    archiveClassifier.set('boot')
-}
-
 dependencies {
     // deliberately include "autoconfigure" instead of "starter" to demonstrate customizable configs
     implementation project(':spring-bitcoin-fee:spring-bitcoin-fee-autoconfigure')

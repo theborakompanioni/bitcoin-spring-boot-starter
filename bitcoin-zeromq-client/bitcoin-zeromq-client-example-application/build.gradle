@@ -2,14 +2,6 @@ apply plugin: 'org.springframework.boot'
 
 description = 'bitcoin zeromq client example application package'
 
-jar {
-    enabled = true
-}
-
-bootJar {
-    archiveClassifier.set('boot')
-}
-
 dependencies {
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
