@@ -1,11 +1,9 @@
 package org.tbk.spring.testcontainer.bitcoind.regtest;
 
-import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerProperties;
 
 import java.time.Duration;
 import java.util.Optional;

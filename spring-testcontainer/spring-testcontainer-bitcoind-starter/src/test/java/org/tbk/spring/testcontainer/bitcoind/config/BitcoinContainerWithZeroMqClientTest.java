@@ -1,11 +1,9 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
-import com.msgilligan.bitcoinj.rpc.RpcConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,28 +13,19 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
-import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig;
-import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.testcontainers.shaded.org.apache.commons.lang.math.RandomUtils;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-
 
 @Slf4j
 @RunWith(SpringRunner.class)

@@ -7,7 +7,6 @@ import org.reactivestreams.FlowAdapters;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
@@ -32,7 +31,7 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
 
     private final SubmissionPublisher<T> publisher = new SubmissionPublisher<>(publisherExecutor, Flow.defaultBufferSize());
 
-    private final Scheduler subscribeOnScheduler = Schedulers.newSingle("zmq-msg-sub-" + serviceId );
+    private final Scheduler subscribeOnScheduler = Schedulers.newSingle("zmq-msg-sub-" + serviceId);
 
     private final MessagePublisherFactory<T> bitcoinMessagePublisher;
 

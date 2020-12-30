@@ -2,11 +2,9 @@ package org.tbk.bitcoin.zeromq.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Hexadecimals;
-import org.reactivestreams.FlowAdapters;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.concurrent.Flow;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**

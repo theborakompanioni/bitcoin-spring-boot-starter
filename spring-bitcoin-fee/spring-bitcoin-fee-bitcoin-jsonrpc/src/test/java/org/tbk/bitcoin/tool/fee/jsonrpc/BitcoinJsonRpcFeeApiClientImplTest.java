@@ -1,9 +1,7 @@
 package org.tbk.bitcoin.tool.fee.jsonrpc;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
-import com.msgilligan.bitcoinj.rpc.RpcConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.NetworkParameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,17 +10,11 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
-import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
-
-import java.net.URI;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-
 
 @Slf4j
 @RunWith(SpringRunner.class)

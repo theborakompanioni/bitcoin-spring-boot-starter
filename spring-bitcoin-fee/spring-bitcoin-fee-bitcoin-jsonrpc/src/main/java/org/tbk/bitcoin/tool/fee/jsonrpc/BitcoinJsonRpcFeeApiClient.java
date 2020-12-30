@@ -1,8 +1,5 @@
 package org.tbk.bitcoin.tool.fee.jsonrpc;
 
-
-import java.io.IOException;
-
 public interface BitcoinJsonRpcFeeApiClient {
     /**
      * estimatesmartfee

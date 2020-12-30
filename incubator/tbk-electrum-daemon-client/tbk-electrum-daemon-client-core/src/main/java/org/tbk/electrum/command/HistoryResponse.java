@@ -10,14 +10,14 @@ import java.util.List;
 /**
  * Represents a history call which includes a short summary
  * and transactions.
- *
+ * <p>
  * Can also have empty fields:
  * e.g.
  * {
- *  "summary": {},
- *  "transactions": []
+ * "summary": {},
+ * "transactions": []
  * }
- *
+ * <p>
  * Example response with data from electrum:
  * <p>
  * {

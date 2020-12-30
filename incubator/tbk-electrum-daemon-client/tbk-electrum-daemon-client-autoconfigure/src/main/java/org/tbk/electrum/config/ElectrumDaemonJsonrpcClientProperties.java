@@ -19,7 +19,7 @@ import org.springframework.validation.Validator;
  */
 @Data
 @ConfigurationProperties(prefix = "org.tbk.bitcoin.electrum-daemon.jsonrpc")
-public class ElectrumDaemonJsonrpcClientProperties implements Validator  {
+public class ElectrumDaemonJsonrpcClientProperties implements Validator {
 
     /**
      * Whether a client should be enabled

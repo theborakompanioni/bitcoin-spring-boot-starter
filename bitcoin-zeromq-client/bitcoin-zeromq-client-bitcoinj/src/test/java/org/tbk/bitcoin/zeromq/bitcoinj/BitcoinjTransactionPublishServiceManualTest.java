@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
-import org.reactivestreams.FlowAdapters;
 import org.tbk.bitcoin.zeromq.client.BitcoinZeroMqTopics;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
@@ -17,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * e.g. connect to your node:
  * ssh my_node.local -vvv -N -L 28332:localhost:28332 -L 28333:localhost:28333
- *
+ * <p>
  * Example Bitcoin Core settings:
  * # Enable publishing of raw block hex to <address>.
  * zmqpubrawblock=tcp://127.0.0.1:28332

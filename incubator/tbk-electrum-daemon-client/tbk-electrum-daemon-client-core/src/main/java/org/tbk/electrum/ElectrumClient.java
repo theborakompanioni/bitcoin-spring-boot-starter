@@ -1,11 +1,11 @@
 package org.tbk.electrum;
 
+import lombok.Builder;
+import lombok.Value;
 import org.tbk.electrum.command.DaemonCloseWalletRequest;
 import org.tbk.electrum.command.DaemonLoadWalletRequest;
 import org.tbk.electrum.command.DaemonStatusResponse;
 import org.tbk.electrum.model.*;
-import lombok.Builder;
-import lombok.Value;
 
 import javax.annotation.Nullable;
 import java.util.List;

@@ -2,8 +2,6 @@ package org.tbk.spring.testcontainer.bitcoind.regtest;
 
 import org.bitcoinj.core.Address;
 
-import java.util.function.Supplier;
-
 import static java.util.Objects.requireNonNull;
 
 public class StaticCoinbaseRewardAddressSupplier implements CoinbaseRewardAddressSupplier {

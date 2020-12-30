@@ -27,8 +27,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/fee")

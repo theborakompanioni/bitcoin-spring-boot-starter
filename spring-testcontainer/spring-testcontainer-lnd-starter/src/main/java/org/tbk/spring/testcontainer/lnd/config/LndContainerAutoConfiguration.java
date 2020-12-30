@@ -1,7 +1,9 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
 import com.google.common.collect.ImmutableList;
-import lombok.*;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -9,7 +9,6 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.tbk.xchange.jsr354.XChangeExchangeRateProvider;
 
 import javax.money.Monetary;
 import javax.money.convert.ConversionQuery;

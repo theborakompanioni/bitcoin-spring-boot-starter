@@ -85,7 +85,7 @@ public class ExchangeRateCtrl {
                                     return Flux.just(provider.getExchangeRate(conversionQuery));
                                 } catch (Exception e) {
                                     log.debug("exception while getting exchange rate {} from provider {}: {}",
-                                            conversionQuery, provider,  e.getMessage());
+                                            conversionQuery, provider, e.getMessage());
 
                                     return Flux.empty();
                                 }

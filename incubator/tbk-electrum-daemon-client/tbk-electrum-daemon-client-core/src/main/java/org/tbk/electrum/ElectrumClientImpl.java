@@ -1,13 +1,13 @@
 package org.tbk.electrum;
 
-import org.tbk.electrum.command.*;
-import org.tbk.electrum.model.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.Value;
+import org.tbk.electrum.command.*;
+import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;

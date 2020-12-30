@@ -29,7 +29,7 @@ public final class CachingBitgoFeeApiClient implements BitgoFeeApiClient {
                     }
                 });
     }
-    
+
     @Override
     public BtcTxFeeResponse btcTxFee(BtcTxFeeRequest request) {
         return this.responseCache.getUnchecked(request);

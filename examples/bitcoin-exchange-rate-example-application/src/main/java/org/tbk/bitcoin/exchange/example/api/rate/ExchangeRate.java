@@ -2,7 +2,6 @@ package org.tbk.bitcoin.exchange.example.api.rate;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import javax.money.CurrencyUnit;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;

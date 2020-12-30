@@ -9,7 +9,6 @@ import org.bitcoinj.core.Sha256Hash;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 

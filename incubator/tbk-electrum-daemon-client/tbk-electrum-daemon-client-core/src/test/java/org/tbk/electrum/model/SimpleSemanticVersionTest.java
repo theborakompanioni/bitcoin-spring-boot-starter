@@ -5,9 +5,9 @@ import org.junit.Test;
 import java.security.SecureRandom;
 import java.util.Optional;
 
-import static org.tbk.electrum.model.SimpleSemanticVersion.tryParse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.tbk.electrum.model.SimpleSemanticVersion.tryParse;
 
 public class SimpleSemanticVersionTest {
 

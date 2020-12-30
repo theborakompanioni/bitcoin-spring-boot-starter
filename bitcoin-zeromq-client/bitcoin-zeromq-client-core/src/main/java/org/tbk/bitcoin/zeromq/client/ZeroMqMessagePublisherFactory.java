@@ -2,7 +2,6 @@ package org.tbk.bitcoin.zeromq.client;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.FlowAdapters;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -11,7 +10,6 @@ import reactor.core.publisher.Flux;
 import zmq.ZError;
 
 import java.util.Optional;
-import java.util.concurrent.Flow;
 
 @Slf4j
 @Value

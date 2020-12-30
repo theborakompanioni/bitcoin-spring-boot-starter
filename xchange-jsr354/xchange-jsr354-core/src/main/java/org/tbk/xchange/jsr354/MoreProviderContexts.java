@@ -16,11 +16,11 @@ public final class MoreProviderContexts {
     /**
      * A factory method creating a simple provider context.
      * <p>
-     * @implNote This method is primarily intended for internal usage.
-     *   Consider building your own context with {@link ProviderContextBuilder}.
      *
      * @param exchange the exchange to build the context from
      * @return a simple provider context with basic information from the given exchange
+     * @implNote This method is primarily intended for internal usage.
+     * Consider building your own context with {@link ProviderContextBuilder}.
      */
     public static ProviderContextBuilder createSimpleProviderContextBuilder(Exchange exchange) {
         String providerClassName = exchange.getClass().getSimpleName();

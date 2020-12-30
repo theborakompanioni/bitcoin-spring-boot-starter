@@ -1,7 +1,9 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.collect.ImmutableList;
-import lombok.*;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
-import org.testcontainers.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
