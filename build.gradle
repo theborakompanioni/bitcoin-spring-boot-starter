@@ -51,11 +51,26 @@ configurations.all {
     }
 }
 
+allprojects {
+    apply plugin: 'nebula.lint'
+
+    gradleLint {
+        rules  = []
+        criticalRules = [
+                'dependency-parantheses',
+                'overridden-dependency-version',
+                'unused-exclude-by-dep',
+                'unused-exclude-by-conf',
+                'duplicate-dependency-class',
+                'dependency-tuple-expression'
+        ]
+    }
+}
+
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'nebula.lint'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
     apply plugin: 'com.google.protobuf'
