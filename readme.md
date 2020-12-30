@@ -236,13 +236,18 @@ Example console output:
 - java >=11
 - docker
 
-To run all examples you need access to a Bitcoin Core node.
+A Bitcoin Core Testcontainer running regtest mode is started for most examples. 
+Having access to a Bitcoin Core node running on mainnet is quite useful if you want to try everything.
+Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some features to be working.
 
-Optional: To enable all features the node should publish `rawtx` and `rawblock` messages via zmq.
-  
 ### Build
 ```
-./gradlew clean build
+./gradlew build -x test
+```
+  
+### Test
+```
+./gradlew test integrationTest
 ```
 
 # Resources
