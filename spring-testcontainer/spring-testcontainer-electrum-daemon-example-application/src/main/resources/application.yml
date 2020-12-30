@@ -48,7 +48,7 @@ org.tbk.spring.testcontainer.lnd:
     - '--bitcoind.rpcuser=this-is-my-rpc-user99'
     - '--bitcoind.rpcpass=correct_horse_battery_staple_99'
 
-org.tbk.lightning.lnd.jsonrpc:
+org.tbk.lightning.lnd.grpc:
   enabled: true
   rpchost: localhost
   rpcport: 19009

@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.jsonrpc.config;
+package org.tbk.lightning.lnd.grpc.config;
 
 import com.google.common.base.Throwables;
 import org.junit.Assert;
@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.tbk.lightning.lnd.jsonrpc.LndJsonRpcClientFactory;
+import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -20,10 +20,10 @@ public class LndJsonRpcClientAutoConfigurationTest {
     public void beansAreCreated() {
         this.contextRunner.withUserConfiguration(LndJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.lightning.lnd.jsonrpc.rpchost=localhost",
-                        "org.tbk.lightning.lnd.jsonrpc.rpcport=10001",
-                        "org.tbk.lightning.lnd.jsonrpc.macaroonFilePath=/dev/null",
-                        "org.tbk.lightning.lnd.jsonrpc.certFilePath=src/test/resources/lnd/tls-test.cert"
+                        "org.tbk.lightning.lnd.grpc.rpchost=localhost",
+                        "org.tbk.lightning.lnd.grpc.rpcport=10001",
+                        "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
+                        "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("lndJsonRpcClientFactory"), is(true));
@@ -38,7 +38,7 @@ public class LndJsonRpcClientAutoConfigurationTest {
     public void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(LndJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.lightning.lnd.jsonrpc.enabled=false"
+                        "org.tbk.lightning.lnd.grpc.enabled=false"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("lndJsonRpcClientFactory"), is(false));
@@ -63,7 +63,7 @@ public class LndJsonRpcClientAutoConfigurationTest {
     public void onlyFactoryIsCreated() {
         this.contextRunner.withUserConfiguration(LndJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.lightning.lnd.jsonrpc.enabled=true"
+                        "org.tbk.lightning.lnd.grpc.enabled=true"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("lndJsonRpcClientFactory"), is(true));
@@ -83,10 +83,10 @@ public class LndJsonRpcClientAutoConfigurationTest {
     public void errorIfCertFileIsMissing() {
         this.contextRunner.withUserConfiguration(LndJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.lightning.lnd.jsonrpc.rpchost=localhost",
-                        "org.tbk.lightning.lnd.jsonrpc.rpcport=10001",
-                        "org.tbk.lightning.lnd.jsonrpc.macaroonFilePath=/dev/null",
-                        "org.tbk.lightning.lnd.jsonrpc.certFilePath=src/test/resources/lnd/tls-test-missing.cert"
+                        "org.tbk.lightning.lnd.grpc.rpchost=localhost",
+                        "org.tbk.lightning.lnd.grpc.rpcport=10001",
+                        "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
+                        "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test-missing.cert"
                 ).run(context -> {
             Throwable startupFailure = context.getStartupFailure();
             assertThat(startupFailure, is(notNullValue()));

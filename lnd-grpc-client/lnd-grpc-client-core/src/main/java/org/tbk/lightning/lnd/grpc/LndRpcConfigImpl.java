@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.jsonrpc;
+package org.tbk.lightning.lnd.grpc;
 
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import lombok.Builder;

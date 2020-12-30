@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.jsonrpc.config;
+package org.tbk.lightning.lnd.grpc.config;
 
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
@@ -16,10 +16,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.lightning.lnd.jsonrpc.LndJsonRpcClientFactory;
-import org.tbk.lightning.lnd.jsonrpc.LndJsonRpcClientFactoryImpl;
-import org.tbk.lightning.lnd.jsonrpc.LndRpcConfig;
-import org.tbk.lightning.lnd.jsonrpc.LndRpcConfigImpl;
+import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
+import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactoryImpl;
+import org.tbk.lightning.lnd.grpc.LndRpcConfig;
+import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @EnableConfigurationProperties(LndJsonRpcClientAutoConfigProperties.class)
 @ConditionalOnClass(LndJsonRpcClientFactory.class)
-@ConditionalOnProperty(value = "org.tbk.lightning.lnd.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
 public class LndJsonRpcClientAutoConfiguration {
 
     private LndJsonRpcClientAutoConfigProperties properties;
@@ -49,7 +49,7 @@ public class LndJsonRpcClientAutoConfiguration {
     @Bean("lndJsonRpcMacaroonContext")
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.jsonrpc.macaroonFilePath"
+            "org.tbk.lightning.lnd.grpc.macaroonFilePath"
     })
     @SneakyThrows
     public MacaroonContext lndJsonRpcMacaroonContext() {
@@ -67,7 +67,7 @@ public class LndJsonRpcClientAutoConfiguration {
     @Bean("lndJsonRpcSslContext")
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.jsonrpc.certFilePath"
+            "org.tbk.lightning.lnd.grpc.certFilePath"
     })
     @SneakyThrows
     public SslContext lndJsonRpcSslContext() {
@@ -85,8 +85,8 @@ public class LndJsonRpcClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.jsonrpc.rpchost",
-            "org.tbk.lightning.lnd.jsonrpc.rpcport"
+            "org.tbk.lightning.lnd.grpc.rpchost",
+            "org.tbk.lightning.lnd.grpc.rpcport"
     })
     @ConditionalOnBean({MacaroonContext.class, SslContext.class})
     public LndRpcConfig lndJsonRpcConfig(

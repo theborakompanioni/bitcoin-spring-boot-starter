@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.jsonrpc.config;
+package org.tbk.lightning.lnd.grpc.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Data
 @ConfigurationProperties(
-        prefix = "org.tbk.lightning.lnd.jsonrpc",
+        prefix = "org.tbk.lightning.lnd.grpc",
         ignoreUnknownFields = false
 )
 public class LndJsonRpcClientAutoConfigProperties implements Validator {

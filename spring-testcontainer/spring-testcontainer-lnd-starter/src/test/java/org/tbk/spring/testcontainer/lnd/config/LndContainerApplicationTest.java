@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.tbk.lightning.lnd.jsonrpc.LndRpcConfig;
-import org.tbk.lightning.lnd.jsonrpc.LndRpcConfigImpl;
-import org.tbk.lightning.lnd.jsonrpc.config.LndJsonRpcClientAutoConfigProperties;
+import org.tbk.lightning.lnd.grpc.LndRpcConfig;
+import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
+import org.tbk.lightning.lnd.grpc.config.LndJsonRpcClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import reactor.core.publisher.Flux;
 

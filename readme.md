@@ -75,8 +75,8 @@ public final class SubscribeToBitcoinTransactionsViaZeroMqExample {
 
 See the autoconfig class `BitcoinZeroMqClientAutoConfiguration` for more details.
 
-Also, if you have [Bitcoinj](https://github.com/bitcoinj/bitcoinj) in the classpath, it will create a bean
-of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory` which will emit Bitcoinj types for your convenience.
+Also, if you have [bitcoinj](https://github.com/bitcoinj/bitcoinj) in the classpath, it will create a bean
+of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory` which will emit `bitcoinj` types for your convenience.
 
 
 ### bitcoin-jsonrpc-client
@@ -99,12 +99,12 @@ A module containing a spring boot starter for a [Lightningj](https://www.lightni
 The starter will automatically create autowireable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
 
 ```yaml
-org.tbk.lightning.lnd.jsonrpc:
+org.tbk.lightning.lnd.grpc:
   enabled: true
   rpchost: localhost
   rpcport: 10009
-  macaroonFilePath: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
-  certFilePath: '/lnd/.lnd/tls.cert'
+  macaroon-file-path: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  cert-file-path: '/lnd/.lnd/tls.cert'
 ```
 
 
@@ -261,9 +261,10 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
 - Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server
 - Electrum Client (GitHub): https://github.com/spesmilo/electrum
 - XChange (GitHub): https://github.com/knowm/XChange
+- bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
+- Lightningj (GitHub): https://github.com/lightningj-org/lightningj
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
-- Bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
 - Protocol Buffers: https://developers.google.com/protocol-buffers

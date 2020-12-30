@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.jsonrpc;
+package org.tbk.lightning.lnd.grpc;
 
 import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
