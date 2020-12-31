@@ -22,12 +22,12 @@ public final class ShutdownHooks {
                 if (!success) {
                     List<Runnable> runnables = executor.shutdownNow();
                     if (!runnables.isEmpty()) {
-                        log.error("Could await " + runnables.size() + " tasks from terminating");
+                        log.error("Could not await " + runnables.size() + " tasks from terminating");
                     }
                 }
             } catch (InterruptedException e) {
                 List<Runnable> runnables = executor.shutdownNow();
-                log.error("Could await " + runnables.size() + " tasks from terminating", e);
+                log.error("Could not await " + runnables.size() + " tasks from terminating", e);
             }
         });
     }
