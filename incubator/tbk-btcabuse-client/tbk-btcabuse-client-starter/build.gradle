@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+description = 'btcabuse client starter package'
+
+dependencies {
+    api project(':incubator:tbk-btcabuse-client:tbk-btcabuse-client-core')
+    api project(':incubator:tbk-btcabuse-client:tbk-btcabuse-client-autoconfigure')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

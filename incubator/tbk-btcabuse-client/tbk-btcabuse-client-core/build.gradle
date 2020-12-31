@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+description = 'btcabuse client package'
+
+dependencies {
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    api "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+}
