@@ -1,0 +1,13 @@
+org.tbk.spring.testcontainer.tor:
+  enabled: true
+  environment:
+    TOR_DATA: '/home/tor/.tor'
+    TOR_PASSWORD: 'any'
+    TOR_EXTRA_ARGS: |
+      # no exits allowed
+      ExitPolicy reject *:*
+      ## If you enable the controlport, be sure to enable a authentication method
+      CookieAuthentication 1
+      HiddenServiceDir /var/lib/tor/hidden_services/http_hs/
+      HiddenServicePort 80 127.0.0.1:80
+

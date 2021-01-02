@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+    implementation project(':spring-testcontainer:spring-testcontainer-core')
+
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
