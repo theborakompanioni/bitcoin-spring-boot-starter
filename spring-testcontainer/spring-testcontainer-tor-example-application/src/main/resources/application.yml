@@ -23,7 +23,7 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 org.tbk.spring.testcontainer.tor:
   enabled: true
   hidden-services:
-    http_hs:
+    my_spring_application_8080:
       virtual-port: 80
       host-port: 8080
   environment:
