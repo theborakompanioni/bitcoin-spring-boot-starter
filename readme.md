@@ -141,6 +141,24 @@ Start and run [Electrum](https://github.com/spesmilo/electrum) daemons.
 It can be used in combination with [spring-testcontainer-electrumx-starter](#spring-testcontainer-electrumx-starter)
 and [spring-testcontainer-electrum-personal-server-starter](#spring-testcontainer-electrum-personal-server-starter)!
 
+#### spring-testcontainer-tor-starter
+Start and run [Tor](https://www.torproject.org/) daemons. 
+
+Easily expose your application as Tor Hidden Service.
+Try running the [spring-testcontainer-tor-example-application](spring-testcontainer/spring-testcontainer-tor-example-application) for more information!
+Start the application with
+```shell
+./gradlew -p spring-testcontainer/spring-testcontainer-tor-example-application bootRun
+```
+Example console output:
+```
+2021-01-03 14:51:17.300  INFO 66700 --- [  restartedMain] t.s.t.t.e.TorContainerExampleApplication : Started TorContainerExampleApplication in 3.844 seconds (JVM running for 4.627)
+2021-01-03 14:51:17.369  INFO 66700 --- [  restartedMain] t.s.t.t.e.TorContainerExampleApplication : =================================================
+2021-01-03 14:51:22.541  INFO 66700 --- [  restartedMain] t.s.t.t.e.TorContainerExampleApplication : Tor is enabled.
+2021-01-03 14:51:22.542  INFO 66700 --- [  restartedMain] t.s.t.t.e.TorContainerExampleApplication : =================================================
+2021-01-03 14:51:22.951 DEBUG 66700 --- [  restartedMain] .t.s.t.t.c.TorContainerAutoConfiguration : my_spring_application_8080 => kizeqfbins5mp3pdsvcn2baqaqfmrvv7fx5gak2flfmagffhpetkjiqd.onion
+```
+
 ### spring-bitcoin-fee
 A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
 The following providers are implemented:
@@ -267,6 +285,7 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
+- Tor: https://www.torproject.org/
 - Protocol Buffers: https://developers.google.com/protocol-buffers
 
 # License
