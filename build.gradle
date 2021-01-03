@@ -55,6 +55,7 @@ allprojects {
     apply plugin: 'nebula.lint'
 
     gradleLint {
+        autoLintAfterFailure = false // only run lint after a successful build
         rules  = []
         criticalRules = [
                 'dependency-parantheses',
