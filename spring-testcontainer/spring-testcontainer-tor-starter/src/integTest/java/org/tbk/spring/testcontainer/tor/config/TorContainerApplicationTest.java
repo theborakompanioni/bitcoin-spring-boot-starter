@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -91,7 +93,7 @@ public class TorContainerApplicationTest {
         HttpResponse rsp = torHttpClient.execute(req);
         assertThat(rsp, is(notNullValue()));
 
-        String body = CharStreams.toString(new InputStreamReader(rsp.getEntity().getContent()));
+        String body = EntityUtils.toString(rsp.getEntity(), StandardCharsets.UTF_8);
 
         assertThat(body, containsString("Congratulations. This browser is configured to use Tor."));
         assertThat(body, not(containsStringIgnoringCase("Sorry")));

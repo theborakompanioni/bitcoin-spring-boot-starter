@@ -7,11 +7,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
-import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -22,10 +23,19 @@ import java.util.Optional;
 public class TorContainerProperties extends AbstractContainerProperties implements Validator {
 
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
+            .put("TOR_EXTRA_ARGS", "")
             .build();
+
+    private Map<String, HiddenServiceDefinition> hiddenServices;
 
     public TorContainerProperties() {
         super(Collections.emptyList(), defaultEnvironment);
+    }
+
+    public List<Integer> getHiddenServiceHostPorts() {
+        return getHiddenServices().values().stream()
+                .map(HiddenServiceDefinition::getHostPort)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -50,6 +60,13 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
     public void validate(Object target, Errors errors) {
         TorContainerProperties properties = (TorContainerProperties) target;
 
+    }
+
+    @Data
+    public static class HiddenServiceDefinition {
+        private String directoryName;
+        private int virtualPort;
+        private int hostPort;
     }
 }
 

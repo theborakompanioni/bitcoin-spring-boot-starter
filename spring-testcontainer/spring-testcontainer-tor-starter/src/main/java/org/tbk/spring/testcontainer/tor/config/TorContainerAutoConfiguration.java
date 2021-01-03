@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.tor.TorContainer;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.ContainerState;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
@@ -47,6 +48,8 @@ public class TorContainerAutoConfiguration {
             .add(9051)
             .build();
 
+    private static final String HIDDEN_SERVICE_HOME = "/var/lib/tor/hidden_services";
+
     private final TorContainerProperties properties;
 
     public TorContainerAutoConfiguration(TorContainerProperties properties) {
@@ -56,6 +59,9 @@ public class TorContainerAutoConfiguration {
     @Bean(name = "torContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(TorContainer.class)
     public TorContainer<?> torContainer(@Qualifier("torContainerWaitStrategy") WaitStrategy waitStrategy) {
+        // expose all the ports of the host that are mapped as Hidden Services
+        this.properties.getHiddenServiceHostPorts().forEach(Testcontainers::exposeHostPorts);
+
         return createStartedTorContainer(waitStrategy);
     }
 
@@ -70,10 +76,12 @@ public class TorContainerAutoConfiguration {
     @Bean
     public InitializingBean torContainerHiddenServiceHostnameLogger(TorContainer<?> torContainer) {
         return () -> {
-            String[] command = {"find", "/var/lib/tor/hidden_services", "-type", "f", "-name", "hostname"};
+            String[] command = {"find", HIDDEN_SERVICE_HOME, "-type", "f", "-name", "hostname"};
             Container.ExecResult execResult = torContainer.execInContainer(command);
 
-            List<String> hostnameFiles = Arrays.asList(execResult.getStdout().split("\n"));
+            List<String> hostnameFiles = Arrays.stream(execResult.getStdout().split("\n"))
+                    .filter(val -> !val.isBlank())
+                    .collect(Collectors.toList());
 
             Map<String, String> fileToContents = hostnameFiles.stream()
                     .collect(Collectors.toMap(val -> val, val -> readContentOfFileInContainerOrThrow(torContainer, val)));
@@ -121,8 +129,32 @@ public class TorContainerAutoConfiguration {
     private Map<String, String> buildEnvMap() {
         Map<String, String> environmentWithDefaults = this.properties.getEnvironmentWithDefaults();
 
+        String torExtraArgsEnvVarName = "TOR_EXTRA_ARGS";
+        String torExtraArgs = environmentWithDefaults.get(torExtraArgsEnvVarName);
+
+        String hiddenServiceDefinitions = this.properties.getHiddenServices().values().stream()
+                .map(it -> {
+                    // since we cannot get "container.getHost()" and cannot use
+                    // hostname "host.testcontainers.internal" (because tor needs ip addresses)
+                    // we hardcode the ip till we have a better solution.
+                    String hostIp = "172.17.0.1";
+
+                    String hiddenServiceDir = String.format("%s/%s/", HIDDEN_SERVICE_HOME, it.getDirectoryName());
+                    String hiddenServicePort = String.format("%d %s:%d", it.getVirtualPort(), hostIp, it.getHostPort());
+
+                    return String.format("HiddenServiceDir %s\nHiddenServicePort %s", hiddenServiceDir, hiddenServicePort);
+                })
+                .collect(Collectors.joining("\n"));
+
+        String torExtraArgsWithServices = torExtraArgs + "\n" + hiddenServiceDefinitions;
+
+        Map<String, String> environmentWithoutTorExtraArgs = environmentWithDefaults.entrySet().stream()
+                .filter(it -> !torExtraArgsEnvVarName.equals(it.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         return ImmutableMap.<String, String>builder()
-                .putAll(environmentWithDefaults)
+                .putAll(environmentWithoutTorExtraArgs)
+                .put(torExtraArgsEnvVarName, torExtraArgsWithServices)
                 .build();
     }
 
