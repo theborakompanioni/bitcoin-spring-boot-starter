@@ -1,4 +1,4 @@
-package org.tbk.spring.testcontainer.tor;
+package org.tbk.spring.testcontainer.tor.httpclient;
 
 import org.apache.http.HttpHost;
 import org.apache.http.config.Registry;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public final class TorHttpClientBuilder {
+public final class SimpleTorHttpClientBuilder {
     public static HttpClientBuilder custom(Proxy proxy) {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", new ProxySelectorPlainConnectionSocketFactory(proxy))
@@ -41,7 +41,7 @@ public final class TorHttpClientBuilder {
 
         @Override
         public Socket createSocket(HttpContext context) {
-            return TorHttpClientBuilder.createSocket(context, this.proxy);
+            return SimpleTorHttpClientBuilder.createSocket(context, this.proxy);
         }
 
         @Override
@@ -60,7 +60,7 @@ public final class TorHttpClientBuilder {
 
         @Override
         public Socket createSocket(HttpContext context) {
-            return TorHttpClientBuilder.createSocket(context, this.proxy);
+            return SimpleTorHttpClientBuilder.createSocket(context, this.proxy);
         }
     }
 

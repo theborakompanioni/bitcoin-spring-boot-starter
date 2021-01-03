@@ -1,12 +1,11 @@
 package org.tbk.spring.testcontainer.tor.config;
 
 import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,17 +13,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
+import org.tbk.spring.testcontainer.tor.HiddenServiceHostnameResolver;
+import org.tbk.spring.testcontainer.tor.HiddenServiceHostnames;
 import org.tbk.spring.testcontainer.tor.TorContainer;
+import org.tbk.spring.testcontainer.tor.config.TorContainerProperties.HiddenServiceDefinition;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.Container;
-import org.testcontainers.containers.ContainerState;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -74,20 +74,20 @@ public class TorContainerAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean torContainerHiddenServiceHostnameLogger(TorContainer<?> torContainer) {
-        return () -> {
-            String[] command = {"find", HIDDEN_SERVICE_HOME, "-type", "f", "-name", "hostname"};
-            Container.ExecResult execResult = torContainer.execInContainer(command);
+    public HiddenServiceHostnameResolver hiddenServiceHostnameResolver(TorContainer<?> torContainer) {
+        return new HiddenServiceHostnames(torContainer, HIDDEN_SERVICE_HOME);
+    }
 
-            List<String> hostnameFiles = Arrays.stream(execResult.getStdout().split("\n"))
-                    .filter(val -> !val.isBlank())
-                    .collect(Collectors.toList());
+    @Bean
+    public ApplicationRunner torContainerHiddenServiceHostnameLogger(HiddenServiceHostnameResolver resolver) {
+        return args -> {
+            Set<String> hiddenServiceNames = this.properties.getHiddenServices().keySet();
 
-            Map<String, String> fileToContents = hostnameFiles.stream()
-                    .collect(Collectors.toMap(val -> val, val -> readContentOfFileInContainerOrThrow(torContainer, val)));
+            Map<String, Optional<String>> serviceNameToOnionAddress = hiddenServiceNames.stream()
+                    .collect(Collectors.toMap(it -> it, resolver::findHiddenServiceUrl));
 
-            fileToContents.forEach((key, value) -> {
-                log.debug("{} => {}", key, value);
+            serviceNameToOnionAddress.forEach((key, value) -> {
+                log.debug("{} => {}", key, value.orElse("unknown!"));
             });
         };
     }
@@ -132,15 +132,17 @@ public class TorContainerAutoConfiguration {
         String torExtraArgsEnvVarName = "TOR_EXTRA_ARGS";
         String torExtraArgs = environmentWithDefaults.get(torExtraArgsEnvVarName);
 
-        String hiddenServiceDefinitions = this.properties.getHiddenServices().values().stream()
+        String hiddenServiceDefinitions = this.properties.getHiddenServices().entrySet().stream()
                 .map(it -> {
+                    String serviceName = it.getKey();
+                    HiddenServiceDefinition sd = it.getValue();
                     // since we cannot get "container.getHost()" and cannot use
                     // hostname "host.testcontainers.internal" (because tor needs ip addresses)
                     // we hardcode the ip till we have a better solution.
                     String hostIp = "172.17.0.1";
 
-                    String hiddenServiceDir = String.format("%s/%s/", HIDDEN_SERVICE_HOME, it.getDirectoryName());
-                    String hiddenServicePort = String.format("%d %s:%d", it.getVirtualPort(), hostIp, it.getHostPort());
+                    String hiddenServiceDir = String.format("%s/%s/", HIDDEN_SERVICE_HOME, serviceName);
+                    String hiddenServicePort = String.format("%d %s:%d", sd.getVirtualPort(), hostIp, sd.getHostPort());
 
                     return String.format("HiddenServiceDir %s\nHiddenServicePort %s", hiddenServiceDir, hiddenServicePort);
                 })
@@ -158,35 +160,4 @@ public class TorContainerAutoConfiguration {
                 .build();
     }
 
-    private String readContentOfFileInContainerOrThrow(ContainerState containerState, String file) {
-        String[] command = {"cat", file};
-
-        try {
-            Container.ExecResult execResult = containerState.execInContainer(command);
-
-            boolean success = execResult.getExitCode() == 0;
-            boolean containsErrorMessage = !Strings.isNullOrEmpty(execResult.getStderr());
-
-            if (!success || containsErrorMessage) {
-                String errorMessage = String.format("Error while reading file %s in container %s: %s",
-                        file, containerState.getContainerId(), execResult.getStderr());
-
-                throw new RuntimeException(errorMessage);
-            }
-
-            String stdout = execResult.getStdout();
-
-            boolean endsWithNewLine = stdout.endsWith("\n");
-            if (endsWithNewLine) {
-                return stdout.substring(0, stdout.lastIndexOf("\n"));
-            }
-
-            return stdout;
-        } catch (IOException | InterruptedException e) {
-            String errorMessage = String.format("Error while reading file %s in container %s",
-                    file, containerState.getContainerId());
-
-            throw new RuntimeException(errorMessage, e);
-        }
-    }
 }

@@ -32,6 +32,10 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
         super(Collections.emptyList(), defaultEnvironment);
     }
 
+    public Map<String, HiddenServiceDefinition> getHiddenServices() {
+        return hiddenServices == null ? Collections.emptyMap() : ImmutableMap.copyOf(hiddenServices);
+    }
+
     public List<Integer> getHiddenServiceHostPorts() {
         return getHiddenServices().values().stream()
                 .map(HiddenServiceDefinition::getHostPort)
@@ -64,7 +68,6 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
 
     @Data
     public static class HiddenServiceDefinition {
-        private String directoryName;
         private int virtualPort;
         private int hostPort;
     }

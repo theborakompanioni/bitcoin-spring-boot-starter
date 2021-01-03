@@ -3,4 +3,5 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <logger name="org.tbk.spring.testcontainer.tor" level="DEBUG"/>
+    <logger name="org.tbk.spring.testcontainer.tor.httpclient" level="INFO"/>
 </configuration>

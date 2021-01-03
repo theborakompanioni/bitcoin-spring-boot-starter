@@ -1,11 +1,10 @@
 org.tbk.spring.testcontainer.tor:
   enabled: true
   hidden-services:
-    http:
+    http_hs:
       # the following entry will setup something similar to this:
       # HiddenServiceDir /var/lib/tor/hidden_services/http_hs/
       # HiddenServicePort 80 127.0.0.1:8080
-      directory-name: http_hs
       virtual-port: 80
       host-port: 8080
   environment:

@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.tor.TorContainer;
-import org.tbk.spring.testcontainer.tor.TorHttpClientBuilder;
+import org.tbk.spring.testcontainer.tor.httpclient.SimpleTorHttpClientBuilder;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -28,7 +28,7 @@ public class TorHttpClientAutoConfiguration {
         SocketAddress sockAddr = new InetSocketAddress("localhost", torContainer.getMappedPort(9050));
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, sockAddr);
 
-        return TorHttpClientBuilder.custom(proxy)
+        return SimpleTorHttpClientBuilder.custom(proxy)
                 .build();
     }
 }
