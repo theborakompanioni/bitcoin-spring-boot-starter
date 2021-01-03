@@ -1,6 +1,6 @@
 apply plugin: 'org.springframework.boot'
 
-description = 'electrum testcontainer example application package'
+description = 'electrum gateway example application package'
 
 dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')

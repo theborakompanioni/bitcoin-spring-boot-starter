@@ -1,12 +1,6 @@
 apply plugin: 'org.springframework.boot'
 
-repositories {
-    maven {
-        url "https://dl.bintray.com/msgilligan/maven"
-    }
-}
-
-description = 'bitcoin exchange rate example application package'
+description = 'bitcoin exchange engine example application package'
 
 dependencies {
     implementation project(':bitcoin-jsr354:bitcoin-jsr354-starter')
@@ -18,7 +12,7 @@ dependencies {
 
     implementation 'exchange.core2:exchange-core:0.5.3'
 
-    implementation 'org.zalando:jackson-datatype-money:1.2.0'
+    implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
 
     implementation "com.google.guava:guava:${guavaVersion}"
 
