@@ -33,6 +33,4 @@ dependencies {
     testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-blockstreaminfo')
     testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-btcdotcom')
     testImplementation project(':spring-bitcoin-fee:spring-bitcoin-fee-earndotcom')
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

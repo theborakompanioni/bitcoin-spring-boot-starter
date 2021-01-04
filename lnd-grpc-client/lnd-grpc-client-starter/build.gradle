@@ -9,6 +9,4 @@ dependencies {
     implementation project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

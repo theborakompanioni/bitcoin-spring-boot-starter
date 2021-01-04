@@ -21,6 +21,4 @@ dependencies {
     api project(':spring-bitcoin-fee:spring-bitcoin-fee-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -17,10 +17,6 @@ import org.springframework.context.annotation.Bean;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 @Slf4j
 @SpringBootApplication
 public class TorContainerExampleApplication {
@@ -52,7 +48,6 @@ public class TorContainerExampleApplication {
             HttpGet req = new HttpGet("https://check.torproject.org/");
 
             HttpResponse rsp = torHttpClient.execute(req);
-            assertThat(rsp, is(notNullValue()));
 
             String body = EntityUtils.toString(rsp.getEntity(), StandardCharsets.UTF_8);
 

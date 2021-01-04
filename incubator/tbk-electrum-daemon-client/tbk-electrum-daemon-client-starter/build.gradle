@@ -9,6 +9,4 @@ dependencies {
     api project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

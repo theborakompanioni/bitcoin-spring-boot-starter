@@ -48,6 +48,7 @@ public class ExchangeRateCtrlTest {
 
         assertThat(body.get("base"), is("BTC"));
 
+        @SuppressWarnings("unchecked")
         List<Map<String, Object>> rates = (List<Map<String, Object>>) body.get("rates");
         assertThat(rates, hasSize(1));
 
