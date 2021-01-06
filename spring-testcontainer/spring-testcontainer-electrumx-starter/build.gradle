@@ -17,5 +17,5 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation "io.projectreactor:reactor-core"
+    testImplementation project(':spring-testcontainer:spring-testcontainer-test')
 }

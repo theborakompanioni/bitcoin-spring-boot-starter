@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
+import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -37,18 +38,14 @@ public class ElectrumxContainerApplicationTest {
     }
 
     @Autowired(required = false)
-    private ElectrumxContainer<?> electrumxContainer;
+    private ElectrumxContainer<?> container;
 
     @Test
     public void contextLoads() {
-        assertThat(electrumxContainer, is(notNullValue()));
-        assertThat(electrumxContainer.isRunning(), is(true));
+        assertThat(container, is(notNullValue()));
+        assertThat(container.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = Flux.interval(Duration.ofMillis(10))
-                .map(foo -> electrumxContainer.isRunning())
-                .filter(running -> !running)
-                .timeout(Duration.ofSeconds(3), Flux.just(true))
-                .blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(container).blockFirst();
 
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }

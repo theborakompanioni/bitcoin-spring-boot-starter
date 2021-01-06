@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
+import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -18,19 +19,15 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest
 public class ElectrumGatewayExampleApplicationTest {
 
-    @Autowired
-    private ElectrumDaemonContainer<?> electrumDaemonContainer;
+    @Autowired(required = false)
+    private ElectrumDaemonContainer<?> container;
 
     @Test
     public void contextLoads() {
-        assertThat(electrumDaemonContainer, is(notNullValue()));
-        assertThat(electrumDaemonContainer.isRunning(), is(true));
+        assertThat(container, is(notNullValue()));
+        assertThat(container.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = Flux.interval(Duration.ofMillis(10))
-                .map(foo -> electrumDaemonContainer.isRunning())
-                .filter(running -> !running)
-                .timeout(Duration.ofSeconds(3), Flux.just(true))
-                .blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(container).blockFirst();
 
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }

@@ -3,10 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation project(':spring-testcontainer:spring-testcontainer-core')
-    api project(':spring-testcontainer:spring-testcontainer-bitcoind-helper')
-
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
+    implementation project(':spring-testcontainer:spring-testcontainer-core')
+
+    api project(':spring-testcontainer:spring-testcontainer-bitcoind-helper')
 
     implementation "com.google.guava:guava:${guavaVersion}"
 

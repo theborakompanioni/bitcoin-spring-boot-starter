@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.spring.testcontainer.btcrpcexplorer.BtcRpcExplorerContainer;
-import reactor.core.publisher.Flux;
-
-import java.time.Duration;
+import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -26,11 +24,7 @@ public class BtcRpcExplorerExampleApplicationTest {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = Flux.interval(Duration.ofMillis(10))
-                .map(foo -> container.isRunning())
-                .filter(running -> !running)
-                .timeout(Duration.ofSeconds(3), Flux.just(true))
-                .blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(container).blockFirst();
 
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }
