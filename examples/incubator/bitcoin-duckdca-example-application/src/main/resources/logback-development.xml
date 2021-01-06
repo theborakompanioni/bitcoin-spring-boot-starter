@@ -2,5 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="org.tbk.bitcoin.exchange" level="DEBUG"/>
+    <logger name="org.tbk.bitcoin.duckdca" level="DEBUG"/>
+    <logger name="org.tbk.xchange.jsr354.cache" level="DEBUG"/>
+
 </configuration>
