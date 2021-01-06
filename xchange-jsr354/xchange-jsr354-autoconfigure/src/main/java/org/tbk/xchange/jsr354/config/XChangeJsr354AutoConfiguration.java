@@ -11,6 +11,9 @@ import org.knowm.xchange.bittrex.BittrexExchange;
 import org.knowm.xchange.gemini.v1.GeminiExchange;
 import org.knowm.xchange.kraken.KrakenExchange;
 import org.knowm.xchange.therock.TheRockExchange;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +26,7 @@ import org.tbk.xchange.jsr354.cache.ExchangeRateCache;
 
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.ProviderContext;
+import java.util.Map;
 
 import static org.tbk.xchange.jsr354.MoreProviderContexts.createSimpleProviderContextBuilder;
 
@@ -52,6 +56,42 @@ public class XChangeJsr354AutoConfiguration {
         return new ExchangeRateAvailabilityCache(ConversionQueryCache.builder(exchangeRateAvailabilityCacheSpec, provider));
     }
 
+    @Bean
+    public BeanFactoryPostProcessor exchangeRateProviderProcessor() {
+        return new BeanFactoryPostProcessor() {
+            @Override
+            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+                Map<String, Exchange> exchangeMap = beanFactory.getBeansOfType(Exchange.class);
+
+                exchangeMap.forEach((name, exchange) -> {
+                    String beanName = name + "ExchangeRateProvider";
+                    if (beanFactory.containsBean(beanName)) {
+                        log.debug("Skip creating bean '{}' - factory already contains a bean with the same name", beanName);
+                    } else {
+                        ExchangeRateProvider exchangeRateProvider = createExchangeRateProvider(exchange);
+                        beanFactory.registerSingleton(beanName, exchangeRateProvider);
+                    }
+                });
+            }
+
+            private ExchangeRateProvider createExchangeRateProvider(Exchange exchange) {
+                ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
+                ExchangeRateProvider provider = new XChangeExchangeRateProvider(providerContext, exchange);
+
+                return createCachingExchangeRateProvider(provider);
+            }
+
+
+            private ExchangeRateProvider createCachingExchangeRateProvider(ExchangeRateProvider provider) {
+                ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
+                ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
+
+                ProviderContext context = provider.getContext();
+                return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
+            }
+        };
+    }
+
     @Configuration
     @ConditionalOnClass(BitstampExchange.class)
     public static class BitstampXChangeJsr354AutoConfiguration {
@@ -60,22 +100,6 @@ public class XChangeJsr354AutoConfiguration {
         @ConditionalOnMissingBean(BitstampExchange.class)
         public BitstampExchange bitstampExchange() {
             return ExchangeFactory.INSTANCE.createExchange(BitstampExchange.class);
-        }
-
-        @Bean
-        public ExchangeRateProvider bitstampExchangeRateProvider(BitstampExchange exchange) {
-            ExchangeRateProvider provider = bitstampExchangeRateProviderInner(exchange);
-
-            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-            ProviderContext context = provider.getContext();
-            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-        }
-
-        private XChangeExchangeRateProvider bitstampExchangeRateProviderInner(BitstampExchange exchange) {
-            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-            return new XChangeExchangeRateProvider(providerContext, exchange);
         }
 
     }
@@ -89,22 +113,6 @@ public class XChangeJsr354AutoConfiguration {
         public BitfinexExchange bitfinexExchange() {
             return ExchangeFactory.INSTANCE.createExchange(BitfinexExchange.class);
         }
-
-        @Bean
-        public ExchangeRateProvider bitfinexExchangeRateProvider(BitfinexExchange exchange) {
-            ExchangeRateProvider provider = bitfinexExchangeRateProviderInner(exchange);
-
-            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-            ProviderContext context = provider.getContext();
-            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-        }
-
-        private XChangeExchangeRateProvider bitfinexExchangeRateProviderInner(BitfinexExchange exchange) {
-            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-            return new XChangeExchangeRateProvider(providerContext, exchange);
-        }
     }
 
     @Configuration
@@ -115,22 +123,6 @@ public class XChangeJsr354AutoConfiguration {
         @ConditionalOnMissingBean(BittrexExchange.class)
         public BittrexExchange bittrexExchange() {
             return ExchangeFactory.INSTANCE.createExchange(BittrexExchange.class);
-        }
-
-        @Bean
-        public ExchangeRateProvider bittrexExchangeRateProvider(BittrexExchange exchange) {
-            ExchangeRateProvider provider = bittrexExchangeRateProviderInner(exchange);
-
-            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-            ProviderContext context = provider.getContext();
-            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-        }
-
-        private XChangeExchangeRateProvider bittrexExchangeRateProviderInner(BittrexExchange exchange) {
-            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-            return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
 
@@ -144,21 +136,6 @@ public class XChangeJsr354AutoConfiguration {
             return ExchangeFactory.INSTANCE.createExchange(GeminiExchange.class);
         }
 
-        @Bean
-        public ExchangeRateProvider geminiExchangeRateProvider(GeminiExchange exchange) {
-            ExchangeRateProvider provider = geminiExchangeRateProviderInner(exchange);
-
-            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-            ProviderContext context = provider.getContext();
-            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-        }
-
-        private XChangeExchangeRateProvider geminiExchangeRateProviderInner(GeminiExchange exchange) {
-            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-            return new XChangeExchangeRateProvider(providerContext, exchange);
-        }
     }
 
     @Configuration
@@ -171,21 +148,6 @@ public class XChangeJsr354AutoConfiguration {
             return ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class);
         }
 
-        @Bean
-        public ExchangeRateProvider krakenExchangeRateProvider(KrakenExchange exchange) {
-            ExchangeRateProvider provider = krakenExchangeRateProviderInner(exchange);
-
-            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-            ProviderContext context = provider.getContext();
-            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-        }
-
-        private XChangeExchangeRateProvider krakenExchangeRateProviderInner(KrakenExchange exchange) {
-            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-            return new XChangeExchangeRateProvider(providerContext, exchange);
-        }
     }
 
     @Configuration
@@ -196,22 +158,6 @@ public class XChangeJsr354AutoConfiguration {
         @ConditionalOnMissingBean(TheRockExchange.class)
         public TheRockExchange theRockExchange() {
             return ExchangeFactory.INSTANCE.createExchange(TheRockExchange.class);
-        }
-
-        @Bean
-        public ExchangeRateProvider theRockExchangeRateProvider(TheRockExchange exchange) {
-            ExchangeRateProvider provider = theRockExchangeRateProviderInner(exchange);
-
-            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-            ProviderContext context = provider.getContext();
-            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-        }
-
-        private XChangeExchangeRateProvider theRockExchangeRateProviderInner(TheRockExchange exchange) {
-            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-            return new XChangeExchangeRateProvider(providerContext, exchange);
         }
     }
 }
