@@ -48,6 +48,10 @@ public final class MoreTestcontainers {
         return String.format("%s:%d", testcontainersInternalHost(), port);
     }
 
+    public static String buildHostUrlWithoutProtocol(String protocol, int port) {
+        return String.format("%s://%s", protocol, buildHostUrlWithoutProtocol(port));
+    }
+
     public static void exposeAllPortsToOtherContainers(ContainerState containerState) {
         // expose all mapped ports of the host so other containers can communication with the given container
         exposePortsToOtherContainers(containerState, containerState.getExposedPorts());
