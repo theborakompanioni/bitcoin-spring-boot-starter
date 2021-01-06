@@ -1,0 +1,8 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+    api "io.projectreactor:reactor-core"
+}

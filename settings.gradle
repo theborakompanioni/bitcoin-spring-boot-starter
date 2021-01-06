@@ -17,6 +17,7 @@ include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
 include 'lnd-grpc-client:lnd-grpc-client-starter'
 
 include 'spring-testcontainer:spring-testcontainer-core'
+include 'spring-testcontainer:spring-testcontainer-test'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-helper'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-starter'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-example-application'
