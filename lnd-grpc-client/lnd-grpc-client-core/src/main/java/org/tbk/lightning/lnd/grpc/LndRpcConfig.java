@@ -13,7 +13,7 @@ public interface LndRpcConfig {
     String getRpchost();
 
     /**
-     * Port where lnd daemon ist listening
+     * Port where lnd daemon is listening
      */
     Integer getRpcport();
 

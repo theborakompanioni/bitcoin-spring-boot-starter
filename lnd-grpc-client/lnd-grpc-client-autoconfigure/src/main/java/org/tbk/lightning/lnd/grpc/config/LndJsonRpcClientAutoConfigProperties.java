@@ -30,12 +30,12 @@ public class LndJsonRpcClientAutoConfigProperties implements Validator {
     /**
      * IP address or hostname including http:// or https://
      * where lnd daemon is reachable
-     * e.g. https://localhost:10001
+     * e.g. http://localhost, https://192.168.0.2, etc.
      */
     private String rpchost;
 
     /**
-     * Port where lnd daemon ist listening
+     * Port where lnd daemon is listening
      */
     private int rpcport;
 

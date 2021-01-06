@@ -29,12 +29,12 @@ public class ElectrumDaemonJsonrpcClientProperties implements Validator {
     /**
      * IP address or hostname including http:// or https://
      * where electrum daemon is reachable
-     * e.g. https://localhost:7777
+     * e.g. http://localhost, https://192.168.0.2, etc.
      */
     private String rpchost;
 
     /**
-     * Port where electrum daemon ist listening
+     * Port where electrum daemon is listening
      */
     private int rpcport;
 

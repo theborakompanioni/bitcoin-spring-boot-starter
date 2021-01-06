@@ -40,12 +40,12 @@ public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
     /**
      * IP address or hostname including http:// or https://
      * where bitcoin daemon is reachable
-     * e.g. https://localhost:8332
+     * e.g. http://localhost, https://192.168.0.2, etc.
      */
     private String rpchost;
 
     /**
-     * Port where bitcoin daemon ist listening
+     * Port where bitcoin daemon is listening
      */
     private int rpcport;
 

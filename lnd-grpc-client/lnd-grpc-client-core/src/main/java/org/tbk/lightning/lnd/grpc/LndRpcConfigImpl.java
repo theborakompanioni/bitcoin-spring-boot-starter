@@ -19,7 +19,7 @@ public class LndRpcConfigImpl implements LndRpcConfig {
     String rpchost;
 
     /**
-     * Port where lnd daemon ist listening
+     * Port where lnd daemon is listening
      */
     @NonNull
     Integer rpcport;

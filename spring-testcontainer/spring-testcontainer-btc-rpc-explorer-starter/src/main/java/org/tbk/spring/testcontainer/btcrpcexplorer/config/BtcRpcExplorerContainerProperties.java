@@ -127,7 +127,7 @@ public class BtcRpcExplorerContainerProperties extends AbstractContainerProperti
         private String rpchost;
 
         /**
-         * Port where bitcoin daemon ist listening
+         * Port where bitcoin daemon is listening
          */
         private int rpcport;
 
