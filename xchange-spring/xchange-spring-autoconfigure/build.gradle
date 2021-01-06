@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api "org.knowm.xchange:xchange-core:${xChangeVersion}"
+
+    // ================================================================
+    // Following exchanges provide exchange rates without needing a api secret
+    // -----
+    compileOnly "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-therock:${xChangeVersion}"
+    // ================================================================
+
+    // ================================================================
+    // Following exchanges need a api secret to get an exchange rate
+    // hence they are excludes for now
+    // -----
+    // compileOnly "org.knowm.xchange:xchange-coinmarketcap:${xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-binance:${xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-coinbase:${xChangeVersion}"
+    // ================================================================
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}
