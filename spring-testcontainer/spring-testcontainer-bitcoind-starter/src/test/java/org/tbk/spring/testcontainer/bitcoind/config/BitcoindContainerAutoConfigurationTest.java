@@ -22,7 +22,7 @@ public class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.enabled=false"
                 )
                 .run(context -> {
-                    assertThat(context.containsBean("bitcoinContainer"), is(false));
+                    assertThat(context.containsBean("bitcoindContainer"), is(false));
                     try {
                         context.getBean(BitcoindContainer.class);
                         Assert.fail("Should have thrown exception");
@@ -39,7 +39,7 @@ public class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.enabled=true"
                 )
                 .run(context -> {
-                    assertThat(context.containsBean("bitcoinContainer"), is(true));
+                    assertThat(context.containsBean("bitcoindContainer"), is(true));
                     assertThat(context.getBean(BitcoindContainer.class), is(notNullValue()));
                 });
     }
@@ -54,7 +54,7 @@ public class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
-                    assertThat(context.containsBean("bitcoinContainer"), is(true));
+                    assertThat(context.containsBean("bitcoindContainer"), is(true));
                     assertThat(context.getBean(BitcoindContainer.class), is(notNullValue()));
 
                     BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);

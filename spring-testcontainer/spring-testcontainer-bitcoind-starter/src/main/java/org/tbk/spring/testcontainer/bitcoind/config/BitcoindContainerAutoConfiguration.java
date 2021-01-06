@@ -36,7 +36,6 @@ public class BitcoindContainerAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
-
     /**
      * Creates a bitcoin container from the properties given.
      * <p>
@@ -54,8 +53,8 @@ public class BitcoindContainerAutoConfiguration {
      * JSON-RPC/REST: 18443 (since 0.16+, otherwise 18332)
      * P2P: 18444
      */
-    @Bean(name = "bitcoinContainer", destroyMethod = "stop")
-    public BitcoindContainer<?> bitcoinContainer() {
+    @Bean(name = "bitcoindContainer", destroyMethod = "stop")
+    public BitcoindContainer<?> bitcoindContainer() {
         List<String> commands = buildCommandList();
 
         // TODO: expose ports specified via auto configuration properties
