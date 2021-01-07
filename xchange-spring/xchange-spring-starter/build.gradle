@@ -7,12 +7,11 @@ description = 'xchange spring starter package'
 dependencies {
     api project(':xchange-spring:xchange-spring-autoconfigure')
 
-    implementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
-    implementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
+    api "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
+    api "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
+    api "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
+    api "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    api "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
 
     implementation 'org.springframework.boot:spring-boot-starter'
 }
