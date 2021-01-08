@@ -89,6 +89,10 @@ subprojects {
             // needed for consensusj packages
             url "https://dl.bintray.com/msgilligan/maven"
         }
+        maven {
+            // needed for netlayer packages
+            url "https://jitpack.io"
+        }
     }
     
     sourceSets {
