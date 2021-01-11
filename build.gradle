@@ -1,6 +1,6 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
     ext {
@@ -12,6 +12,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath files('gradle/witness/gradle-witness.jar')
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootGradlePluginVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${protobufGradleVersion}")
     }
@@ -38,6 +39,7 @@ contacts {
 
 apply from: 'versions.gradle'
 
+
 group = 'io.github.theborakompanioni'
 
 def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
@@ -55,6 +57,12 @@ configurations.all {
 
 allprojects {
     apply plugin: 'nebula.lint'
+    apply plugin: 'witness'
+    apply from: "${rootDir}/checksums.gradle"
+
+    dependencyVerification {
+        includeConfigurations = ['compileClasspath', 'runtimeClasspath']
+    }
 
     gradleLint {
         autoLintAfterFailure = false // only run lint after a successful build
@@ -76,9 +84,9 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
+    apply plugin: 'nebula.integtest-standalone'
     apply plugin: 'com.google.protobuf'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'nebula.integtest-standalone'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -215,4 +223,6 @@ subprojects {
             }
         }
     }
+
+    task dependencyTree(type: DependencyReportTask) {}
 }

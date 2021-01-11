@@ -1,11 +1,4 @@
 
-### Gradle ###
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**
-!**/src/test/**
-
 ### STS ###
 .apt_generated
 .classpath
@@ -86,8 +79,13 @@ hs_err_pid*
 # Ignore Gradle GUI config
 gradle-app.setting
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+### Gradle ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/witness/gradle-witness.jar
+!**/src/main/**
+!**/src/test/**
 
 ######################
 # Project Specific

@@ -285,10 +285,18 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
 ```
 ./gradlew build -x test
 ```
-  
+ 
 ### Test
 ```
 ./gradlew test integrationTest
+```
+
+### Dependency Checks
+```
+# calculate checksums of dependencies
+./gradlew -q calculateChecksums | grep -v "spring-boot-bitcoin-starter" > checksums.gradle
+# verifies checksums of dependencies
+./gradlew verifyChecksums
 ```
 
 # Resources
