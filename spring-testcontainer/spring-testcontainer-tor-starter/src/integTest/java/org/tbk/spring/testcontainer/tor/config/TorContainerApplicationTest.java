@@ -1,9 +1,9 @@
 package org.tbk.spring.testcontainer.tor.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +50,7 @@ public class TorContainerApplicationTest {
     private TorContainer<?> container;
 
     @Autowired(required = false)
-    private HttpClient torHttpClient;
+    private CloseableHttpClient torHttpClient;
 
     @Test
     public void contextLoads() {
@@ -90,14 +90,15 @@ public class TorContainerApplicationTest {
     public void fetchPageWithHttpClientOverTor() throws IOException {
         HttpGet req = new HttpGet(CHECK_TOR_URL);
 
-        HttpResponse rsp = torHttpClient.execute(req);
-        assertThat(rsp, is(notNullValue()));
+        try (CloseableHttpResponse rsp = torHttpClient.execute(req)) {
+            assertThat(rsp, is(notNullValue()));
 
-        String body = EntityUtils.toString(rsp.getEntity(), StandardCharsets.UTF_8);
+            String body = EntityUtils.toString(rsp.getEntity(), StandardCharsets.UTF_8);
 
-        assertThat(body, containsString("Congratulations. This browser is configured to use Tor."));
-        assertThat(body, not(containsStringIgnoringCase("Sorry")));
-        assertThat(body, not(containsStringIgnoringCase("You are not using Tor")));
+            assertThat(body, containsString("Congratulations. This browser is configured to use Tor."));
+            assertThat(body, not(containsStringIgnoringCase("Sorry")));
+            assertThat(body, not(containsStringIgnoringCase("You are not using Tor")));
+        }
     }
 }
 
