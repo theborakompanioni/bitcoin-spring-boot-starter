@@ -8,10 +8,12 @@ dependencies {
     implementation "io.projectreactor:reactor-core"
     implementation "com.google.guava:guava:${guavaVersion}"
 
-    implementation("com.github.bisq-network.netlayer:tor.native:0.6.8") {
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+
+    api("com.github.bisq-network.netlayer:tor.native:0.6.8") {
         exclude(module: 'slf4j-api')
     }
-    implementation("com.github.bisq-network.netlayer:tor.external:0.6.8") {
+    api("com.github.bisq-network.netlayer:tor.external:0.6.8") {
         exclude(module: 'slf4j-api')
     }
 }

@@ -51,7 +51,6 @@ public class JavaDemo {
         //create a hidden service in directory 'test' inside the tor installation directory
         HiddenServiceSocket hiddenServiceSocket = new HiddenServiceSocket(port, "test");
 
-
         Mono<Boolean> socketReady = Mono.create(fluxSink -> {
             //it takes some time for a hidden service to be ready, so adding a listener only after creating the HS is not an issue
             hiddenServiceSocket.addReadyListener(socket -> {
@@ -62,7 +61,7 @@ public class JavaDemo {
 
         socketReady.blockOptional(Duration.ofMinutes(5));
 
-        System.out.println("Hidden Service " + hiddenServiceSocket + " is ready");
+        log.info("Hidden Service " + hiddenServiceSocket + " is ready");
 
         Flux<Socket> socketFlux = Flux.<Socket>create(fluxSink -> {
             try {
@@ -100,21 +99,6 @@ public class JavaDemo {
         log.info("Got an incoming connection to socket {}: {}", hiddenServiceSocket, incomingSocket);
 
         countDownLatch.await(3, TimeUnit.MINUTES);
-    }
-
-
-    private static Collection<String> parseBridgeLines(String file) throws IOException {
-        if (file == null) {
-            return null;
-        }
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            List<String> lines = new LinkedList<>();
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
-            }
-            return lines;
-        }
     }
 
 }
