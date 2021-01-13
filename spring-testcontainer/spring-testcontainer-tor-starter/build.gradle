@@ -3,11 +3,9 @@ plugins {
 }
 
 dependencies {
+    api project(':incubator:tbk-tor:tbk-tor-http')
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')
-
-    api "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
-    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
 
     implementation "com.google.guava:guava:${guavaVersion}"
 

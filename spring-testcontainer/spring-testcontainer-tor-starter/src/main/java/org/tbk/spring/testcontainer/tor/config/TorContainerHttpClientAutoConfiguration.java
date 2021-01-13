@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.tor.TorContainer;
-import org.tbk.spring.testcontainer.tor.httpclient.SimpleTorHttpClientBuilder;
+import org.tbk.tor.http.SimpleTorHttpClientBuilder;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -19,7 +19,7 @@ import java.net.SocketAddress;
 @Configuration
 @ConditionalOnClass(CloseableHttpClient.class)
 @AutoConfigureAfter(TorContainerAutoConfiguration.class)
-public class TorHttpClientAutoConfiguration {
+public class TorContainerHttpClientAutoConfiguration {
 
     @Bean(name = "torHttpClient", destroyMethod = "close")
     @ConditionalOnBean(TorContainer.class)
