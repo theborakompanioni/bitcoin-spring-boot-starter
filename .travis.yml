@@ -20,3 +20,4 @@ before_script:
   - echo $HOME
   - echo $JAVA_HOME
   - protoc --version
+  - ./gradlew autoLintGradle

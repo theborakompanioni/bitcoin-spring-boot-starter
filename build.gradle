@@ -65,6 +65,7 @@ allprojects {
     }
 
     gradleLint {
+        alwaysRun = false // do not automatically run - must be executed manually
         autoLintAfterFailure = false // only run lint after a successful build
         rules  = []
         criticalRules = [
