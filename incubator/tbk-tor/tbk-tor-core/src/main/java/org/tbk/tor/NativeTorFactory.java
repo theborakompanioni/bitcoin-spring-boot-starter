@@ -1,16 +1,22 @@
 package org.tbk.tor;
 
-import lombok.SneakyThrows;
 import org.berndpruenster.netlayer.tor.NativeTor;
+import org.berndpruenster.netlayer.tor.TorCtlException;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 
 public class NativeTorFactory implements TorFactory<NativeTor> {
 
     @Override
-    @SneakyThrows
-    public NativeTor create() {
-        File workingDirectory = new File("tor-working-dir");
-        return new NativeTor(workingDirectory);
+    public Mono<NativeTor> create() {
+        return Mono.create(fluxSink -> {
+            try {
+                File workingDirectory = new File("tor-working-dir");
+                fluxSink.success(new NativeTor(workingDirectory));
+            } catch (TorCtlException e) {
+                fluxSink.error(e);
+            }
+        });
     }
 }

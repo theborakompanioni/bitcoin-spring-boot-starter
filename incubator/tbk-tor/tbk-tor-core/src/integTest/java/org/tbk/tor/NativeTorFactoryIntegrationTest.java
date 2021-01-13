@@ -5,6 +5,8 @@ import org.berndpruenster.netlayer.tor.NativeTor;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Duration;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -12,7 +14,7 @@ public class NativeTorFactoryIntegrationTest {
     // "www.torproject.org" as onion. taken from https://onion.torproject.org/ on 2020-01-13
     private static final String onionUrl = "expyuzz" + "4wqqyqh" + "j" + "n.on" + "ion";
 
-    NativeTorFactory sut;
+    private NativeTorFactory sut;
 
     @Before
     public void setUp() {
@@ -21,7 +23,8 @@ public class NativeTorFactoryIntegrationTest {
 
     @Test
     public void itShouldCheckOnionUrlAvailabilitySuccessfully() {
-        NativeTor nativeTor = sut.create();
+        NativeTor nativeTor = sut.create().blockOptional(Duration.ofSeconds(30))
+                .orElseThrow(() -> new IllegalStateException("Could not start tor"));
 
         Control control = nativeTor.getControl();
 

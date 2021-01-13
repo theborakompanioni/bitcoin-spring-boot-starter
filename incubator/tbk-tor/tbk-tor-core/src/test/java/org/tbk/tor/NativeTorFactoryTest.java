@@ -4,11 +4,11 @@ import org.berndpruenster.netlayer.tor.NativeTor;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NativeTorFactoryTest {
-    // "www.torproject.org" as onion. taken from https://onion.torproject.org/ on 2020-01-13
-    private static final String onionUrl = "expyuzz" + "4wqqyqh" + "j" + "n.on" + "ion";
+import java.time.Duration;
 
-    NativeTorFactory sut;
+public class NativeTorFactoryTest {
+
+    private NativeTorFactory sut;
 
     @Before
     public void setUp() {
@@ -17,7 +17,8 @@ public class NativeTorFactoryTest {
 
     @Test
     public void itShouldCreateTorSuccessfully() {
-        NativeTor nativeTor = sut.create();
+        NativeTor nativeTor = sut.create().blockOptional(Duration.ofSeconds(30))
+                .orElseThrow(() -> new IllegalStateException("Could not start tor"));
 
         nativeTor.shutdown();
     }

@@ -26,15 +26,16 @@ public class DefaultTorHiddenServiceFactoryTest {
 
     private final int port = 21011;
 
-    DefaultTorHiddenServiceFactory sut;
+    private DefaultTorHiddenServiceFactory sut;
 
-    NativeTor nativeTor;
+    private NativeTor nativeTor;
 
     @Before
     public void setUp() {
         NativeTorFactory torFactory = new NativeTorFactory();
 
-        this.nativeTor = torFactory.create();
+        this.nativeTor = torFactory.create().blockOptional(Duration.ofSeconds(30))
+                .orElseThrow(() -> new IllegalStateException("Could not start tor"));
 
         // set default instance, so it can be omitted whenever creating Tor (Server)Sockets
         Tor.setDefault(this.nativeTor);

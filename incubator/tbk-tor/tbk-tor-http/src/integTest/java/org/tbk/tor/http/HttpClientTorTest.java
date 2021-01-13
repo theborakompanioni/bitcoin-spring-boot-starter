@@ -15,6 +15,7 @@ import org.tbk.tor.NativeTorFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -23,15 +24,16 @@ import static org.junit.Assert.assertThat;
 public class HttpClientTorTest {
     private static final String CHECK_TOR_URL = "https://check.torproject.org/";
 
-    CloseableHttpClient sut;
+    private CloseableHttpClient sut;
 
-    NativeTor nativeTor;
+    private NativeTor nativeTor;
 
     @Before
     public void setUp() throws TorCtlException {
         NativeTorFactory torFactory = new NativeTorFactory();
 
-        this.nativeTor = torFactory.create();
+        this.nativeTor = torFactory.create().blockOptional(Duration.ofSeconds(30))
+                .orElseThrow(() -> new IllegalStateException("Could not start tor"));
 
         HttpClientBuilder torHttpClientBuilder = SimpleTorHttpClientBuilder.tor(this.nativeTor);
 
