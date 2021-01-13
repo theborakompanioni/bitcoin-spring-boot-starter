@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchange.Exchange;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -20,8 +21,8 @@ import org.tbk.xchange.spring.config.XChangeAutoConfiguration;
 
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.ProviderContext;
-import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static org.tbk.xchange.jsr354.MoreProviderContexts.createSimpleProviderContextBuilder;
 
 @Slf4j
@@ -52,38 +53,56 @@ public class XChangeJsr354AutoConfiguration {
     }
 
     @Bean
-    public BeanFactoryPostProcessor xChangeJsr354ExchangeRateProviderBeanFactoryPostProcessor() {
-        return new BeanFactoryPostProcessor() {
-            @Override
-            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-                Map<String, Exchange> exchangeMap = beanFactory.getBeansOfType(Exchange.class);
-
-                exchangeMap.forEach((name, exchange) -> {
-                    String beanName = name + "ExchangeRateProvider";
-                    if (beanFactory.containsBean(beanName)) {
-                        log.debug("Skip creating bean '{}' - factory already contains a bean with the same name", beanName);
-                    } else {
-                        ExchangeRateProvider exchangeRateProvider = createExchangeRateProvider(exchange);
-                        beanFactory.registerSingleton(beanName, exchangeRateProvider);
-                    }
-                });
-            }
-
-            private ExchangeRateProvider createExchangeRateProvider(Exchange exchange) {
-                ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
-                ExchangeRateProvider provider = new XChangeExchangeRateProvider(providerContext, exchange);
-
-                return createCachingExchangeRateProvider(provider);
-            }
-
-
-            private ExchangeRateProvider createCachingExchangeRateProvider(ExchangeRateProvider provider) {
-                ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
-                ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
-
-                ProviderContext context = provider.getContext();
-                return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
-            }
+    public static BeanFactoryPostProcessor xChangeJsr354ExchangeRateProviderBeanFactoryPostProcessor() {
+        return beanFactory -> {
+            beanFactory.addBeanPostProcessor(new XChangeJsr354ExchangeRateProviderBeanPostProcessor(beanFactory));
         };
+    }
+
+    public static class XChangeJsr354ExchangeRateProviderBeanPostProcessor implements BeanPostProcessor {
+
+        private final ConfigurableListableBeanFactory beanFactory;
+
+        public XChangeJsr354ExchangeRateProviderBeanPostProcessor(ConfigurableListableBeanFactory beanFactory) {
+            this.beanFactory = requireNonNull(beanFactory);
+        }
+
+        @Override
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            if (bean instanceof Exchange) {
+                Exchange exchange = (Exchange) bean;
+                registerJsr354ExchangeRateProviderBean(exchange, beanName);
+            }
+
+            return bean;
+        }
+
+        private void registerJsr354ExchangeRateProviderBean(Exchange exchange, String exchangeBeanName) {
+            String providerBeanName = exchangeBeanName + "Jsr354ExchangeRateProvider";
+            if (beanFactory.containsBean(providerBeanName)) {
+                log.debug("Skip creating bean '{}' - factory already contains a bean with the same name", providerBeanName);
+            } else {
+                ExchangeRateProvider exchangeRateProvider = createExchangeRateProvider(exchange);
+
+                beanFactory.registerSingleton(providerBeanName, exchangeRateProvider);
+                beanFactory.initializeBean(exchangeRateProvider, providerBeanName);
+            }
+        }
+
+        private ExchangeRateProvider createExchangeRateProvider(Exchange exchange) {
+            ProviderContext providerContext = createSimpleProviderContextBuilder(exchange).build();
+            ExchangeRateProvider provider = new XChangeExchangeRateProvider(providerContext, exchange);
+
+            return createCachingExchangeRateProvider(provider);
+        }
+
+
+        private ExchangeRateProvider createCachingExchangeRateProvider(ExchangeRateProvider provider) {
+            ExchangeRateAvailabilityCache exchangeRateAvailabilityCache = createExchangeRateAvailabilityCache(provider);
+            ExchangeRateCache exchangeRateCache = createExchangeRateCache(provider);
+
+            ProviderContext context = provider.getContext();
+            return new CachingExchangeRateProvider(context, exchangeRateAvailabilityCache, exchangeRateCache);
+        }
     }
 }

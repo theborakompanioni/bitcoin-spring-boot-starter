@@ -22,3 +22,17 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 
 # `si.mazi.rescu.ResponseReader` is just too noisy in level WARN
 logging.level.si.mazi.rescu.ResponseReader: ERROR
+
+org.tbk.xchange:
+  enabled: true
+  specifications:
+    krakenExchange:
+      exchangeClass: org.knowm.xchange.kraken.KrakenExchange
+    bitstampExchange:
+      exchangeClass: org.knowm.xchange.bitstamp.BitstampExchange
+    bittrexExchange:
+      exchangeClass: org.knowm.xchange.bittrex.BittrexExchange
+    bitfinexExchange:
+      exchangeClass: org.knowm.xchange.bitfinex.BitfinexExchange
+    geminiExchange:
+      exchangeClass: org.knowm.xchange.gemini.v1.GeminiExchange
