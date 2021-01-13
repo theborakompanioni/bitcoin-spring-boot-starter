@@ -1,4 +1,4 @@
-package org.tbk.tor;
+package org.tbk.tor.hs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.berndpruenster.netlayer.tor.HiddenServiceSocket;
@@ -8,37 +8,38 @@ import org.berndpruenster.netlayer.tor.TorSocket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.tbk.tor.NativeTorFactory;
+import org.tbk.tor.hs.TorHiddenServiceFactory.HiddenServiceCreateContext;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 @Slf4j
-public class JavaDemo {
+public class DefaultTorHiddenServiceFactoryTest {
 
-    private final int port = 21001;
+    private final int port = 21011;
 
-    NativeTorFactory sut;
+    DefaultTorHiddenServiceFactory sut;
 
     NativeTor nativeTor;
 
     @Before
     public void setUp() {
-        this.sut = new NativeTorFactory();
+        NativeTorFactory torFactory = new NativeTorFactory();
 
-        this.nativeTor = sut.create();
+        this.nativeTor = torFactory.create();
 
-        //set default instance, so it can be omitted whenever creating Tor (Server)Sockets
+        // set default instance, so it can be omitted whenever creating Tor (Server)Sockets
         Tor.setDefault(this.nativeTor);
+
+        this.sut = new DefaultTorHiddenServiceFactory();
     }
 
     @After
@@ -47,21 +48,18 @@ public class JavaDemo {
     }
 
     @Test
-    public void test() throws InterruptedException {
-        //create a hidden service in directory 'test' inside the tor installation directory
-        HiddenServiceSocket hiddenServiceSocket = new HiddenServiceSocket(port, "test");
+    public void itShouldCreateHiddenService() throws InterruptedException {
+        // create a hidden service in directory 'test' inside the tor installation directory
+        HiddenServiceCreateContext context = HiddenServiceCreateContext.builder()
+                .internalPort(port)
+                .hiddenServiceDir("test")
+                .build();
 
-        Mono<Boolean> socketReady = Mono.create(fluxSink -> {
-            //it takes some time for a hidden service to be ready, so adding a listener only after creating the HS is not an issue
-            hiddenServiceSocket.addReadyListener(socket -> {
-                fluxSink.success(true);
-                return null;
-            });
-        });
+        HiddenServiceSocket hiddenServiceSocket = this.sut.createReady(context)
+                .blockOptional(Duration.ofMinutes(3))
+                .orElseThrow(() -> new IllegalStateException("Could not create hidden service on port " + port));
 
-        socketReady.blockOptional(Duration.ofMinutes(5));
-
-        log.info("Hidden Service " + hiddenServiceSocket + " is ready");
+        log.info("Hidden Service {} is ready", hiddenServiceSocket);
 
         Flux<Socket> socketFlux = Flux.<Socket>create(fluxSink -> {
             try {
@@ -75,9 +73,10 @@ public class JavaDemo {
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         new Thread(() -> {
-            log.info("we'll try and connect to the just-published hidden service");
-            try (TorSocket s1 = new TorSocket(hiddenServiceSocket.getSocketAddress(), "Foo")) {
+            log.info("trying to connect to the hidden service {}", hiddenServiceSocket);
+            try (TorSocket s1 = new TorSocket(hiddenServiceSocket.getSocketAddress(), "foo")) {
                 log.info("Successfully connected to {}", hiddenServiceSocket);
+
                 log.info("Closing socket now...");
                 hiddenServiceSocket.close();
             } catch (Exception e) {
@@ -92,13 +91,19 @@ public class JavaDemo {
             }
 
             countDownLatch.countDown();
-
         }).start();
 
         Socket incomingSocket = socketFlux.blockFirst(Duration.ofSeconds(10));
         log.info("Got an incoming connection to socket {}: {}", hiddenServiceSocket, incomingSocket);
 
-        countDownLatch.await(3, TimeUnit.MINUTES);
+        boolean await = countDownLatch.await(1, TimeUnit.MINUTES);
+        assertThat("socket has been accepted", await, is(true));
+
+        try {
+            incomingSocket.close();
+        } catch (IOException e) {
+            log.warn("Error while closing hidden service socket", e);
+        }
     }
 
 }

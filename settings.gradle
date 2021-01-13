@@ -73,6 +73,7 @@ include 'incubator:tbk-btcabuse-client:tbk-btcabuse-client-starter'
 include 'incubator:tbk-btcabuse-client:tbk-btcabuse-incubator'
 include 'incubator:tbk-tor:tbk-tor-core'
 include 'incubator:tbk-tor:tbk-tor-http'
+include 'incubator:tbk-tor:tbk-tor-hidden-service'
 
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:lnd-playground-example-application'
