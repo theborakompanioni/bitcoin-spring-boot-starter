@@ -14,13 +14,13 @@ import java.math.BigDecimal;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class XChangeExchangeRateProviderTest {
+public class XChangeExchangeRateProviderIntegrationTest {
 
     private XChangeExchangeRateProvider sut;
 
     @Before
     public void setUp() {
-        Exchange exchange = ExchangeFactory.INSTANCE.createExchange(DummyExchange.class);
+        Exchange exchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class);
         ProviderContext providerContext = MoreProviderContexts.createSimpleProviderContextBuilder(exchange).build();
         this.sut = new XChangeExchangeRateProvider(providerContext, exchange);
     }
@@ -38,6 +38,7 @@ public class XChangeExchangeRateProviderTest {
     @Test
     public void itShouldNotFetchUnsupportedExchangeRate() {
         try {
+            // hopefully kraken will never return factor "1" for btc/btc pair :D
             ExchangeRate ignoredOnPurpose = this.sut.getExchangeRate("BTC", "BTC");
 
             Assert.fail("Should have thrown exception");
@@ -71,6 +72,7 @@ public class XChangeExchangeRateProviderTest {
 
     @Test
     public void itShouldNotFetchUnsupportedCurrencyConversion() {
+        // hopefully kraken will never return factor "1" for btc/btc pair :D
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency("BTC")
                 .setTermCurrency("BTC")
