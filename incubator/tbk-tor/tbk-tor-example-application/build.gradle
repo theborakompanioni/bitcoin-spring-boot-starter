@@ -1,0 +1,10 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'tor testcontainer example application package'
+
+dependencies {
+    api project(':incubator:tbk-tor:tbk-tor-starter')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

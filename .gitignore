@@ -100,3 +100,4 @@ application-management.port
 *.dat
 *.hprof
 .resourceCache/
+tor-working-dir/

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.tbk.tor.spring.config.TorAutoConfiguration,\
+org.tbk.tor.spring.config.HiddenServiceHealthContributorAutoConfiguration

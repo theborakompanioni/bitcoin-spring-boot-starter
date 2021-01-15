@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+description = 'tor spring starter package'
+
+dependencies {
+    api project(':incubator:tbk-tor:tbk-tor-core')
+    api project(':incubator:tbk-tor:tbk-tor-hidden-service')
+    api project(':incubator:tbk-tor:tbk-tor-http')
+    api project(':incubator:tbk-tor:tbk-tor-autoconfigure')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

@@ -1,9 +1,18 @@
 package org.tbk.tor.hs;
 
 import org.berndpruenster.netlayer.tor.HiddenServiceSocket;
+import org.berndpruenster.netlayer.tor.Tor;
 import reactor.core.publisher.Mono;
 
+import static java.util.Objects.requireNonNull;
+
 public class DefaultTorHiddenServiceFactory implements TorHiddenServiceFactory {
+
+    private final Tor tor;
+
+    public DefaultTorHiddenServiceFactory(Tor tor) {
+        this.tor = requireNonNull(tor);
+    }
 
     @Override
     public HiddenServiceSocket create(HiddenServiceCreateContext context) {
@@ -11,7 +20,7 @@ public class DefaultTorHiddenServiceFactory implements TorHiddenServiceFactory {
                 context.getInternalPort(),
                 context.getHiddenServiceDir(),
                 context.getHiddenServicePort(),
-                context.getTor().orElse(null)
+                context.getTor().orElse(this.tor)
         );
     }
 

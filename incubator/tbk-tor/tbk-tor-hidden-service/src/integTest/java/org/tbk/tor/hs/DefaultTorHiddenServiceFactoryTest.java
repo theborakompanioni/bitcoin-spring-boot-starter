@@ -40,7 +40,7 @@ public class DefaultTorHiddenServiceFactoryTest {
         // set default instance, so it can be omitted whenever creating Tor (Server)Sockets
         Tor.setDefault(this.nativeTor);
 
-        this.sut = new DefaultTorHiddenServiceFactory();
+        this.sut = new DefaultTorHiddenServiceFactory(this.nativeTor);
     }
 
     @After

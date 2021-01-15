@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+integrationTest {
+    forkEvery = 1 // run every test in own process.. otherwise tor sometimes errors with "binary still in use".
+}
+
+dependencies {
+    api project(':incubator:tbk-tor:tbk-tor-core')
+    api project(':incubator:tbk-tor:tbk-tor-hidden-service')
+    api project(':incubator:tbk-tor:tbk-tor-http')
+
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
