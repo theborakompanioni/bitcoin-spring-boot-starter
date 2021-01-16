@@ -9,5 +9,4 @@ dependencies {
     api "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
 
     implementation "io.projectreactor:reactor-core"
-    implementation "com.google.guava:guava:${guavaVersion}"
 }

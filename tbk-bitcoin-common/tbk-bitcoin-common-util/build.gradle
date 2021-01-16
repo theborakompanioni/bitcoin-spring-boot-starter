@@ -5,5 +5,4 @@ plugins {
 description = 'common utilities needed in bitcoin applications'
 
 dependencies {
-    implementation "com.google.guava:guava:${guavaVersion}"
 }
