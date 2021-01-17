@@ -28,3 +28,7 @@ info.app:
 management.health.hiddenService.enabled: true
 management.endpoint.health.show-details: 'always'
 management.endpoints.web.exposure.include: '*'
+
+org.tbk.tor:
+  enabled: true
+  working-directory: 'tor-working-dir'

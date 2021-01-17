@@ -5,6 +5,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
+import org.berndpruenster.netlayer.tor.Tor;
+import org.berndpruenster.netlayer.tor.TorCtlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationRunner;
@@ -15,8 +17,11 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.tbk.tor.hs.HiddenServiceDefinition;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Slf4j
 @SpringBootApplication
@@ -40,11 +45,45 @@ public class TorExampleApplication {
     }
 
     @Autowired
+    private Tor tor;
+
+    @Autowired
     @Qualifier("torHttpClient")
     private HttpClient torHttpClient;
 
+    @Autowired
+    @Qualifier("applicationHiddenServiceDefinition")
+    private HiddenServiceDefinition applicationHiddenServiceDefinition;
+
     @Bean
-    public ApplicationRunner mainRunner() {
+    @Profile("!test")
+    public ApplicationRunner applicationHiddenServiceInfoRunner() {
+        return args -> {
+            Optional<String> httpUrl = applicationHiddenServiceDefinition.getVirtualHost()
+                    .map(val -> "http://" + val + ":" + applicationHiddenServiceDefinition.getVirtualPort());
+
+            log.info("=================================================");
+            log.info("url: {}", httpUrl.orElse("unavailable"));
+            log.info("virtual host: {}", applicationHiddenServiceDefinition.getVirtualHost().orElse("unknown"));
+            log.info("virtual port: {}", applicationHiddenServiceDefinition.getVirtualPort());
+            log.info("host: {}", applicationHiddenServiceDefinition.getHost());
+            log.info("port: {}", applicationHiddenServiceDefinition.getPort());
+            log.info("directory: {}", applicationHiddenServiceDefinition.getDirectory().getAbsolutePath());
+            httpUrl.ifPresent(url -> {
+                log.info("-------------------------------------------------");
+                try {
+                    log.info("run: torsocks -p {} curl {}/index.html -v", tor.getProxy().getPort(), url);
+                } catch (TorCtlException e) {
+                    log.warn("Could not get tor proxy port");
+                }
+            });
+            log.info("=================================================");
+        };
+    }
+
+    @Bean
+    @Profile("!test")
+    public ApplicationRunner torInfoRunner() {
         String successPhrase = "Congratulations. This browser is configured to use Tor.";
         String errorPhraseIgnoreCase = "not using Tor";
 

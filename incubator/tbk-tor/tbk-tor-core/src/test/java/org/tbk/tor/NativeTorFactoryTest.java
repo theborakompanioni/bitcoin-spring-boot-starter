@@ -4,6 +4,7 @@ import org.berndpruenster.netlayer.tor.NativeTor;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.time.Duration;
 
 public class NativeTorFactoryTest {
@@ -12,7 +13,8 @@ public class NativeTorFactoryTest {
 
     @Before
     public void setUp() {
-        this.sut = new NativeTorFactory();
+        File workingDirectory = new File("tor-working-dir");
+        this.sut = new NativeTorFactory(workingDirectory);
     }
 
     @Test

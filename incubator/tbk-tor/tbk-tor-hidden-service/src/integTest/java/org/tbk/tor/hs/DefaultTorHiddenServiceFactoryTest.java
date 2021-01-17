@@ -12,6 +12,7 @@ import org.tbk.tor.NativeTorFactory;
 import org.tbk.tor.hs.TorHiddenServiceFactory.HiddenServiceCreateContext;
 import reactor.core.publisher.Flux;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.Duration;
@@ -32,7 +33,8 @@ public class DefaultTorHiddenServiceFactoryTest {
 
     @Before
     public void setUp() {
-        NativeTorFactory torFactory = new NativeTorFactory();
+        File workingDirectory = new File("tor-working-dir");
+        NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
 
         this.nativeTor = torFactory.create().blockOptional(Duration.ofSeconds(30))
                 .orElseThrow(() -> new IllegalStateException("Could not start tor"));

@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.tbk.tor.NativeTorFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +39,8 @@ public class TorHttpClientTest {
 
     @Before
     public void setUp() throws TorCtlException {
-        NativeTorFactory torFactory = new NativeTorFactory();
+        File workingDirectory = new File("tor-working-dir");
+        NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
 
         this.nativeTor = torFactory.create().blockOptional(Duration.ofSeconds(30))
                 .orElseThrow(() -> new IllegalStateException("Could not start tor"));
