@@ -24,4 +24,4 @@ before_script:
   - ./gradlew verifyChecksums
 
 script:
-  - ./gradlew check -PtestcontainerTest
+  - ./gradlew check -PtestcontainerTest -PexampleTest

@@ -244,3 +244,10 @@ configure(subprojects.findAll { project -> project.name.indexOf('spring-testcont
     test.onlyIf { project.hasProperty('testcontainerTest') }
     integrationTest.onlyIf { project.hasProperty('testcontainerTest') }
 }
+
+// disable test tasks in check phase for all '*-example-applications' subprojects.
+// you can invoke them manually via `./gradlew check -PexampleTest`
+configure(subprojects.findAll { project -> project.name.indexOf('-example-applications') > 0}) {
+    test.onlyIf { project.hasProperty('exampleTest') }
+    integrationTest.onlyIf { project.hasProperty('exampleTest') }
+}
