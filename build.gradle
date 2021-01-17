@@ -236,3 +236,11 @@ subprojects {
 
     task dependencyTree(type: DependencyReportTask) {}
 }
+
+// disable test tasks in check phase for all 'spring-testcontainer-*' subprojects.
+// these subprojects tests are very expensive as they all start a lot of docker containers.
+// you can invoke them manually via `./gradlew check -PtestcontainerTest`
+configure(subprojects.findAll { project -> project.name.indexOf('spring-testcontainer-') == 0}) {
+    test.onlyIf { project.hasProperty('testcontainerTest') }
+    integrationTest.onlyIf { project.hasProperty('testcontainerTest') }
+}
