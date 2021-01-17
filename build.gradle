@@ -79,6 +79,18 @@ allprojects {
     }
 }
 
+configure(rootProject) {
+    task clean {
+        doLast {
+            delete fileTree("${rootProject.projectDir}") {
+                include '**/*.log'
+                include '**/*.log.*.gz'
+                include '**/*.log.*.tmp'
+            }
+        }
+    }
+}
+
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
@@ -158,14 +170,6 @@ subprojects {
     task testJar(type: Jar) {
         archiveClassifier.set('test')
         from sourceSets.test.output
-    }
-
-    clean {
-        delete fileTree("${projectDir}") {
-            include '**/*.log'
-            include '**/*.log.*.gz'
-            include '**/*.log.*.tmp'
-        }
     }
 
     pluginManager.withPlugin('org.springframework.boot') {
