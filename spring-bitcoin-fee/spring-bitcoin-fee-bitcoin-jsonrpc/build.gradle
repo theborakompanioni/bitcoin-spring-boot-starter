@@ -11,5 +11,5 @@ dependencies {
 
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-    testImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
 }
