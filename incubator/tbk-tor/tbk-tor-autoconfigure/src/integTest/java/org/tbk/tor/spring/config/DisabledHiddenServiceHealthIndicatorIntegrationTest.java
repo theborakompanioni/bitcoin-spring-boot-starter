@@ -24,9 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestPropertySource(properties = {
-        "server.port=21211",
-        "management.port=21211",
-        "management.server.port=21211",
+        "server.port=13337",
+        "management.server.port=13337",
         "management.endpoint.health.show-details=always",
         "management.health.hiddenService.enabled=false"
 })
