@@ -47,7 +47,7 @@ public class TorAutoConfigurationTest {
                 .run(context -> {
                     beanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
-                        assertThat(beanWithNameIsAvailable, is(false));
+                        assertThat(name + " is NOT available as bean", beanWithNameIsAvailable, is(false));
                     });
 
                     Map<String, Tor> torBeans = context.getBeansOfType(Tor.class);
@@ -70,7 +70,7 @@ public class TorAutoConfigurationTest {
                 .run(context -> {
                     beanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
-                        assertThat(beanWithNameIsAvailable, is(true));
+                        assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
                     });
 
                     Map<String, Tor> torBeans = context.getBeansOfType(Tor.class);
@@ -93,13 +93,13 @@ public class TorAutoConfigurationTest {
                 .withBean(ServerProperties.class, () -> {
                     // fake a running webserver for the hidden service to bind to
                     ServerProperties serverProperties = new ServerProperties();
-                    serverProperties.setPort(11337);
+                    serverProperties.setPort(13337);
                     return serverProperties;
                 })
                 .run(context -> {
                     autoPublishEnabledBeanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
-                        assertThat(beanWithNameIsAvailable, is(true));
+                        assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
                     });
 
                     Map<String, HiddenServiceDefinition> hiddenServiceBeans = context.getBeansOfType(HiddenServiceDefinition.class);
@@ -114,11 +114,11 @@ public class TorAutoConfigurationTest {
                 .run(context -> {
                     autoPublishEnabledBeanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
-                        assertThat(beanWithNameIsAvailable, is(false));
+                        assertThat(name + " is NOT available as bean", beanWithNameIsAvailable, is(false));
                     });
                     beanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
-                        assertThat(beanWithNameIsAvailable, is(true));
+                        assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
                     });
 
                     Map<String, HiddenServiceDefinition> hiddenServiceBeans = context.getBeansOfType(HiddenServiceDefinition.class);

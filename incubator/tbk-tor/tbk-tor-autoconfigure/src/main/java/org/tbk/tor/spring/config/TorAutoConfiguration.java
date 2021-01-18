@@ -54,12 +54,18 @@ public class TorAutoConfiguration {
     @ConditionalOnBean(ServerProperties.class)
     @ConditionalOnProperty(name = "org.tbk.tor.auto-publish-enabled", havingValue = "true", matchIfMissing = true)
     public HiddenServiceDefinition applicationHiddenServiceDefinition(ServerProperties serverProperties) {
+        Integer port = serverProperties.getPort();
+        if (port == null) {
+            throw new IllegalStateException("Cannot publish hidden service for application. " +
+                    "Please specify 'server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
+        }
+
         String hiddenServiceDir = String.format("%s/%s", properties.getWorkingDirectory(), "spring_boot_app");
 
         return HiddenServiceDefinition.builder()
                 .directory(new File(hiddenServiceDir))
                 .virtualPort(80)
-                .port(serverProperties.getPort())
+                .port(port)
                 .host(Optional.ofNullable(serverProperties.getAddress())
                         .map(InetAddress::getHostAddress)
                         .orElseGet(() -> InetAddress.getLoopbackAddress().getHostName()))
@@ -133,6 +139,7 @@ public class TorAutoConfiguration {
                     .build();
         }
     }
+
     @Bean
     @ConditionalOnBean(HiddenServiceDefinition.class)
     @ConditionalOnMissingBean(name = "hiddenServiceInfoContributor")
@@ -149,7 +156,7 @@ public class TorAutoConfiguration {
                                 .build();
                     }));
 
-            builder.withDetails( ImmutableMap.<String, Object>builder()
+            builder.withDetails(ImmutableMap.<String, Object>builder()
                     .put("hidden_services", hiddenServiceInfos)
                     .build());
         };
