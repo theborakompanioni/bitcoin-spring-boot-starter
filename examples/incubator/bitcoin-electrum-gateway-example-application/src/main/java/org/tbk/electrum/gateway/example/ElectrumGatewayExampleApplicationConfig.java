@@ -9,6 +9,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
@@ -51,6 +52,7 @@ public class ElectrumGatewayExampleApplicationConfig {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {

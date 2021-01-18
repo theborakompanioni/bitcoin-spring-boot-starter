@@ -14,6 +14,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import java.nio.charset.StandardCharsets;
 
@@ -39,6 +40,7 @@ public class TorContainerExampleApplication {
     private HttpClient torHttpClient;
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner mainRunner() {
         String successPhrase = "Congratulations. This browser is configured to use Tor.";
         String errorPhraseIgnoreCase = "not using Tor";

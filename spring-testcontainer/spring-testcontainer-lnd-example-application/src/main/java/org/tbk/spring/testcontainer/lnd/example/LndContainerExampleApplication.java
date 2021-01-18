@@ -19,6 +19,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -51,6 +52,7 @@ public class LndContainerExampleApplication {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner mainRunner() {
         return args -> {
             GetInfoResponse info = lndApi.getInfo();
@@ -62,6 +64,7 @@ public class LndContainerExampleApplication {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
@@ -82,6 +85,7 @@ public class LndContainerExampleApplication {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner channelEventUpdateRunner(AsynchronousLndAPI lndAsyncApi) {
         return args -> {
             Flux<ChannelEventUpdate> channelEventUpdates = Flux.create(emitter -> {
@@ -121,8 +125,8 @@ public class LndContainerExampleApplication {
         };
     }
 
-
     @Bean
+    @Profile("!test")
     public ApplicationRunner addInvoiceRunner() {
         return args -> {
             AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(LightningApi.Invoice.newBuilder()

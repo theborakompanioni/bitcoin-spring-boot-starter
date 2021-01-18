@@ -11,6 +11,7 @@ import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -23,6 +24,7 @@ import java.time.Duration;
 public class LndPlaygroundExampleApplicationConfig {
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner mainRunner(SynchronousLndAPI lndApi) {
         return args -> {
             GetInfoResponse info = lndApi.getInfo();
@@ -34,6 +36,7 @@ public class LndPlaygroundExampleApplicationConfig {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner lndBestBlockLogger(SynchronousLndAPI lndApi,
                                                 MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
@@ -55,6 +58,7 @@ public class LndPlaygroundExampleApplicationConfig {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {

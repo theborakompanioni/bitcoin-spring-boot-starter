@@ -7,6 +7,7 @@ import org.bitcoinj.core.Block;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -19,6 +20,7 @@ import java.time.Duration;
 public class LndContainerExampleApplicationConfig {
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {

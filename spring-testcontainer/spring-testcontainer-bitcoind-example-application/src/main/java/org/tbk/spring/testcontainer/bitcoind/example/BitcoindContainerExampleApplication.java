@@ -11,6 +11,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
 
@@ -44,6 +45,7 @@ public class BitcoindContainerExampleApplication {
     }
 
     @Bean
+    @Profile("!test")
     public ApplicationRunner mainRunner(MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));

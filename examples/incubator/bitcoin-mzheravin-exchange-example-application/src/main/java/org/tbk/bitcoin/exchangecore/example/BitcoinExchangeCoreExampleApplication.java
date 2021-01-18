@@ -16,6 +16,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Duration;
@@ -44,6 +45,7 @@ public class BitcoinExchangeCoreExampleApplication {
     }
 
     @Bean
+    @Profile("!test")
     public CommandLineRunner printFeesCollected(TaskScheduler scheduler,
                                                 ExchangeApi exchangeApi) {
         Runnable task = () -> {
@@ -61,6 +63,7 @@ public class BitcoinExchangeCoreExampleApplication {
     }
 
     @Bean
+    @Profile("!test")
     public CommandLineRunner exchangeCoreDemoRunner(ExchangeApi exchangeApi,
                                                     CoreSymbolSpecification symbolSpecXbtLtc) {
         return args -> {

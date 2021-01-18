@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.money.CurrencyUnit;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertThat;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class BitcoinExchangeRateExampleApplicationTest {
 
     @Autowired(required = false)

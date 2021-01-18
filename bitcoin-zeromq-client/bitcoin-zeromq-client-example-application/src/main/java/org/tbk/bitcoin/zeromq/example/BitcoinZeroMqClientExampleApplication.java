@@ -11,6 +11,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
 
@@ -39,8 +40,8 @@ public class BitcoinZeroMqClientExampleApplication {
         return new WebServerPortFileWriter("application.port");
     }
 
-
     @Bean
+    @Profile("!test")
     public CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
         return args -> {
             log.info("Starting example application main runner");

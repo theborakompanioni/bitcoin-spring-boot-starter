@@ -12,6 +12,7 @@ import org.bitcoinj.core.Sha256Hash;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -24,6 +25,7 @@ import java.util.List;
 public class BitcoinJsonrpcClientExampleApplicationConfig {
 
     @Bean
+    @Profile("!test")
     public CommandLineRunner printBitcoinNodeInfo(TaskScheduler scheduler, BitcoinClient bitcoinClient) {
         Runnable task = () -> {
             Stopwatch stopwatch = Stopwatch.createStarted();
