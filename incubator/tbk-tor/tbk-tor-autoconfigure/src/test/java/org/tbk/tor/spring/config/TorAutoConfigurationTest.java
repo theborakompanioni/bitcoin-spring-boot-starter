@@ -25,15 +25,15 @@ public class TorAutoConfigurationTest {
             .add("torHiddenServiceSocketFactory")
             .build();
 
-    // these beans will be created when "autoPublishEnabled" is true
-    private static final List<String> autoPublishEnabledBeanNames = ImmutableList.<String>builder()
+    // these beans will be created when "autoPublishEnabled" is true and the app is a web application
+    private static final List<String> autoPublishEnabledAndWebAppBeanNames = ImmutableList.<String>builder()
             .add("applicationHiddenServiceDefinition")
             .add("torrcWithHiddenServiceDefinitions")
             .add("hiddenServiceInfoContributor")
             .build();
 
-
-    private static final List<String> autoPublishDisabledBeanNames = ImmutableList.<String>builder()
+    // these beans will be created when "autoPublishEnabled" is false or the app is not a web application
+    private static final List<String> autoPublishDisabledOrNonWebAppBeanNames = ImmutableList.<String>builder()
             .add("torrc")
             .build();
 
@@ -42,10 +42,19 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void noBeansCreated() {
-        this.contextRunner.withUserConfiguration(TorAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(
+                ApplicationHiddenServicePublishAutoConfiguration.class,
+                TorAutoConfiguration.class
+        )
                 .withPropertyValues("org.tbk.tor.enabled=false")
                 .run(context -> {
-                    beanNames.forEach(name -> {
+                    List<String> allBeanNames = ImmutableList.<String>builder()
+                            .addAll(beanNames)
+                            .addAll(autoPublishEnabledAndWebAppBeanNames)
+                            .addAll(autoPublishDisabledOrNonWebAppBeanNames)
+                            .build();
+
+                    allBeanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
                         assertThat(name + " is NOT available as bean", beanWithNameIsAvailable, is(false));
                     });
@@ -66,40 +75,54 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void torBeansCreated() {
-        this.contextRunner.withUserConfiguration(TorAutoConfiguration.class)
-                .run(context -> {
-                    beanNames.forEach(name -> {
-                        boolean beanWithNameIsAvailable = context.containsBean(name);
-                        assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
-                    });
+        this.contextRunner.withUserConfiguration(
+                ApplicationHiddenServicePublishAutoConfiguration.class,
+                TorAutoConfiguration.class
+        ).run(context -> {
+            beanNames.forEach(name -> {
+                boolean beanWithNameIsAvailable = context.containsBean(name);
+                assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
+            });
 
-                    Map<String, Tor> torBeans = context.getBeansOfType(Tor.class);
-                    assertThat(torBeans.values(), hasSize(1));
+            autoPublishDisabledOrNonWebAppBeanNames.forEach(name -> {
+                boolean beanWithNameIsAvailable = context.containsBean(name);
+                assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
+            });
 
-                    Map<String, Torrc> torrcBeans = context.getBeansOfType(Torrc.class);
-                    assertThat(torrcBeans.values(), hasSize(1));
+            Map<String, Tor> torBeans = context.getBeansOfType(Tor.class);
+            assertThat(torBeans.values(), hasSize(1));
 
-                    Map<String, HiddenServiceDefinition> hiddenServiceBeans = context.getBeansOfType(HiddenServiceDefinition.class);
-                    assertThat(hiddenServiceBeans.values(), is(empty()));
+            Map<String, Torrc> torrcBeans = context.getBeansOfType(Torrc.class);
+            assertThat(torrcBeans.values(), hasSize(1));
 
-                    Map<String, HiddenServiceSocket> hiddenServiceSocketBeans = context.getBeansOfType(HiddenServiceSocket.class);
-                    assertThat(hiddenServiceSocketBeans.values(), is(empty()));
-                });
+            Map<String, HiddenServiceDefinition> hiddenServiceBeans = context.getBeansOfType(HiddenServiceDefinition.class);
+            assertThat(hiddenServiceBeans.values(), is(empty()));
+
+            Map<String, HiddenServiceSocket> hiddenServiceSocketBeans = context.getBeansOfType(HiddenServiceSocket.class);
+            assertThat(hiddenServiceSocketBeans.values(), is(empty()));
+        });
     }
 
     @Test
     public void torBeansCreatedInWebContext() {
-        this.webContextRunner.withUserConfiguration(TorAutoConfiguration.class)
-                .withBean(ServerProperties.class, () -> {
-                    // fake a running webserver for the hidden service to bind to
-                    ServerProperties serverProperties = new ServerProperties();
-                    serverProperties.setPort(13337);
-                    return serverProperties;
-                })
+        this.webContextRunner.withUserConfiguration(
+                ApplicationHiddenServicePublishAutoConfiguration.class,
+                TorAutoConfiguration.class
+        ).withBean(ServerProperties.class, () -> {
+            // fake a running webserver for the hidden service to bind to
+            ServerProperties serverProperties = new ServerProperties();
+            serverProperties.setPort(13337);
+            return serverProperties;
+        })
                 .run(context -> {
-                    autoPublishEnabledBeanNames.forEach(name -> {
+                    autoPublishEnabledAndWebAppBeanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
                         assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
+                    });
+
+                    autoPublishDisabledOrNonWebAppBeanNames.forEach(name -> {
+                        boolean beanWithNameIsAvailable = context.containsBean(name);
+                        assertThat(name + " is NOT available as bean", beanWithNameIsAvailable, is(false));
                     });
 
                     Map<String, HiddenServiceDefinition> hiddenServiceBeans = context.getBeansOfType(HiddenServiceDefinition.class);
@@ -109,13 +132,21 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void torBeansCreatedInWebContextWithAutoPublishDisabled() {
-        this.webContextRunner.withUserConfiguration(TorAutoConfiguration.class)
-                .withPropertyValues("org.tbk.tor.auto-publish-enabled=false")
+        this.webContextRunner.withUserConfiguration(
+                ApplicationHiddenServicePublishAutoConfiguration.class,
+                TorAutoConfiguration.class
+        ).withPropertyValues("org.tbk.tor.auto-publish-enabled=false")
                 .run(context -> {
-                    autoPublishEnabledBeanNames.forEach(name -> {
+                    autoPublishEnabledAndWebAppBeanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
                         assertThat(name + " is NOT available as bean", beanWithNameIsAvailable, is(false));
                     });
+
+                    autoPublishDisabledOrNonWebAppBeanNames.forEach(name -> {
+                        boolean beanWithNameIsAvailable = context.containsBean(name);
+                        assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
+                    });
+
                     beanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
                         assertThat(name + " is available as bean", beanWithNameIsAvailable, is(true));
