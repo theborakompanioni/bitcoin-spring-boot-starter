@@ -19,9 +19,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.tbk.tor.NativeTorFactory;
 import org.tbk.tor.TorFactory;
-import org.tbk.tor.hs.DefaultTorHiddenServiceFactory;
+import org.tbk.tor.hs.DefaultTorHiddenServiceSocketFactory;
 import org.tbk.tor.hs.HiddenServiceDefinition;
-import org.tbk.tor.hs.TorHiddenServiceFactory;
+import org.tbk.tor.hs.TorHiddenServiceSocketFactory;
 import org.tbk.tor.http.SimpleTorHttpClientBuilder;
 
 import java.io.File;
@@ -95,14 +95,14 @@ public class TorAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(Tor.class)
     public TorFactory<NativeTor> nativeTorFactory(Torrc torrc) {
         File workingDirectory = new File(properties.getWorkingDirectory());
         return new NativeTorFactory(workingDirectory, torrc);
     }
 
     @Bean(destroyMethod = "shutdown")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(Tor.class)
     public NativeTor nativeTor(TorFactory<NativeTor> nativeTorFactory) {
         NativeTor tor = nativeTorFactory.create()
                 .blockOptional(properties.getStartupTimeout())
@@ -118,8 +118,8 @@ public class TorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TorHiddenServiceFactory torHiddenServiceFactory(Tor tor) {
-        return new DefaultTorHiddenServiceFactory(tor);
+    public TorHiddenServiceSocketFactory torHiddenServiceSocketFactory(Tor tor) {
+        return new DefaultTorHiddenServiceSocketFactory(tor);
     }
 
     @Configuration
@@ -156,7 +156,6 @@ public class TorAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(Tor.class)
     @ConditionalOnMissingBean(name = "torInfoContributor")
     public InfoContributor torInfoContributor(Tor tor) {
         return builder -> {

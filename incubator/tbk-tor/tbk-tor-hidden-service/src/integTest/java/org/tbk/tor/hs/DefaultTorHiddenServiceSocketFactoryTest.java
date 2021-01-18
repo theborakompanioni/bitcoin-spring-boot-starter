@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.tbk.tor.NativeTorFactory;
-import org.tbk.tor.hs.TorHiddenServiceFactory.HiddenServiceCreateContext;
+import org.tbk.tor.hs.TorHiddenServiceSocketFactory.HiddenServiceSocketCreateContext;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
@@ -23,11 +23,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 @Slf4j
-public class DefaultTorHiddenServiceFactoryTest {
+public class DefaultTorHiddenServiceSocketFactoryTest {
 
     private final int port = 21011;
 
-    private DefaultTorHiddenServiceFactory sut;
+    private DefaultTorHiddenServiceSocketFactory sut;
 
     private NativeTor nativeTor;
 
@@ -42,7 +42,7 @@ public class DefaultTorHiddenServiceFactoryTest {
         // set default instance, so it can be omitted whenever creating Tor (Server)Sockets
         Tor.setDefault(this.nativeTor);
 
-        this.sut = new DefaultTorHiddenServiceFactory(this.nativeTor);
+        this.sut = new DefaultTorHiddenServiceSocketFactory(this.nativeTor);
     }
 
     @After
@@ -53,8 +53,8 @@ public class DefaultTorHiddenServiceFactoryTest {
     @Test
     public void itShouldCreateHiddenService() throws InterruptedException {
         // create a hidden service in directory 'test' inside the tor installation directory
-        HiddenServiceCreateContext context = HiddenServiceCreateContext.builder()
-                .internalPort(port)
+        HiddenServiceSocketCreateContext context = HiddenServiceSocketCreateContext.builder()
+                .hostPort(port)
                 .hiddenServiceDir("test")
                 .build();
 

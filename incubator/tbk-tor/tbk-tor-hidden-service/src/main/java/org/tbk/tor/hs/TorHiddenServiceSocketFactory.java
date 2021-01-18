@@ -10,29 +10,29 @@ import reactor.core.publisher.Mono;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public interface TorHiddenServiceFactory {
+public interface TorHiddenServiceSocketFactory {
 
-    HiddenServiceSocket create(HiddenServiceCreateContext context);
+    HiddenServiceSocket create(HiddenServiceSocketCreateContext context);
 
-    Mono<HiddenServiceSocket> createReady(HiddenServiceCreateContext context);
+    Mono<HiddenServiceSocket> createReady(HiddenServiceSocketCreateContext context);
 
     @Value
     @Builder
-    class HiddenServiceCreateContext {
+    class HiddenServiceSocketCreateContext {
         @NonNull
-        Integer internalPort;
+        Integer hostPort;
 
         @NonNull
         String hiddenServiceDir;
 
         @Nullable
-        Integer hiddenServicePort;
+        Integer virtualPort;
 
         @Nullable
         Tor tor;
 
-        public int getHiddenServicePort() {
-            return Optional.ofNullable(hiddenServicePort).orElse(internalPort);
+        public int getVirtualPort() {
+            return Optional.ofNullable(virtualPort).orElse(hostPort);
         }
 
         public Optional<Tor> getTor() {

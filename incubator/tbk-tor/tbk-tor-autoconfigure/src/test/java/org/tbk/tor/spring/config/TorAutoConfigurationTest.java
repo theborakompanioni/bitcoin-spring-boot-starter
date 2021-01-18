@@ -22,6 +22,7 @@ public class TorAutoConfigurationTest {
             .add("nativeTorFactory")
             .add("torHttpClient")
             .add("torInfoContributor")
+            .add("torHiddenServiceSocketFactory")
             .build();
 
     // these beans will be created when "autoPublishEnabled" is true
