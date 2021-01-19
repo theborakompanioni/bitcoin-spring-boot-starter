@@ -1,19 +1,15 @@
 package org.tbk.tor.spring.config;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Map;
 
 @Data
 @ConfigurationProperties(
@@ -24,6 +20,7 @@ public class TorAutoConfigProperties implements Validator {
     private static final boolean DEFAULT_AUTO_PUBLISH_ENABLED = true;
     private static final String DEFAULT_WORKING_DIRECTORY = "tor-working-dir";
     private static final Duration DEFAULT_START_TIMEOUT = Duration.ofSeconds(60);
+    private static final OnionLocationHeaderProperties DEFAULT_ONION_LOCATION_HEADER = new OnionLocationHeaderProperties();
 
     private boolean enabled;
 
@@ -33,6 +30,8 @@ public class TorAutoConfigProperties implements Validator {
 
     @DurationUnit(ChronoUnit.SECONDS)
     private Duration startupTimeout;
+
+    private OnionLocationHeaderProperties onionLocationHeader;
 
     public String getWorkingDirectory() {
         return workingDirectory != null ? workingDirectory : DEFAULT_WORKING_DIRECTORY;
@@ -44,6 +43,10 @@ public class TorAutoConfigProperties implements Validator {
 
     public Duration getStartupTimeout() {
         return startupTimeout != null ? startupTimeout : DEFAULT_START_TIMEOUT;
+    }
+
+    public OnionLocationHeaderProperties getOnionLocationHeader() {
+        return onionLocationHeader != null ? onionLocationHeader : DEFAULT_ONION_LOCATION_HEADER;
     }
 
     @Override
@@ -61,7 +64,24 @@ public class TorAutoConfigProperties implements Validator {
             errors.rejectValue("workingDirectory", "workingDirectory.invalid", errorMessage);
         } else if (containsWhitespaces(workingDirectory)) {
             String errorMessage = "'workingDirectory' must not contain whitespaces - unsupported value";
-            errors.rejectValue("workingDirectory", "directory.unsupported", errorMessage);
+            errors.rejectValue("workingDirectory", "workingDirectory.unsupported", errorMessage);
+        }
+    }
+
+    @Data
+    public static class OnionLocationHeaderProperties implements Validator {
+        private boolean enabled;
+        private boolean allowOnLocalhostHttp;
+
+        @Override
+        public boolean supports(Class<?> clazz) {
+            return clazz == OnionLocationHeaderProperties.class;
+        }
+
+        @Override
+        public void validate(Object target, Errors errors) {
+            OnionLocationHeaderProperties properties = (OnionLocationHeaderProperties) target;
+
         }
     }
 

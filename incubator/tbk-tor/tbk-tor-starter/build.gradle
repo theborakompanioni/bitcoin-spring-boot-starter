@@ -11,5 +11,10 @@ dependencies {
     api project(':incubator:tbk-tor:tbk-tor-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // explicitly do not add 'actuator', 'web' or similar starters
+    // users will import it in their build if they really want them
+    // e.g. implementation 'org.springframework.boot:spring-boot-starter-web'
+    //      implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    //      ...
 }

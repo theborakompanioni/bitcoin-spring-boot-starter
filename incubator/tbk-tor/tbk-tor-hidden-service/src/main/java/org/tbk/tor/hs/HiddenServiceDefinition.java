@@ -3,9 +3,7 @@ package org.tbk.tor.hs;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -36,11 +34,20 @@ public class HiddenServiceDefinition {
     @NonNull
     File directory;
 
+    @Getter(value = AccessLevel.PRIVATE)
     Supplier<String> virtualHostSupplier = Suppliers.memoize(this::getVirtualHostOrThrow);
 
     public String getName() {
         return Optional.ofNullable(name)
                 .orElseGet(directory::getName);
+    }
+
+    public int getVirtualPort() {
+        return virtualPort;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public Optional<String> getVirtualHost() {

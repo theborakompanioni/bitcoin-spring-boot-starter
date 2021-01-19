@@ -30,6 +30,7 @@ public class TorAutoConfigurationTest {
             .add("applicationHiddenServiceDefinition")
             .add("torrcWithHiddenServiceDefinitions")
             .add("hiddenServiceInfoContributor")
+            .add("onionLocationHeaderFilter")
             .build();
 
     // these beans will be created when "autoPublishEnabled" is false or the app is not a web application

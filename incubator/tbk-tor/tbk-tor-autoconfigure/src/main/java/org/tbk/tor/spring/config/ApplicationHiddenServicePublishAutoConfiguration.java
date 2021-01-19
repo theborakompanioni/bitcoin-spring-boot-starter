@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
-@ConditionalOnClass(ServerProperties.class)
+@ConditionalOnWebApplication
 @AutoConfigureBefore(TorAutoConfiguration.class)
 public class ApplicationHiddenServicePublishAutoConfiguration {
 
@@ -34,7 +34,6 @@ public class ApplicationHiddenServicePublishAutoConfiguration {
     @Primary
     @Bean("applicationHiddenServiceDefinition")
     @ConditionalOnMissingBean(name = "applicationHiddenServiceDefinition")
-    @ConditionalOnWebApplication
     @ConditionalOnBean(ServerProperties.class)
     @Conditional(OnAutoPublishEnabledAndServerPortSpecified.class)
     public HiddenServiceDefinition applicationHiddenServiceDefinition(ServerProperties serverProperties,

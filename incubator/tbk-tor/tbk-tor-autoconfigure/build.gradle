@@ -12,6 +12,7 @@ dependencies {
     api project(':incubator:tbk-tor:tbk-tor-http')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
     // jackson-annotations are included to prevent compile warning "warning: unknown enum constant Include.NON_EMPTY".

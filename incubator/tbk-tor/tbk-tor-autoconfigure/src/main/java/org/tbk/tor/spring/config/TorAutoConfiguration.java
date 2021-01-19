@@ -18,6 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.tbk.tor.NativeTorFactory;
 import org.tbk.tor.TorFactory;
 import org.tbk.tor.hs.DefaultTorHiddenServiceSocketFactory;
@@ -39,6 +40,10 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
+@Import({
+        ApplicationHiddenServicePublishAutoConfiguration.class,
+        TorWebFilterAutoConfiguration.class
+})
 public class TorAutoConfiguration {
 
     private final TorAutoConfigProperties properties;
