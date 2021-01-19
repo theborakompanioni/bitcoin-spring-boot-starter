@@ -42,7 +42,8 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @Import({
         TorHiddenServiceAutoConfiguration.class,
-        TorWebFilterAutoConfiguration.class
+        TorWebFilterAutoConfiguration.class,
+        TorHealthContributorAutoConfiguration.class,
 })
 public class TorAutoConfiguration {
 

@@ -37,7 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.health.hiddenService.enabled=true"
 })
 public class EnabledHiddenServiceHealthIndicatorIntegrationTest {
-    private CombinableMatcher<String> jsonPathStatusUpOrDownMatcher = either(is(Status.UP.getCode())).or(is(Status.DOWN.getCode()));
+    private CombinableMatcher<String> jsonPathStatusUpOrDownMatcher = either(is(Status.UP.getCode()))
+            .or(is(Status.OUT_OF_SERVICE.getCode()));
     private CombinableMatcher<Integer> statusOkOrUnavailableMatcher = either(is(WebEndpointResponse.STATUS_OK))
             .or(is(WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE));
 

@@ -1,11 +1,14 @@
-package org.tbk.tor.spring.health;
+package org.tbk.tor.spring.actuate.health;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
@@ -56,7 +59,7 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
         if (virtualHost.isEmpty()) {
             log.warn("Cannot perform health check on hidden service {}: Virtual host cannot be read", hiddenService.getName());
 
-            builder.down().withDetails(baseDetails);
+            builder.unknown().withDetails(baseDetails);
             return;
         }
 
@@ -68,6 +71,7 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
                 .setConnectionRequestTimeout((int) Duration.ofSeconds(10).toMillis())
                 .setConnectTimeout((int) Duration.ofSeconds(10).toMillis())
                 .setSocketTimeout((int) Duration.ofSeconds(10).toMillis())
+                .setRedirectsEnabled(false)
                 .build();
 
         HttpGet request = new HttpGet(url);
@@ -84,7 +88,9 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
         } catch (IOException e) {
             log.warn("Exception while performing hidden service health check: {}", e.getMessage());
 
-            builder.down(e).withDetails(baseDetails);
+            builder.outOfService()
+                    .withException(e)
+                    .withDetails(baseDetails);
         }
     }
 }

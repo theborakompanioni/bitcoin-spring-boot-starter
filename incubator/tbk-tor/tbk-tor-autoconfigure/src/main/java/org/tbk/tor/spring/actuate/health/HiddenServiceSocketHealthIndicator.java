@@ -1,4 +1,4 @@
-package org.tbk.tor.spring.health;
+package org.tbk.tor.spring.actuate.health;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
