@@ -75,7 +75,7 @@ public class HiddenServiceDefinition {
         return MoreObjects.toStringHelper(this)
                 .add("virtualHost", getVirtualHost().orElse("unknown"))
                 .add("virtualPort", virtualPort)
-                .add("host", virtualPort)
+                .add("host", host)
                 .add("port", port)
                 .add("directory", directory.getAbsolutePath())
                 .toString();

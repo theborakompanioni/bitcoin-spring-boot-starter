@@ -34,8 +34,6 @@ public class TorAutoConfigProperties implements Validator {
     @DurationUnit(ChronoUnit.SECONDS)
     private Duration startupTimeout;
 
-    private Map<String, HiddenServiceProperties> hiddenServices;
-
     public String getWorkingDirectory() {
         return workingDirectory != null ? workingDirectory : DEFAULT_WORKING_DIRECTORY;
     }
@@ -46,10 +44,6 @@ public class TorAutoConfigProperties implements Validator {
 
     public Duration getStartupTimeout() {
         return startupTimeout != null ? startupTimeout : DEFAULT_START_TIMEOUT;
-    }
-
-    public Map<String, HiddenServiceProperties> getHiddenServices() {
-        return this.hiddenServices != null ? ImmutableMap.copyOf(hiddenServices) : Collections.emptyMap();
     }
 
     @Override
@@ -69,12 +63,6 @@ public class TorAutoConfigProperties implements Validator {
             String errorMessage = "'workingDirectory' must not contain whitespaces - unsupported value";
             errors.rejectValue("workingDirectory", "directory.unsupported", errorMessage);
         }
-
-        properties.getHiddenServices().forEach((key, value) -> {
-            errors.pushNestedPath("hiddenServices[" + key + "]");
-            ValidationUtils.invokeValidator(value, value, errors);
-            errors.popNestedPath();
-        });
     }
 
     /**
@@ -82,7 +70,7 @@ public class TorAutoConfigProperties implements Validator {
      * e.g.
      * <code>
      * HiddenServiceDir /var/lib/tor/my_website/
-     * HiddenServicePort 80 127.0.0.1:80
+     * HiddenServicePort 80 127.0.0.1:8080
      * </code>
      */
     @Data
@@ -92,8 +80,13 @@ public class TorAutoConfigProperties implements Validator {
 
         private String directory;
         private Integer virtualPort;
+        // private List<Integer> virtualPorts; <-- multiple values not yet supported by netlayer
         private String host;
         private int port;
+
+        public String getHost() {
+            return host != null ? host : DEFAULT_HOST;
+        }
 
         public int getVirtualPort() {
             return virtualPort != null ? virtualPort : DEFAULT_VIRTUAL_PORT;
@@ -115,6 +108,15 @@ public class TorAutoConfigProperties implements Validator {
             } else if (containsWhitespaces(directory)) {
                 String errorMessage = "'directory' must not contain whitespaces - unsupported value";
                 errors.rejectValue("directory", "directory.unsupported", errorMessage);
+            }
+
+            String host = properties.getHost();
+            if (host == null || host.isBlank()) {
+                String errorMessage = "'host' must not be empty";
+                errors.rejectValue("host", "host.invalid", errorMessage);
+            } else if (containsWhitespaces(directory)) {
+                String errorMessage = "'host' must not contain whitespaces - unsupported value";
+                errors.rejectValue("host", "host.unsupported", errorMessage);
             }
 
             if (properties.getPort() <= 0) {

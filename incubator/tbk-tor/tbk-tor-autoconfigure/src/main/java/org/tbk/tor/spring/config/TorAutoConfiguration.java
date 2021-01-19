@@ -11,12 +11,13 @@ import org.berndpruenster.netlayer.tor.TorCtlException;
 import org.berndpruenster.netlayer.tor.Torrc;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.tbk.tor.NativeTorFactory;
 import org.tbk.tor.TorFactory;
 import org.tbk.tor.hs.DefaultTorHiddenServiceSocketFactory;
@@ -26,7 +27,6 @@ import org.tbk.tor.http.SimpleTorHttpClientBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,14 +53,19 @@ public class TorAutoConfiguration {
     public Torrc torrcWithHiddenServiceDefinitions(List<HiddenServiceDefinition> hiddenServices) throws IOException {
         LinkedHashMap<String, String> torrcEntries = Maps.newLinkedHashMap();
 
-        hiddenServices.forEach(it -> {
-            String hiddenServicePort = String.format("%d %s:%d", it.getVirtualPort(), it.getHost(), it.getPort());
-
-            torrcEntries.put("HiddenServiceDir", it.getDirectory().getAbsolutePath());
-            torrcEntries.put("HiddenServicePort", hiddenServicePort);
-        });
-
         torrcEntries.putAll(createTorrcEntriesFromProperties(this.properties));
+
+        List<ImmutableMap<String, String>> torrcEntriesFromBeans = hiddenServices.stream()
+                .map(it -> {
+                    String hiddenServicePort = String.format("%d %s:%d", it.getVirtualPort(), it.getHost(), it.getPort());
+
+                    return ImmutableMap.<String, String>builder()
+                            .put("HiddenServiceDir", it.getDirectory().getAbsolutePath())
+                            .put("HiddenServicePort", hiddenServicePort)
+                            .build();
+                }).collect(Collectors.toList());
+
+        torrcEntriesFromBeans.forEach(torrcEntries::putAll);
 
         return new Torrc(torrcEntries);
     }
@@ -162,16 +167,8 @@ public class TorAutoConfiguration {
         };
     }
 
-    private LinkedHashMap<String, String> createTorrcEntriesFromProperties(TorAutoConfigProperties props) {
-        LinkedHashMap<String, String> map = Maps.newLinkedHashMap();
-        props.getHiddenServices().forEach((name, spec) -> {
-            String hiddenServiceDir = String.format("%s/hiddenservice/%s", props.getWorkingDirectory(), spec.getDirectory());
-            String hiddenServicePort = String.format("%d %s:%d", spec.getVirtualPort(), spec.getHost(), spec.getPort());
-
-            map.put("HiddenServiceDir", new File(hiddenServiceDir).getAbsolutePath());
-            map.put("HiddenServicePort", hiddenServicePort);
-        });
-        return map;
+    private Map<String, String> createTorrcEntriesFromProperties(TorAutoConfigProperties props) {
+        return ImmutableMap.<String, String>builder()
+                .build();
     }
-
 }

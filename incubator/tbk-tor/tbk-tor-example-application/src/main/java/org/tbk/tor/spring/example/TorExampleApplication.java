@@ -21,7 +21,9 @@ import org.springframework.context.annotation.Profile;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootApplication
@@ -78,6 +80,38 @@ public class TorExampleApplication {
                 }
             });
             log.info("=================================================");
+        };
+    }
+
+    @Bean
+    @Profile("!test")
+    public ApplicationRunner allOtherHiddenServicesInfoRunner(List<HiddenServiceDefinition> hiddenServices) {
+        return args -> {
+            List<HiddenServiceDefinition> otherHiddenServices = hiddenServices.stream()
+                    .filter(val -> val != applicationHiddenServiceDefinition)
+                    .collect(Collectors.toList());
+
+            otherHiddenServices.forEach(hiddenService -> {
+                Optional<String> httpUrl = applicationHiddenServiceDefinition.getVirtualHost()
+                        .map(val -> "http://" + val + ":" + applicationHiddenServiceDefinition.getVirtualPort());
+
+                log.info("=================================================");
+                log.info("url: {}", httpUrl.orElse("unavailable"));
+                log.info("virtual host: {}", applicationHiddenServiceDefinition.getVirtualHost().orElse("unknown"));
+                log.info("virtual port: {}", applicationHiddenServiceDefinition.getVirtualPort());
+                log.info("host: {}", applicationHiddenServiceDefinition.getHost());
+                log.info("port: {}", applicationHiddenServiceDefinition.getPort());
+                log.info("directory: {}", applicationHiddenServiceDefinition.getDirectory().getAbsolutePath());
+                httpUrl.ifPresent(url -> {
+                    log.info("-------------------------------------------------");
+                    try {
+                        log.info("run: torsocks -p {} curl {}/index.html -v", tor.getProxy().getPort(), url);
+                    } catch (TorCtlException e) {
+                        log.warn("Could not get tor proxy port");
+                    }
+                });
+                log.info("=================================================");
+            });
         };
     }
 
