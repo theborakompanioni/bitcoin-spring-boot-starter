@@ -19,15 +19,14 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnWebApplication
 @AutoConfigureBefore(TorAutoConfiguration.class)
-public class ApplicationHiddenServicePublishAutoConfiguration {
+public class TorHiddenServiceAutoConfiguration {
 
     private final TorAutoConfigProperties properties;
 
-    public ApplicationHiddenServicePublishAutoConfiguration(TorAutoConfigProperties properties) {
+    public TorHiddenServiceAutoConfiguration(TorAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);
     }
 

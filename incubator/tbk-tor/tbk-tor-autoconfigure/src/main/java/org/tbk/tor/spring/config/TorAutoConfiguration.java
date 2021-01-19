@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 @EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @Import({
-        ApplicationHiddenServicePublishAutoConfiguration.class,
+        TorHiddenServiceAutoConfiguration.class,
         TorWebFilterAutoConfiguration.class
 })
 public class TorAutoConfiguration {

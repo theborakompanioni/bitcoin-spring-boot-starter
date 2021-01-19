@@ -23,11 +23,10 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnWebApplication
 @ConditionalOnClass(Filter.class)
-@AutoConfigureAfter(ApplicationHiddenServicePublishAutoConfiguration.class)
+@AutoConfigureAfter(TorHiddenServiceAutoConfiguration.class)
 public class TorWebFilterAutoConfiguration {
 
     private final TorAutoConfigProperties properties;
