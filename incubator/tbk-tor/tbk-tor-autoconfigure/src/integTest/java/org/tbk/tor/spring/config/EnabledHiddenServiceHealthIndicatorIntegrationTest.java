@@ -40,9 +40,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.health.hiddenService.enabled=true"
 })
 public class EnabledHiddenServiceHealthIndicatorIntegrationTest {
-    private static CombinableMatcher<String> jsonPathStatusUpOrDownMatcher = either(is(Status.UP.getCode()))
-            .or(is(Status.OUT_OF_SERVICE.getCode()));
-    private static CombinableMatcher<Integer> statusOkOrUnavailableMatcher = either(is(WebEndpointResponse.STATUS_OK))
+    private static final CombinableMatcher<String> jsonPathStatusUpOrDownMatcher = either(is(Status.UP.getCode()))
+            .or(is(Status.DOWN.getCode()));
+    private static final CombinableMatcher<Integer> statusOkOrUnavailableMatcher = either(is(WebEndpointResponse.STATUS_OK))
             .or(is(WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE));
 
     @SpringBootApplication
@@ -67,7 +67,6 @@ public class EnabledHiddenServiceHealthIndicatorIntegrationTest {
             };
         }
     }
-
 
     @Autowired
     private MockMvc mockMvc;

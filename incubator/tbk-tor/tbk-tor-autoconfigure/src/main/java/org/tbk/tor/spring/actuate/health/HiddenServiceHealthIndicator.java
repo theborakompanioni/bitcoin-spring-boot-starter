@@ -88,7 +88,7 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
         } catch (IOException e) {
             log.warn("Exception while performing hidden service health check: {}", e.getMessage());
 
-            builder.outOfService()
+            builder.down()
                     .withException(e)
                     .withDetails(baseDetails);
         }

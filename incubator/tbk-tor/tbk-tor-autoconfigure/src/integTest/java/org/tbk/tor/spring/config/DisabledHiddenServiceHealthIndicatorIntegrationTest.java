@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,7 +55,7 @@ public class DisabledHiddenServiceHealthIndicatorIntegrationTest {
     @Test
     public void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
-                .andExpect(jsonPath("status").value("UP"))
+                .andExpect(jsonPath("status").value(Status.UP.getCode()))
                 .andExpect(jsonPath("components.hiddenService").doesNotExist())
                 .andExpect(status().isOk());
     }

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.server.port=13337",
         "management.endpoint.health.show-details=always"
 })
-public class InfoContributorIntegrationTest {
+public class TorInfoContributorIntegrationTest {
 
     @SpringBootApplication
     public static class HiddenServiceTestApplication {
@@ -58,6 +58,7 @@ public class InfoContributorIntegrationTest {
     @Test
     public void itShouldAddHiddenServiceInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
+                .andExpect(jsonPath("hidden_services").exists())
                 .andExpect(jsonPath("hidden_services.spring_boot_app").exists())
                 .andExpect(jsonPath("hidden_services.spring_boot_app.name").value("spring_boot_app"))
                 .andExpect(jsonPath("hidden_services.spring_boot_app.virtual_host").exists())
