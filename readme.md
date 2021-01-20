@@ -291,12 +291,25 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
 ./gradlew test integrationTest
 ```
 
+Tests in example application modules or modules that start a lot of docker containers 
+(modules named "*-example-application" or "spring-testcontainer-*") are excluded from the
+default test phase and must be manually enabled if you want to run them.
+To run all tests you must pass `-PexampleTest` and `-PtestcontainerTest`:
+```
+./gradlew test integrationTest -PtestcontainerTest -PexampleTest
+```
+Be aware this might take several minutes to complete (>= 15 minutes).
+
+
 ### Dependency Checks
+```
+# verifies checksums of dependencies
+./gradlew verifyChecksums
+```
+
 ```
 # calculate checksums of dependencies
 ./gradlew -q calculateChecksums | grep -v "spring-boot-bitcoin-starter" > checksums.gradle
-# verifies checksums of dependencies
-./gradlew verifyChecksums
 ```
 
 # Resources
