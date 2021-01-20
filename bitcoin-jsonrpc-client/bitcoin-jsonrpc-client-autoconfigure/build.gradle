@@ -13,6 +13,11 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // jackson-annotations are included to prevent compile warning "warning: unknown enum constant Include.NON_EMPTY".
+    // this might be a dependency issue in spring-boot-starter-actuator: classes in actuator use Include.NON_EMPTY
+    // (e.g. `org.springframework.boot.actuate.health.Health`) but jackson is an optional dependency
+    compileOnly 'com.fasterxml.jackson.core:jackson-annotations'
+
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
