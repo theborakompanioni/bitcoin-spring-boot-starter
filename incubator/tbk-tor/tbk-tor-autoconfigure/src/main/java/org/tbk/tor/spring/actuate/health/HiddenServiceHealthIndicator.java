@@ -43,7 +43,8 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
                 .build();
 
         try {
-            doHealthCheckInternal(builder, baseDetails);
+            builder.withDetails(baseDetails);
+            doHealthCheckInternal(builder);
         } catch (Exception e) {
             log.error("Exception while performing hidden service health check", e);
 
@@ -53,13 +54,13 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
         }
     }
 
-    private void doHealthCheckInternal(Health.Builder builder, Map<String, Object> baseDetails) {
+    private void doHealthCheckInternal(Health.Builder builder) {
         Optional<String> virtualHost = hiddenService.getVirtualHost();
 
         if (virtualHost.isEmpty()) {
             log.warn("Cannot perform health check on hidden service {}: Virtual host cannot be read", hiddenService.getName());
 
-            builder.unknown().withDetails(baseDetails);
+            builder.unknown();
             return;
         }
 
@@ -81,7 +82,6 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
             EntityUtils.consume(response.getEntity());
 
             builder.up().withDetails(ImmutableMap.<String, Object>builder()
-                    .putAll(baseDetails)
                     .put("status_code", response.getStatusLine().getStatusCode())
                     .put("reason_phrase", response.getStatusLine().getReasonPhrase())
                     .build());
@@ -89,8 +89,7 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
             log.warn("Exception while performing hidden service health check: {}", e.getMessage());
 
             builder.down()
-                    .withException(e)
-                    .withDetails(baseDetails);
+                    .withException(e);
         }
     }
 }
