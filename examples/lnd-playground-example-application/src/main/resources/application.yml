@@ -19,6 +19,11 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
 
+management.endpoint.health.show-details: 'always'
+management.endpoints.web.exposure.include: '*'
+management.info.bitcoinJsonRpc.enabled: true
+management.health.bitcoinJsonRpc.enabled: true
+
 org.tbk.spring.testcontainer.lnd:
   enabled: true
   restport: 20080
