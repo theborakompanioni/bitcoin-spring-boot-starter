@@ -29,8 +29,8 @@ public class BlockchairFeeApiClientImplTest {
         assertThat(data.getSuggestedTransactionFeePerByteSat(), is(greaterThanOrEqualTo(0L)));
         assertThat(data.getMemoolTransactions(), is(greaterThanOrEqualTo(0L)));
         assertThat(data.getMempoolSize(), is(greaterThanOrEqualTo(0L)));
-        assertThat(data.getAverageTransactionFee24H(), is(greaterThan(0L)));
-        assertThat(data.getMedianTransactionFee24H(), is(greaterThan(0L)));
-        assertThat(data.getMempoolTps(), is(greaterThan(0d)));
+        assertThat(data.getAverageTransactionFee24H(), is(greaterThanOrEqualTo(0L)));
+        assertThat(data.getMedianTransactionFee24H(), is(greaterThanOrEqualTo(0L)));
+        assertThat(data.getMempoolTps(), is(greaterThanOrEqualTo(0d)));
     }
 }
