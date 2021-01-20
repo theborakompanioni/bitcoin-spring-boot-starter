@@ -1,6 +1,7 @@
 package org.tbk.tor.spring.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.impl.client.DefaultServiceUnavailableRetryStrategy;
 import org.hamcrest.core.CombinableMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +14,12 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.tbk.tor.spring.config.TorHttpClientAutoConfiguration.TorHttpClientBuilderCustomizer;
 
 import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.Matchers.is;
@@ -37,9 +40,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.health.hiddenService.enabled=true"
 })
 public class EnabledHiddenServiceHealthIndicatorIntegrationTest {
-    private CombinableMatcher<String> jsonPathStatusUpOrDownMatcher = either(is(Status.UP.getCode()))
+    private static CombinableMatcher<String> jsonPathStatusUpOrDownMatcher = either(is(Status.UP.getCode()))
             .or(is(Status.OUT_OF_SERVICE.getCode()));
-    private CombinableMatcher<Integer> statusOkOrUnavailableMatcher = either(is(WebEndpointResponse.STATUS_OK))
+    private static CombinableMatcher<Integer> statusOkOrUnavailableMatcher = either(is(WebEndpointResponse.STATUS_OK))
             .or(is(WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE));
 
     @SpringBootApplication
@@ -50,6 +53,18 @@ public class EnabledHiddenServiceHealthIndicatorIntegrationTest {
                     .sources(HiddenServiceTestApplication.class)
                     .web(WebApplicationType.SERVLET)
                     .run(args);
+        }
+
+        @Bean
+        public TorHttpClientBuilderCustomizer torHttpClientBuilderCustomizer() {
+            return config -> {
+                config.disableAuthCaching()
+                        .disableAutomaticRetries()
+                        .disableConnectionState()
+                        .disableCookieManagement()
+                        .disableRedirectHandling()
+                        .setServiceUnavailableRetryStrategy(new DefaultServiceUnavailableRetryStrategy(3, 1000));
+            };
         }
     }
 

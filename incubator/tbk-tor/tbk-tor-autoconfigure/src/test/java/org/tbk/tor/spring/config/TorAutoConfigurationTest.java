@@ -17,6 +17,15 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class TorAutoConfigurationTest {
+    // order of the autoconfig classes is important here!
+    private static Class<?>[] autoConfigClasses = new Class[]{
+            TorHiddenServiceAutoConfiguration.class,
+            TorAutoConfiguration.class,
+            TorHttpClientAutoConfiguration.class,
+            TorHealthContributorAutoConfiguration.class,
+            TorWebFilterAutoConfiguration.class,
+    };
+
     private static final List<String> beanNames = ImmutableList.<String>builder()
             .add("nativeTor")
             .add("nativeTorFactory")
@@ -43,7 +52,7 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void noBeansCreated() {
-        this.contextRunner.withUserConfiguration(TorAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(autoConfigClasses)
                 .withPropertyValues("org.tbk.tor.enabled=false")
                 .run(context -> {
                     List<String> allBeanNames = ImmutableList.<String>builder()
@@ -73,7 +82,7 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void torBeansCreated() {
-        this.contextRunner.withUserConfiguration(TorAutoConfiguration.class)
+        this.contextRunner.withUserConfiguration(autoConfigClasses)
                 .run(context -> {
                     beanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);
@@ -101,7 +110,7 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void torBeansCreatedInWebContext() {
-        this.webContextRunner.withUserConfiguration(TorAutoConfiguration.class)
+        this.webContextRunner.withUserConfiguration(autoConfigClasses)
                 .withBean(ServerProperties.class, () -> {
                     // fake a running webserver for the hidden service to bind to
                     ServerProperties serverProperties = new ServerProperties();
@@ -126,7 +135,7 @@ public class TorAutoConfigurationTest {
 
     @Test
     public void torBeansCreatedInWebContextWithAutoPublishDisabled() {
-        this.webContextRunner.withUserConfiguration(TorAutoConfiguration.class)
+        this.webContextRunner.withUserConfiguration(autoConfigClasses)
                 .withPropertyValues("org.tbk.tor.auto-publish-enabled=false")
                 .run(context -> {
                     autoPublishEnabledAndWebAppBeanNames.forEach(name -> {

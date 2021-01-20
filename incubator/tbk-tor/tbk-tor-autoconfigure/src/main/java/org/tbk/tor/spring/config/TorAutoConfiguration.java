@@ -4,27 +4,22 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.runjva.sourceforge.jsocks.protocol.Socks5Proxy;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.Tor;
 import org.berndpruenster.netlayer.tor.TorCtlException;
 import org.berndpruenster.netlayer.tor.Torrc;
 import org.springframework.boot.actuate.info.InfoContributor;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.tbk.tor.NativeTorFactory;
 import org.tbk.tor.TorFactory;
 import org.tbk.tor.hs.DefaultTorHiddenServiceSocketFactory;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 import org.tbk.tor.hs.TorHiddenServiceSocketFactory;
-import org.tbk.tor.http.SimpleTorHttpClientBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,11 +35,6 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
-@Import({
-        TorHiddenServiceAutoConfiguration.class,
-        TorWebFilterAutoConfiguration.class,
-        TorHealthContributorAutoConfiguration.class,
-})
 public class TorAutoConfiguration {
 
     private final TorAutoConfigProperties properties;
@@ -112,18 +102,6 @@ public class TorAutoConfiguration {
     @ConditionalOnMissingBean
     public TorHiddenServiceSocketFactory torHiddenServiceSocketFactory(Tor tor) {
         return new DefaultTorHiddenServiceSocketFactory(tor);
-    }
-
-    @Configuration
-    @ConditionalOnClass(SimpleTorHttpClientBuilder.class)
-    @AutoConfigureAfter(TorAutoConfiguration.class)
-    public static class TorHttpClientAutoConfiguration {
-        @Bean(name = "torHttpClient", destroyMethod = "close")
-        @ConditionalOnMissingBean(name = "torHttpClient")
-        public CloseableHttpClient torHttpClient(Tor tor) throws TorCtlException {
-            return SimpleTorHttpClientBuilder.tor(tor)
-                    .build();
-        }
     }
 
     @Bean

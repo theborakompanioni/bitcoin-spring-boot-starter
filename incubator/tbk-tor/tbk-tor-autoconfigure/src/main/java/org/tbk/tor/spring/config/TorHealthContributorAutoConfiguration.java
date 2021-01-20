@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.tor.hs.HiddenServiceDefinition;
@@ -21,14 +22,15 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 @Configuration
-@AutoConfigureAfter(TorAutoConfiguration.class)
+@ConditionalOnClass({CloseableHttpClient.class, CompositeHealthContributorConfiguration.class})
+@ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
+@AutoConfigureAfter(TorHttpClientAutoConfiguration.class)
 public class TorHealthContributorAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass(CompositeHealthContributorConfiguration.class)
     @ConditionalOnEnabledHealthIndicator("hiddenService")
     @ConditionalOnBean(name = "torHttpClient")
-    @AutoConfigureAfter(TorAutoConfiguration.class)
+    @AutoConfigureAfter(TorHttpClientAutoConfiguration.class)
     public class TorHiddenServiceHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<HiddenServiceHealthIndicator, HiddenServiceDefinition> {
 
@@ -54,7 +56,7 @@ public class TorHealthContributorAutoConfiguration {
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(CompositeHealthContributorConfiguration.class)
     @ConditionalOnEnabledHealthIndicator("hiddenServiceSocket")
-    @AutoConfigureAfter(TorAutoConfiguration.class)
+    @AutoConfigureAfter(TorHttpClientAutoConfiguration.class)
     public class TorHiddenServiceSocketHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<HiddenServiceSocketHealthIndicator, HiddenServiceSocket> {
 
@@ -64,10 +66,7 @@ public class TorHealthContributorAutoConfiguration {
         public HealthContributor hiddenServiceSocketHealthContributor(Map<String, HiddenServiceSocket> hiddenServiceSockets) {
             return createContributor(hiddenServiceSockets);
         }
-
     }
-
-
 
 }
 
