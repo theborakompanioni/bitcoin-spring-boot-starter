@@ -1,5 +1,6 @@
 package org.tbk.lightning.lnd.grpc.config;
 
+import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +16,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -27,12 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "server.port=13337",
         "management.server.port=13337",
+        "management.endpoints.web.exposure.include=metrics",
         "org.tbk.lightning.lnd.grpc.rpchost=localhost",
         "org.tbk.lightning.lnd.grpc.rpcport=13337",
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-public class LndJsonRpcInfoContributorIntegrationTest {
+public class LndJsonRpcClientMetricsIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {
@@ -49,10 +53,19 @@ public class LndJsonRpcInfoContributorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldAddInformationToInfoEndpoint() throws Exception {
-        mockMvc.perform(get("/actuator/info"))
-                .andExpect(jsonPath("lndJsonRpc").exists())
-                .andExpect(jsonPath("lndJsonRpc.performValidation").exists())
-                .andExpect(status().isOk());
+    public void itShouldAddMetricsEndpoints() throws Exception {
+        List<String> metricNames = ImmutableList.<String>builder()
+                .add("lnd.blocks.height")
+                .add("lnd.channels.active")
+                .add("lnd.channels.inactive")
+                .add("lnd.channels.pending")
+                .add("lnd.peers")
+                .build();
+
+        for (String metricName : metricNames) {
+            mockMvc.perform(get("/actuator/metrics/{metricName}", metricName))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
     }
 }
