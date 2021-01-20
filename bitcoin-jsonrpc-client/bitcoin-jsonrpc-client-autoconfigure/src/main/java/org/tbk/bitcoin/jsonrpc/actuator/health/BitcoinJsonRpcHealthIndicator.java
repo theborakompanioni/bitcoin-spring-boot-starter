@@ -53,7 +53,7 @@ public class BitcoinJsonRpcHealthIndicator extends AbstractHealthIndicator imple
             log.warn("Exception while performing health check with bitcoin jsonrpc client on {}: {}",
                     client.getServerURI(), e.getMessage());
 
-            builder.outOfService()
+            builder.down()
                     .withException(e)
                     .withDetails(ImmutableMap.<String, Object>builder()
                             .put("response", firstNonNull(e.response, "<empty>"))
