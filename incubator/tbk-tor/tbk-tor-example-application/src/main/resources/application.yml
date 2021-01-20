@@ -23,8 +23,7 @@ info.app:
   name: "${app.name}"
   description: "${app.description}"
   java:
-    source: "${java.version}"
-    target: "${java.version}"
+    version: "${java.version}"
     runtime:
         version: "${java.runtime.version}"
   user:
@@ -32,6 +31,7 @@ info.app:
 
 management.endpoint.health.show-details: 'always'
 management.endpoints.web.exposure.include: '*'
+management.info.tor.enabled: true
 management.info.hiddenService.enabled: true
 management.health.hiddenService.enabled: true
 

@@ -37,7 +37,7 @@ public class TorExampleApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder()
                 .sources(TorExampleApplication.class)
-                .listeners(applicationPidFileWriter())
+                .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local")
                 .run(args);

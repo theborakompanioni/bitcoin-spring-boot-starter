@@ -58,13 +58,13 @@ public class TorInfoContributorIntegrationTest {
     @Test
     public void itShouldAddHiddenServiceInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
-                .andExpect(jsonPath("hidden_services").exists())
-                .andExpect(jsonPath("hidden_services.spring_boot_app").exists())
-                .andExpect(jsonPath("hidden_services.spring_boot_app.name").value("spring_boot_app"))
-                .andExpect(jsonPath("hidden_services.spring_boot_app.virtual_host").exists())
-                .andExpect(jsonPath("hidden_services.spring_boot_app.virtual_port").value(80))
-                .andExpect(jsonPath("hidden_services.spring_boot_app.host").exists())
-                .andExpect(jsonPath("hidden_services.spring_boot_app.port").exists())
+                .andExpect(jsonPath("hiddenService").exists())
+                .andExpect(jsonPath("hiddenService.spring_boot_app").exists())
+                .andExpect(jsonPath("hiddenService.spring_boot_app.name").value("spring_boot_app"))
+                .andExpect(jsonPath("hiddenService.spring_boot_app.virtual_host").exists())
+                .andExpect(jsonPath("hiddenService.spring_boot_app.virtual_port").value(80))
+                .andExpect(jsonPath("hiddenService.spring_boot_app.host").exists())
+                .andExpect(jsonPath("hiddenService.spring_boot_app.port").exists())
                 .andExpect(status().isOk());
     }
 }
