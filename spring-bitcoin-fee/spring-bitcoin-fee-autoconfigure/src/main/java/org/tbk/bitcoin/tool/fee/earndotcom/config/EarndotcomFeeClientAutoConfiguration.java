@@ -18,7 +18,7 @@ import org.tbk.bitcoin.tool.fee.util.MoreCacheBuilder;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(EarndotcomFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         EarndotcomApiClient.class,

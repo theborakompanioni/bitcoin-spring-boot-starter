@@ -10,7 +10,7 @@ import org.tbk.bitcoin.jsonrpc.config.RpcConfigBuilderCustomizer;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RpcConfigBuilderCustomizer.class)
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class BitcoindContainerJsonRpcClientAutoConfiguration {

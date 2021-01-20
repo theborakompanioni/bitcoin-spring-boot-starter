@@ -26,7 +26,7 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinJsonRpcCacheAutoConfigProperties.class)
 @ConditionalOnClass(CacheFacade.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.cache.enabled", havingValue = "true", matchIfMissing = true)

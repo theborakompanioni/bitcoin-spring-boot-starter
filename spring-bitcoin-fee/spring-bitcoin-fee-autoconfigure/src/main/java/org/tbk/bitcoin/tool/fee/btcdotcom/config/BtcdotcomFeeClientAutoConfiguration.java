@@ -12,7 +12,7 @@ import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BtcdotcomFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         BtcdotcomFeeApiClient.class,

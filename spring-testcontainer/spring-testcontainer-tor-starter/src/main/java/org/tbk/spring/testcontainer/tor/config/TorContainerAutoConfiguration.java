@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(TorContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.tor.enabled", havingValue = "true")
 public class TorContainerAutoConfiguration {

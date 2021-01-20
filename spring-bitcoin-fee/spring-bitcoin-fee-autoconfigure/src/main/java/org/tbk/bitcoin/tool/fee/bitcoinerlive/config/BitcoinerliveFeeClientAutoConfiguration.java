@@ -12,7 +12,7 @@ import org.tbk.bitcoin.tool.fee.bitcoinerlive.BitcoinerliveFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinerliveFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         BitcoinerliveFeeApiClient.class,

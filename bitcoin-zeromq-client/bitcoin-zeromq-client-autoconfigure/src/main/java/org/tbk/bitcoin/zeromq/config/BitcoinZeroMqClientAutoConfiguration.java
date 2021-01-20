@@ -26,7 +26,7 @@ import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig.BitcoinZmqClientConf
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.zeromq.enabled", havingValue = "true", matchIfMissing = true)
 public class BitcoinZeroMqClientAutoConfiguration {

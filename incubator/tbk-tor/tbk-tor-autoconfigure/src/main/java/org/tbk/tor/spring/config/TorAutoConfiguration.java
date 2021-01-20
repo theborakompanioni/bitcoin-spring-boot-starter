@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(TorAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 public class TorAutoConfiguration {

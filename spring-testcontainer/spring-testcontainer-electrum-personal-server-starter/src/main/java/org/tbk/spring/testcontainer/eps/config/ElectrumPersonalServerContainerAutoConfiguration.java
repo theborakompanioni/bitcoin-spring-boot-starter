@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumPersonalServerContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.eps.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)

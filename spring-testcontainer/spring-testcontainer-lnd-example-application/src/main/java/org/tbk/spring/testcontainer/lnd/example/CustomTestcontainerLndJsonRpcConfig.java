@@ -17,7 +17,7 @@ import org.tbk.spring.testcontainer.lnd.LndContainer;
 import javax.xml.bind.DatatypeConverter;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class CustomTestcontainerLndJsonRpcConfig {
 
     @Bean

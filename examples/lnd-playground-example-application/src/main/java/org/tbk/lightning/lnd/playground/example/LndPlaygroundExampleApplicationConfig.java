@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.time.Duration;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class LndPlaygroundExampleApplicationConfig {
 
     @Bean

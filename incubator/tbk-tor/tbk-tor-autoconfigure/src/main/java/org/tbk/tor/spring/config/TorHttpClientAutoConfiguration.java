@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.tor.http.SimpleTorHttpClientBuilder;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass(SimpleTorHttpClientBuilder.class)
 @AutoConfigureAfter(TorAutoConfiguration.class)

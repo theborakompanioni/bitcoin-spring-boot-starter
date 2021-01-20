@@ -10,7 +10,7 @@ import org.tbk.electrum.config.ElectrumDeamonJsonrpcConfigBuilderCustomizer;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ElectrumDeamonJsonrpcConfigBuilderCustomizer.class)
 @AutoConfigureAfter(ElectrumDaemonContainerAutoConfiguration.class)
 public class ElectrumDaemonContainerJsonRpcClientAutoConfiguration {

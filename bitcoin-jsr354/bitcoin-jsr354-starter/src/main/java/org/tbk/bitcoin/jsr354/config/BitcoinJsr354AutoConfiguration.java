@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.exchange.BitcoinStandardExchangeRateProvider;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class BitcoinJsr354AutoConfiguration {
 
     @Bean

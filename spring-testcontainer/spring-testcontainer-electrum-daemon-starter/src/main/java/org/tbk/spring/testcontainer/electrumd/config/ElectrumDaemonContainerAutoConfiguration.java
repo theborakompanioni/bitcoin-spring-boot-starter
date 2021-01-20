@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumDaemonContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.electrum-daemon.enabled", havingValue = "true")
 @AutoConfigureAfter({

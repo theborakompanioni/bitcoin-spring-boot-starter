@@ -18,7 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.EnumSet;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableScheduling
 public class BitcoinExchangeCoreExampleApplicationConfig {
 

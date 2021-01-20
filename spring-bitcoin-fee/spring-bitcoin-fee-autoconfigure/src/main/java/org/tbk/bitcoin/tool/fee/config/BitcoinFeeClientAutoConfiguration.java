@@ -13,7 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinFeeClientAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.tool.fee.enabled", havingValue = "true", matchIfMissing = true)
 public class BitcoinFeeClientAutoConfiguration {

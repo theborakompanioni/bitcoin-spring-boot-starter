@@ -21,7 +21,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Exchange.class)
 @EnableConfigurationProperties(XChangeAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.xchange.enabled", havingValue = "true", matchIfMissing = true)

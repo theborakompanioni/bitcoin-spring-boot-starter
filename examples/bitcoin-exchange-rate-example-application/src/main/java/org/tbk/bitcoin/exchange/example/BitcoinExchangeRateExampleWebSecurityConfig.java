@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 public class BitcoinExchangeRateExampleWebSecurityConfig extends WebSecurityConfigurerAdapter {
 

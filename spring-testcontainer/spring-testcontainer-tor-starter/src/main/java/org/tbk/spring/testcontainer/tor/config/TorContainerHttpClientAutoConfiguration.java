@@ -16,7 +16,7 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(CloseableHttpClient.class)
 @AutoConfigureAfter(TorContainerAutoConfiguration.class)
 public class TorContainerHttpClientAutoConfiguration {

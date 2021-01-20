@@ -18,7 +18,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnWebApplication
 @AutoConfigureBefore(TorAutoConfiguration.class)
@@ -82,7 +82,7 @@ public class TorHiddenServiceAutoConfiguration {
      * try again later or write a pull request for the project. this is currently just "nice to have" feature..
      */
     @Profile("tbk-tor-try-also-to-publish-management-port-as-distinct-hidden-service---disabled-danger-danger-danger")
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass({ManagementContextAutoConfiguration.class, ManagementServerProperties.class})
     @AutoConfigureBefore(TorAutoConfiguration.class)
     @AutoConfigureAfter(ManagementContextAutoConfiguration.class)

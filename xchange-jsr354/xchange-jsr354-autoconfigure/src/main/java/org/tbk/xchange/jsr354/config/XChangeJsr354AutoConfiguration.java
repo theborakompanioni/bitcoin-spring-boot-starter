@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 import static org.tbk.xchange.jsr354.MoreProviderContexts.createSimpleProviderContextBuilder;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Exchange.class)
 @AutoConfigureAfter(XChangeAutoConfiguration.class)
 public class XChangeJsr354AutoConfiguration {

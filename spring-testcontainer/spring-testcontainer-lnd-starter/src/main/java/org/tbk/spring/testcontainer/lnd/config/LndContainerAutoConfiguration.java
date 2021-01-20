@@ -26,7 +26,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(LndContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.lnd.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)

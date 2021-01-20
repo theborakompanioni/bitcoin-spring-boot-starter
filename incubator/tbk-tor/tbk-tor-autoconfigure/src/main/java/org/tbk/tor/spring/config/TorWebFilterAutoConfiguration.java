@@ -22,7 +22,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnWebApplication
 @ConditionalOnClass(Filter.class)

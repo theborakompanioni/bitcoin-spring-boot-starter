@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoindRegtestMinerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind-regtest-miner.enabled", havingValue = "true")
 public class BitcoindRegtestMinerAutoConfiguration {

@@ -23,7 +23,7 @@ import java.time.Duration;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumGatewayExampleApplicationProperties.class)
 public class ElectrumGatewayExampleApplicationConfig {
 

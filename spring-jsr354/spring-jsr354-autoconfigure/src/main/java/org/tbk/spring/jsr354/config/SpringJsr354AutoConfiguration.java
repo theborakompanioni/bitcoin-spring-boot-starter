@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SpringJsr354AutoConfigProperties.class)
 @ConditionalOnClass(SpringContextAwareServiceProvider.class)
 @ConditionalOnProperty(value = "org.tbk.spring.jsr354.enabled", havingValue = "true", matchIfMissing = true)

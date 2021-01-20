@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(BitcoinZmqClientConfigBuilderCustomizer.class)
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class BitcoindContainerZeroMqClientAutoConfiguration {

@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(LndJsonRpcClientAutoConfigProperties.class)
 @ConditionalOnClass(LndJsonRpcClientFactory.class)
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)

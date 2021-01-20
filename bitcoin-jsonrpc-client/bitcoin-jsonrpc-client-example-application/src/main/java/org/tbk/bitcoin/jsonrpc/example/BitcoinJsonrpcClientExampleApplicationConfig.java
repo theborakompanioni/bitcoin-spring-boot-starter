@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableScheduling
 public class BitcoinJsonrpcClientExampleApplicationConfig {
 

@@ -12,7 +12,7 @@ import org.tbk.bitcoin.tool.fee.blockchaininfo.BlockchainInfoFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BlockchainInfoFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         BlockchainInfoFeeApiClient.class,

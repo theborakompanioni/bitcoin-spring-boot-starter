@@ -12,7 +12,7 @@ import org.tbk.bitcoin.tool.fee.blockstreaminfo.BlockstreamInfoFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BlockstreamInfoFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         BlockstreamInfoFeeApiClient.class,

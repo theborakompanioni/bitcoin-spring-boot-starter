@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @EnableWebMvc
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class ElectrumGatewayExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {

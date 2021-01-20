@@ -19,7 +19,7 @@ import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactoryImpl;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinJsonRpcClientAutoConfigProperties.class)
 @ConditionalOnClass(BitcoinJsonRpcClientFactory.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)

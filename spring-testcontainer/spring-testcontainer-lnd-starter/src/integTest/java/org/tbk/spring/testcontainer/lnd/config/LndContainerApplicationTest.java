@@ -50,7 +50,7 @@ public class LndContainerApplicationTest {
                     .run(args);
         }
 
-        @Configuration
+        @Configuration(proxyBeanMethods = false)
         public static class CustomTestcontainerLndJsonRpcConfiguration {
 
             @Bean

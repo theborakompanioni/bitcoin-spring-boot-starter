@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumxContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.electrumx.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)

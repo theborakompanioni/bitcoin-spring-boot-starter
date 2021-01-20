@@ -12,7 +12,7 @@ import org.tbk.bitcoin.tool.fee.blockchair.BlockchairFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BlockchairFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         BlockchairFeeApiClient.class,

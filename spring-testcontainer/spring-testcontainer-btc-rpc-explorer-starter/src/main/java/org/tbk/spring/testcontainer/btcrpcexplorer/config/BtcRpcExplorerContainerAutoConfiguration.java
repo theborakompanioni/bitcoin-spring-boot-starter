@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BtcRpcExplorerContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.btcrpcexplorer.enabled", havingValue = "true")
 @AutoConfigureAfter({

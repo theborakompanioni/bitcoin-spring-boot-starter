@@ -12,7 +12,7 @@ import org.tbk.bitcoin.tool.fee.blockcypher.BlockcypherFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BlockcypherFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         BlockcypherFeeApiClient.class,

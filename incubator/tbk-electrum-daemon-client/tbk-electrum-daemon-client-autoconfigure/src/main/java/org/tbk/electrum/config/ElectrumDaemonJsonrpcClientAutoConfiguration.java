@@ -13,7 +13,7 @@ import org.tbk.electrum.ElectrumClientFactoryImpl;
 
 import java.net.URI;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumDaemonJsonrpcClientProperties.class)
 @ConditionalOnClass(ElectrumClientFactory.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.electrum-daemon.jsonrpc.enabled", havingValue = "true")

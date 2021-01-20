@@ -13,7 +13,7 @@ import org.tbk.bitcoin.btcabuse.client.BtcAbuseApiClientImpl;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BtcAbuseClientAutoConfigProperties.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.tool.btcabuse.client.enabled", havingValue = "true")
 public class BtcAbuseClientAutoConfiguration {
