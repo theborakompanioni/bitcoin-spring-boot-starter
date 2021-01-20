@@ -7,8 +7,13 @@ description = 'lnd jsonrpc client autoconfigure package'
 dependencies {
     api project(':lnd-grpc-client:lnd-grpc-client-core')
 
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+
 }
