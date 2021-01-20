@@ -11,7 +11,11 @@ dependencies {
     api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-cache')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
+    compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
 }
