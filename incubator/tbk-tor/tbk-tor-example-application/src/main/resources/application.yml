@@ -30,9 +30,10 @@ info.app:
   user:
     timezone: "${user.timezone}"
 
-management.health.hiddenService.enabled: true
 management.endpoint.health.show-details: 'always'
 management.endpoints.web.exposure.include: '*'
+management.info.hiddenService.enabled: true
+management.health.hiddenService.enabled: true
 
 org.tbk.tor:
   enabled: true

@@ -8,6 +8,7 @@ import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.Tor;
 import org.berndpruenster.netlayer.tor.TorCtlException;
 import org.berndpruenster.netlayer.tor.Torrc;
+import org.springframework.boot.actuate.autoconfigure.info.ConditionalOnEnabledInfoContributor;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -127,6 +128,7 @@ public class TorAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnEnabledInfoContributor("tor")
     @ConditionalOnMissingBean(name = "torInfoContributor")
     public InfoContributor torInfoContributor(Tor tor) {
         return builder -> {
