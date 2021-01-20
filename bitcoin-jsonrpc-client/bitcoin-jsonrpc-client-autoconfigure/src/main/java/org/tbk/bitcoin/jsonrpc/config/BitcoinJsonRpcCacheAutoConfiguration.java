@@ -11,6 +11,8 @@ import lombok.NonNull;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,6 +30,7 @@ import static java.util.Objects.requireNonNull;
 @EnableConfigurationProperties(BitcoinJsonRpcCacheAutoConfigProperties.class)
 @ConditionalOnClass(CacheFacade.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.cache.enabled", havingValue = "true", matchIfMissing = true)
+@AutoConfigureAfter(BitcoinJsonRpcClientAutoConfiguration.class)
 public class BitcoinJsonRpcCacheAutoConfiguration {
 
     private BitcoinJsonRpcCacheAutoConfigProperties properties;
@@ -37,20 +40,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(CacheFacade.class)
-    public CacheFacade bitcoinJsonRpcCacheFacade(TransactionCache transactionCache,
-                                                 RawTransactionInfoCache RawTransactionInfoCache,
-                                                 BlockCache blockCache,
-                                                 BlockInfoCache blockInfoCache) {
-        return SimpleCacheFacade.builder()
-                .transactionCache(transactionCache)
-                .rawTransactionInfoCache(RawTransactionInfoCache)
-                .blockCache(blockCache)
-                .blockInfoCache(blockInfoCache)
-                .build();
-    }
-
-    @Bean
+    @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(TransactionCache.class)
     public TransactionCache bitcoinJsonRpcTransactionCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, Transaction> cache = CacheBuilder.newBuilder()
@@ -67,6 +57,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(RawTransactionInfoCache.class)
     public RawTransactionInfoCache bitcoinJsonRpcRawTransactionInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, RawTransactionInfo> cache = CacheBuilder.newBuilder()
@@ -83,6 +74,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockCache.class)
     public BlockCache bitcoinJsonRpcBlockCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, Block> cache = CacheBuilder.newBuilder()
@@ -99,6 +91,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockInfoCache.class)
     public BlockInfoCache bitcoinJsonRpcInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, BlockInfo> cache = CacheBuilder.newBuilder()
@@ -112,6 +105,26 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
                     }
                 });
         return new BlockInfoCache(cache);
+    }
+
+    @Bean
+    @ConditionalOnBean({
+            TransactionCache.class,
+            RawTransactionInfoCache.class,
+            BlockCache.class,
+            BlockInfoCache.class,
+    })
+    @ConditionalOnMissingBean(CacheFacade.class)
+    public CacheFacade bitcoinJsonRpcCacheFacade(TransactionCache transactionCache,
+                                                 RawTransactionInfoCache RawTransactionInfoCache,
+                                                 BlockCache blockCache,
+                                                 BlockInfoCache blockInfoCache) {
+        return SimpleCacheFacade.builder()
+                .transactionCache(transactionCache)
+                .rawTransactionInfoCache(RawTransactionInfoCache)
+                .blockCache(blockCache)
+                .blockInfoCache(blockInfoCache)
+                .build();
     }
 
     @Builder
