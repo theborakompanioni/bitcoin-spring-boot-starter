@@ -100,14 +100,14 @@ public class LndJsonRpcClientAutoConfiguration {
                 .build();
     }
 
-    @Bean("synchronousLndJsonRpcClient")
+    @Bean(name = "synchronousLndJsonRpcClient", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousLndAPI synchronousLndJsonRpcClient(LndJsonRpcClientFactory bitcoinClientFactory, LndRpcConfig rpcConfig) {
         return bitcoinClientFactory.createSync(rpcConfig);
     }
 
-    @Bean("lndJsonRpcClient")
+    @Bean(name = "lndJsonRpcClient", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousLndAPI lndJsonRpcClient(LndJsonRpcClientFactory bitcoinClientFactory, LndRpcConfig rpcConfig) {
