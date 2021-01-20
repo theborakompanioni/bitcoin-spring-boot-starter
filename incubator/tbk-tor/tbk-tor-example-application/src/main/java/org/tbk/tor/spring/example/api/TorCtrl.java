@@ -1,6 +1,7 @@
 package org.tbk.tor.spring.example.api;
 
 import com.google.common.collect.ImmutableMap;
+import io.micrometer.core.annotation.Timed;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.berndpruenster.netlayer.tor.Tor;
@@ -20,6 +21,7 @@ public class TorCtrl {
     private final Tor tor;
 
     @GetMapping
+    @Timed
     public ResponseEntity<? extends Map<String, Object>> info() {
         Map<String, Object> result = ImmutableMap.<String, Object>builder()
                 .put("class", tor.getClass().getName())
