@@ -36,5 +36,7 @@ management.info.hiddenService.enabled: true
 management.health.hiddenService.enabled: true
 
 org.tbk.tor:
-  enabled: true
-  working-directory: 'tor-working-dir'
+  enabled: true  # default is `true`
+  autoPublishEnabled: true # default is `true`
+  working-directory: 'tor-working-dir' # default is `tor-working-dir`
+  startup-timeout: 30s # default is `60s`
