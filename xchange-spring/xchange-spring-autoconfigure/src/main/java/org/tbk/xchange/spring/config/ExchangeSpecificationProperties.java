@@ -9,8 +9,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Properties class for XChange Exchange Specifications.
@@ -18,6 +18,8 @@ import java.util.Map;
  */
 @Data
 public class ExchangeSpecificationProperties implements Validator {
+
+    private static final String USE_SANDBOX_PARAM_NAME = "Use_Sandbox";
 
     /**
      * The the fully-qualified class name of the exchange.
@@ -95,7 +97,7 @@ public class ExchangeSpecificationProperties implements Validator {
     /**
      * Set the http read timeout for the connection.
      */
-    private Integer httpReadTimeout = 0;
+    private Integer httpReadTimeout;
 
     /**
      * Set retry and rate limit values.
@@ -122,7 +124,16 @@ public class ExchangeSpecificationProperties implements Validator {
     }
 
     public Map<String, Object> getExchangeSpecificParameters() {
-        return this.exchangeSpecificParameters != null ? ImmutableMap.copyOf(exchangeSpecificParameters) : Collections.emptyMap();
+        Map<String, Object> params = this.exchangeSpecificParameters != null ? ImmutableMap.copyOf(exchangeSpecificParameters) : Collections.emptyMap();
+        return params.entrySet().stream()
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, this::transformExchangeSpecificParameterIfNecessary));
+    }
+
+    private Object transformExchangeSpecificParameterIfNecessary(Map.Entry<String, Object> it) {
+        if (USE_SANDBOX_PARAM_NAME.equals(it.getKey()) && it.getValue() instanceof String) {
+            return Boolean.parseBoolean((String) it.getValue());
+        }
+        return it.getValue();
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -68,7 +69,8 @@ public class XChangeAutoConfigurationTest {
                         "org.tbk.xchange.specifications.exampleExchange.httpReadTimeout=1337",
                         "org.tbk.xchange.specifications.exampleExchange.shouldLoadRemoteMetaData=false",
                         "org.tbk.xchange.specifications.exampleExchange.resilience.retryEnabled=true",
-                        "org.tbk.xchange.specifications.exampleExchange.resilience.rateLimiterEnabled=true"
+                        "org.tbk.xchange.specifications.exampleExchange.resilience.rateLimiterEnabled=true",
+                        "org.tbk.xchange.specifications.exampleExchange.exchangeSpecificParameters.Use_Sandbox=true"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("exampleExchange"), is(true));
@@ -76,6 +78,14 @@ public class XChangeAutoConfigurationTest {
 
                     Map<String, Exchange> beans = context.getBeansOfType(Exchange.class);
                     assertThat(beans.values(), hasSize(1));
+
+                    Exchange exampleExchange = requireNonNull(beans.get("exampleExchange"));
+
+                    ExchangeSpecification exchangeSpecification = exampleExchange.getExchangeSpecification();
+                    Object useSandbox = exchangeSpecification.getExchangeSpecificParametersItem("Use_Sandbox");
+
+                    assertThat(useSandbox, is(instanceOf(Boolean.class)));
+                    assertThat((boolean) useSandbox, is(true));
                 });
     }
 
