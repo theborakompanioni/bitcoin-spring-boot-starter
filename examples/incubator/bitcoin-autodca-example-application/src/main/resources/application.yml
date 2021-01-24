@@ -1,0 +1,37 @@
+app.name: tbk-spring-boot-bitcoin-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-spring-boot-bitcoin-starter-demo'
+spring.profiles.active: production
+spring.http.log-request-details: false
+
+server.port: 8080
+server.use-forward-headers: true
+server.compression.enabled: true
+
+management.server.port: 9001
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+#logging.level.web: DEBUG
+
+# `si.mazi.rescu.ResponseReader` is just too noisy in level WARN
+logging.level.si.mazi.rescu.ResponseReader: ERROR
+
+org.tbk.bitcoin.autodca:
+  fiat-currency: 'USD'
+  fiat-amount: '21.00'
+  max-relative-fee: 0.5 #  0.05%
+  withdrawal-address: 'bc1yourwithdrawaladdress'
+
+org.tbk.xchange:
+  enabled: true
+  specifications:
+    krakenExchange:
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+      api-key: 'your-api-key'
+      secret-key: 'your-secret-key'

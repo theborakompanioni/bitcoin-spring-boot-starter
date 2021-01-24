@@ -1,0 +1,19 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'bitcoin auto dca example application'
+
+dependencies {
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-starter')
+    implementation project(':spring-jsr354:spring-jsr354-starter')
+    implementation project(':xchange-jsr354:xchange-jsr354-starter')
+    implementation project(':xchange-spring:xchange-spring-starter')
+
+    implementation "io.projectreactor:reactor-core"
+    implementation "org.javamoney:moneta:${monetaVersion}"
+
+    implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

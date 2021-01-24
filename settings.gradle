@@ -80,6 +80,7 @@ include 'incubator:tbk-tor:tbk-tor-example-application'
 
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:lnd-playground-example-application'
+include 'examples:incubator:bitcoin-autodca-example-application'
 include 'examples:incubator:bitcoin-duckdca-example-application'
 include 'examples:incubator:bitcoin-mzheravin-exchange-example-application'
 include 'examples:incubator:bitcoin-electrum-gateway-example-application'

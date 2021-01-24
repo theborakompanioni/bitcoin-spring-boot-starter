@@ -1,0 +1,34 @@
+app.name: tbk-spring-boot-bitcoin-starter-demo (dev)
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-spring-boot-bitcoin-starter-demo (dev)'
+spring.profiles.active: development
+spring.http.log-request-details: true
+
+server.port: 8080
+server.use-forward-headers: true
+server.compression.enabled: true
+
+management.server.port: 9001
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: application-dev.log
+logging.config: classpath:logback-development.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+logging.level.web: DEBUG
+
+logging.level.si.mazi.rescu.ResponseReader: INFO
+
+org.tbk.bitcoin.autodca:
+  max-relative-fee: 0.001 # -> 0.01% will probably never withdraw ; )
+  dry: true
+
+org.tbk.xchange:
+  enabled: true
+  specifications:
+    krakenExchange:
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+      api-key: 'your-dev-api-key'
+      secret-key: 'your-dev-secret-key'
