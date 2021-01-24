@@ -125,16 +125,6 @@ subprojects {
         }
     }
 
-    configurations {
-        developmentOnlyLocal
-        runtimeClasspath {
-            extendsFrom developmentOnlyLocal
-        }
-        compileOnly {
-            extendsFrom annotationProcessor
-        }
-    }
-
     dependencyManagement {
         imports {
             mavenBom SpringBootPlugin.BOM_COORDINATES
@@ -147,8 +137,6 @@ subprojects {
 
         implementation 'org.slf4j:slf4j-api'
         implementation "com.google.guava:guava:${guavaVersion}"
-
-        developmentOnlyLocal 'org.springframework.boot:spring-boot-devtools'
 
         implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
         implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
@@ -173,6 +161,11 @@ subprojects {
     }
 
     pluginManager.withPlugin('org.springframework.boot') {
+
+        dependencies {
+            developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        }
+
         jar {
             enabled = true
         }
