@@ -11,12 +11,15 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,6 +37,7 @@ public class XChangeAutoConfiguration {
     }
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public static BeanFactoryPostProcessor xChangeExchangeBeanFactoryPostProcessor() {
         return beanFactory -> {
             beanFactory.addBeanPostProcessor(new XChangeExchangeCreatingBeanPostProcessor(beanFactory));
@@ -44,31 +48,60 @@ public class XChangeAutoConfiguration {
 
         private final ConfigurableListableBeanFactory beanFactory;
 
+        private final AtomicBoolean shouldInitializeNow = new AtomicBoolean(false);
+
         public XChangeExchangeCreatingBeanPostProcessor(ConfigurableListableBeanFactory beanFactory) {
             this.beanFactory = requireNonNull(beanFactory);
         }
 
         @Override
-        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-            if (bean instanceof XChangeAutoConfigProperties) {
-                XChangeAutoConfigProperties xChangeAutoConfigProperties = (XChangeAutoConfigProperties) bean;
-                registerExchangeBeans(xChangeAutoConfigProperties);
+        public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+            if (shouldInitializeNow.getAndSet(false) && !(bean instanceof XChangeAutoConfigProperties)) {
+                try {
+                    // this will trigger creating the settings bean from the properties file.
+                    beanFactory.getBean(XChangeAutoConfigProperties.class);
+                } catch (BeansException e) {
+                    throw new RuntimeException("Error while creating exchange beans", e);
+                }
             }
 
             return bean;
         }
 
-        private void registerExchangeBeans(XChangeAutoConfigProperties xChangeAutoConfigProperties) {
-            xChangeAutoConfigProperties.getSpecifications().forEach((name, exchangeSpecificationProperties) -> {
+        @Override
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            if (bean instanceof ConfigurationPropertiesBindingPostProcessor) {
+                // trigger early creation of exchanges!
+                // this is a hack to make them injectable in other beans.
+                // otherwise users must have taken them from the application context - which is not a nice
+                // good developer experience. Since the classes wont need any beans themselves
+                // this should be okay. Maybe it is a little bit expensive to create them always so shortly
+                // after application startup - because there might be initial http requests for some
+                // exchange implementations - but since the user defined it via a properties file,
+                // this is probably what is wanted in the first place.
+                shouldInitializeNow.set(true);
+            }
+
+            if (bean instanceof XChangeAutoConfigProperties) {
+                XChangeAutoConfigProperties xChangeProperties = (XChangeAutoConfigProperties) bean;
+                registerExchangeBeans(xChangeProperties);
+            }
+
+            return bean;
+        }
+
+        private void registerExchangeBeans(XChangeAutoConfigProperties xChangeProperties) {
+            xChangeProperties.getSpecifications().forEach((name, exchangeSpecificationProperties) -> {
                 if (beanFactory.containsBean(name)) {
                     log.warn("Skip creating bean '{}' - factory already contains a bean with the same name", name);
                 } else {
                     ExchangeSpecification exchangeSpecification = createExchangeSpecification(exchangeSpecificationProperties);
                     Exchange exchange = exchangeSpecificationProperties.getExchangeClassOrThrow()
-                        .cast(ExchangeFactory.INSTANCE.createExchange(exchangeSpecification));
+                            .cast(ExchangeFactory.INSTANCE.createExchange(exchangeSpecification));
 
-                    beanFactory.registerSingleton(name, exchange);
+                    beanFactory.autowireBean(exchange);
                     beanFactory.initializeBean(exchange, name);
+                    beanFactory.registerSingleton(name, exchange);
                 }
             });
         }

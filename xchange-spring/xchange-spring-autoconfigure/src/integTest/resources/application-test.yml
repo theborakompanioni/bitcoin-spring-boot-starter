@@ -1,0 +1,7 @@
+org.tbk.xchange:
+  enabled: true
+  specifications:
+    krakenExchange:
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+      exchange-specific-parameters:
+        Use_Sandbox: true
