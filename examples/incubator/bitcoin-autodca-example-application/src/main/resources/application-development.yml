@@ -30,5 +30,5 @@ org.tbk.xchange:
   specifications:
     krakenExchange:
       exchange-class: org.knowm.xchange.kraken.KrakenExchange
-      api-key: 'your-dev-api-key'
-      secret-key: 'your-dev-secret-key'
+      #api-key: 'your-dev-api-key'
+      #secret-key: 'your-dev-secret-key'
