@@ -13,10 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import org.tbk.bitcoin.autodca.example.command.HelpCommandRunner;
-import org.tbk.bitcoin.autodca.example.command.KrakenStackCommandRunner;
-import org.tbk.bitcoin.autodca.example.command.KrakenWithdrawCommandRunner;
-import org.tbk.bitcoin.autodca.example.command.VersionCommandRunner;
+import org.tbk.bitcoin.autodca.example.command.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -24,6 +21,11 @@ import static java.util.Objects.requireNonNull;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinAutoDcaExampleProperties.class)
 public class BitcoinAutoDcaExampleApplicationConfig {
+
+    @Value
+    public static class DryRunOption {
+        boolean enabled;
+    }
 
     private BitcoinAutoDcaExampleProperties properties;
 
@@ -50,9 +52,9 @@ public class BitcoinAutoDcaExampleApplicationConfig {
     public ApplicationRunner dryRunOptionLogger(DryRunOption dryRunOption) {
         return args -> {
             if (dryRunOption.isEnabled()) {
-                log.info("==============================");
-                log.info("THIS IS JUST A VALIDATION RUN!");
-                log.info("==============================");
+                log.info("================================");
+                log.info("= THIS IS JUST A VALIDATION RUN!");
+                log.info("================================");
             }
         };
     }
@@ -72,21 +74,25 @@ public class BitcoinAutoDcaExampleApplicationConfig {
     @Bean
     @ConditionalOnNotWebApplication
     public ApplicationRunner stackCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
-        boolean isKrakenExchange = exchange instanceof KrakenExchange;
-
-        if (!isKrakenExchange) {
-            String errorMessage = String.format("Unsupported exchange %s: Only Kraken is currently supported",
-                    exchange.getExchangeSpecification().getExchangeName());
-            throw new IllegalStateException(errorMessage);
-        }
-
-        KrakenExchange krakenExchange = (KrakenExchange) exchange;
+        KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenStackCommandRunner(krakenExchange, this.properties, dryRunOption);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
     public ApplicationRunner withdrawCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
+        KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
+        return new KrakenWithdrawCommandRunner(krakenExchange, this.properties, dryRunOption);
+    }
+
+    @Bean
+    @ConditionalOnNotWebApplication
+    public ApplicationRunner historyCommandRunner(Exchange exchange) {
+        KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
+        return new KrakenHistoryCommandRunner(krakenExchange);
+    }
+
+    private KrakenExchange toKrakenExchangeOrThrow(Exchange exchange) {
         boolean isKrakenExchange = exchange instanceof KrakenExchange;
 
         if (!isKrakenExchange) {
@@ -95,12 +101,6 @@ public class BitcoinAutoDcaExampleApplicationConfig {
             throw new IllegalStateException(errorMessage);
         }
 
-        KrakenExchange krakenExchange = (KrakenExchange) exchange;
-        return new KrakenWithdrawCommandRunner(krakenExchange, this.properties, dryRunOption);
-    }
-
-    @Value
-    public static class DryRunOption {
-        boolean enabled;
+        return (KrakenExchange) exchange;
     }
 }

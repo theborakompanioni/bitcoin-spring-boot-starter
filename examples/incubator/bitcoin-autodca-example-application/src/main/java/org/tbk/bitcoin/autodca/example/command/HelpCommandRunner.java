@@ -27,11 +27,13 @@ public class HelpCommandRunner extends ConditionalOnOptionApplicationRunner {
         System.out.println("  Command");
         System.out.println("      stack               description");
         System.out.println("      withdraw            description");
+        System.out.println("      history             description");
         System.out.println();
         System.out.println("  Examples");
         System.out.println("      java -jar autodca.jar --help");
         System.out.println("      java -jar autodca.jar --version");
         System.out.println("      java -jar autodca.jar --dry stack");
+        System.out.println("      java -jar autodca.jar history");
         System.out.println();
     }
 }
