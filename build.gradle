@@ -1,3 +1,4 @@
+import io.franzbecker.gradle.lombok.task.DelombokTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
@@ -25,6 +26,7 @@ plugins {
     id 'nebula.project' version '7.0.9'
     id 'nebula.info' version '9.1.1'
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
+    id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
 }
 
 contacts {
@@ -61,13 +63,16 @@ allprojects {
     apply from: "${rootDir}/checksums.gradle"
 
     dependencyVerification {
-        includeConfigurations = ['compileClasspath', 'runtimeClasspath']
+        includeConfigurations = [
+                JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME,
+                JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
+        ]
     }
 
     gradleLint {
         alwaysRun = false // do not automatically run - must be executed manually
         autoLintAfterFailure = false // only run lint after a successful build
-        rules  = []
+        rules = []
         criticalRules = [
                 'dependency-parantheses',
                 'overridden-dependency-version',
@@ -99,6 +104,7 @@ subprojects {
     apply plugin: 'nebula.info'
     apply plugin: 'nebula.integtest-standalone'
     apply plugin: 'com.google.protobuf'
+    apply plugin: 'io.franzbecker.gradle-lombok'
     apply plugin: 'io.spring.dependency-management'
 
     sourceCompatibility = JavaVersion.VERSION_11
@@ -115,12 +121,16 @@ subprojects {
             url "https://jitpack.io"
         }
     }
-    
+
     sourceSets {
         main {
             proto {
                 // In addition to the default 'src/main/proto'
                 srcDir file('src/main/java')
+            }
+            java {
+                srcDirs 'build/generated/source/proto/main/grpc'
+                srcDirs 'build/generated/source/proto/main/java'
             }
         }
     }
@@ -190,9 +200,14 @@ subprojects {
     integrationTest {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
     }
-    
+
     artifacts {
         archives testJar, sourcesJar
+    }
+
+    lombok {
+        version = "${lombokVersion}"
+        sha256 = null // skip verifyLombok task - will be done by verifyChecksums task
     }
 
     protobuf {
@@ -228,19 +243,42 @@ subprojects {
     }
 
     task dependencyTree(type: DependencyReportTask) {}
+
+    task delombok(type: DelombokTask, dependsOn: compileJava) {
+        def srcDirs = sourceSets.main.java.srcDirs.findAll { it.exists() }
+
+        enabled = subprojects.isEmpty() && !srcDirs.isEmpty()
+
+        ext.outputDir = file("$buildDir/delombok")
+        outputs.dir(outputDir)
+        srcDirs.each {
+            inputs.dir(it)
+            args(it, "-d", outputDir)
+        }
+
+        doFirst {
+            outputDir.deleteDir()
+        }
+    }
+
+    javadoc {
+        dependsOn delombok
+        source = delombok.outputDir
+        failOnError = false
+    }
 }
 
 // disable test tasks in check phase for all 'spring-testcontainer-*' subprojects.
 // these subprojects tests are very expensive as they all start a lot of docker containers.
 // you can invoke them manually via `./gradlew check -PtestcontainerTest`
-configure(subprojects.findAll { project -> project.name.indexOf('spring-testcontainer-') == 0}) {
+configure(subprojects.findAll { project -> project.name.indexOf('spring-testcontainer-') == 0 }) {
     test.onlyIf { project.hasProperty('testcontainerTest') }
     integrationTest.onlyIf { project.hasProperty('testcontainerTest') }
 }
 
 // disable test tasks in check phase for all '*-example-applications' subprojects.
 // you can invoke them manually via `./gradlew check -PexampleTest`
-configure(subprojects.findAll { project -> project.name.indexOf('-example-applications') > 0}) {
+configure(subprojects.findAll { project -> project.name.indexOf('-example-applications') > 0 }) {
     test.onlyIf { project.hasProperty('exampleTest') }
     integrationTest.onlyIf { project.hasProperty('exampleTest') }
 }
