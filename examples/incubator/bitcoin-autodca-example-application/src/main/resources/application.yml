@@ -26,7 +26,7 @@ org.tbk.bitcoin.autodca:
   fiat-currency: 'USD'
   fiat-amount: '21.00'
   max-relative-fee: 0.5 #  0.05%
-  withdrawal-address: 'bc1yourwithdrawaladdress'
+  withdraw-address: 'bc1yourwithdrawaladdress'
 
 org.tbk.xchange:
   enabled: true

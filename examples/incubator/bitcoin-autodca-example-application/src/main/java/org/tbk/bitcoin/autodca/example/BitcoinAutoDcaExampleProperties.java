@@ -37,7 +37,7 @@ public class BitcoinAutoDcaExampleProperties implements Validator {
     /**
      * description of withdrawal address
      */
-    private String withdrawalAddress;
+    private String withdrawAddress;
 
     /**
      * description of withdrawal address
@@ -90,6 +90,12 @@ public class BitcoinAutoDcaExampleProperties implements Validator {
         } else if (maxRelativeFee.compareTo(MAXIMUM_MAX_FEE_VALUE) > 0) {
             String errorMessage = "'maxRelativeFee' entry must not be greater than 5% - this seems like a user config mistake";
             errors.rejectValue("maxRelativeFee", "maxRelativeFee.invalid", errorMessage);
+        }
+
+        String withdrawalAddress = properties.getWithdrawAddress();
+        if (Strings.isNullOrEmpty(withdrawalAddress)) {
+            String errorMessage = "'withdrawAddress' entry must not be empty";
+            errors.rejectValue("withdrawAddress", "withdrawAddress.invalid", errorMessage);
         }
     }
 

@@ -10,7 +10,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.tbk.bitcoin.autodca.example.BitcoinAutoDcaExampleApplicationConfig.DryRunOption;
 import org.tbk.bitcoin.autodca.example.BitcoinAutoDcaExampleProperties;
 
-import javax.money.Monetary;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
@@ -40,13 +39,11 @@ public class KrakenWithdrawCommandRunner extends ConditionalOnNonOptionApplicati
         BigDecimal maxRelativeFee = this.properties.getMaxRelativeFee()
                 .orElseThrow(() -> new IllegalStateException("Max relative fee is not provided"));
 
-        // Get withdrawal information
         KrakenAccountService accountService = (KrakenAccountService) exchange.getAccountService();
 
         String asset = "XBT";
-        String key = "";
-        String address = "";
-        WithdrawInfo withdrawInfo = accountService.getWithdrawInfo(null, asset, key, BigDecimal.ZERO);
+        String address = properties.getWithdrawAddress();
+        WithdrawInfo withdrawInfo = accountService.getWithdrawInfo(null, asset, address, BigDecimal.ZERO);
 
         BigDecimal relativeFee = BigDecimal.ONE.setScale(8, RoundingMode.HALF_UP)
                 .divide(withdrawInfo.getLimit(), RoundingMode.HALF_UP)
@@ -56,7 +53,7 @@ public class KrakenWithdrawCommandRunner extends ConditionalOnNonOptionApplicati
                 .setScale(2, RoundingMode.HALF_UP);
 
         System.out.printf("💡 Relative fee of withdrawal amount: %s%n", displayFee.toPlainString());
-        
+
         boolean feeAssertionSatisfied = relativeFee
                 .compareTo(maxRelativeFee.divide(BigDecimal.valueOf(100L), RoundingMode.HALF_DOWN)) < 0;
 
