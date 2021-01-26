@@ -62,25 +62,6 @@ org.tbk.bitcoin.zeromq:
   zmqpubhashtx: tcp://localhost:28335
 ```
 
-Here is an example of how to subscribe to messages:
-```java
-@Slf4j
-public final class SubscribeToBitcoinTransactionsViaZeroMqExample {
-
-  @Autowire
-  @Qualifier("bitcoinRawTxZeroMqMessagePublisherFactory")
-  private MessagePublisherFactory<byte[]> rawTxMessageFactory;
-
-  public void start() {
-    this.rawTxMessageFactory.create().subscribe(rawTx -> {
-      log.info("Got raw transaction: {}", rawTx);
-    });
-  }
-}
-```
-
-See the autoconfig class `BitcoinZeroMqClientAutoConfiguration` for more details.
-
 Also, if you have [bitcoinj](https://github.com/bitcoinj/bitcoinj) in the classpath, it will create a bean
 of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory` which will emit `bitcoinj` types for your convenience.
 
@@ -120,37 +101,17 @@ This module contains a fast and easy way to start one or multiple instances of e
 docker containers programmatically directly from your application.
 Please note, that **these modules are intended to be used in regtest mode only**.
 
-#### spring-testcontainer-bitcoind-starter
-Start and run [Bitcoin Core](https://github.com/bitcoin/bitcoin) daemons.
+Start and run:
+- [x] [Bitcoin Core](https://github.com/bitcoin/bitcoin) with spring-testcontainer-bitcoind-starter
+- [x] [lnd](https://github.com/bitcoin/bitcoin) with spring-testcontainer-lnd-starter
+- [x] [ElectrumX](https://github.com/spesmilo/electrumx) with spring-testcontainer-electrumx-starter
+- [x] [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) with spring-testcontainer-electrum-personal-server-starter
+- [x] [Electrum](https://github.com/spesmilo/electrum) with spring-testcontainer-electrum-daemon-starter
+- [x] [Tor](https://www.torproject.org/) with [spring-testcontainer-tor-starter](spring-testcontainer/spring-testcontainer-tor-starter)
 
-This spring boot starter module can be used in combination with
-[bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client) and [bitcoin-zeromq-client](#bitcoin-zeromq-client).
-
-#### spring-testcontainer-lnd-starter
-Start and run [lnd](https://github.com/LightningNetwork/lnd) daemons.
-
-Currently, it **can only** be used in combination with [spring-testcontainer-bitcoind-starter](#spring-testcontainer-bitcoind-starter)!
-
-#### spring-testcontainer-electrumx-starter
-Start and run [ElectrumX](https://github.com/spesmilo/electrumx) instances.
-
-It can be used in combination with [spring-testcontainer-bitcoind-starter](#spring-testcontainer-bitcoind-starter)!
-
-#### spring-testcontainer-electrum-personal-server-starter
-Start and run [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) instances.
-
-It can be used in combination with [spring-testcontainer-bitcoind-starter](#spring-testcontainer-bitcoind-starter)!
-
-#### spring-testcontainer-electrum-daemon-starter
-Start and run [Electrum](https://github.com/spesmilo/electrum) daemons. 
-
-It can be used in combination with [spring-testcontainer-electrumx-starter](#spring-testcontainer-electrumx-starter)
-and [spring-testcontainer-electrum-personal-server-starter](#spring-testcontainer-electrum-personal-server-starter)!
-
-#### spring-testcontainer-tor-starter
-Start and run [Tor](https://www.torproject.org/) daemons. 
-See [spring-testcontainer-tor-starter](spring-testcontainer/spring-testcontainer-tor-starter) or the
-[example application](spring-testcontainer/spring-testcontainer-tor-example-application) for more information!
+Most of these spring boot starter modules contain a simple example application. 
+They can be used in combination with other modules like [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client), 
+[bitcoin-zeromq-client](#bitcoin-zeromq-client), [lnd-grpc-client](#lnd-grpc-client), etc.
 
 
 ### spring-bitcoin-fee
@@ -169,14 +130,12 @@ The following providers are implemented:
 
 
 ### incubator
-This module is home to all almost-ready packages.
+This subproject is home to all almost-ready modules.
 
 #### tbk-tor
 A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
 The starter will automatically expose your application as hidden service!
-Easily create hidden service sockets programmatically within your Spring Boot application.
 
-A common configuration can look like this:
 ```yaml
 org.tbk.tor:
   enabled: true  # whether auto-config should run - default is `true`
@@ -185,110 +144,23 @@ org.tbk.tor:
   startup-timeout: 30s # max startup duration for tor to successfully start - default is `60s`
 ```
 
-Start the example application with
-```shell
-./gradlew -p incubator/tbk-tor/tbk-tor-example-application bootRun
-```
-Example output (2021-01-21):
-```
-2021-01-21 01:23:30.035  INFO 313251 --- [  restartedMain] org.berndpruenster.netlayer.tor.Tor      : Starting Tor
-2021-01-21 01:23:33.490  INFO 313251 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-01-21 01:23:33.511  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : Started TorExampleApplication in 8.417 seconds (JVM running for 8.972)
-2021-01-21 01:23:33.605  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : =================================================
-2021-01-21 01:23:33.606  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : url: http://<your_onion_url>.onion:80
-2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : virtual host: <your_onion_url>.onion
-2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : virtual port: 80
-2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : host: 127.0.0.1
-2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : port: 8080
-2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : directory: /home/tbk/workspace/spring-boot-bitcoin-starter/incubator/tbk-tor/tbk-tor-example-application/tor-working-dir/spring_boot_app
-2021-01-21 01:23:33.608  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : -------------------------------------------------
-2021-01-21 01:23:33.608  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : run: torsocks -p 46735 curl http://<your_onion_url>.onion:80/index.html -v
-2021-01-21 01:23:33.608  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : =================================================
-```
-
 #### tbk-electrum-daemon-client
 A module containing a spring boot starter for a [Electrum daemon](https://github.com/spesmilo/electrum) JSON-RPC API client.
-It can be used in combination with  [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer-electrum-daemon-starter)!
+It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
 
 ### examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 
 example applications showing basic usage of the functionality provided by these modules.
 
-#### bitcoin-exchange-rate-example-application
-Start the application with
-```shell
-./gradlew -p examples/bitcoin-exchange-rate-example-application bootRun
-```
+- [x] bitcoin-autodca: [Stacking Sats on Kraken: Auto DCA example application](examples/bitcoin-autodca-example-application)
+- [x] bitcoin-exchange-rate: [Currency Conversion API example application](examples/bitcoin-exchange-rate-example-application)
+- [x] lnd-playground: [Lightning Network Playground example application](examples/lnd-playground-example-application) (using lnd)
 
-... and open the following url in your browser:
-`http://localhost:8080/api/v1/exchange/latest?base=BTC&target=USD&provider=KRAKEN`
-
-Example output (2020-11-08):
-```json
-{
-  "base" : "BTC",
-  "rates" : [ {
-    "base" : "BTC",
-    "chain" : [ ],
-    "derived" : false,
-    "factor" : "15400.00000",
-    "meta" : {
-      "ask" : "15400.00000",
-      "bid" : "15399.90000",
-      "high" : "15450.00000",
-      "javax.money.convert.RateType" : "DEFERRED",
-      "last" : "15400.00000",
-      "low" : "14365.00000",
-      "open" : "14837.40000",
-      "provider" : "KRAKEN",
-      "providerDescription" : "Kraken is a Bitcoin exchange operated by Payward, Inc.",
-      "providerName" : "Kraken",
-      "quoteVolume" : "119845666.5998900000000",
-      "rateTypes" : [ "DEFERRED" ],
-      "volume" : "7782.18614285",
-      "vwap" : "14916.50557"
-    },
-    "provider" : "KRAKEN",
-    "target" : "USD",
-    "type" : "DEFERRED"
-  } ]
-}
-```
-
-#### lnd-playground-example-application
-Start the application with
+Example apps can be started with a single command, e.g.:
 ```shell
 ./gradlew -p examples/lnd-playground-example-application bootRun
 ```
-
-Example console output:
-```
-2021-01-21 01:01:33.306  INFO 309543 --- [  restartedMain] .l.l.p.e.LndPlaygroundExampleApplication : Started LndPlaygroundExampleApplication in 18.561 seconds (JVM running for 19.232)
-2021-01-21 01:01:33.948  INFO 309543 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2021-01-21 01:01:33.948  INFO 309543 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] identity_pubkey: 03d2db919c802c7b69b24be758db10c0d7347aefab525e8f00e41a87904631eaec
-2021-01-21 01:01:33.949  INFO 309543 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] alias: tbk-lnd-example-application
-2021-01-21 01:01:33.949  INFO 309543 --- [  restartedMain] .e.LndPlaygroundExampleApplicationConfig : [lnd] version: 0.11.1-beta commit=v0.11.1-beta-4-g3c4471f8818a07e63864d39a1c3352ce19e8f31d
-2021-01-21 01:01:39.275 DEBUG 309543 --- [stMiner RUNNING] .t.s.t.b.r.ScheduledBitcoindRegtestMiner : Trying to mine one block with coinbase reward for address bcrt1qn2r960p8ykxv4ltxlmp7cxcercpqpteplzczwd
-2021-01-21 01:01:39.292 DEBUG 309543 --- [stMiner RUNNING] .t.s.t.b.r.ScheduledBitcoindRegtestMiner : Mined 1 blocks with coinbase reward for address bcrt1qn2r960p8ykxv4ltxlmp7cxcercpqpteplzczwd
-2021-01-21 01:01:39.293 DEBUG 309543 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT2.309S
-2021-01-21 01:01:39.378  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2021-01-21 01:01:39.379  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block height: 1
-2021-01-21 01:01:39.379  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block hash: 568c2f2d64a38f00d9e394210c38c85e434a881bb5946e9e53955bb748bb2233
-2021-01-21 01:01:39.379  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] best header timestamp: 1611187299
-2021-01-21 01:01:39.382  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2021-01-21 01:01:39.431  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [bitcoind] new best block (height: 1): 568c2f2d64a38f00d9e394210c38c85e434a881bb5946e9e53955bb748bb2233
-2021-01-21 01:01:41.307 DEBUG 309543 --- [stMiner RUNNING] .t.s.t.b.r.ScheduledBitcoindRegtestMiner : Trying to mine one block with coinbase reward for address bcrt1qnjvm38z9pe4u4n5sm3vz7rx5g5rr36x6crxkrn
-2021-01-21 01:01:41.314 DEBUG 309543 --- [stMiner RUNNING] .t.s.t.b.r.ScheduledBitcoindRegtestMiner : Mined 1 blocks with coinbase reward for address bcrt1qnjvm38z9pe4u4n5sm3vz7rx5g5rr36x6crxkrn
-2021-01-21 01:01:41.315 DEBUG 309543 --- [stMiner RUNNING] .r.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT1.581S
-2021-01-21 01:01:41.383  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2021-01-21 01:01:41.383  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block height: 2
-2021-01-21 01:01:41.384  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] block hash: 70160a48c15670c5136a057669bc11a57bf78c85f77e74b9a7c3f29ea8769079
-2021-01-21 01:01:41.384  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [lnd] best header timestamp: 1611187301
-2021-01-21 01:01:41.384  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : =================================================
-2021-01-21 01:01:41.392  INFO 309543 --- [-pub-5e187872-0] .e.LndPlaygroundExampleApplicationConfig : [bitcoind] new best block (height: 2): 70160a48c15670c5136a057669bc11a57bf78c85f77e74b9a7c3f29ea8769079
-```
-
 
 ## Development
 ### Requirements

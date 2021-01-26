@@ -1,4 +1,51 @@
-Example application for monetary conversion
+bitcoin-exchange-rate-example-application
+===
+
+Currency Conversion API example application.
+
+
+Start the application with
+```shell
+./gradlew -p examples/bitcoin-exchange-rate-example-application bootRun
+```
+
+... and open the following url in your browser:
+`http://localhost:8080/api/v1/exchange/latest?base=BTC&target=USD&provider=KRAKEN`
+
+Example output (2020-11-08):
+```json
+{
+  "base" : "BTC",
+  "rates" : [ {
+    "base" : "BTC",
+    "chain" : [ ],
+    "derived" : false,
+    "factor" : "15400.00000",
+    "meta" : {
+      "ask" : "15400.00000",
+      "bid" : "15399.90000",
+      "high" : "15450.00000",
+      "javax.money.convert.RateType" : "DEFERRED",
+      "last" : "15400.00000",
+      "low" : "14365.00000",
+      "open" : "14837.40000",
+      "provider" : "KRAKEN",
+      "providerDescription" : "Kraken is a Bitcoin exchange operated by Payward, Inc.",
+      "providerName" : "Kraken",
+      "quoteVolume" : "119845666.5998900000000",
+      "rateTypes" : [ "DEFERRED" ],
+      "volume" : "7782.18614285",
+      "vwap" : "14916.50557"
+    },
+    "provider" : "KRAKEN",
+    "target" : "USD",
+    "type" : "DEFERRED"
+  } ]
+}
+```
+
+
+## API
 
 `GET /api/v1/exchange`:
 ```json
@@ -105,3 +152,7 @@ Example application for monetary conversion
   } ]
 }
 ```
+
+# Resources
+- JSR354 (GitHub): https://github.com/JavaMoney/jsr354-api
+- XChange (GitHub): https://github.com/knowm/XChange
