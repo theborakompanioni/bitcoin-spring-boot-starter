@@ -5,6 +5,11 @@
 spring-boot-bitcoin-starter
 ===
 
+<p align="center">
+    <img src="https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/docs/assets/images/logo.png" alt="Logo" width="255" />
+</p>
+
+
 **Write enterprise Bitcoin applications with Spring Boot.**
 
 Spring boot starter projects with convenient dependency descriptors for multiple Bitcoin related modules that you can 
