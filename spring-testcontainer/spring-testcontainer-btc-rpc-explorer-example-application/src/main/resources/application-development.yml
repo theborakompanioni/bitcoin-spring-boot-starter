@@ -2,7 +2,6 @@ app.name: tbk-spring-boot-bitcoin-starter-demo (dev)
 app.description: A spring boot bitcoin demo application
 
 spring.application.name: 'tbk-spring-boot-bitcoin-starter-demo (dev)'
-spring.profiles.active: development
 spring.http.log-request-details: false
 
 server.port: 8080
