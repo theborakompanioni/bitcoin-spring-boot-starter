@@ -49,7 +49,7 @@ include 'bitcoin-fee:bitcoin-fee-estimate-btcdotcom'
 include 'bitcoin-fee:bitcoin-fee-estimate-earndotcom'
 include 'bitcoin-fee:bitcoin-fee-autoconfigure'
 include 'bitcoin-fee:bitcoin-fee-starter'
-include 'bitcoin-fee:bitcoin-fee-estimate-example-application'
+include 'bitcoin-fee:bitcoin-fee-example-application'
 
 include 'spring-jsr354:spring-jsr354-core'
 include 'spring-jsr354:spring-jsr354-autoconfigure'
