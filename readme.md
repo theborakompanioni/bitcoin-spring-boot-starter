@@ -2,13 +2,14 @@
 [![Download](https://jitpack.io/v/theborakompanioni/spring-boot-bitcoin-starter.svg)](https://jitpack.io/#theborakompanioni/spring-boot-bitcoin-starter)
 [![License](https://img.shields.io/github/license/theborakompanioni/spring-boot-bitcoin-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/LICENSE)
 
-spring-boot-bitcoin-starter
-===
 
 <p align="center">
     <img src="https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/docs/assets/images/logo.png" alt="Logo" width="255" />
 </p>
 
+
+spring-boot-bitcoin-starter
+===
 
 **Write enterprise Bitcoin applications with Spring Boot.**
 
@@ -23,6 +24,7 @@ This project is under active development. Pull requests and issues are welcome.
 
 ## Table of Contents
 
+- [Install](#install)
 - [Modules](#modules)
 - [Examples](#examples)
 - [Development](#development)
@@ -30,7 +32,141 @@ This project is under active development. Pull requests and issues are welcome.
 - [License](#license)
 
 
+## Install
+
+Simply define JitPack as an artifact repository and add the desired modules as dependencies. 
+See [spring-boot-bitcoin-starter on JitPack](https://jitpack.io/#theborakompanioni/spring-boot-bitcoin-starter) 
+to find the most recent releases. The examples below import `bitcoin-jsonrpc-client-starter` but you can import 
+any module by its name.
+
+### Gradle
+```groovy
+repositories {
+    maven {
+        // needed for spring-boot-bitcoin-starter packages
+        url 'https://jitpack.io'
+    }
+}
+```
+
+```groovy
+dependencies {
+    implementation "com.github.theborakompanioni.spring-boot-bitcoin-starter:bitcoin-jsonrpc-client-starter:${springBootBitcoinStarterVersion}"
+}
+```
+
+### Maven
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+```xml
+<dependency>
+    <groupId>com.github.theborakompanioni.spring-boot-bitcoin-starter</groupId>
+    <artifactId>bitcoin-jsonrpc-client-starter</artifactId>
+    <version>${springBootBitcoinStarter.version}</version>
+</dependency>
+```
+
+
 ## Modules
+
+### bitcoin-jsonrpc-client
+A module containing a spring boot starter for a [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.
+The starter will automatically create an autowireable `BitcoinClient` bean:
+
+```yaml
+org.tbk.bitcoin.jsonrpc.client:
+  enabled: true
+  network: mainnet
+  rpchost: http://localhost
+  rpcport: 8332
+  rpcuser: myrpcuser
+  rpcpassword: 'myrpcpassword'
+```
+
+
+### bitcoin-zeromq-client
+A module containing a spring boot starter for a Bitcoin Core ZeroMq API client.
+The starter will automatically create autowireable `ZeroMqMessagePublisherFactory` beans
+for every zmq endpoint:
+
+```yaml
+org.tbk.bitcoin.zeromq:
+  network: mainnet
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333
+  zmqpubhashblock: tcp://localhost:28334
+  zmqpubhashtx: tcp://localhost:28335
+```
+
+Also, if you have [bitcoinj](https://github.com/bitcoinj/bitcoinj) in the classpath, it will create a bean
+of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory` which will emit `bitcoinj` types for your convenience.
+
+
+### lnd-grpc-client
+A module containing a spring boot starter for a [Lightningj](https://www.lightningj.org/) lnd gRPC API client.
+The starter will automatically create autowireable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
+
+```yaml
+org.tbk.lightning.lnd.grpc:
+  enabled: true
+  rpchost: localhost
+  rpcport: 10009
+  macaroon-file-path: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  cert-file-path: '/lnd/.lnd/tls.cert'
+```
+
+
+### bitcoin-fee
+A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
+The following providers are implemented:
+- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
+- [x] bitcoiner.live API
+- [x] Bitgo API
+- [x] Bitcore API
+- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
+- [x] Blockchair API
+- [x] BlockCypher API
+- [x] Blockstream.info API
+- [x] BTC.com API
+- [x] earn.com API
+
+
+### spring-xchange
+A module containing a spring boot starter for automatically creating and configuring
+[XChange]( https://github.com/knowm/XChange) beans!
+This starter makes it easy to fetch the current price of bitcoin, programmatically place orders, withdraw your bitcoin
+or manage your account!
+
+```yaml
+org.tbk.xchange:
+  enabled: true # whether auto-config should run - default is `true`
+  specifications: # provide specifications for all exchange you want to use - default is empty (no beans created)
+    krakenExchange:
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+      api-key: 'your-api-key' # change this value to your api key
+      secret-key: 'your-secret-key' #  change this value to your secret key
+```
+
+
+### spring-tor
+A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
+The starter will automatically expose your application as hidden service!
+
+```yaml
+org.tbk.tor:
+  enabled: true  # whether auto-config should run - default is `true`
+  auto-publish-enabled: true # auto publish the web port as hidden service - default is `true`
+  working-directory: 'my-tor-directory' # the working directory for tor - default is `tor-working-dir`
+  startup-timeout: 30s # max startup duration for tor to successfully start - default is `60s`
+```
+
 
 ### bitcoin-jsr354
 Contains a JSR354 compliant `CurrentyUnit` implementation representing Bitcoin.
@@ -63,100 +199,7 @@ log.info("{} equals {}", singleBitcoin, singleBitcoinInUsd);
 ```
 
 
-### bitcoin-zeromq-client
-A module containing a spring boot starter for a Bitcoin Core ZeroMq API client.
-The starter will automatically create autowireable `ZeroMqMessagePublisherFactory` beans
-for every zmq endpoint:
-
-```yaml
-org.tbk.bitcoin.zeromq:
-  network: mainnet
-  zmqpubrawblock: tcp://localhost:28332
-  zmqpubrawtx: tcp://localhost:28333
-  zmqpubhashblock: tcp://localhost:28334
-  zmqpubhashtx: tcp://localhost:28335
-```
-
-Also, if you have [bitcoinj](https://github.com/bitcoinj/bitcoinj) in the classpath, it will create a bean
-of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory` which will emit `bitcoinj` types for your convenience.
-
-
-### bitcoin-jsonrpc-client
-A module containing a spring boot starter for a [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.
-The starter will automatically create an autowireable `BitcoinClient` bean:
-
-```yaml
-org.tbk.bitcoin.jsonrpc.client:
-  enabled: true
-  network: mainnet
-  rpchost: http://localhost
-  rpcport: 8332
-  rpcuser: myrpcuser
-  rpcpassword: 'myrpcpassword'
-```
-
-
-### lnd-grpc-client
-A module containing a spring boot starter for a [Lightningj](https://www.lightningj.org/) lnd gRPC API client.
-The starter will automatically create autowireable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
-
-```yaml
-org.tbk.lightning.lnd.grpc:
-  enabled: true
-  rpchost: localhost
-  rpcport: 10009
-  macaroon-file-path: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
-  cert-file-path: '/lnd/.lnd/tls.cert'
-```
-
-
-### bitcoin-fee
-A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
-The following providers are implemented:
-- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
-- [x] bitcoiner.live API
-- [x] Bitgo API
-- [x] Bitcore API
-- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
-- [x] Blockchair API
-- [x] BlockCypher API
-- [x] Blockstream.info API
-- [x] BTC.com API
-- [x] earn.com API
-
-
-#### spring-tor
-A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
-The starter will automatically expose your application as hidden service!
-
-```yaml
-org.tbk.tor:
-  enabled: true  # whether auto-config should run - default is `true`
-  auto-publish-enabled: true # auto publish the web port as hidden service - default is `true`
-  working-directory: 'my-tor-directory' # the working directory for tor - default is `tor-working-dir`
-  startup-timeout: 30s # max startup duration for tor to successfully start - default is `60s`
-```
-
-
-#### spring-xchange
-A module containing a spring boot starter for automatically creating and configuring
-[XChange]( https://github.com/knowm/XChange) beans!
-This starter makes it easy to fetch the current price of bitcoin, programmatically place orders, withdraw your bitcoin
-or manage your account!
-
-```yaml
-org.tbk.xchange:
-  enabled: true # whether auto-config should run - default is `true`
-  specifications: # provide specifications for all exchange you want to use - default is empty (no beans created)
-    krakenExchange:
-      exchange-class: org.knowm.xchange.kraken.KrakenExchange
-      api-key: 'your-api-key' # change this value to your api key
-      secret-key: 'your-secret-key' #  change this value to your secret key
-```
-
-
 ### spring-testcontainer
-
 This module contains a fast and easy way to start one or multiple instances of external services within 
 docker containers programmatically directly from your application.
 Please note, that **these modules are intended to be used in regtest mode only**.
@@ -181,7 +224,6 @@ This subproject is home to all almost-ready modules.
 A module containing a spring boot starter for a [Electrum daemon](https://github.com/spesmilo/electrum) JSON-RPC API client.
 It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
-
 ## Examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 
 example applications showing basic usage of the functionality provided by these modules.
@@ -195,7 +237,9 @@ Example apps can be started with a single command, e.g.:
 ./gradlew -p examples/lnd-playground-example-application bootRun
 ```
 
+
 ## Development
+
 ### Requirements
 - java >=11
 - docker
@@ -237,6 +281,7 @@ Be aware this might take several minutes to complete (>= 15 minutes).
 
 
 ## Resources
+
 - Bitcoin: https://bitcoin.org/en/getting-started
 - Lightning Network: https://lightning.network/
 - JSR354 (GitHub): https://github.com/JavaMoney/jsr354-api
@@ -259,4 +304,5 @@ Be aware this might take several minutes to complete (>= 15 minutes).
 
 
 ## License
+
 The project is licensed under the Apache License. See [LICENSE](LICENSE) for details.
