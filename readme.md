@@ -19,7 +19,17 @@ with Bitcoin in financial applications and monetary computations.
  
 **Note**: Most code is still experimental - **do not use in production**.
 This project is under active development. Pull requests and issues are welcome.
- 
+
+
+## Table of Contents
+
+- [Modules](#modules)
+- [Examples](#examples)
+- [Development](#development)
+- [Resources](#resources)
+- [License](#license)
+
+
 ## Modules
 
 ### bitcoin-jsr354
@@ -155,7 +165,7 @@ A module containing a spring boot starter for a [Electrum daemon](https://github
 It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
 
-### examples
+## Examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 
 example applications showing basic usage of the functionality provided by these modules.
 
@@ -209,7 +219,7 @@ Be aware this might take several minutes to complete (>= 15 minutes).
 ```
 
 
-# Resources
+## Resources
 - Bitcoin: https://bitcoin.org/en/getting-started
 - Lightning Network: https://lightning.network/
 - JSR354 (GitHub): https://github.com/JavaMoney/jsr354-api
@@ -231,5 +241,5 @@ Be aware this might take several minutes to complete (>= 15 minutes).
 - Protocol Buffers: https://developers.google.com/protocol-buffers
 
 
-# License
+## License
 The project is licensed under the Apache License. See [LICENSE](LICENSE) for details.
