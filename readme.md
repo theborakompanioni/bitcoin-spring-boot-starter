@@ -100,6 +100,21 @@ org.tbk.lightning.lnd.grpc:
 ```
 
 
+### bitcoin-fee
+A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
+The following providers are implemented:
+- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
+- [x] bitcoiner.live API
+- [x] Bitgo API
+- [x] Bitcore API
+- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
+- [x] Blockchair API
+- [x] BlockCypher API
+- [x] Blockstream.info API
+- [x] BTC.com API
+- [x] earn.com API
+
+
 ### spring-testcontainer
 
 This module contains a fast and easy way to start one or multiple instances of external services within 
@@ -117,21 +132,6 @@ Start and run:
 Most of these spring boot starter modules contain a simple example application. 
 They can be used in combination with other modules like [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client), 
 [bitcoin-zeromq-client](#bitcoin-zeromq-client), [lnd-grpc-client](#lnd-grpc-client), etc.
-
-
-### spring-bitcoin-fee
-A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
-The following providers are implemented:
-- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
-- [x] bitcoiner.live API
-- [x] Bitgo API
-- [x] Bitcore API
-- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
-- [x] Blockchair API
-- [x] BlockCypher API
-- [x] Blockstream.info API
-- [x] BTC.com API
-- [x] earn.com API
 
 
 ### incubator

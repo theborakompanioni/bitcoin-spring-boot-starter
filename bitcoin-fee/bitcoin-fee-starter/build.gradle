@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin fee client starter package'
+
+dependencies {
+    api project(':bitcoin-fee:bitcoin-fee-estimate-core')
+
+    api project(':bitcoin-fee:bitcoin-fee-estimate-bitcoin-jsonrpc')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-bitcoinerlive')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-bitcore')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-bitgo')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-blockchaininfo')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-blockchair')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-blockcypher')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+
+    api project(':bitcoin-fee:bitcoin-fee-autoconfigure')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+}

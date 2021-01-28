@@ -5,7 +5,7 @@ plugins {
 description = 'bitcoin core jsonrpc api fee client package'
 
 dependencies {
-    api project(':spring-bitcoin-fee:spring-bitcoin-fee-core')
+    api project(':bitcoin-fee:bitcoin-fee-estimate-core')
 
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
 

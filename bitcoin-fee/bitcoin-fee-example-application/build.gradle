@@ -1,0 +1,23 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'bitcoin fee example application package'
+
+dependencies {
+    // deliberately include "autoconfigure" instead of "starter" to demonstrate customizable configs
+    implementation project(':bitcoin-fee:bitcoin-fee-autoconfigure')
+
+    // when using "autoconfigure", also include selected fee provider packages
+    // these packages would be included by "starter" module automatically
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-bitcoin-jsonrpc')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-bitcoinerlive')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-bitcore')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-bitgo')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-blockchair')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-blockcypher')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

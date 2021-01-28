@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin fee client autoconfigure package'
+
+dependencies {
+    api project(':bitcoin-fee:bitcoin-fee-estimate-core')
+
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-bitcoin-jsonrpc')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-bitcoinerlive')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-bitcore')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-bitgo')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-blockchaininfo')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-blockchair')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-blockcypher')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-bitcoin-jsonrpc')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-bitcoinerlive')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-bitcore')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-bitgo')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-blockchaininfo')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-blockchair')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-blockcypher')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+}
