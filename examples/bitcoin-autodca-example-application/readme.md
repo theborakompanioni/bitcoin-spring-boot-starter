@@ -13,7 +13,7 @@ You'll need..
 Adapt the values in `application.yml` to your needs.
 Especially the exchange and autodca properties!
 
-```yml
+```yaml
 org.tbk.bitcoin.autodca:
   fiat-currency: 'USD' # the governmental shitcoin you are selling e.g. 'USD', 'EUR', etc.
   fiat-amount: '21.00' # fiat amount you trade for the future of money
@@ -21,7 +21,7 @@ org.tbk.bitcoin.autodca:
   withdraw-address: 'bc1yourwithdrawaladdress' # your withdrawal address
 ```
 
-```yml
+```yaml
 org.tbk.xchange:
   enabled: true
   specifications:
@@ -33,17 +33,17 @@ org.tbk.xchange:
 
 # Run
 ```shell script
-./gradlew -p examples/incubator/bitcoin-autodca-example-application bootRun --args='--help'
+./gradlew -p examples/bitcoin-autodca-example-application bootRun --args='--help'
 ```
 
 ```shell script
-./gradlew -p examples/incubator/bitcoin-autodca-example-application bootRun --args='--dry stack'
+./gradlew -p examples/bitcoin-autodca-example-application bootRun --args='--dry stack'
 ```
 ```shell script
-./gradlew -p examples/incubator/bitcoin-autodca-example-application bootRun --args='--dry withdraw'
+./gradlew -p examples/bitcoin-autodca-example-application bootRun --args='--dry withdraw'
 ```
 ```shell script
-./gradlew -p examples/incubator/bitcoin-autodca-example-application bootRun --args='--dry history'
+./gradlew -p examples/bitcoin-autodca-example-application bootRun --args='--dry history'
 ```
 
 # Resources

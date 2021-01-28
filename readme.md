@@ -138,6 +138,23 @@ org.tbk.tor:
 ```
 
 
+#### spring-xchange
+A module containing a spring boot starter for automatically creating and configuring
+[XChange]( https://github.com/knowm/XChange) beans!
+This starter makes it easy to fetch the current price of bitcoin, programmatically place orders, withdraw your bitcoin
+or manage your account!
+
+```yaml
+org.tbk.xchange:
+  enabled: true # whether auto-config should run - default is `true`
+  specifications: # provide specifications for all exchange you want to use - default is empty (no beans created)
+    krakenExchange:
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+      api-key: 'your-api-key' # change this value to your api key
+      secret-key: 'your-secret-key' #  change this value to your secret key
+```
+
+
 ### spring-testcontainer
 
 This module contains a fast and easy way to start one or multiple instances of external services within 
@@ -174,7 +191,7 @@ example applications showing basic usage of the functionality provided by these 
 - [x] lnd-playground: [Lightning Network Playground example application](examples/lnd-playground-example-application) (using lnd)
 
 Example apps can be started with a single command, e.g.:
-```shell
+```shell script
 ./gradlew -p examples/lnd-playground-example-application bootRun
 ```
 
@@ -188,12 +205,12 @@ Having access to a Bitcoin Core node running on mainnet is quite useful if you w
 Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some features to be working.
 
 ### Build
-```
+```shell script
 ./gradlew build -x test
 ```
  
 ### Test
-```
+```shell script
 ./gradlew test integrationTest
 ```
 
@@ -201,19 +218,19 @@ Tests in example application modules or modules that start a lot of docker conta
 (modules named "*-example-application" or "spring-testcontainer-*") are excluded from the
 default test phase and must be manually enabled if you want to run them.
 To run all tests you must pass `-PexampleTest` and `-PtestcontainerTest`:
-```
+```shell script
 ./gradlew test integrationTest -PtestcontainerTest -PexampleTest
 ```
 Be aware this might take several minutes to complete (>= 15 minutes).
 
 
 ### Dependency Checks
-```
+```shell script
 # verifies checksums of dependencies
 ./gradlew verifyChecksums
 ```
 
-```
+```shell script
 # calculate checksums of dependencies
 ./gradlew -q calculateChecksums | grep -v "spring-boot-bitcoin-starter" > checksums.gradle
 ```
