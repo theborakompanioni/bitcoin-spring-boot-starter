@@ -1,12 +1,12 @@
-import io.franzbecker.gradle.lombok.task.DelombokTask
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
+import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.1.RELEASE'
-        springBootGradlePluginVersion = '2.4.1'
+        springBootVersion = '2.4.2.RELEASE'
+        springBootGradlePluginVersion = '2.4.2'
         protobufGradleVersion = '0.8.14'
     }
     repositories {
