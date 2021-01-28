@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api project(':xchange-jsr354:xchange-jsr354-core')
 
-    implementation project(':xchange-spring:xchange-spring-autoconfigure')
+    implementation project(':spring-xchange:spring-xchange-autoconfigure')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 

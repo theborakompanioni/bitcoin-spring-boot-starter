@@ -5,7 +5,7 @@ plugins {
 description = 'xchange spring starter package'
 
 dependencies {
-    api project(':xchange-spring:xchange-spring-autoconfigure')
+    api project(':spring-xchange:spring-xchange-autoconfigure')
 
     api "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
     api "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
