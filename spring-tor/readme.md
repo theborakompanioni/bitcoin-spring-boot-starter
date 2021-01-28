@@ -1,4 +1,4 @@
-tbk-tor
+spring-tor
 ===
 
 A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
@@ -16,7 +16,7 @@ org.tbk.tor:
 
 Start the example application with
 ```shell
-./gradlew -p incubator/tbk-tor/tbk-tor-example-application bootRun
+./gradlew -p spring-tor/spring-tor-example-application bootRun
 ```
 Example output (2021-01-21):
 ```
@@ -29,7 +29,7 @@ Example output (2021-01-21):
 2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : virtual port: 80
 2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : host: 127.0.0.1
 2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : port: 8080
-2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : directory: /home/tbk/workspace/spring-boot-bitcoin-starter/incubator/tbk-tor/tbk-tor-example-application/tor-working-dir/spring_boot_app
+2021-01-21 01:23:33.607  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : directory: /home/tbk/workspace/spring-boot-bitcoin-starter/spring-tor/spring-tor-example-application/tor-working-dir/spring_boot_app
 2021-01-21 01:23:33.608  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : -------------------------------------------------
 2021-01-21 01:23:33.608  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : run: torsocks -p 46735 curl http://<your_onion_url>.onion:80/index.html -v
 2021-01-21 01:23:33.608  INFO 313251 --- [  restartedMain] o.t.t.s.example.TorExampleApplication    : =================================================

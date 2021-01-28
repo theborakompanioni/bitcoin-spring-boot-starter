@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api project(':incubator:tbk-tor:tbk-tor-http')
+    api project(':spring-tor:spring-tor-http')
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 

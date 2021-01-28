@@ -5,10 +5,10 @@ plugins {
 description = 'tor spring starter package'
 
 dependencies {
-    api project(':incubator:tbk-tor:tbk-tor-core')
-    api project(':incubator:tbk-tor:tbk-tor-hidden-service')
-    api project(':incubator:tbk-tor:tbk-tor-http')
-    api project(':incubator:tbk-tor:tbk-tor-autoconfigure')
+    api project(':spring-tor:spring-tor-core')
+    api project(':spring-tor:spring-tor-hidden-service')
+    api project(':spring-tor:spring-tor-http')
+    api project(':spring-tor:spring-tor-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
 

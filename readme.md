@@ -115,6 +115,19 @@ The following providers are implemented:
 - [x] earn.com API
 
 
+#### spring-tor
+A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
+The starter will automatically expose your application as hidden service!
+
+```yaml
+org.tbk.tor:
+  enabled: true  # whether auto-config should run - default is `true`
+  auto-publish-enabled: true # auto publish the web port as hidden service - default is `true`
+  working-directory: 'my-tor-directory' # the working directory for tor - default is `tor-working-dir`
+  startup-timeout: 30s # max startup duration for tor to successfully start - default is `60s`
+```
+
+
 ### spring-testcontainer
 
 This module contains a fast and easy way to start one or multiple instances of external services within 
@@ -136,18 +149,6 @@ They can be used in combination with other modules like [bitcoin-jsonrpc-client]
 
 ### incubator
 This subproject is home to all almost-ready modules.
-
-#### tbk-tor
-A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
-The starter will automatically expose your application as hidden service!
-
-```yaml
-org.tbk.tor:
-  enabled: true  # whether auto-config should run - default is `true`
-  auto-publish-enabled: true # auto publish the web port as hidden service - default is `true`
-  working-directory: 'my-tor-directory' # the working directory for tor - default is `tor-working-dir`
-  startup-timeout: 30s # max startup duration for tor to successfully start - default is `60s`
-```
 
 #### tbk-electrum-daemon-client
 A module containing a spring boot starter for a [Electrum daemon](https://github.com/spesmilo/electrum) JSON-RPC API client.

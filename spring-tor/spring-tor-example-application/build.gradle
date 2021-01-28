@@ -3,7 +3,7 @@ apply plugin: 'org.springframework.boot'
 description = 'tor example application package'
 
 dependencies {
-    api project(':incubator:tbk-tor:tbk-tor-starter')
+    api project(':spring-tor:spring-tor-starter')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

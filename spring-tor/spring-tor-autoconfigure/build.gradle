@@ -7,9 +7,9 @@ integrationTest {
 }
 
 dependencies {
-    api project(':incubator:tbk-tor:tbk-tor-core')
-    api project(':incubator:tbk-tor:tbk-tor-hidden-service')
-    api project(':incubator:tbk-tor:tbk-tor-http')
+    api project(':spring-tor:spring-tor-core')
+    api project(':spring-tor:spring-tor-hidden-service')
+    api project(':spring-tor:spring-tor-http')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
