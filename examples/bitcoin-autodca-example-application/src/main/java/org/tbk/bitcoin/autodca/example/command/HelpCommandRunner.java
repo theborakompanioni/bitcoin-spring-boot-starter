@@ -28,6 +28,7 @@ public class HelpCommandRunner extends ConditionalOnOptionApplicationRunner {
         System.out.println("      stack               stack sats - place market order with the configured amount");
         System.out.println("      withdraw            withdraw funds - sends crypto to the configured address");
         System.out.println("      balance             displays the balance on the exchange");
+        System.out.println("      ticker              displays the ticker (bid, ask, high, low, open, last)");
         System.out.println("      history             displays the latest trades");
         System.out.println();
         System.out.println("  Examples");
