@@ -17,7 +17,7 @@ public class HelpCommandRunner extends ConditionalOnOptionApplicationRunner {
     protected void doRun(ApplicationArguments args) {
         System.out.println("Usage: java -jar autodca.jar [OPTION...] COMMAND...");
         System.out.println();
-        System.out.println("  --dryrun                emit debugging messages");
+        System.out.println("  --dry                   emit debugging messages");
         System.out.println("  --help                  print this help text");
         System.out.println("  --version               print application version");
         System.out.println();
@@ -25,9 +25,10 @@ public class HelpCommandRunner extends ConditionalOnOptionApplicationRunner {
         System.out.println("      " + buildProperties.getVersion());
         System.out.println();
         System.out.println("  Command");
-        System.out.println("      stack               description");
-        System.out.println("      withdraw            description");
-        System.out.println("      history             description");
+        System.out.println("      stack               stack sats - place market order with the configured amount");
+        System.out.println("      withdraw            withdraw funds - sends crypto to the configured address");
+        System.out.println("      balance             displays the balance on the exchange");
+        System.out.println("      history             displays the latest trades");
         System.out.println();
         System.out.println("  Examples");
         System.out.println("      java -jar autodca.jar --help");

@@ -87,6 +87,13 @@ public class BitcoinAutoDcaExampleApplicationConfig {
 
     @Bean
     @ConditionalOnNotWebApplication
+    public ApplicationRunner balanceCommandRunner(Exchange exchange) {
+        KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
+        return new KrakenBalanceCommandRunner(krakenExchange);
+    }
+
+    @Bean
+    @ConditionalOnNotWebApplication
     public ApplicationRunner historyCommandRunner(Exchange exchange) {
         KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenHistoryCommandRunner(krakenExchange);
