@@ -13,7 +13,7 @@ the developers managing and developing this open source project. In return,
 they should reciprocate that respect in addressing your issue or assessing
 patches and features.
 
-## Using the issue tracker
+## Using the Issue Tracker
 
 The [issue tracker](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/issues) is
 the preferred channel for [bug reports](#bug-reports), [features requests](#feature-requests)
@@ -26,7 +26,7 @@ restrictions:
 * Please **do not** submit an issue unless you have checked that your problem has
   already been reported.
 
-## Bug reports
+## Bug Reports
 
 A bug is a _demonstrable problem_ that is caused by the code in the repository.
 Good bug reports are extremely helpful, so thanks!
@@ -69,7 +69,7 @@ Example:
 > merits).
 
 
-## Feature requests
+## Feature Requests
 
 Feature requests are welcome. But take a moment to find out whether your idea
 fits with the scope and aims of the project. It's up to *you* to make a strong
@@ -77,7 +77,7 @@ case to convince the project's developers of the merits of this feature. Please
 provide as much detail and context as possible.
 
 
-## Pull requests
+## Pull Requests
 
 Good pull requests, patches, improvements, new features are a fantastic
 help. They should remain focused in scope and avoid containing unrelated
@@ -98,7 +98,7 @@ included in the project:
 1. [Fork](http://help.github.com/fork-a-repo/) the project, clone your fork,
    and configure the remotes:
 
-   ```bash
+   ```shell script
    # Clone your fork of the repo into the current directory
    git clone https://github.com/<your-username>/spring-boot-bitcoin-starter.git
    # Navigate to the newly cloned directory
@@ -109,7 +109,7 @@ included in the project:
 
 2. If you cloned a while ago, get the latest changes from upstream:
 
-   ```bash
+   ```shell script
    git checkout master
    git pull upstream master
    ```
@@ -117,39 +117,42 @@ included in the project:
 3. Create a new topic branch (off the main project development branch) to
    contain your feature, change, or fix:
 
-   ```bash
+   ```shell script
    git checkout -b <topic-branch-name>
    ```
 
-4. Commit your changes in logical chunks. Use Git's
+4. Run all tests before committing.
+   ```shell script
+   ./gradlew check
+   ```
+   
+5. Commit your changes in logical chunks. Use Git's
    [interactive rebase](https://help.github.com/articles/interactive-rebase)
    feature to tidy up your commits before making them public.
 
-5. Locally merge (or rebase) the upstream development branch into your topic branch:
+6. Locally merge (or rebase) the upstream development branch into your topic branch:
 
-   ```bash
+   ```shell script
    git pull [--rebase] upstream master
    ```
+   
+7. Push your topic branch up to your fork:
 
-6. Push your topic branch up to your fork:
-
-   ```bash
+   ```shell script
    git push origin <topic-branch-name>
    ```
 
-7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
+8. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
     with a clear title and description against the `master` branch.
     The body should provide a meaningful commit message, which:
     - uses the imperative, present tense: "change", not "changed" or "changes".
 
 
-## Code guidelines
+## Code Guidelines
 
 - Be consistent.
 - Write clean code.
 - Test your stuff.
-
-Run `./gradle check` before committing.
 
 ## License
 

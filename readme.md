@@ -28,6 +28,7 @@ This project is under active development. Pull requests and issues are welcome.
 - [Modules](#modules)
 - [Examples](#examples)
 - [Development](#development)
+- [Contributing](#contributing)
 - [Resources](#resources)
 - [License](#license)
 
@@ -278,6 +279,12 @@ Be aware this might take several minutes to complete (>= 15 minutes).
 # calculate checksums of dependencies
 ./gradlew -q calculateChecksums | grep -v "spring-boot-bitcoin-starter" > checksums.gradle
 ```
+
+
+## Contributing
+All contributions and ideas are always welcome. For any question, bug or feature request, 
+please create an [issue](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/issues). 
+Before you start, please read the [contributing guidelines](contributing.md).
 
 
 ## Resources
