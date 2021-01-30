@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationArguments;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,8 +30,16 @@ public class KrakenBalanceCommandRunner extends ConditionalOnNonOptionApplicatio
         KrakenAccountService accountService = (KrakenAccountService) exchange.getAccountService();
         Map<String, BigDecimal> krakenBalance = accountService.getKrakenBalance();
 
-        krakenBalance.forEach((currencyCode, balance) -> {
-            System.out.printf("💰 %s: %s%n", currencyCode, balance.toPlainString());
-        });
+        Map<String, BigDecimal> krakenPositiveBalances = krakenBalance.entrySet().stream()
+                .filter(it -> it.getValue().compareTo(BigDecimal.ZERO) > 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (krakenPositiveBalances.isEmpty()) {
+            System.out.println("❌ There is no currency pair with a positive balance.");
+        } else {
+            krakenPositiveBalances.forEach((currencyCode, balance) -> {
+                System.out.printf("💰 %5s:\t%s%n", currencyCode, balance.toPlainString());
+            });
+        }
     }
 }
