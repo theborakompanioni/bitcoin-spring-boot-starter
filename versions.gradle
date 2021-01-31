@@ -15,6 +15,7 @@ ext {
     protocVersion = protobufVersion
     jacksonDatatypeMoneyVersion = '1.2.0'
     lombokVersion = '1.18.16'
+    springfoxVersion = '3.0.0'
     wiremockVersion = '2.27.2'
     jUnitVersion = '4.12'
 }
