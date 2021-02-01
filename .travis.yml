@@ -22,6 +22,3 @@ before_script:
   - protoc --version
   - ./gradlew autoLintGradle
   - ./gradlew verifyChecksums
-
-script:
-  - ./gradlew check -PtestcontainerTest -PexampleTest
