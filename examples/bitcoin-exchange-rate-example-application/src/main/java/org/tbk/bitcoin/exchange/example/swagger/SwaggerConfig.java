@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.exchange.example.swagger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.exchange.example.api.currency.CurrencyUnitCtrl;
@@ -14,10 +15,15 @@ import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+@Configuration(proxyBeanMethods = false)
 @EnableSwagger2
-@Configuration
 public class SwaggerConfig {
     private static final String implementationVersion = SwaggerConfig.class.getPackage().getImplementationVersion();
+
+    @Bean
+    public SwaggerUiWebMvcConfigurer swaggerUiWebMvcConfigurer(@Value("${springfox.documentation.swagger-ui.base-url:}") String baseUrl) {
+        return new SwaggerUiWebMvcConfigurer(baseUrl);
+    }
 
     @Bean
     public SecurityConfiguration securityConfiguration() {
