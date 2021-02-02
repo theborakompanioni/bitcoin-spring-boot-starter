@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeApiClient;
 import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeProvider;
-import org.tbk.bitcoin.tool.fee.btcdotcom.config.BtcdotcomFeeClientAutoConfigProperties;
 import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeApiClient;
 import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeApiClientImpl;
-import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeProvider;
+import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedBlocksMempoolspaceFeeProvider;
+import org.tbk.bitcoin.tool.fee.mempoolspace.SimpleMempoolspaceFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,8 +40,14 @@ public class MempoolspaceFeeClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(MempoolspaceFeeProvider.class)
-    public MempoolspaceFeeProvider mempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
-        return new MempoolspaceFeeProvider(mempoolspaceFeeApiClient);
+    @ConditionalOnMissingBean(SimpleMempoolspaceFeeProvider.class)
+    public SimpleMempoolspaceFeeProvider simpleMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+        return new SimpleMempoolspaceFeeProvider(mempoolspaceFeeApiClient);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ProjectedBlocksMempoolspaceFeeProvider.class)
+    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+        return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient);
     }
 }

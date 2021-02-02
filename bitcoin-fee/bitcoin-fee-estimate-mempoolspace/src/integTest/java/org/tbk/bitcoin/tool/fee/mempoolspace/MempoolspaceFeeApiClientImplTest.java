@@ -26,4 +26,12 @@ public class MempoolspaceFeeApiClientImplTest {
         assertThat(feesRecommended.getHalfHourFee(), is(greaterThanOrEqualTo(0L)));
         assertThat(feesRecommended.getHourFee(), is(greaterThanOrEqualTo(0L)));
     }
+
+    @Test
+    public void itShouldGetProjectedBlocks() {
+        ProjectedMempoolBlocks projectedBlocks = this.sut.projectedBlocks();
+
+        assertThat(projectedBlocks, is(notNullValue()));
+        assertThat(projectedBlocks.getBlocksList(), hasSize(greaterThanOrEqualTo(0)));
+    }
 }

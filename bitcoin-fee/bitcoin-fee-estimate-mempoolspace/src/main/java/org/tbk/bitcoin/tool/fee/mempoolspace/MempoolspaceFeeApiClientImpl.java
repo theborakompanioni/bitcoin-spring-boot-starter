@@ -2,15 +2,20 @@ package org.tbk.bitcoin.tool.fee.mempoolspace;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.HttpHeaders;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.Value;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedMempoolBlocks.ProjectedBlock;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -52,5 +57,36 @@ public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
         request.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
         String json = MoreHttpClient.executeToJson(client, request);
         return MoreJsonFormat.jsonToProto(json, FeesRecommended.newBuilder()).build();
+    }
+
+    @Override
+    public ProjectedMempoolBlocks projectedBlocks() {
+        // https://mempool.space/api/v1/fees/mempool-blocks
+        String query = MoreQueryString.toQueryString(createDefaultParamMap());
+        String url = String.format("%s/%s%s", baseUrl, "api/v1/fees/mempool-blocks", query);
+        HttpGet request = new HttpGet(url);
+        request.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
+        String json = MoreHttpClient.executeToJson(client, request);
+
+        ListValue messageAsListValue = MoreJsonFormat.jsonToProto(json, ListValue.newBuilder()).build();
+
+        List<ProjectedBlock> projectedBlocks = messageAsListValue.getValuesList().stream()
+                .filter(it -> it.getKindCase().equals(Value.KindCase.STRUCT_VALUE))
+                .map(Value::getStructValue)
+                .map(it -> ProjectedBlock.newBuilder()
+                        .setBlockSize((long) it.getFieldsOrThrow("blockSize").getNumberValue())
+                        .setBlockVsize((long) it.getFieldsOrThrow("blockVSize").getNumberValue())
+                        .setNTx((long) it.getFieldsOrThrow("nTx").getNumberValue())
+                        .setTotalFees((long) it.getFieldsOrThrow("totalFees").getNumberValue())
+                        .setMedianFee(it.getFieldsOrThrow("medianFee").getNumberValue())
+                        .addAllFeeRange(it.getFieldsOrThrow("feeRange").getListValue().getValuesList().stream()
+                                .map(Value::getNumberValue)
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+
+        return ProjectedMempoolBlocks.newBuilder()
+                .addAllBlocks(projectedBlocks)
+                .build();
     }
 }

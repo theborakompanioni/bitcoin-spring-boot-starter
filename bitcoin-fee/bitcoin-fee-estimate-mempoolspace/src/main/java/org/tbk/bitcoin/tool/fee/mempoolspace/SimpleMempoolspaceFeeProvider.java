@@ -2,6 +2,8 @@ package org.tbk.bitcoin.tool.fee.mempoolspace;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
+import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl.SatPerVbyteImplBuilder;
 import reactor.core.publisher.Flux;
 
@@ -11,10 +13,10 @@ import java.time.Duration;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class MempoolspaceFeeProvider extends AbstractFeeProvider {
+public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
-            .name("mempool.space")
-            .description("")
+            .name("mempool.space-simple")
+            .description("Simple fee recommendation")
             .build();
 
     private static final Duration HALF_HOUR = Duration.ofMinutes(30);
@@ -22,7 +24,7 @@ public class MempoolspaceFeeProvider extends AbstractFeeProvider {
 
     private final MempoolspaceFeeApiClient client;
 
-    public MempoolspaceFeeProvider(MempoolspaceFeeApiClient client) {
+    public SimpleMempoolspaceFeeProvider(MempoolspaceFeeApiClient client) {
         super(providerInfo);
 
         this.client = requireNonNull(client);
@@ -38,7 +40,7 @@ public class MempoolspaceFeeProvider extends AbstractFeeProvider {
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
         FeesRecommended feesRecommended = this.client.feesRecommended();
 
-        SatPerVbyteImplBuilder feeBuilder = FeeRecommendationResponseImpl.SatPerVbyteImpl.builder();
+        SatPerVbyteImplBuilder feeBuilder = SatPerVbyteImpl.builder();
         if (request.isNextBlockTarget()) {
             feeBuilder.satPerVbyteValue(BigDecimal.valueOf(feesRecommended.getFastestFee()));
         } else if (request.getDurationTarget().compareTo(HALF_HOUR) <= 0) {
@@ -50,7 +52,7 @@ public class MempoolspaceFeeProvider extends AbstractFeeProvider {
         }
 
         return Flux.just(FeeRecommendationResponseImpl.builder()
-                .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
+                .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(feeBuilder.build())
                         .build())
                 .build());
