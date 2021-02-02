@@ -8,6 +8,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/v1/fee")
+@RequestMapping(value = "/api/v1/fee", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class FeeCtrl {
     private static final String FEE_TABLE_KEY = "FEE_TABLE";
@@ -39,7 +40,7 @@ public class FeeCtrl {
     private final JsonFormat.Printer jsonPrinter;
 
     private final LoadingCache<String, FeeTableResponse> tableResponseCache = CacheBuilder.newBuilder()
-            .refreshAfterWrite(10, TimeUnit.MINUTES)
+            .refreshAfterWrite(60, TimeUnit.SECONDS)
             .build(new CacheLoader<>() {
                 @Override
                 public FeeTableResponse load(String key) {
