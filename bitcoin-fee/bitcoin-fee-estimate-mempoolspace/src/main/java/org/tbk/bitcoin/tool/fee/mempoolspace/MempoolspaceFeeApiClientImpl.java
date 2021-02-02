@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.tool.fee.btcdotcom;
+package org.tbk.bitcoin.tool.fee.mempoolspace;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.HttpHeaders;
@@ -14,13 +14,13 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class BtcdotcomFeeApiClientImpl implements BtcdotcomFeeApiClient {
-    private static final String DEFAULT_VERSION = Optional.ofNullable(BtcdotcomFeeApiClientImpl.class
+public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
+    private static final String DEFAULT_VERSION = Optional.ofNullable(MempoolspaceFeeApiClientImpl.class
             .getPackage()
             .getImplementationVersion()
     ).orElse("0.0.0");
 
-    private static final String DEFAULT_USERAGENT = "tbk-btcdotcom-client/" + DEFAULT_VERSION;
+    private static final String DEFAULT_USERAGENT = "tbk-mempoolspace-client/" + DEFAULT_VERSION;
 
     private final static String TOKEN_PARAM_NAME = "token";
     private final CloseableHttpClient client = HttpClients.createDefault();
@@ -28,7 +28,7 @@ public class BtcdotcomFeeApiClientImpl implements BtcdotcomFeeApiClient {
     private final String baseUrl;
     private final String apiToken;
 
-    public BtcdotcomFeeApiClientImpl(String baseUrl, String apiToken) {
+    public MempoolspaceFeeApiClientImpl(String baseUrl, String apiToken) {
         this.baseUrl = requireNonNull(baseUrl);
         this.apiToken = apiToken;
     }
@@ -44,13 +44,13 @@ public class BtcdotcomFeeApiClientImpl implements BtcdotcomFeeApiClient {
     }
 
     @Override
-    public FeeDistribution feeDistribution() {
-        // https://btc.com/service/fees/distribution
+    public FeesRecommended feesRecommended() {
+        // https://mempool.space/api/v1/fees/recommended
         String query = MoreQueryString.toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s%s", baseUrl, "service/fees/distribution", query);
+        String url = String.format("%s/%s%s", baseUrl, "api/v1/fees/recommended", query);
         HttpGet request = new HttpGet(url);
         request.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
         String json = MoreHttpClient.executeToJson(client, request);
-        return MoreJsonFormat.jsonToProto(json, FeeDistribution.newBuilder()).build();
+        return MoreJsonFormat.jsonToProto(json, FeesRecommended.newBuilder()).build();
     }
 }

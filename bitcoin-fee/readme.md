@@ -20,11 +20,11 @@ See fee distribution: https://jochen-hoenicke.de/queue/#0,2h
 - [x] Blockstream.info API
 - [x] BTC.com API
 - [x] earn.com API
+- [x] mempool.space API
 
 Incubating: 
 - [ ] https://btcpriceequivalent.com/fee-estimates -> https://btcpriceequivalent.com/n/{n}
 - [ ] whatthefee.io
-- [ ] https://mempool.space/api/v1/fees/recommended
 
 # Resources
 - https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/
@@ -226,5 +226,46 @@ Incubating:
  ] }
 ```
 
+
+
+### mempool.space API
+- [`https://mempool.space/api/v1/fees/recommended`](https://mempool.space/api/v1/fees/recommended)
+- [`https://mempool.space/api/v1/fees/mempool-blocks`](https://mempool.space/api/v1/fees/mempool-blocks)
+- [documentation](https://mempool.space/api)
+- Last check: 2021-02-01
+- Unit of measurement: **`sat/Byte`**
+
+`GET /api/v1/fees/recommended`:
+```json
+{
+  "fastestFee": 131,
+  "halfHourFee": 121,
+  "hourFee": 112
+}
+```
+
+`GET /api/v1/fees/mempool-blocks`:
+```json
+[
+  {
+    "blockSize": 1257335,
+    "blockVSize": 999892,
+    "nTx": 3023,
+    "totalFees": 142635955,
+    "medianFee": 131,
+    "feeRange": [
+      117.0762331838565,
+      119.7678916827853,
+      123.51150442477876,
+      128.58139534883722,
+      133.63881401617252,
+      137.82959641255604,
+      162.38297872340425,
+      1535.6771300448431
+    ]
+  },
+  [...]
+]
+```
 
 All text and images in this readme.md are licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).

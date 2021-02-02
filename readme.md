@@ -126,7 +126,7 @@ org.tbk.lightning.lnd.grpc:
 
 ### bitcoin-fee
 A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
-The following providers are implemented:
+The following providers are available out of the box:
 - [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
 - [x] bitcoiner.live API
 - [x] Bitgo API
@@ -137,6 +137,7 @@ The following providers are implemented:
 - [x] Blockstream.info API
 - [x] BTC.com API
 - [x] earn.com API
+- [x] mempool.space API
 
 
 ### spring-xchange

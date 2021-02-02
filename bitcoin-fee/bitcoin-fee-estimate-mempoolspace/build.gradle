@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+description = 'mempool.space bitcoin fee client package'
+
+dependencies {
+    api project(':bitcoin-fee:bitcoin-fee-estimate-core')
+
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+}

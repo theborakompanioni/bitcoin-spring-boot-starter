@@ -17,6 +17,7 @@ dependencies {
     implementation project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
     implementation project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
     implementation project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+    implementation project(':bitcoin-fee:bitcoin-fee-estimate-mempoolspace')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

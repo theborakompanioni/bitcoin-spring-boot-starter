@@ -17,6 +17,7 @@ dependencies {
     compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
     compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
     compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+    compileOnly project(':bitcoin-fee:bitcoin-fee-estimate-mempoolspace')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
@@ -33,4 +34,5 @@ dependencies {
     testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-blockstreaminfo')
     testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-btcdotcom')
     testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
+    testImplementation project(':bitcoin-fee:bitcoin-fee-estimate-mempoolspace')
 }
