@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.fee.example.api.FeeCtrl;
+import org.tbk.bitcoin.fee.example.internal.api.FeeTableCtrl;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -52,6 +53,5 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(FeeCtrl.class.getPackageName()))
                 .build();
-
     }
 }

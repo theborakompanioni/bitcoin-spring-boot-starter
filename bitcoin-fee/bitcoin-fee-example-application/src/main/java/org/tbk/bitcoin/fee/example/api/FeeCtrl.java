@@ -1,31 +1,24 @@
 package org.tbk.bitcoin.fee.example.api;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.tbk.bitcoin.fee.example.api.proto.FeeRecommendation;
-import org.tbk.bitcoin.fee.example.api.proto.FeeTableResponse;
-import org.tbk.bitcoin.fee.example.api.proto.FeeTableResponse.Row.RowEntry;
-import org.tbk.bitcoin.tool.fee.FeeProvider;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationRequestImpl;
-import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
+import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,71 +26,29 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1/fee", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class FeeCtrl {
-    private static final String FEE_TABLE_KEY = "FEE_TABLE";
-    private static final String PROVIDER_FEE_TABLE_KEY = "PROVIDER_FEE_TABLE";
+    private static final Duration defaultDuration = Duration.ofMinutes(30);
 
-    private final FeeProvider feeProvider;
-    private final JsonFormat.Printer jsonPrinter;
+    private static final List<Duration> durations = ImmutableList.<Duration>builder()
+            .add(Duration.ZERO)
+            .add(Duration.ofMinutes(10))
+            .add(Duration.ofMinutes(20))
+            .add(Duration.ofMinutes(30))
+            .add(Duration.ofMinutes(60))
+            .add(Duration.ofHours(2))
+            .add(Duration.ofHours(3))
+            .add(Duration.ofHours(6))
+            .add(Duration.ofHours(12))
+            .add(Duration.ofHours(24))
+            .build();
 
-    private final LoadingCache<String, FeeTableResponse> tableResponseCache = CacheBuilder.newBuilder()
-            .refreshAfterWrite(60, TimeUnit.SECONDS)
-            .build(new CacheLoader<>() {
-                @Override
-                public FeeTableResponse load(String key) {
-                    if (FEE_TABLE_KEY.equals(key)) {
-                        return createFeeTable();
-                    }
-                    if (PROVIDER_FEE_TABLE_KEY.equals(key)) {
-                        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
-                        return toProviderFeeTable(feeTableResponse);
-                    }
-                    throw new IllegalArgumentException("Key not supported: " + key);
-                }
-            });
+    @NonNull
+    private final List<FeeProvider> feeProviders;
 
-    @GetMapping("/table")
-    public ResponseEntity<FeeTableResponse> table() {
+    @NonNull
+    private final FeeProvider primaryFeeProvider;
 
-        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
-
-        return ResponseEntity.ok(feeTableResponse);
-    }
-
-    @GetMapping("/table.json")
-    public ResponseEntity<String> tableJson() throws InvalidProtocolBufferException {
-
-        FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
-
-        String json = jsonPrinter.print(feeTableResponse);
-
-        return ResponseEntity.ok(json);
-    }
-
-
-    @GetMapping("/provider/table.json")
-    public ResponseEntity<String> providerTableJson() throws InvalidProtocolBufferException {
-
-        FeeTableResponse providerFeeTable = tableResponseCache.getUnchecked(PROVIDER_FEE_TABLE_KEY);
-
-        String json = jsonPrinter.print(providerFeeTable);
-
-        return ResponseEntity.ok(json);
-    }
-
-
-    private FeeTableResponse createFeeTable() {
-        List<Duration> durations = ImmutableList.<Duration>builder()
-                .add(Duration.ZERO)
-                .add(Duration.ofMinutes(10))
-                .add(Duration.ofMinutes(20))
-                .add(Duration.ofMinutes(30))
-                .add(Duration.ofMinutes(60))
-                .add(Duration.ofHours(2))
-                .add(Duration.ofHours(3))
-                .add(Duration.ofHours(6))
-                .add(Duration.ofHours(12))
-                .add(Duration.ofHours(24))
-                .build();
+    @GetMapping("/recommendations")
+    public ResponseEntity<Map<Duration, List<FeeRecommendationResponse>>> recommendations() {
 
         List<FeeRecommendationRequest> requests = durations.stream()
                 .map(val -> FeeRecommendationRequestImpl.builder()
@@ -106,104 +57,72 @@ public class FeeCtrl {
                 .collect(Collectors.toList());
 
         Map<Duration, List<FeeRecommendationResponse>> durationToFeeRecommendations = requests.stream()
-                .collect(Collectors.toMap(FeeRecommendationRequest::getDurationTarget, val -> feeProvider.request(val)
+                .collect(Collectors.toMap(FeeRecommendationRequest::getDurationTarget, val -> primaryFeeProvider.request(val)
                         .onErrorContinue((throwable, o) -> {
                             log.warn("", throwable);
                         })
                         .collectList()
-                        .blockOptional(Duration.ofSeconds(30))
+                        .blockOptional(Duration.ofSeconds(15))
                         .orElseGet(Collections::emptyList)));
 
-
-        Map<Duration, BigDecimal> values = durationToFeeRecommendations.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-
-                    DoubleSummaryStatistics feeSummaryStatistics = entry.getValue().stream()
-                            .map(FeeRecommendationResponse::getFeeRecommendations)
-                            .flatMap(Collection::stream)
-                            .map(FeeRecommendationResponse.FeeRecommendation::getFeeUnit)
-                            .mapToDouble(d -> d.getValue().doubleValue())
-                            .summaryStatistics();
-
-                    return BigDecimal.valueOf(feeSummaryStatistics.getAverage());
-                }));
-
-        return FeeTableResponse.newBuilder()
-                .addColumn(FeeTableResponse.Column.newBuilder()
-                        .setText("(without conf value)")
-                        .build())
-                .addAllRow(values.entrySet().stream()
-                        .sorted(Comparator.comparingLong(val -> val.getKey().toMillis()))
-                        .map(val -> FeeTableResponse.Row.newBuilder()
-                                .setHeader(FeeTableResponse.Row.RowHeader.newBuilder()
-                                        .setText(val.getKey().toString())
-                                        .build())
-                                .addEntry(RowEntry.newBuilder()
-                                        .setText("" + val.getValue().setScale(2, RoundingMode.UP).toPlainString())
-                                        .setValue(val.getValue().doubleValue())
-                                        .addAllFeeRecommendation(durationToFeeRecommendations.get(val.getKey()).stream()
-                                                .map(r -> FeeRecommendation.newBuilder()
-                                                        .setValue(r.getFeeRecommendations().stream()
-                                                                .map(r2 -> r2.getFeeUnit().getValue().doubleValue())
-                                                                .findFirst().orElse(0d))
-                                                        .setProviderName(r.getProviderInfo().getName())
-                                                        .build())
-                                                .collect(Collectors.toList())
-                                        )
-                                        .build())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
+        return ResponseEntity.ok(durationToFeeRecommendations);
     }
 
+    @GetMapping("/recommendation")
+    public ResponseEntity<FeeRecommendationResponseDto> recommendation(
+            @RequestParam(name = "block_target", required = false) Integer blockTarget
+    ) {
+        Duration duration = Optional.ofNullable(blockTarget)
+                .filter(it -> it >= 0)
+                .map(MoreBitcoin::averageBlockDuration)
+                .orElse(defaultDuration);
 
-    public FeeTableResponse toProviderFeeTable(FeeTableResponse feeTable) {
-        Set<String> providerNames = feeTable.getRowList().stream()
-                .map(FeeTableResponse.Row::getEntryList)
-                .flatMap(Collection::stream)
-                .map(RowEntry::getFeeRecommendationList)
-                .flatMap(Collection::stream)
-                .map(FeeRecommendation::getProviderName)
-                .collect(Collectors.toSet());
-
-        List<FeeTableResponse.Column> columns = providerNames.stream()
-                .map(val -> FeeTableResponse.Column.newBuilder()
-                        .setText(val)
-                        .build())
-                .collect(Collectors.toList());
-
-        RowEntry missingEstimationRowEntry = RowEntry.newBuilder()
-                .setText("-")
-                .setValue(0d)
+        FeeRecommendationRequestImpl request = FeeRecommendationRequestImpl.builder()
+                .durationTarget(duration)
                 .build();
 
-        List<FeeTableResponse.Row> rows = feeTable.getRowList().stream()
-                .map(row -> {
-                    List<RowEntry> rowEntries = row.getEntryList().stream()
-                            .flatMap(entry -> providerNames.stream()
-                                    .map(provider -> entry.getFeeRecommendationList().stream()
-                                            .filter(rec -> provider.equals(rec.getProviderName()))
-                                            .findFirst()
-                                            .map(recommendation -> RowEntry.newBuilder()
-                                                    .setText("" + BigDecimal.valueOf(recommendation.getValue()).setScale(2, RoundingMode.UP).toPlainString())
-                                                    .setValue(recommendation.getValue())
-                                                    .addFeeRecommendation(recommendation)
-                                                    .build()
-                                            )
-                                            .orElse(missingEstimationRowEntry)))
-                            .collect(Collectors.toList());
-
-                    return FeeTableResponse.Row.newBuilder()
-                            .setHeader(row.getHeader())
-                            .addAllEntry(rowEntries)
-                            .build();
+        List<FeeRecommendationResponse> feeRecommendationResponses = primaryFeeProvider.request(request)
+                .onErrorContinue((throwable, o) -> {
+                    log.warn("", throwable);
                 })
-                .collect(Collectors.toList());
+                .collectList()
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseGet(Collections::emptyList);
 
-        return FeeTableResponse.newBuilder()
-                .addAllColumn(columns)
-                .addAllRow(rows)
-                .build();
+        return ResponseEntity.ok(FeeRecommendationResponseDto.builder()
+                .recommendations(feeRecommendationResponses)
+                .build());
     }
 
+    @GetMapping("/provider")
+    public ResponseEntity<ProviderResponse> provider() {
+        List<ProviderInfo> providerInfos = feeProviders.stream()
+                .map(FeeProvider::info)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ProviderResponse.builder()
+                .primaryProvider(primaryFeeProvider.info())
+                .providers(providerInfos)
+                .build());
+    }
+
+    @Value
+    @Builder
+    @Jacksonized
+    public static class FeeRecommendationResponseDto {
+        @JsonProperty("recommendations")
+        List<FeeRecommendationResponse> recommendations;
+    }
+
+    @Value
+    @Builder
+    @Jacksonized
+    public static class ProviderResponse {
+        @JsonProperty("primary_provider")
+        ProviderInfo primaryProvider;
+
+        @JsonProperty("providers")
+        @Singular("addProvider")
+        List<ProviderInfo> providers;
+    }
 }

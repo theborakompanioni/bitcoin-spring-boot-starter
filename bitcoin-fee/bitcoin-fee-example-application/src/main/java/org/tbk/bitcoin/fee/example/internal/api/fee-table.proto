@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package example.fee.api;
+package example.fee.internal.api;
 
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
-option java_package = "org.tbk.bitcoin.fee.example.api.proto";
-option java_outer_classname = "FeeApiProtos";
+option java_package = "org.tbk.bitcoin.fee.example.internal.api.proto";
+option java_outer_classname = "FeeTableApiProtos";
 option java_multiple_files = true;
 
 
