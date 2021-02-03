@@ -31,7 +31,7 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
             .put(Double.valueOf("0.9"), Confidence.HIGH)
             .build();
 
-    private static double highestConfidenceKey = confidenceMap.keySet().stream()
+    private static final double highestConfidenceKey = confidenceMap.keySet().stream()
             .mapToDouble(k -> k)
             .min()
             .orElseThrow();

@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
+
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
             .name("mempool.space-simple")
             .description("Simple fee recommendation")

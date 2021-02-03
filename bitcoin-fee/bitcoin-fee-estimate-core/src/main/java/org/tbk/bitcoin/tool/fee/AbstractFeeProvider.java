@@ -4,16 +4,23 @@ import reactor.core.publisher.Flux;
 
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 public abstract class AbstractFeeProvider implements FeeProvider {
 
     private final ProviderInfo providerInfo;
 
     protected AbstractFeeProvider() {
-        this(null);
+        this.providerInfo = null;
     }
 
     protected AbstractFeeProvider(ProviderInfo providerInfo) {
-        this.providerInfo = providerInfo;
+        this.providerInfo = requireNonNull(providerInfo);
+    }
+
+    @Override
+    public final ProviderInfo info() {
+        return infoHook();
     }
 
     @Override
@@ -24,7 +31,7 @@ public abstract class AbstractFeeProvider implements FeeProvider {
                 .flatMap(this::transformHook)
                 .map(val -> FeeRecommendationResponseImpl.builder()
                         .feeRecommendations(val.getFeeRecommendations())
-                        .providerInfo(Optional.ofNullable(val.getProviderInfo()).orElse(providerInfo))
+                        .providerInfo(Optional.ofNullable(val.getProviderInfo()).orElseGet(this::info))
                         .build()
                 );
     }
@@ -34,5 +41,9 @@ public abstract class AbstractFeeProvider implements FeeProvider {
 
     protected Flux<FeeRecommendationResponse> transformHook(FeeRecommendationResponse result) {
         return Flux.just(result);
+    }
+
+    protected ProviderInfo infoHook() {
+        return this.providerInfo;
     }
 }

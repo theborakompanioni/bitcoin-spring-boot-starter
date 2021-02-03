@@ -10,6 +10,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class BtcdotcomFeeProvider extends AbstractFeeProvider {
+
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
             .name("btc.com")
             .description("")

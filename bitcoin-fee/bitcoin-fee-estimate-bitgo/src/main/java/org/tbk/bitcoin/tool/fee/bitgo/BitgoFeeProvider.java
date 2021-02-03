@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class BitgoFeeProvider extends AbstractFeeProvider {
+
     private static final ProviderInfo providerInfo = SimpleProviderInfo.builder()
             .name("Bitgo")
             .description("")
