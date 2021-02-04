@@ -33,7 +33,21 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **The more leading `0`'s a block hash has (i.e. the lower the hash is), the more does the block contribute to total chainwork.**
 
-
+   It's a common misbelief that blocks with a lower block hash (i.e. more leading zeros) contribute more to the cumulated
+   [chainwork](https://github.com/bitcoin/bitcoin/blob/df536883d263781c2abe944afc85f681cda635ed/src/chain.h#L162) than a block 
+   with a larger hash (less leading zeros). Calculating the block hash consists of a large number of (independent) SHA256 hashing operations 
+   until a hash is found which is lower than the current [target](https://en.bitcoin.it/wiki/Target) (which is stored in the 
+   [`nBits`](https://github.com/bitcoin/bitcoin/blob/df536883d263781c2abe944afc85f681cda635ed/src/chain.h#L180) field of the blockheader
+   and gets adjusted every 2016 blocks as part of the difficulty adjustment algorithm).
+   Each of this hashing operations is independent of all hashing operations before. As the result of SHA256 is pseudorandomly distributed
+   the probability of finding a hash meeting the _target_ requirements is only dependent on the current _target_ value itself. 
+   Any hash below  the _target_ will be considered as a valid block proof, but the probability of finding such a hash is the 
+   same **for all values below the _target_** (no matter if it has 30 or 15 leading zeros).
+   For this reason only the difficulty value (`= highest target / current target`) which was active at the time of block 
+   generation is accounted to the amount of total work (see [validation.cpp#L3138](https://github.com/bitcoin/bitcoin/blob/20677ffa22e93e7408daadbd15d433f1e42faa86/src/validation.cpp#L3138)
+   to see where the work of current block is added to `nChainWork` and see [`GetBlockProof(…)` in chain.cpp](https://github.com/bitcoin/bitcoin/blob/aaaaad6ac95b402fe18d019d67897ced6b316ee0/src/chain.cpp#L122-L135)
+   to see how the block work is calculated only from the blockheader's `nBits` (=current target) header field).
+   
 ## Transactions
 1. **Once a valid transaction is in the mempool, it will end up in the blockchain.**
    
