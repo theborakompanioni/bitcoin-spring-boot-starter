@@ -42,6 +42,14 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **Fees are a specified explicitly in a transaction.**
 
+1. **If I make a RBF marked transaction I can always replace it by a different one, as long as it is still unconfirmed***
+
+1. **If I see a none-RBF marked transaction with enough fee, I can be pretty sure it will end up in the blockchain as it is**
+
+1. **If I see a unconfirmed payment to an address of mine, I can store the transaction ID as it will never change**
+
+1. **If the transaction ID of an unconfirmed payment has changed, it was clearly a malicious attempt to double spent**
+
 
 ## Wallets
 1. **All wallets support p2pkh transactions.**
