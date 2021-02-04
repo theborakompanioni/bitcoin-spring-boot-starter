@@ -20,6 +20,8 @@ here is a list of mistaken perspectives on Bitcoin.
    
 1. **When a miner finds a valid block, it is guaranteed to be included in the blockchain.**
 
+1. **Each block always generates `${CURRENT_BLOCKREWARD}` amount of new Bitcoin.**
+
 
 ## Transactions
 1. **Once a valid transaction is in the mempool, it will end up in the blockchain.**
@@ -54,6 +56,10 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **Each derivation path (eg. `m/44'/0'/0'/0/0`, `m/44'/0'/0'/0/1`, ...) is guaranteed to derive a valid address.**
 
+1. **If I sweep only parts of the funds on a paperwallet, the remaining rest will always stay on the paper wallet.**
+
+1. **But if I use a wallet providing a dedicated "sweep paperwallet" function and spend only parts of the funds, the remaining funds will always end up at the exactly same address printed on the paper wallet.**
+
 
 ### Keys
 1. **Each private key corresponds to exactly one address.**
@@ -80,15 +86,15 @@ here is a list of mistaken perspectives on Bitcoin.
 ## Privacy
 1. **Bitcoin is anonymous.**
   
-1. **All coins spent within a single transaction (inputs) are controlled by the same entity (have the same owner).**
+1. **All coins spent within a single transaction (inputs) are controlled by the same entity (owned by the same person).**
 
 
 ## Exchanges 
 1. **Exchanges will always allow withdrawal of funds.**
 
-1. **The coins in my exchange account is mine.**
+1. **The coins in my exchange account are mine.**
 
-1. **The coins in my exchange account actually exists.**
+1. **The coins in my exchange account actually exist.**
 
 1. **Orders which are successfully placed on exchanges are guaranteed to be executed.**
 
