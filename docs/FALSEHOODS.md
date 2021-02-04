@@ -93,6 +93,20 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **Each derivation path (eg. `m/44'/0'/0'/0/0`, `m/44'/0'/0'/0/1`, ...) is guaranteed to derive a valid address.**
 
+   BIP 32 key derivation consists of applying HMAC-SHA512 (see [BIP 32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) for all details) 
+   and using the first 256 bits of the result as key material. Bitcoin uses the `secp256k1` elliptic curve for its underlying signature operations.
+   Not all numbers from 0 to 2^256 are valid keys for `secp256k1`, especially the number 0 and all numbers `> n` (where `n` is the order of the curve)
+   are not valid keys (per definition of secp256k1). As `n` of the `secp256k1` curve is very close to the possible maximum of 2^256 it is 
+   very very unlikely (probability of less than 1 in 2^127) that the value derived as part of BIP 32 key derivation is not a valid private key.
+   If such a case ever happens BIP 32 specifies that a wallet should just skip this index and proceed with the next higher index (see 
+   [specification of key derviation](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#private-parent-key--private-child-key)
+   for details).
+   
+   So it is possible that wallets exist where the index of derived keys might have a gap. For these missing indexes then simply no address exist and
+   the missing index should be silently ignored by wallets. However this case is so highly unlikely that it's very likely that nobody will ever 
+   see this case in practice. (_Trivia: The author of [pycoin](https://github.com/richardkiss/pycoin) even prepared a [very special error message](https://github.com/richardkiss/pycoin/blob/9837d456a8b7cd8ef5f170b7bc41858957cc5e96/pycoin/key/bip32.py#L12)
+   for the case should this ever happen. :)_ ). 
+
 1. **If I sweep only parts of the funds on a paperwallet, the remaining rest will always stay on the paper wallet.**
 
 1. **But if I use a wallet providing a dedicated "sweep paperwallet" function and spend only parts of the funds, the remaining funds will always end up at the exactly same address printed on the paper wallet.**
