@@ -15,12 +15,23 @@ here is a list of mistaken perspectives on Bitcoin.
 
 ## Blocks
 1. **Block height will only increase.**
-   
+
+   Not the chain with the highest number of blocks is considered as the majority chain (honest chain), but the chain 
+   with the most cumulated [_chainwork_](https://github.com/bitcoin/bitcoin/blob/df536883d263781c2abe944afc85f681cda635ed/src/chain.h#L162). 
+   As the work needed to find a valid block proof is dependent on the block [target](https://en.bitcoin.it/wiki/Target) 
+   (see also [difficulty](https://en.bitcoin.it/wiki/Difficulty)), it is possible that a chain with a higher number 
+   of blocks than the majority chain exists, if the difficulty was lower in this chain. 
+   If a client for some reason first only sees the minority chain (whigh higher block count) and then gets presented
+   the majority chain (with a higher chainwork) it will drop the minority chain in favor of the majority chain. In this
+   case the valid block height (as seen by this node) might actually decrease.
+
 1. **Block time will only increase.**
    
 1. **When a miner finds a valid block, it is guaranteed to be included in the blockchain.**
 
 1. **Each block always generates `${CURRENT_BLOCKREWARD}` amount of new Bitcoin.**
+
+1. **The more leading `0`'s a block hash has (i.e. the lower the hash is), the more does the block contribute to total chainwork.**
 
 
 ## Transactions
