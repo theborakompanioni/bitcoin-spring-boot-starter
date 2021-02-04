@@ -27,7 +27,11 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **Once a valid transaction is in the mempool, it will end up in the blockchain.**
    
 1. **Before a transaction becomes part of the blockchain it must be in the mempool.**
-   
+
+1. **If I see a transaction in my mympool I can be sure it is in all nodes' mempool.**
+
+1. **If a transaction is not accepted in the mempool it cannot be accepted as valid in a block.**
+
 1. **Yeah, but once it is in a block, it will stay in the blockchain forever.**
 
 1. **Each transaction has exactly one receiver.**
