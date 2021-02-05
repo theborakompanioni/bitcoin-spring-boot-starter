@@ -24,6 +24,17 @@ here is a list of mistaken perspectives on Bitcoin.
    If a client for some reason first only sees the minority chain (with higher block count) and then gets presented
    the majority chain (with a higher chainwork) it will drop the minority chain in favor of the majority chain. In this
    case the valid block height (as seen by this node) might actually decrease.
+   
+   It is a very difficult exercise to even imagine a scenario of how this could happen. 
+   
+   **Thought experiment**: _Suppose a miner with massive hash power outperforming the majority chain, but not publicly announcing the blocks.  
+   After 2016 blocks a difficulty adjustment takes place and the difficulty on the hidden chain increases by a lot. 
+   All blocks mined now on the hidden chain contain more chainwork than corresponding blocks on the public chain. 
+   The miner produces a few more blocks and then stops and waits for the other chain to catch up to his blocksize + 1 and then announces his block. 
+   All nodes will follow the chain with lesser blockheight because it includes more chainwork._
+   
+   It is left as an exercise for the reader to imagine how likely the occurrence of this case may be.   
+   If you can come up with an additional scenario, please - for the sake of Satoshi - create a PR! : )
 
 1. **Block time will only increase.**
    
@@ -187,7 +198,7 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **All UTXOs are spendable.**
 
    Some outputs are proofable unspendable (for example the [50 BTC output in the genesis block can never be spent](https://bitcoin.stackexchange.com/a/10019/109728)) as 
-   well as all [ouputs with a `OP_RETURN` script](https://en.bitcoin.it/wiki/OP_RETURN) and others where it is highly likely that the coins
+   well as all [outputs with a `OP_RETURN` script](https://en.bitcoin.it/wiki/OP_RETURN) and others where it is highly likely that the coins
    can never be spent (for example addresses which look "generated" in a way that somebody just tried to find a vaid checksum for the address string, but it is very, very unlikely that 
    the address really resulted from an actual random hashing operation). Examples: [1CounterpartyXXXXXXXXXXXXXXXUWLpVr](https://www.blockchain.com/btc/address/1CounterpartyXXXXXXXXXXXXXXXUWLpVr) 
    or [1BitcoinEaterAddressDontSendf59kuE](https://www.blockchain.com/btc/address/1BitcoinEaterAddressDontSendf59kuE). One can safely assume, that these coins are unspendable forever.
