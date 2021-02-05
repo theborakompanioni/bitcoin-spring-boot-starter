@@ -77,11 +77,20 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **If I see a transaction in my mempool I can be sure it is in all nodes' mempool.**
 
    No.
-   - Transactions need time to be propagated to every node. If you see it, it does not mean everybody has seen it.
+   - Transactions need time to be propagated to every node. If you see it, it does not mean everybody sees it.
    - Every node is configured differently and has certain constraints (e.g. `maxmempool` size reached).
    - A node is not obligated to include a transaction in the mempool and can decline to do so at will.
 
 1. **If a transaction is not accepted in the mempool it cannot be accepted as valid in a block.**
+
+   There are various reasons a transaction might not be accepted, propagated or requested by nodes, e.g. 
+   a transaction has a fee rate below the `minrelaytxfee`.
+   
+   The `minrelaytxfee` specifies a feerate acting as a lower bound for a node's mempool. A node will not admit unconfirmed 
+   transactions below that feerate to its mempool and thus will not relay them to its peers. The `minrelaytxfee` is a 
+   configuration setting and can be specified by each node operator independently.
+   
+   This does not mean it is invalid or cannot be included in a block.
    
 1. **Yeah, but once it is in a block, it will stay in the blockchain forever.**
 
