@@ -159,10 +159,29 @@ here is a list of mistaken perspectives on Bitcoin.
 ## Misc
 1. **There are 21 million bitcoin to ever exist.**
 
-   The total number of bitcoins has an asymptote at 21 million, due to a side-effect of the data structure of the blockchain - 
-   specifically the integer storage type of the transaction output, [this exact value would have been 20,999,999.9769 bitcoin](https://en.bitcoin.it/wiki/Controlled_supply#Projected_Bitcoins_Long_Term).
+   The total number of bitcoins has an asymptote at 21 million, due to a side-effect of the data structure of the blockchain – 
+   specifically the integer storage type of the transaction output – [the exact value would be 20,999,999.9769 bitcoin](https://en.bitcoin.it/wiki/Controlled_supply#Projected_Bitcoins_Long_Term).
    However, due to miner underpayment, the total number is even less.
    In [block 124724](https://blockchair.com/bitcoin/block/124724) the coinbase transaction is missing one Satoshi.
    [Block 501726](https://blockchair.com/bitcoin/block/501726) is even missing the whole block reward.
+   Also some outputs are proofable unspendable (for example the [50 BTC output in the genesis block can never be spent](https://bitcoin.stackexchange.com/a/10019/109728)) as 
+   well as all [ouputs with a `OP_RETURN` script](https://en.bitcoin.it/wiki/OP_RETURN) and others where it is highly likely that the coins
+   can never be spent (for example addresses which look "generated" in a way that somebody just tried to find a vaid checksum for the address string, but it is very, very unlikely that 
+   the address really resulted from an actual random hashing operation). Examples: [1CounterpartyXXXXXXXXXXXXXXXUWLpVr](https://www.blockchain.com/btc/address/1CounterpartyXXXXXXXXXXXXXXXUWLpVr) 
+   or [1BitcoinEaterAddressDontSendf59kuE](https://www.blockchain.com/btc/address/1BitcoinEaterAddressDontSendf59kuE). One can safely assume, that these coins are unspendable forever.
+   Besides all these there are lots of addresses where the private simply was lost.
    
-   It is therefore impossible to know how many bitcoin will exist in the year 2140.
+   It is therefore impossible to know exactly how many bitcoin will exist in the year 2140, but it will be less than 21 millions.
+
+   _Trivia 1_: However, back in August 2010 there was an incident at blockheight #74638: Someone discovered that transaction amounts had no overflow check implemented (back then)
+   and created a transaction which included 2 outputs each with 92233720368.54277039 BTC (92 billion!). This transaction was considered as valid by all nodes in 
+   the network, because the sum of the inputs (+ fees) _seemed_ to be equal to the sum of these 2 outputs (because the sum caused an integer overflow). This [was recognized quickly
+   by the Bitcoin community](https://bitcointalk.org/index.php?topic=822.0) and within a few hours a 
+   [bugfix was developed](https://github.com/bitcoin/bitcoin/commit/2d12315c94f12d62b2f2aa39e63511a2042fe55d). As soon as the majority of miners ran the bugfixed version, the chain containing
+   this block was rejected as invalid and dropped by all nodes, and the new majority chain did no longer contain this block (so you will not see this block anymore in today's blockchain).
+   But you can still see the traces of this incident in the blockchain by looking at the timestamps of [block 74637](https://blockchair.com/bitcoin/block/74637) (_2010-08-15 17:02_) 
+   and [block 74638](https://blockchair.com/bitcoin/block/74638) (_2010-08-15 23:53_). They are several hours apart because that is the time in which the chain with the invalid transaction
+   existed until it was later discared in favor of the honest majority chain.
+   
+   So, technically, there was a short period in time, where the total amount of Bitcoin was higher than 21 million. If the RPC call `bitcoin-cli gettxoutsetinfo` would already have
+   existed in 2010, it would have returned a total amount of over 184 billion total BTC between 17:02 and 23:53 on 2010-08-15.
