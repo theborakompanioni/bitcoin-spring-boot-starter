@@ -57,7 +57,7 @@ here is a list of mistaken perspectives on Bitcoin.
    
 1. **Before a transaction becomes part of the blockchain it must be in the mempool.**
 
-1. **If I see a transaction in my mympool I can be sure it is in all nodes' mempool.**
+1. **If I see a transaction in my mempool I can be sure it is in all nodes' mempool.**
 
 1. **If a transaction is not accepted in the mempool it cannot be accepted as valid in a block.**
 
@@ -157,5 +157,12 @@ here is a list of mistaken perspectives on Bitcoin.
 
 
 ## Misc
-1. **There are only 21 million bitcoin to ever exist.**
+1. **There are 21 million bitcoin to ever exist.**
 
+   The total number of bitcoins has an asymptote at 21 million, due to a side-effect of the data structure of the blockchain - 
+   specifically the integer storage type of the transaction output, [this exact value would have been 20,999,999.9769 bitcoin](https://en.bitcoin.it/wiki/Controlled_supply#Projected_Bitcoins_Long_Term).
+   However, due to miner underpayment, the total number is even less.
+   In [block 124724](https://blockchair.com/bitcoin/block/124724) the coinbase transaction is missing one Satoshi.
+   [Block 501726](https://blockchair.com/bitcoin/block/501726) is even missing the whole block reward.
+   
+   It is therefore impossible to know how many bitcoin will exist in the year 2140.
