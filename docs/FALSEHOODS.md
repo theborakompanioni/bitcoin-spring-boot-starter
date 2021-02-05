@@ -35,18 +35,22 @@ here is a list of mistaken perspectives on Bitcoin.
 
    It's a common misbelief that blocks with a lower block hash (i.e. more leading zeros) contribute more to the cumulated
    [chainwork](https://github.com/bitcoin/bitcoin/blob/df536883d263781c2abe944afc85f681cda635ed/src/chain.h#L162) than a block 
-   with a larger hash (less leading zeros). Calculating the block hash consists of a large number of (independent) SHA256 hashing operations 
+   with a larger hash (less leading zeros). Calculating the block hash consists of many (independent) SHA256 hashing operations 
    until a hash is found which is lower than the current [target](https://en.bitcoin.it/wiki/Target) (which is stored in the 
    [`nBits`](https://github.com/bitcoin/bitcoin/blob/df536883d263781c2abe944afc85f681cda635ed/src/chain.h#L180) field of the blockheader
    and gets adjusted every 2016 blocks as part of the difficulty adjustment algorithm).
    Each of this hashing operations is independent of all hashing operations before. As the result of SHA256 is pseudorandomly distributed
    the probability of finding a hash meeting the _target_ requirements is only dependent on the current _target_ value itself. 
    Any hash below  the _target_ will be considered as a valid block proof, but the probability of finding such a hash is the 
-   same **for all values below the _target_** (no matter if it has 30 or 15 leading zeros).
+   same **for all values below the _target_** (no matter if it has 15 or 30 leading zeros).
    For this reason only the difficulty value (`= highest target / current target`) which was active at the time of block 
    generation is accounted to the amount of total work (see [validation.cpp#L3138](https://github.com/bitcoin/bitcoin/blob/20677ffa22e93e7408daadbd15d433f1e42faa86/src/validation.cpp#L3138)
    to see where the work of current block is added to `nChainWork` and see [`GetBlockProof(…)` in chain.cpp](https://github.com/bitcoin/bitcoin/blob/aaaaad6ac95b402fe18d019d67897ced6b316ee0/src/chain.cpp#L122-L135)
    to see how the block work is calculated only from the blockheader's `nBits` (=current target) header field).
+   
+1. **Difficulty adjustment is based off of the previous 2016 blocks.**
+
+   The difficulty adjustment algorithm has an off-by-one bug that leads to the calculation based off of the previous 2015 blocks, rather than precisely 2016.
    
 ## Transactions
 1. **Once a valid transaction is in the mempool, it will end up in the blockchain.**
@@ -97,13 +101,13 @@ here is a list of mistaken perspectives on Bitcoin.
    and using the first 256 bits of the result as key material. Bitcoin uses the `secp256k1` elliptic curve for its underlying signature operations.
    Not all numbers from 0 to 2^256 are valid keys for `secp256k1`, especially the number 0 and all numbers `> n` (where `n` is the order of the curve)
    are not valid keys (per definition of secp256k1). As `n` of the `secp256k1` curve is very close to the possible maximum of 2^256 it is 
-   very very unlikely (probability of less than 1 in 2^127) that the value derived as part of BIP 32 key derivation is not a valid private key.
+   very unlikely (probability of less than 1 in 2^127) that the value derived as part of BIP 32 key derivation is not a valid private key.
    If such a case ever happens BIP 32 specifies that a wallet should just skip this index and proceed with the next higher index (see 
    [specification of key derviation](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#private-parent-key--private-child-key)
    for details).
    
-   So it is possible that wallets exist where the index of derived keys might have a gap. For these missing indexes then simply no address exist and
-   the missing index should be silently ignored by wallets. However this case is so highly unlikely that it's very likely that nobody will ever 
+   So it is possible that wallets exist where the index of derived keys might have a gap. For these missing indexes then simply no address exists, and
+   the missing index should be silently ignored by wallets. However, this case is so highly unlikely it's very likely that nobody will ever 
    see this case in practice. (_Trivia: The author of [pycoin](https://github.com/richardkiss/pycoin) even prepared a [very special error message](https://github.com/richardkiss/pycoin/blob/9837d456a8b7cd8ef5f170b7bc41858957cc5e96/pycoin/key/bip32.py#L12)
    for the case should this ever happen. :)_ ). 
 
