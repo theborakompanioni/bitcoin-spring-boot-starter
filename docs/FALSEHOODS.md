@@ -27,14 +27,14 @@ here is a list of mistaken perspectives on Bitcoin.
    
    It is a very difficult exercise to even imagine a scenario of how this could happen. 
    
-   **Thought experiment**: _Suppose a miner with massive hash power outperforming the majority chain, but not publicly announcing the blocks.  
+   _Thought experiment_: Suppose a miner with massive hash power outperforming the majority chain, but not publicly announcing the blocks. 
    After 2016 blocks a difficulty adjustment takes place and the difficulty on the hidden chain increases by a lot. 
    All blocks mined now on the hidden chain contain more chainwork than corresponding blocks on the public chain. 
-   The miner produces a few more blocks and then stops and waits for the other chain to catch up to his blocksize + 1 and then announces his block. 
-   All nodes will follow the chain with lesser blockheight because it includes more chainwork._
+   The miner produces a few more blocks, stops mining and waits for the other chain to catch up to his blocksize + 1 and then announces his blocks. 
+   All nodes will follow the chain with lesser blockheight because it includes more chainwork.
    
    It is left as an exercise for the reader to imagine how likely the occurrence of this case may be.   
-   If you can come up with an additional scenario, please - for the sake of Satoshi - create a PR! : )
+   If you can come up with an additional scenario, please - for the sake of Satoshi - create a PR!
 
 1. **Block time will only increase.**
    
@@ -66,12 +66,18 @@ here is a list of mistaken perspectives on Bitcoin.
 ## Transactions
 1. **Once a valid transaction is in the mempool, it will end up in the blockchain.**
    
+   Transactions can be dropped from the mempool. A node's mempool can only occupy as much memory as is configured 
+   through `maxmempool`. When this limit is reached, it will drop the transactions with the lowest feerate and increase 
+   its `mempoolminfee`. It will communicate its new `mempoolminfee` to its peers, basically telling peers not to 
+   forward transactions below that feerate for the time being. Note that every node does this individually, so a node 
+   with a larger mempool or different architecture may drop transactions earlier or later.
+   
 1. **Before a transaction becomes part of the blockchain it must be in the mempool.**
 
 1. **If I see a transaction in my mempool I can be sure it is in all nodes' mempool.**
 
 1. **If a transaction is not accepted in the mempool it cannot be accepted as valid in a block.**
-
+   
 1. **Yeah, but once it is in a block, it will stay in the blockchain forever.**
 
 1. **Each transaction has exactly one receiver.**
