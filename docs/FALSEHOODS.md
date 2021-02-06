@@ -70,6 +70,14 @@ here is a list of mistaken perspectives on Bitcoin.
 
    The difficulty adjustment algorithm has an off-by-one bug that leads to the calculation based off of the previous 2015 blocks, rather than precisely 2016.
    
+1. **Empty blocks are empty.**
+ 
+   Empty blocks still contain data. They aren't devoid of data, they simply do not have transactions other than the
+   coinbase transaction in them. Since an empty block does not contain any transactions from the mempool, it is 
+   considered to be empty. Empty blocks are still computationally expensive because miners still have to produce a 
+   Proof of Work. They still have block headers which are 80 bytes and have all the fields that non-empty blocks do. 
+
+
 ## Transactions
 1. **Once a valid transaction is in the mempool, it will end up in the blockchain.**
    
