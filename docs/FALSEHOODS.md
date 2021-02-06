@@ -39,6 +39,13 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **Block time will only increase.**
    
 1. **When a miner finds a valid block, it is guaranteed to be included in the blockchain.**
+   
+1. **Okay, but when a miner finds a valid block single-handedly, it is guaranteed to be included in the blockchain.**
+
+   Not if in the block [collides with the hash of an earlier block](https://bitcoin.stackexchange.com/a/38385). 
+   As the [inventory vector](https://en.bitcoin.it/wiki/Protocol_documentation#Inventory_Vectors) of the described new 
+   block would be a duplicate of an already known block, no other node would request this block. It would just be 
+   ignored, as if never discovered in the first place. Everybody would be convinced that no new block has been found at that height yet.
 
 1. **Each block always generates `${CURRENT_BLOCKREWARD}` amount of new Bitcoin.**
 
