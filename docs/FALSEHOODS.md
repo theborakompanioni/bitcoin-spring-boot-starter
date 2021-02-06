@@ -171,7 +171,15 @@ here is a list of mistaken perspectives on Bitcoin.
 
 ## Privacy
 1. **Bitcoin is anonymous.**
-  
+   
+   All coins have a clear and visible history of ownership tracing back to their creation. In addition, the blockchain 
+   allows all transactions to be viewed by anyone in the network, so transactions, addresses, and supply can be easily 
+   audited by any and all network participants.
+   
+   Addresses are merely strings of letters and numbers, and are not inherently connected to a given user or wallet. 
+   Both users and wallets can use an arbitrary number of addresses to store bitcoin, and multisig addresses can hold 
+   bitcoin belonging to multiple users. Thus, Bitcoin is most accurately defined as pseudonymous rather than anonymous. 
+   
 1. **All coins spent within a single transaction (inputs) are controlled by the same entity (owned by the same person).**
 
 
