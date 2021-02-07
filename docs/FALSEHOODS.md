@@ -124,7 +124,7 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **Fees are a specified explicitly in a transaction.**
 
-1. **If I make a RBF marked transaction I can always replace it by a different one, as long as it is still unconfirmed.***
+1. **If I make a RBF marked transaction I can always replace it by a different one, as long as it is still unconfirmed.**
 
 1. **If I see a none-RBF marked transaction with enough fee, I can be pretty sure it will end up in the blockchain as it is.**
 
@@ -152,7 +152,7 @@ here is a list of mistaken perspectives on Bitcoin.
    are not valid keys (per definition of secp256k1). As `n` of the `secp256k1` curve is very close to the possible maximum of 2^256 it is 
    very unlikely (probability of less than 1 in 2^127) that the value derived as part of BIP 32 key derivation is not a valid private key.
    If such a case ever happens BIP 32 specifies that a wallet should just skip this index and proceed with the next higher index (see 
-   [specification of key derviation](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#private-parent-key--private-child-key)
+   [specification of key derivation](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#private-parent-key--private-child-key)
    for details).
    
    So it is possible that wallets exist where the index of derived keys might have a gap. For these missing indexes then simply no address exists, and
@@ -232,18 +232,18 @@ here is a list of mistaken perspectives on Bitcoin.
    by the Bitcoin community](https://bitcointalk.org/index.php?topic=822.0) and within a few hours a 
    [bugfix was developed](https://github.com/bitcoin/bitcoin/commit/2d12315c94f12d62b2f2aa39e63511a2042fe55d). As soon as the majority of miners ran the bugfixed version, the chain containing
    this block was rejected as invalid and dropped by all nodes, and the new majority chain did no longer contain this block (so you will not see this block anymore in today's blockchain).
-   But you can still see the traces of this incident in the blockchain by looking at the timestamps of [block 74637](https://blockchair.com/bitcoin/block/74637) (_2010-08-15 17:02_) 
+   You can still see the traces of this incident in the blockchain by looking at the timestamps of [block 74637](https://blockchair.com/bitcoin/block/74637) (_2010-08-15 17:02_) 
    and [block 74638](https://blockchair.com/bitcoin/block/74638) (_2010-08-15 23:53_). They are several hours apart because that is the time in which the chain with the invalid transaction
-   existed until it was later discared in favor of the honest majority chain.
+   existed until it was later discarded in favor of the honest majority chain.
    
    So, technically, there was a short period in time, where the total amount of Bitcoin was higher than 21 million. If the RPC call `bitcoin-cli gettxoutsetinfo` would already have
    existed in 2010, it would have returned a total amount of over 184 billion total BTC between 17:02 and 23:53 on 2010-08-15.
 
 1. **All UTXOs are spendable.**
 
-   Some outputs are proofable unspendable (for example the [50 BTC output in the genesis block can never be spent](https://bitcoin.stackexchange.com/a/10019/109728)) as 
-   well as all [outputs with a `OP_RETURN` script](https://en.bitcoin.it/wiki/OP_RETURN) and others where it is highly likely that the coins
-   can never be spent (for example addresses which look "generated" in a way that somebody just tried to find a vaid checksum for the address string, but it is very, very unlikely that 
+   Some outputs are provably unspendable (for example the [50 BTC output in the genesis block can never be spent](https://bitcoin.stackexchange.com/a/10019/109728)) as 
+   well as all [outputs with a `OP_RETURN` script](https://en.bitcoin.it/wiki/OP_RETURN) and others where it is highly likely the coins
+   can never be spent (for example addresses which look "generated" in a way that somebody just tried to find a valid checksum for the address string, but it is very, very unlikely that 
    the address really resulted from an actual random hashing operation). Examples: [1CounterpartyXXXXXXXXXXXXXXXUWLpVr](https://www.blockchain.com/btc/address/1CounterpartyXXXXXXXXXXXXXXXUWLpVr) 
    or [1BitcoinEaterAddressDontSendf59kuE](https://www.blockchain.com/btc/address/1BitcoinEaterAddressDontSendf59kuE). One can safely assume, that these coins are unspendable forever.
-   Besides all this there are lots of addresses where the private is lost.
+   Besides all this, there are lots of addresses where the private key is lost.
