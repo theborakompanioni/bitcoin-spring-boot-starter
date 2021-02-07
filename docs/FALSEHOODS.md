@@ -49,6 +49,9 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **Each block always generates `${CURRENT_BLOCKREWARD}` amount of new Bitcoin.**
 
+   In [block 124724](https://blockchair.com/bitcoin/block/124724) the coinbase transaction is missing one Satoshi.
+   [Block 501726](https://blockchair.com/bitcoin/block/501726) is even missing the whole block reward.
+   
 1. **The more leading `0`'s a block hash has (i.e. the lower the hash is), the more does the block contribute to total chainwork.**
 
    It's a common misbelief that blocks with a lower block hash (i.e. more leading zeros) contribute more to the cumulated
@@ -216,8 +219,6 @@ here is a list of mistaken perspectives on Bitcoin.
    The total number of bitcoins has an asymptote at 21 million, due to a side-effect of the data structure of the blockchain – 
    specifically the integer storage type of the transaction output – [the exact value would be 20,999,999.9769 bitcoin](https://en.bitcoin.it/wiki/Controlled_supply#Projected_Bitcoins_Long_Term).
    However, due to miner underpayment, the total number is even less.
-   In [block 124724](https://blockchair.com/bitcoin/block/124724) the coinbase transaction is missing one Satoshi.
-   [Block 501726](https://blockchair.com/bitcoin/block/501726) is even missing the whole block reward.
    
    It is therefore impossible to know exactly how many bitcoin will exist in the year 2140, but it will be less than 21 millions.
 
