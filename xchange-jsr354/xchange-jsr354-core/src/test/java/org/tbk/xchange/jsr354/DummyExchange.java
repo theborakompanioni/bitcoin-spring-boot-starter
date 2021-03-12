@@ -8,15 +8,14 @@ import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.trade.TradeService;
-import org.knowm.xchange.utils.nonce.LongConstNonceFactory;
+import si.mazi.rescu.LongValueFactory;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class DummyExchange extends BaseExchange implements Exchange {
-    private final SynchronizedValueFactory<Long> nonceFactory = new LongConstNonceFactory();
+    private final SynchronizedValueFactory<Long> nonceFactory = new LongValueFactory();
 
     @Override
     protected void initServices() {
@@ -37,14 +36,14 @@ public class DummyExchange extends BaseExchange implements Exchange {
         exchangeSpecification.setHost("www.example.com");
         exchangeSpecification.setPort(80);
         exchangeSpecification.setExchangeName("Dummy");
-        exchangeSpecification.setExchangeDescription("Dummy is a exchange that should be used in application tests");
+        exchangeSpecification.setExchangeDescription("Dummy is an exchange that should only be used in tests");
         exchangeSpecification.setShouldLoadRemoteMetaData(false);
         return exchangeSpecification;
     }
 
     public static class DummyMarketDataService implements MarketDataService {
         @Override
-        public Ticker getTicker(CurrencyPair currencyPair, Object... args) throws IOException {
+        public Ticker getTicker(CurrencyPair currencyPair, Object... args) {
             return new Ticker.Builder()
                     .ask(new BigDecimal("0.12"))
                     .askSize(new BigDecimal("0.13"))
