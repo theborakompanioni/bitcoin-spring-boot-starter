@@ -7,7 +7,7 @@ ext {
     consensusJVersion = '0.5.4'
     guavaVersion = '30.1-jre'
     jeroMqVersion = '0.5.2'
-    testcontainersVersion = '1.15.1'
+    testcontainersVersion = '1.15.2'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
     grpcVersion = '1.34.1'

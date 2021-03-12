@@ -200,7 +200,7 @@ dependencyVerification {
         'org.springframework:spring-tx:5.3.4:8163d74617b00685719cfbbf0711d4ea2a986b4daa750c59de40a8353d91d641',
         'org.springframework:spring-web:5.3.4:ba6c6b4fba09f7c965d32d76d6e9080925c897ec2f348f7f065c2d8000302121',
         'org.springframework:spring-webmvc:5.3.4:fb6ae8aa957d4b9e4648dc3a36876f34edf8634715680fbbb566242fc489a63b',
-        'org.testcontainers:testcontainers:1.15.1:fdf32b2e94574a8c0c9c021245cef76cc93952aad7367b2feaf90f5ce6515eed',
+        'org.testcontainers:testcontainers:1.15.2:3141de83c9f5a7d1e5da340bafed5f00f1c113633dd99ad5e3e63e388acac7a5',
         'org.tukaani:xz:1.6:a594643d73cc01928cf6ca5ce100e094ea9d73af760a5d4fb6b75fa673ecec96',
         'org.xerial:sqlite-jdbc:3.34.0:605979c94e7fe00437f1e10dcfa657a23f125c8eb4d2f0ec17e3f84613894cc3',
         'org.yaml:snakeyaml:1.27:7e7cce6740ed705bfdfaac7b442c1375d2986d2f2935936a5bd40c14e18fd736',
