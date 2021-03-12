@@ -21,7 +21,7 @@ buildscript {
 
 plugins {
     id 'idea'
-    id 'nebula.release' version '15.3.0'
+    id 'nebula.release' version '15.3.1'
     id 'nebula.lint' version '16.17.0'
     id 'nebula.project' version '7.0.9'
     id 'nebula.info' version '9.3.0'
