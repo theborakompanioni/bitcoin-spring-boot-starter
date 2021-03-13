@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @Slf4j
@@ -102,6 +101,10 @@ public class BitcoinContainerWithJsonRpcClientTest {
                 .filter(val -> !val.isZero())
                 .blockFirst(Duration.ofSeconds(10));
 
-        assertThat("block reward is spendable after blocks are mined", balanceAfter, is(Coin.FIFTY_COINS));
+        long countOfUnlockedBlockRewards = (100L - counter) + 1L;
+        assertThat("at least one block reward is now spendable", countOfUnlockedBlockRewards, is(greaterThan(0L)));
+
+        Coin expectedBalance = Coin.FIFTY_COINS.multiply(countOfUnlockedBlockRewards);
+        assertThat("block reward is spendable after blocks are mined", balanceAfter, is(expectedBalance));
     }
 }
