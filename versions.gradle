@@ -2,7 +2,7 @@ ext {
     jsr354Version = '1.1'
     monetaVersion = '1.4.2'
     xChangeVersion = '5.0.6'
-    bitcoinjVersion = '0.15.9'
+    bitcoinjVersion = '0.15.10'
     lightningjVersion = '0.11.1-Beta'
     consensusJVersion = '0.5.4'
     guavaVersion = '30.1-jre'
