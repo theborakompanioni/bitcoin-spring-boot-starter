@@ -1,0 +1,78 @@
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: true
+  default-wallet: electrum/wallets/regtest/default_wallet
+  environment:
+    ELECTRUM_NETWORK: regtest
+    ELECTRUM_USER: electrum
+    ELECTRUM_PASSWORD: correct_horse_battery_staple_20210321
+
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true
+  rpchost: localhost
+  rpcport: 18443
+  rpcuser: this-is-my-rpc-user99
+  rpcpass: correct_horse_battery_staple_20210321
+  environment:
+    NET: regtest
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_20210321
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc,zmq'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-spring-lnd-testcontainer-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+# mine blocks every 1 - 10 seconds
+org.tbk.spring.testcontainer.bitcoind-regtest-miner:
+  enabled: true
+  # secret to address: truth fever mom transfer steak immense lake jacket glide bring fancy electric
+  coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+  mine-initial-amount-of-blocks: 100
+  next-block-duration:
+    min-duration-in-millis: 1000
+    max-duration-in-millis: 10000
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_20210321
+
+org.tbk.bitcoin.zeromq:
+  network: regtest
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333
+
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 7000
+  rpcuser: electrum
+  rpcpassword: correct_horse_battery_staple_20210321

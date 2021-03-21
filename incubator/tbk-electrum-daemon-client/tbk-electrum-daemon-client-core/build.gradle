@@ -9,4 +9,9 @@ dependencies {
 
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
+    integTestImplementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure')
 }

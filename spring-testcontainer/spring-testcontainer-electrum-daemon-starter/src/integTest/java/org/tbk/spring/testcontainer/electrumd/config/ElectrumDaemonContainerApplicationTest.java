@@ -12,9 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
-import reactor.core.publisher.Flux;
-
-import java.time.Duration;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -27,11 +24,11 @@ import static org.junit.Assert.assertThat;
 public class ElectrumDaemonContainerApplicationTest {
 
     @SpringBootApplication
-    public static class LndContainerTestApplication {
+    public static class ElectrumDaemonContainerTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(LndContainerTestApplication.class)
+                    .sources(ElectrumDaemonContainerTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
         }
