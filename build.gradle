@@ -85,6 +85,8 @@ allprojects {
 }
 
 configure(rootProject) {
+    defaultTasks 'clean', 'build', 'integrationTest'
+
     task clean {
         doLast {
             delete fileTree("${rootProject.projectDir}") {
@@ -276,9 +278,9 @@ configure(subprojects.findAll { project -> project.name.indexOf('spring-testcont
     integrationTest.onlyIf { project.hasProperty('testcontainerTest') }
 }
 
-// disable test tasks in check phase for all '*-example-applications' subprojects.
+// disable test tasks in check phase for all '*-example-application' subprojects.
 // you can invoke them manually via `./gradlew check -PexampleTest`
-configure(subprojects.findAll { project -> project.name.indexOf('-example-applications') > 0 }) {
+configure(subprojects.findAll { project -> project.name.indexOf('-example-application') > 0 }) {
     test.onlyIf { project.hasProperty('exampleTest') }
     integrationTest.onlyIf { project.hasProperty('exampleTest') }
 }
