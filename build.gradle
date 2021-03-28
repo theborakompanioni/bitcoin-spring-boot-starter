@@ -5,8 +5,8 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.3.RELEASE'
-        springBootGradlePluginVersion = '2.4.3'
+        springBootVersion = '2.4.4.RELEASE'
+        springBootGradlePluginVersion = '2.4.4'
         protobufGradleVersion = '0.8.14'
     }
     repositories {
