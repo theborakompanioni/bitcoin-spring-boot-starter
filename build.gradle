@@ -191,7 +191,13 @@ subprojects {
         }
 
         springBoot {
-            buildInfo()
+            buildInfo {
+                properties {
+                    // overwrite "time" property to enable reproducible builds
+                    // see https://reproducible-builds.org/docs/timestamps/
+                    time = System.getenv('SOURCE_DATE_EPOCH') ?: null
+                }
+            }
         }
     }
 
@@ -267,6 +273,18 @@ subprojects {
         dependsOn delombok
         source = delombok.outputDir
         failOnError = false
+    }
+
+    tasks.withType(AbstractArchiveTask) {
+        // activate reproducible archives
+        // see https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+    }
+
+    infoBroker {
+        // exclude properties that prevent reproducible builds
+        excludedManifestProperties = ['Created-By', 'Build-Date', 'Built-OS', 'Built-By', 'Build-Java-Version']
     }
 }
 
