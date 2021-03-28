@@ -2,7 +2,7 @@ language: java
 jdk:
   - openjdk11
 env:
-  - PROTOBUF_VER="3.14.0"
+  - PROTOBUF_VER="3.15.6"
 
 cache:
   directories:
