@@ -1,4 +1,4 @@
-rootProject.name = 'spring-boot-bitcoin-starter'
+rootProject.name = 'bitcoin-spring-boot-starter'
 
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core'
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-cache'

@@ -36,11 +36,11 @@ public class SwaggerConfig {
     public ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Bitcoin Exchange Rate API")
-                .description("A Bitcoin Exchange Rate API built with spring-boot-bitcoin-starter.")
-                .termsOfServiceUrl("https://github.com/theborakompanioni/spring-boot-bitcoin-starter")
+                .description("A Bitcoin Exchange Rate API built with bitcoin-spring-boot-starter.")
+                .termsOfServiceUrl("https://github.com/theborakompanioni/bitcoin-spring-boot-starter")
                 .contact(new Contact("tbk", "", ""))
                 .license("Apache License Version 2.0")
-                .licenseUrl("https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/LICENSE")
+                .licenseUrl("https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE")
                 .version(implementationVersion)
                 .build();
     }

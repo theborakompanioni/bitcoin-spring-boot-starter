@@ -1,14 +1,14 @@
-[![Build Status](https://www.travis-ci.org/theborakompanioni/spring-boot-bitcoin-starter.svg?branch=master)](https://www.travis-ci.org/theborakompanioni/spring-boot-bitcoin-starter)
-[![Download](https://jitpack.io/v/theborakompanioni/spring-boot-bitcoin-starter.svg)](https://jitpack.io/#theborakompanioni/spring-boot-bitcoin-starter)
-[![License](https://img.shields.io/github/license/theborakompanioni/spring-boot-bitcoin-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/LICENSE)
+[![Build Status](https://www.travis-ci.org/theborakompanioni/bitcoin-spring-boot-starter.svg?branch=master)](https://www.travis-ci.org/theborakompanioni/bitcoin-spring-boot-starter)
+[![Download](https://jitpack.io/v/theborakompanioni/bitcoin-spring-boot-starter.svg)](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter)
+[![License](https://img.shields.io/github/license/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE)
 
 
 <p align="center">
-    <img src="https://github.com/theborakompanioni/spring-boot-bitcoin-starter/blob/master/docs/assets/images/logo.png" alt="Logo" width="255" />
+    <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/docs/assets/images/logo.png" alt="Logo" width="255" />
 </p>
 
 
-spring-boot-bitcoin-starter
+bitcoin-spring-boot-starter
 ===
 
 **Write enterprise Bitcoin applications with Spring Boot.**
@@ -36,7 +36,7 @@ This project is under active development. Pull requests and issues are welcome.
 ## Install
 
 Simply define JitPack as an artifact repository and add the desired modules as dependencies. 
-See [spring-boot-bitcoin-starter on JitPack](https://jitpack.io/#theborakompanioni/spring-boot-bitcoin-starter) 
+See [bitcoin-spring-boot-starter on JitPack](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter) 
 to find the most recent releases. The examples below import `bitcoin-jsonrpc-client-starter` but you can import 
 any module by its name.
 
@@ -44,7 +44,7 @@ any module by its name.
 ```groovy
 repositories {
     maven {
-        // needed for spring-boot-bitcoin-starter packages
+        // needed for bitcoin-spring-boot-starter packages
         url 'https://jitpack.io'
     }
 }
@@ -52,7 +52,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation "com.github.theborakompanioni.spring-boot-bitcoin-starter:bitcoin-jsonrpc-client-starter:${springBootBitcoinStarterVersion}"
+    implementation "com.github.theborakompanioni.bitcoin-spring-boot-starter:bitcoin-jsonrpc-client-starter:${springBootBitcoinStarterVersion}"
 }
 ```
 
@@ -68,7 +68,7 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>com.github.theborakompanioni.spring-boot-bitcoin-starter</groupId>
+    <groupId>com.github.theborakompanioni.bitcoin-spring-boot-starter</groupId>
     <artifactId>bitcoin-jsonrpc-client-starter</artifactId>
     <version>${springBootBitcoinStarter.version}</version>
 </dependency>
@@ -278,13 +278,13 @@ Be aware this might take several minutes to complete (>= 15 minutes).
 
 ```shell script
 # calculate checksums of dependencies
-./gradlew -q calculateChecksums | grep -v "spring-boot-bitcoin-starter" > checksums.gradle
+./gradlew -q calculateChecksums | grep -v "bitcoin-spring-boot-starter" > checksums.gradle
 ```
 
 
 ## Contributing
 All contributions and ideas are always welcome. For any question, bug or feature request, 
-please create an [issue](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/issues). 
+please create an [issue](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/issues). 
 Before you start, please read the [contributing guidelines](contributing.md).
 
 

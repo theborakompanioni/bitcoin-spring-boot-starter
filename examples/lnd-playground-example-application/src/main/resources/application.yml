@@ -1,7 +1,7 @@
-app.name: tbk-spring-boot-bitcoin-starter-lnd-playground-example-app
+app.name: tbk-bitcoin-spring-boot-starter-lnd-playground-example-app
 app.description: A spring boot bitcoin demo application
 
-spring.application.name: 'tbk-spring-boot-bitcoin-starter-demo'
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
 spring.profiles.active: production
 spring.http.log-request-details: false
 
@@ -67,7 +67,7 @@ org.tbk.spring.testcontainer.bitcoind:
     # Log IP Addresses in debug output.
     - '-logips=1'
     # Append comment to the user agent string.
-    - '-uacomment=tbk-spring-boot-bitcoin-starter-lnd-playground-example-app'
+    - '-uacomment=tbk-bitcoin-spring-boot-starter-lnd-playground-example-app'
     # Allows you to test address relay on localhost.
     - '-addrmantest=1'
     # Send trace/debug info to console instead of debug.log.

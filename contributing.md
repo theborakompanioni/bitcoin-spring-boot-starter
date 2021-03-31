@@ -1,4 +1,4 @@
-# Contributing to spring-boot-bitcoin-starter
+# Contributing to bitcoin-spring-boot-starter
 
 First off, thanks for taking the time to contribute!
 
@@ -15,7 +15,7 @@ patches and features.
 
 ## Using the Issue Tracker
 
-The [issue tracker](https://github.com/theborakompanioni/spring-boot-bitcoin-starter/issues) is
+The [issue tracker](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/issues) is
 the preferred channel for [bug reports](#bug-reports), [features requests](#feature-requests)
 and [submitting pull requests](#pull-requests), but please respect the following
 restrictions:
@@ -100,11 +100,11 @@ included in the project:
 
    ```shell script
    # Clone your fork of the repo into the current directory
-   git clone https://github.com/<your-username>/spring-boot-bitcoin-starter.git
+   git clone https://github.com/<your-username>/bitcoin-spring-boot-starter.git
    # Navigate to the newly cloned directory
-   cd spring-boot-bitcoin-starter
+   cd bitcoin-spring-boot-starter
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/theborakompanioni/spring-boot-bitcoin-starter.git
+   git remote add upstream https://github.com/theborakompanioni/bitcoin-spring-boot-starter.git
    ```
 
 2. If you cloned a while ago, get the latest changes from upstream:

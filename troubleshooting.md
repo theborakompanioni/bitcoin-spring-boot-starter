@@ -1,7 +1,7 @@
 
 # Troubleshooting
 
-### A list of common issues and solutions for spring-boot-bitcoin-starter
+### A list of common issues and solutions for bitcoin-spring-boot-starter
 
 #### 1) While building, I am getting something like "OCI runtime create failed"...
 Are you using a distribution with cgroup v2? (e.g. Fedora switched to cgroups v2 in v31 - "Docker no longer works").
