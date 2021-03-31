@@ -13,7 +13,7 @@ public class NativeTorFactoryTest {
 
     @Before
     public void setUp() {
-        File workingDirectory = new File("tor-working-dir");
+        File workingDirectory = new File("build/tmp/tor-working-dir");
         this.sut = new NativeTorFactory(workingDirectory);
     }
 

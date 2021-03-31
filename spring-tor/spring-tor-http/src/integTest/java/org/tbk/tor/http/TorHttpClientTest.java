@@ -39,7 +39,7 @@ public class TorHttpClientTest {
 
     @Before
     public void setUp() throws TorCtlException {
-        File workingDirectory = new File("tor-working-dir");
+        File workingDirectory = new File("build/tmp/tor-working-dir");
         NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
 
         this.nativeTor = torFactory.create().blockOptional(Duration.ofSeconds(30))
