@@ -14,9 +14,9 @@ bitcoin-spring-boot-starter
 **Write enterprise Bitcoin applications with Spring Boot.**
 
 Spring boot starter projects with convenient dependency descriptors for multiple Bitcoin related modules that you can 
-include in your application. Strong focus on integration and regression testing your own application or module.
-Included are features for representing, transporting, and performing comprehensive calculations and tests
-with Bitcoin in financial applications and monetary computations.
+import into your application. Strong focus on integration and regression testing your own application or module.
+Included are features for representing, transporting, and performing comprehensive calculations and tests with 
+Bitcoin in financial applications and computations.
  
 **Note**: Most code is still experimental - **do not use in production**.
 This project is under active development. Pull requests and issues are welcome.
@@ -52,7 +52,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation "com.github.theborakompanioni.bitcoin-spring-boot-starter:bitcoin-jsonrpc-client-starter:${springBootBitcoinStarterVersion}"
+    implementation "com.github.theborakompanioni.bitcoin-spring-boot-starter:bitcoin-jsonrpc-client-starter:${bitcoinSpringBootStarterVersion}"
 }
 ```
 
@@ -70,7 +70,7 @@ dependencies {
 <dependency>
     <groupId>com.github.theborakompanioni.bitcoin-spring-boot-starter</groupId>
     <artifactId>bitcoin-jsonrpc-client-starter</artifactId>
-    <version>${springBootBitcoinStarter.version}</version>
+    <version>${bitcoinSpringBootStarter.version}</version>
 </dependency>
 ```
 
@@ -79,7 +79,7 @@ dependencies {
 
 ### bitcoin-jsonrpc-client
 A module containing a spring boot starter for a [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.
-The starter will automatically create an autowireable `BitcoinClient` bean:
+The starter will automatically create an injectable `BitcoinClient` bean:
 
 ```yaml
 org.tbk.bitcoin.jsonrpc.client:
@@ -94,8 +94,7 @@ org.tbk.bitcoin.jsonrpc.client:
 
 ### bitcoin-zeromq-client
 A module containing a spring boot starter for a Bitcoin Core ZeroMq API client.
-The starter will automatically create autowireable `ZeroMqMessagePublisherFactory` beans
-for every zmq endpoint:
+The starter will automatically create injectable `ZeroMqMessagePublisherFactory` beans for every zmq endpoint:
 
 ```yaml
 org.tbk.bitcoin.zeromq:
@@ -112,7 +111,7 @@ of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory
 
 ### lnd-grpc-client
 A module containing a spring boot starter for a [Lightningj](https://www.lightningj.org/) lnd gRPC API client.
-The starter will automatically create autowireable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
+The starter will automatically create injectable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
 
 ```yaml
 org.tbk.lightning.lnd.grpc:
@@ -226,6 +225,7 @@ This subproject is home to all almost-ready modules.
 A module containing a spring boot starter for a [Electrum daemon](https://github.com/spesmilo/electrum) JSON-RPC API client.
 It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
+
 ## Examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 
 example applications showing basic usage of the functionality provided by these modules.
@@ -248,7 +248,7 @@ Example apps can be started with a single command, e.g.:
 
 A Bitcoin Core Testcontainer running in regtest mode is started for most examples. 
 Having access to a Bitcoin Core node running on mainnet is quite useful if you want to try everything.
-Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some features to be working.
+Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some features to work.
 
 ### Build
 ```shell script
@@ -263,11 +263,11 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
 Tests in example application modules or modules that start a lot of docker containers 
 (modules named "*-example-application" or "spring-testcontainer-*") are excluded from the
 default test phase and must be manually enabled if you want to run them.
-To run all tests you must pass `-PexampleTest` and `-PtestcontainerTest`:
+To run all tests pass arguments `-PexampleTest` and `-PtestcontainerTest`:
 ```shell script
 ./gradlew test integrationTest -PtestcontainerTest -PexampleTest
 ```
-Be aware this might take several minutes to complete (>= 15 minutes).
+Be aware this might take several minutes to complete (>= 10 minutes).
 
 
 ### Dependency Checks
