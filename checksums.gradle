@@ -129,7 +129,7 @@ dependencyVerification {
         'org.apache.logging.log4j:log4j-to-slf4j:2.13.3:9624e9aaf60b1875adde33d8e7997de110b70be09e94e55ad8fc39637ec002c4',
         'org.apache.tomcat.embed:tomcat-embed-core:9.0.44:35610e1de90902423345cb835c7c22e4c39d928a06e922d02bf8c5d0062d6249',
         'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.44:33e62273dd1978745e1675f028f0291f064e390d30584b94549dfaacb0696151',
-        'org.apiguardian:apiguardian-api:1.1.0:a9aae9ff8ae3e17a2a18f79175e82b16267c246fbbd3ca9dfbbb290b08dcfdd4',
+        'org.apiguardian:apiguardian-api:1.1.1:fc68f0d28633caccf3980fdf1e99628fba9c49424ee56dc685cd8b4d2a9fefde',
         'org.bitcoinj:bitcoinj-core:0.15.10:2b7e41e58c037d260208b868e4f4ab2be05cf592e0369e24339b96c14b4e2c91',
         'org.bitcoinj:bitcoinj-core:0.15.7:a5256e2ee0f34a78f56e522fd7c4158f2b6458967921ad0a74826960441819f1',
         'org.bouncycastle:bcprov-jdk15to18:1.63:82c28318b178da751d174b1adf6c43e0199f0fcf80a7bf6483caa226ae0d30b3',
@@ -148,7 +148,6 @@ dependencyVerification {
         'org.javamoney.moneta:moneta-convert-imf:1.4.2:fcc5f9c6b12cce4a909cf83a8c214f6e096b1721d9d68338b5ba23bca00faee7',
         'org.javamoney.moneta:moneta-convert:1.4.2:85982f8335d7c1633d643cd6141c9fca0fceeb433ca6a45239b11e1e781086b2',
         'org.javamoney.moneta:moneta-core:1.4.2:34b801be1733852f094ea6e440c04f3955c02e12ba82eb7bc1118d4f4c9f596c',
-        'org.javamoney:moneta:1.4.2:e3e62dc4f82f55065483e31060f43ce177b4731f0487941117e59fa25c3ccc4a',
         'org.jetbrains.kotlin:kotlin-stdlib-common:1.4.31:57962f44371a746b678218a0802a8712c6255206de9a69ede215e3aa4b044708',
         'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31:1f966e54e86cf4b7d7014afdce04e0f3ee4625084cda3494edccc7b84af52664',
         'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31:b2f8364435ebcb0106ff9d4415a11ffdef8ec7786ee6e5ed465a01556cbd1683',
@@ -205,7 +204,7 @@ dependencyVerification {
         'org.tukaani:xz:1.6:a594643d73cc01928cf6ca5ce100e094ea9d73af760a5d4fb6b75fa673ecec96',
         'org.xerial:sqlite-jdbc:3.34.0:605979c94e7fe00437f1e10dcfa657a23f125c8eb4d2f0ec17e3f84613894cc3',
         'org.yaml:snakeyaml:1.27:7e7cce6740ed705bfdfaac7b442c1375d2986d2f2935936a5bd40c14e18fd736',
-        'org.zalando:jackson-datatype-money:1.2.0:2a756ff93d60da78049baa257099fad962db7001edd63284d5f6a5b0871e8365',
+        'org.zalando:jackson-datatype-money:1.2.2:06cd4691d9e2664cef83519ca8864a0a9a82a0d72bb08b01c5eadd09bbcd1782',
         'org.zeromq:jeromq:0.5.2:8c19e7148bee907597129b2fd706839c45db849c72a25285ec1674f0ffdabf8e',
     ]
 }

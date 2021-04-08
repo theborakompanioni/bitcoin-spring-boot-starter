@@ -13,7 +13,7 @@ ext {
     grpcVersion = '1.36.1'
     protobufVersion = '3.15.6'
     protocVersion = protobufVersion
-    jacksonDatatypeMoneyVersion = '1.2.0'
+    jacksonDatatypeMoneyVersion = '1.2.2'
     lombokVersion = '1.18.16'
     springfoxVersion = '3.0.0'
     wiremockVersion = '2.27.2'
