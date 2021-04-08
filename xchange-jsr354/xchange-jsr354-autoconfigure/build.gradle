@@ -2,8 +2,10 @@ plugins {
     id 'java'
 }
 
+description = 'xchange jsr354 autoconfigure package'
+
 dependencies {
-    api project(':xchange-jsr354:xchange-jsr354-core')
+    compileOnly project(':xchange-jsr354:xchange-jsr354-core')
 
     implementation project(':spring-xchange:spring-xchange-autoconfigure')
 
@@ -11,4 +13,6 @@ dependencies {
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation project(':xchange-jsr354:xchange-jsr354-core')
 }

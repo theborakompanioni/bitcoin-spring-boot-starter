@@ -2,9 +2,10 @@ plugins {
     id 'java'
 }
 
-description = 'xchange spring starter package'
+description = 'xchange starter package'
 
 dependencies {
+    api "org.knowm.xchange:xchange-core:${xChangeVersion}"
     api project(':spring-xchange:spring-xchange-autoconfigure')
 
     api "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"

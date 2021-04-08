@@ -2,8 +2,10 @@ plugins {
     id 'java'
 }
 
+description = 'xchange autoconfigure package'
+
 dependencies {
-    api "org.knowm.xchange:xchange-core:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-core:${xChangeVersion}"
 
     // ================================================================
     // Following exchanges provide exchange rates without needing a api secret
@@ -30,6 +32,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    testImplementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
     testImplementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
     testImplementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
 }

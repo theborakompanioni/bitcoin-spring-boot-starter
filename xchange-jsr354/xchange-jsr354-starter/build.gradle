@@ -6,7 +6,7 @@ description = 'xchange jsr354 starter package'
 
 dependencies {
     api project(':xchange-jsr354:xchange-jsr354-core')
-    implementation project(':xchange-jsr354:xchange-jsr354-autoconfigure')
+    api project(':xchange-jsr354:xchange-jsr354-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
 }
