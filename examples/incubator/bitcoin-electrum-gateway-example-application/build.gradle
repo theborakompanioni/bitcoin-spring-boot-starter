@@ -8,10 +8,7 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
     implementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter')
 
-    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-
-    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
     implementation "io.projectreactor:reactor-core"

@@ -6,13 +6,9 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
 
-    implementation project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
     implementation project(':lnd-grpc-client:lnd-grpc-client-starter')
 
-    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-
-    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
     implementation "io.projectreactor:reactor-core"

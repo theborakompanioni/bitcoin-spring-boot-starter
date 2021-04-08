@@ -6,7 +6,7 @@ description = 'lnd jsonrpc client starter package'
 
 dependencies {
     api project(':lnd-grpc-client:lnd-grpc-client-core')
-    implementation project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
+    api project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
 }

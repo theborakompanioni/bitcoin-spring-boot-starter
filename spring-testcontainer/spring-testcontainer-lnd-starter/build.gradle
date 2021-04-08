@@ -15,7 +15,6 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
     testImplementation project(':lnd-grpc-client:lnd-grpc-client-starter')
 
     testImplementation "io.projectreactor:reactor-core"
