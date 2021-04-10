@@ -162,7 +162,7 @@ dependencyVerification {
         'org.knowm.xchange:xchange-kraken:5.0.7:46f9d5cd7582d2901c88760d756a66397d674e6d6413d3da297f0d9c110c4de6',
         'org.knowm.xchange:xchange-therock:5.0.7:27d8c9b469f5a9516ce37da6ec199f54a3366600ba2132eb854ae65ede2ad74c',
         'org.latencyutils:LatencyUtils:2.0.3:a32a9ffa06b2f4e01c5360f8f9df7bc5d9454a5d373cd8f361347fa5a57165ec',
-        'org.lightningj:lightningj:0.11.1-Beta:018ecc80af16332ac28bd7834f2f7b93143954c88f6ec3632791863767dd8b8e',
+        'org.lightningj:lightningj:0.12.1-Beta:1d1a7f1890c22be5deabc254a4bded66bc795d2002604a986580d3798f984d39',
         'org.lz4:lz4-java:1.7.1:f1167a45d4b8002053670ef6991ca66d1bab9dcc03e4ef00183674d2f3fb9cac',
         'org.mapstruct:mapstruct:1.3.1.Final:567c4ce1145ee888716d4c1b00ef48b98256b22fbf0738be77ce1095e0fb9fcf',
         'org.projectlombok:lombok:1.18.16:7206cbbfd6efd5e85bceff29545633645650be58d58910a23b0d4835fbd15ed7',

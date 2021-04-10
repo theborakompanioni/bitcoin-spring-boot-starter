@@ -3,7 +3,7 @@ ext {
     monetaVersion = '1.4.2'
     xChangeVersion = '5.0.7'
     bitcoinjVersion = '0.15.10'
-    lightningjVersion = '0.11.1-Beta'
+    lightningjVersion = '0.12.1-Beta'
     consensusJVersion = '0.5.7'
     guavaVersion = '30.1-jre'
     jeroMqVersion = '0.5.2'
