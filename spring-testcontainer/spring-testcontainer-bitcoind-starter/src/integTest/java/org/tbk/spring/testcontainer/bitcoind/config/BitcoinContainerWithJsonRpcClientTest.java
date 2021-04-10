@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.params.RegTestParams;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,8 @@ public class BitcoinContainerWithJsonRpcClientTest {
     @Test
     public void testGenerateToAddressExpectingCoins() throws IOException {
         Address newAddress = bitcoinJsonRpcClient.getNewAddress();
+        // an address not controlled by the bitcoin core testcontainer (taken from second_wallet in electrum module)
+        Address regtestEaterAddress = Address.fromString(RegTestParams.get(), "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j");
 
         Coin balanceBefore = bitcoinJsonRpcClient.getBalance();
         assertThat(balanceBefore, is(Coin.ZERO));
@@ -83,7 +86,7 @@ public class BitcoinContainerWithJsonRpcClientTest {
         // mine a 100 blocks in order for the coinbase transaction to be spendable
         long counter = 0L;
         while (counter < 100L) {
-            List<Sha256Hash> newlyMinedBlocks = bitcoinJsonRpcClient.generateToAddress(1, newAddress);
+            List<Sha256Hash> newlyMinedBlocks = bitcoinJsonRpcClient.generateToAddress(1, regtestEaterAddress);
             counter += newlyMinedBlocks.size();
         }
 
@@ -101,10 +104,6 @@ public class BitcoinContainerWithJsonRpcClientTest {
                 .filter(val -> !val.isZero())
                 .blockFirst(Duration.ofSeconds(10));
 
-        long countOfUnlockedBlockRewards = (100L - counter) + 1L;
-        assertThat("at least one block reward is now spendable", countOfUnlockedBlockRewards, is(greaterThan(0L)));
-
-        Coin expectedBalance = Coin.FIFTY_COINS.multiply(countOfUnlockedBlockRewards);
-        assertThat("block reward is spendable after blocks are mined", balanceAfter, is(expectedBalance));
+        assertThat("block reward is spendable after blocks are mined", balanceAfter, is(Coin.FIFTY_COINS));
     }
 }
