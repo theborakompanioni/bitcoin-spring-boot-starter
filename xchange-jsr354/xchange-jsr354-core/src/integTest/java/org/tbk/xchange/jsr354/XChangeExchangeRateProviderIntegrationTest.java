@@ -1,9 +1,9 @@
 package org.tbk.xchange.jsr354;
 
 import org.javamoney.moneta.Money;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.kraken.KrakenExchange;
@@ -11,14 +11,14 @@ import org.knowm.xchange.kraken.KrakenExchange;
 import javax.money.convert.*;
 import java.math.BigDecimal;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class XChangeExchangeRateProviderIntegrationTest {
 
     private XChangeExchangeRateProvider sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Exchange exchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class);
         ProviderContext providerContext = MoreProviderContexts.createSimpleProviderContextBuilder(exchange).build();
@@ -41,7 +41,7 @@ public class XChangeExchangeRateProviderIntegrationTest {
             // hopefully kraken will never return factor "1" for btc/btc pair :D
             ExchangeRate ignoredOnPurpose = this.sut.getExchangeRate("BTC", "BTC");
 
-            Assert.fail("Should have thrown exception");
+            Assertions.fail("Should have thrown exception");
         } catch (CurrencyConversionException e) {
             assertThat(e, is(notNullValue()));
         }
@@ -88,7 +88,7 @@ public class XChangeExchangeRateProviderIntegrationTest {
         try {
             ExchangeRate exchangeRate = currencyConversion.getExchangeRate(Money.of(BigDecimal.ONE, "BTC"));
 
-            Assert.fail("Should have thrown exception");
+            Assertions.fail("Should have thrown exception");
         } catch (CurrencyConversionException e) {
             assertThat(e, is(notNullValue()));
         }

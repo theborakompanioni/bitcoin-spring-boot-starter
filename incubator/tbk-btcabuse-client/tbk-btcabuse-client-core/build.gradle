@@ -9,5 +9,5 @@ dependencies {
     api "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
 
-    testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
+    // testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
 }

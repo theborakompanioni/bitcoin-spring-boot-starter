@@ -1,6 +1,6 @@
 package org.tbk.electrum.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
 import java.util.Optional;

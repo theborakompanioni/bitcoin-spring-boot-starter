@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimate;
 
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 import static org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confidence;
 
 public class BitcoinerliveFeeApiClientImplTest {
@@ -19,7 +19,7 @@ public class BitcoinerliveFeeApiClientImplTest {
 
     private BitcoinerliveFeeApiClientImpl sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.sut = new BitcoinerliveFeeApiClientImpl(BASE_URL, API_TOKEN);
     }

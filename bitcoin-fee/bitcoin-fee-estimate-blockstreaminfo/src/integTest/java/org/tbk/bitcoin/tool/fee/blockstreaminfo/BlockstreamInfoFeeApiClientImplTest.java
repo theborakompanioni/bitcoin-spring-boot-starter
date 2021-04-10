@@ -1,12 +1,12 @@
 package org.tbk.bitcoin.tool.fee.blockstreaminfo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class BlockstreamInfoFeeApiClientImplTest {
     private static final String BASE_URL = "https://blockstream.info";
@@ -14,7 +14,7 @@ public class BlockstreamInfoFeeApiClientImplTest {
 
     private BlockstreamInfoFeeApiClientImpl sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.sut = new BlockstreamInfoFeeApiClientImpl(BASE_URL, API_TOKEN);
     }

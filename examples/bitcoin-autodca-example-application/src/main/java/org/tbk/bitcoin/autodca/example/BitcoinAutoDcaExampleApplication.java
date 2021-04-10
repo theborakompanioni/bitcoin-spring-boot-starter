@@ -1,14 +1,14 @@
 package org.tbk.bitcoin.autodca.example;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.*;
+import org.springframework.boot.Banner;
+import org.springframework.boot.DefaultApplicationArguments;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.metrics.ApplicationStartup;
-import org.springframework.core.metrics.StartupStep;
 
 @Slf4j
 @SpringBootApplication

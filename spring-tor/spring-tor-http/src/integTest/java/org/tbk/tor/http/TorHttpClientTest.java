@@ -9,10 +9,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.TorCtlException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.tbk.tor.NativeTorFactory;
 
 import java.io.File;
@@ -22,8 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 @Slf4j
 public class TorHttpClientTest {
@@ -37,7 +37,7 @@ public class TorHttpClientTest {
 
     private NativeTor nativeTor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws TorCtlException {
         File workingDirectory = new File("build/tmp/tor-working-dir");
         NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
@@ -50,7 +50,7 @@ public class TorHttpClientTest {
         this.sut = torHttpClientBuilder.build();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         try {
             this.sut.close();
@@ -97,7 +97,7 @@ public class TorHttpClientTest {
 
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             try (CloseableHttpResponse ignoredOnPurpose = client.execute(req)) {
-                Assert.fail("Should have thrown exception");
+                Assertions.fail("Should have thrown exception");
             }
         } catch (UnknownHostException e) {
             assertThat(e.getMessage(), containsString("Name or service not known"));

@@ -7,14 +7,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.berndpruenster.netlayer.tor.Tor;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 import reactor.core.publisher.Flux;
 
@@ -22,11 +20,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 @Slf4j
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class TorExampleApplicationTest {
@@ -58,7 +55,7 @@ public class TorExampleApplicationTest {
     }
 
     @Test
-    @Ignore("Does not work at the moment.. always times out. Works outside of the tests (e.g. in health checks) - investigate!")
+    @Disabled("Does not work at the moment.. always times out. Works outside of the tests (e.g. in health checks) - investigate!")
     public void itShouldVerifyServerIsReachableViaOnionUrl() {
         String onionUrl = applicationHiddenServiceDefinition.getVirtualHostOrThrow();
         String url = String.format("http://%s:%d/index.html", onionUrl, applicationHiddenServiceDefinition.getVirtualPort());

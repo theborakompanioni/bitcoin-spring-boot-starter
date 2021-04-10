@@ -155,10 +155,11 @@ subprojects {
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
 
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
-        testImplementation "junit:junit:${jUnitVersion}"
     }
 
     task sourcesJar(type: Jar) {
@@ -202,10 +203,14 @@ subprojects {
 
     test {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
+
+        useJUnitPlatform()
     }
 
     integrationTest {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
+
+        useJUnitPlatform()
     }
 
     artifacts {

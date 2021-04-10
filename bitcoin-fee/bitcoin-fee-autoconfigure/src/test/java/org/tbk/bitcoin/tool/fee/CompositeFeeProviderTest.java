@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.tool.fee;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.config.BitcoinerliveFeeClientAutoConfiguration;
 import org.tbk.bitcoin.tool.fee.bitgo.config.BitgoFeeClientAutoConfiguration;
@@ -10,8 +10,8 @@ import org.tbk.bitcoin.tool.fee.config.BitcoinFeeClientAutoConfiguration;
 import java.time.Duration;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class CompositeFeeProviderTest {
 

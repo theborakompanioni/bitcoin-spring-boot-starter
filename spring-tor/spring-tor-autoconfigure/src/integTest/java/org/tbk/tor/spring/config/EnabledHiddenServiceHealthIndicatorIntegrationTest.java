@@ -3,8 +3,7 @@ package org.tbk.tor.spring.config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.DefaultServiceUnavailableRetryStrategy;
 import org.hamcrest.core.CombinableMatcher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointResponse;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.tbk.tor.spring.config.TorHttpClientAutoConfiguration.TorHttpClientBuilderCustomizer;
 
@@ -29,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc(print = MockMvcPrint.LOG_DEBUG, printOnlyOnFailure = false)
 @ActiveProfiles("test")

@@ -1,7 +1,7 @@
 package org.tbk.xchange.spring.config;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitstamp.BitstampExchange;
@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class XChangeAutoConfigurationTest {
 
@@ -102,7 +102,7 @@ public class XChangeAutoConfigurationTest {
                     assertThat(context.containsBean("krakenExchange"), is(false));
                     try {
                         context.getBean(KrakenExchange.class);
-                        Assert.fail("Should have thrown exception");
+                        Assertions.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
                     }

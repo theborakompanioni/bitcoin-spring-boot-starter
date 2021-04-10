@@ -17,5 +17,5 @@ ext {
     lombokVersion = '1.18.16'
     springfoxVersion = '3.0.0'
     wiremockVersion = '2.27.2'
-    jUnitVersion = '4.12'
+    jUnitVersion = '5.7.1'
 }

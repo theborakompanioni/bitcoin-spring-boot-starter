@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -31,7 +31,7 @@ public class Playground {
 
     private DataSource dataSource;
 
-    @Before
+    @BeforeEach
     public void setup() {
         String database = Playground.class.getSimpleName() + "-test";
 

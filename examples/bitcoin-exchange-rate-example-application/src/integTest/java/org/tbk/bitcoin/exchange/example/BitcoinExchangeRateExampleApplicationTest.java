@@ -2,13 +2,11 @@ package org.tbk.bitcoin.exchange.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.javamoney.moneta.Money;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -18,11 +16,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 @Slf4j
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class BitcoinExchangeRateExampleApplicationTest {

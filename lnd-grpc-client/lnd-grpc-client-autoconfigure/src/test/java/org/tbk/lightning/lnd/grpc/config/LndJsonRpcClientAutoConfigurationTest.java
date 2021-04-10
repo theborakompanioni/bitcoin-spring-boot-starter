@@ -1,16 +1,16 @@
 package org.tbk.lightning.lnd.grpc.config;
 
 import com.google.common.base.Throwables;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 public class LndJsonRpcClientAutoConfigurationTest {
 
@@ -44,7 +44,7 @@ public class LndJsonRpcClientAutoConfigurationTest {
                     assertThat(context.containsBean("lndJsonRpcClientFactory"), is(false));
                     try {
                         context.getBean(LndJsonRpcClientFactory.class);
-                        Assert.fail("Should have thrown exception");
+                        Assertions.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
                     }
@@ -52,7 +52,7 @@ public class LndJsonRpcClientAutoConfigurationTest {
                     assertThat(context.containsBean("lndJsonRpcClient"), is(false));
                     try {
                         context.getBean(AsynchronousLndAPI.class);
-                        Assert.fail("Should have thrown exception");
+                        Assertions.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
                     }
@@ -72,7 +72,7 @@ public class LndJsonRpcClientAutoConfigurationTest {
                     assertThat(context.containsBean("lndJsonRpcClient"), is(false));
                     try {
                         context.getBean(AsynchronousLndAPI.class);
-                        Assert.fail("Should have thrown exception");
+                        Assertions.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
                     }

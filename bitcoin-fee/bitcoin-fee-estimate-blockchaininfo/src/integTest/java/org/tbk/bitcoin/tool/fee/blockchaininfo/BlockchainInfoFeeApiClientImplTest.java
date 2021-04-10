@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.tool.fee.blockchaininfo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class BlockchainInfoFeeApiClientImplTest {
 
@@ -13,7 +13,7 @@ public class BlockchainInfoFeeApiClientImplTest {
 
     private BlockchainInfoFeeApiClientImpl sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.sut = new BlockchainInfoFeeApiClientImpl(BASE_URL, API_TOKEN);
     }

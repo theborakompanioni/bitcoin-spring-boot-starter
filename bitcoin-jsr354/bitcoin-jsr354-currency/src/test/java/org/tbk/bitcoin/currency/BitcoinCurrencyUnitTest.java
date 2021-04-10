@@ -2,7 +2,7 @@ package org.tbk.bitcoin.currency;
 
 
 import org.javamoney.moneta.Money;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;

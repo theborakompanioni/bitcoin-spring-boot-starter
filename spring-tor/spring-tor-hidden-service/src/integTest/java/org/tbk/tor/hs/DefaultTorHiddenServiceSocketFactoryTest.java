@@ -5,9 +5,9 @@ import org.berndpruenster.netlayer.tor.HiddenServiceSocket;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.Tor;
 import org.berndpruenster.netlayer.tor.TorSocket;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.tbk.tor.NativeTorFactory;
 import org.tbk.tor.hs.TorHiddenServiceSocketFactory.HiddenServiceSocketCreateContext;
 import reactor.core.publisher.Flux;
@@ -19,8 +19,8 @@ import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 @Slf4j
 public class DefaultTorHiddenServiceSocketFactoryTest {
@@ -31,7 +31,7 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
 
     private NativeTor nativeTor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         File workingDirectory = new File("build/tmp/tor-working-dir");
         NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
@@ -45,7 +45,7 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
         this.sut = new DefaultTorHiddenServiceSocketFactory(this.nativeTor);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         this.nativeTor.shutdown();
     }

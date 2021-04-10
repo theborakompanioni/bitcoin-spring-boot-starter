@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.tool.fee.mempoolspace;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequest;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationRequestImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class ProjectedBlocksMempoolspaceFeeProviderTest {
     private static final String BASE_URL = "https://mempool.space";
@@ -20,7 +20,7 @@ public class ProjectedBlocksMempoolspaceFeeProviderTest {
 
     private ProjectedBlocksMempoolspaceFeeProvider sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MempoolspaceFeeApiClientImpl mempoolspaceFeeApiClient = new MempoolspaceFeeApiClientImpl(BASE_URL, API_TOKEN);
         this.sut = new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, Duration.ofSeconds(60));

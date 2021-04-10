@@ -1,16 +1,16 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 public class LndContainerAutoConfigurationTest {
 
@@ -27,7 +27,7 @@ public class LndContainerAutoConfigurationTest {
             assertThat(context.containsBean("lndContainer"), is(false));
             try {
                 context.getBean(LndContainer.class);
-                Assert.fail("Should have thrown exception");
+                Assertions.fail("Should have thrown exception");
             } catch (NoSuchBeanDefinitionException e) {
                 // continue
             }

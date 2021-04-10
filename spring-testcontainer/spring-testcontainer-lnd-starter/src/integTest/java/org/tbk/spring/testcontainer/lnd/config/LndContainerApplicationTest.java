@@ -7,8 +7,7 @@ import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.lightningj.lnd.wrapper.*;
 import org.lightningj.lnd.wrapper.message.Chain;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
@@ -21,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 import org.tbk.lightning.lnd.grpc.config.LndJsonRpcClientAutoConfigProperties;
@@ -31,11 +29,10 @@ import reactor.core.publisher.Flux;
 import javax.xml.bind.DatatypeConverter;
 import java.time.Duration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 @Slf4j
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class LndContainerApplicationTest {

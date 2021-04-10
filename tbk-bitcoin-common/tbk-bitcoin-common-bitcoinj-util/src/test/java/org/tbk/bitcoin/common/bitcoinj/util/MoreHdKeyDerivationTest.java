@@ -7,15 +7,15 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class MoreHdKeyDerivationTest {
 
@@ -27,7 +27,7 @@ public class MoreHdKeyDerivationTest {
     private final String xpriv = "xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu";
     private final String xpub = "xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8";
 
-    @Before
+    @BeforeEach
     public void setup() {
     }
 
@@ -111,7 +111,7 @@ public class MoreHdKeyDerivationTest {
         try {
             DeterministicKey ignoredOnPurpose = MoreHdKeyDerivation.deriveChildKey(zpubBip84Key, "0H");
 
-            Assert.fail("Should have thrown exception");
+            Assertions.fail("Should have thrown exception");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), is("Hardened derivation is unsupported (0H)."));
         }

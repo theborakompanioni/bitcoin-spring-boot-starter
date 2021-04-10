@@ -1,8 +1,8 @@
 package org.tbk.tor;
 
 import org.berndpruenster.netlayer.tor.NativeTor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.Duration;
@@ -11,7 +11,7 @@ public class NativeTorFactoryTest {
 
     private NativeTorFactory sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         File workingDirectory = new File("build/tmp/tor-working-dir");
         this.sut = new NativeTorFactory(workingDirectory);

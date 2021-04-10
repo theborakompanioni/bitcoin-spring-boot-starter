@@ -1,16 +1,16 @@
 package org.tbk.electrum.config;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.ElectrumClientFactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 public class ElectrumDaemonJsonrpcClientAutoConfigurationTest {
 
@@ -46,7 +46,7 @@ public class ElectrumDaemonJsonrpcClientAutoConfigurationTest {
                     assertThat(context.containsBean("electrumClientFactory"), is(false));
                     try {
                         context.getBean(ElectrumClientFactory.class);
-                        Assert.fail("Should have thrown exception");
+                        Assertions.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
                     }
@@ -54,7 +54,7 @@ public class ElectrumDaemonJsonrpcClientAutoConfigurationTest {
                     assertThat(context.containsBean("electrumClient"), is(false));
                     try {
                         context.getBean(ElectrumClient.class);
-                        Assert.fail("Should have thrown exception");
+                        Assertions.fail("Should have thrown exception");
                     } catch (NoSuchBeanDefinitionException e) {
                         // continue
                     }

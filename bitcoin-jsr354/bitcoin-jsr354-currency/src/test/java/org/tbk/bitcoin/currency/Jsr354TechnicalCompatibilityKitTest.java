@@ -4,8 +4,8 @@ import org.javamoney.moneta.Money;
 import org.javamoney.moneta.function.MonetaryOperators;
 import org.javamoney.tck.JSR354TestConfiguration;
 import org.javamoney.tck.TCKRunner;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mutabilitydetector.internal.com.google.common.collect.ImmutableList;
 import org.springframework.util.FileSystemUtils;
 
@@ -27,7 +27,7 @@ import java.util.List;
 public class Jsr354TechnicalCompatibilityKitTest {
     private static final Path targetPath = Path.of("build/reports/tck-target");
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         FileSystemUtils.deleteRecursively(targetPath);
         Path directory = Files.createDirectory(targetPath);

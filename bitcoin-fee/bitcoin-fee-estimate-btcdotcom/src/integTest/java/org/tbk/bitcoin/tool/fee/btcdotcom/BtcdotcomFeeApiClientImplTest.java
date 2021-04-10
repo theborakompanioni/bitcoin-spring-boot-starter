@@ -1,13 +1,13 @@
 package org.tbk.bitcoin.tool.fee.btcdotcom;
 
 import com.google.protobuf.ListValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class BtcdotcomFeeApiClientImplTest {
     private static final String BASE_URL = "https://btc.com";
@@ -15,7 +15,7 @@ public class BtcdotcomFeeApiClientImplTest {
 
     private BtcdotcomFeeApiClientImpl sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.sut = new BtcdotcomFeeApiClientImpl(BASE_URL, API_TOKEN);
     }

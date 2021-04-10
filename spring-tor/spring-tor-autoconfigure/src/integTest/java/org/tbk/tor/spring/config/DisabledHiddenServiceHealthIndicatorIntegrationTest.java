@@ -1,8 +1,7 @@
 package org.tbk.tor.spring.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.actuate.health.Status;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -30,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.endpoint.health.show-details=always",
         "management.health.hiddenService.enabled=false"
 })
-public class DisabledHiddenServiceHealthIndicatorIntegrationTest {
+class DisabledHiddenServiceHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
     public static class HiddenServiceTestApplication {
@@ -47,13 +44,13 @@ public class DisabledHiddenServiceHealthIndicatorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldCheckHiddenServiceHealthEndpointDoesNotExist() throws Exception {
+    void itShouldCheckHiddenServiceHealthEndpointDoesNotExist() throws Exception {
         mockMvc.perform(get("/actuator/health/hiddenService"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
+    void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andExpect(jsonPath("status").value(Status.UP.getCode()))
                 .andExpect(jsonPath("components.hiddenService").doesNotExist())
