@@ -94,17 +94,12 @@ public class OnionLocationHeaderFilter extends OncePerRequestFilter {
         boolean addPort = ("http".equals(scheme) && virtualPort != 80) ||
                 ("https".equals(scheme) && virtualPort != 443);
 
-        String portPart = addPort ? ":" + virtualPort : "";
-
-        String onionUrl2 = ServletUriComponentsBuilder.fromRequestUri(request)
+        String onionUrl = ServletUriComponentsBuilder.fromRequestUri(request)
                 .host(virtualHost)
                 .port("" + (addPort ? hiddenService.getVirtualPort() : "-1"))
                 .scheme("http")
                 .build()
                 .toUriString();
-
-        String onionUrl = String.format("http://%s%s%s", hiddenService.getVirtualHost().orElse(null),
-                portPart, request.getRequestURI());
 
         response.addHeader(HEADER_NAME, onionUrl);
     }

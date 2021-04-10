@@ -12,9 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-/**
- *
- */
 @Value
 @Builder
 public class HiddenServiceDefinition {
@@ -71,6 +68,7 @@ public class HiddenServiceDefinition {
             Path hostnamePath = Path.of(directory.getAbsolutePath(), "hostname");
 
             return Files.readAllLines(hostnamePath).stream().findFirst()
+                    .filter(it -> !it.isBlank())
                     .orElseThrow(() -> new IllegalStateException("File is empty: " + hostnamePath));
         } catch (IOException e) {
             throw new IllegalStateException(e);
