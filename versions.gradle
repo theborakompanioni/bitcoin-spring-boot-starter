@@ -16,6 +16,6 @@ ext {
     jacksonDatatypeMoneyVersion = '1.2.2'
     lombokVersion = '1.18.16'
     springfoxVersion = '3.0.0'
-    wiremockVersion = '2.27.2'
+    mockserverVersion = '5.11.2'
     jUnitVersion = '5.7.1'
 }
