@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -57,7 +58,8 @@ public class BitcoinContainerWithZeroMqClientTest {
         int amountOfBlockToGenerate = Math.max(1, RandomUtils.nextInt(10));
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        Future<Block> blockFuture = executorService.submit(() -> Flux.from(bitcoinBlockPublishService)
+        Future<List<Block>> blockFuture = executorService.submit(() -> Flux.from(bitcoinBlockPublishService)
+                .bufferTimeout(amountOfBlockToGenerate, Duration.ofSeconds(1))
                 .blockFirst(timeout));
 
         Future<List<Sha256Hash>> generateBlockFuture = executorService.submit(() -> {
@@ -72,16 +74,20 @@ public class BitcoinContainerWithZeroMqClientTest {
         });
 
         List<Sha256Hash> generatedBlockHashes = generateBlockFuture.get(timeout.toSeconds(), TimeUnit.SECONDS);
-        Block block = blockFuture.get(timeout.toSeconds(), TimeUnit.SECONDS);
+
+        List<Block> receivedBlocks = blockFuture.get(timeout.toSeconds(), TimeUnit.SECONDS);
 
         executorService.shutdown();
         executorService.shutdownNow();
 
-        assertThat(block, is(notNullValue()));
         assertThat(generatedBlockHashes, hasSize(greaterThanOrEqualTo(1)));
+        assertThat(receivedBlocks, hasSize(generatedBlockHashes.size()));
 
-        Sha256Hash firstGeneratedBlockHash = generatedBlockHashes.stream().findFirst().orElseThrow();
-        assertThat("the first block received via zeromq is the first block mined",
-                block.getHash(), is(firstGeneratedBlockHash));
+        List<Sha256Hash> receivedBlockHashes = receivedBlocks.stream()
+                .map(Block::getHash)
+                .collect(Collectors.toUnmodifiableList());
+
+        // check that all blocks are received - block might not be received in order
+        assertThat("all generated blocks are received via zeromq", receivedBlockHashes, containsInAnyOrder(generatedBlockHashes.toArray()));
     }
 }
