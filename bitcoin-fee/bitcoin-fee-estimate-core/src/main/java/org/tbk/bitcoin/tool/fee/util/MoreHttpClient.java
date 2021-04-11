@@ -8,7 +8,6 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ public final class MoreHttpClient {
         try (CloseableHttpResponse response = client.execute(request)) {
             HttpEntity entity = response.getEntity();
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(), StandardCharsets.UTF_8))) {
-                return bufferedReader.lines() .collect(Collectors.joining("\n"));
+                return bufferedReader.lines().collect(Collectors.joining("\n"));
             } finally {
                 EntityUtils.consumeQuietly(entity);
             }

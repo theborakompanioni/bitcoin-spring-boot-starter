@@ -17,7 +17,7 @@ public final class MoreQueryString {
      * <p>
      * If map is empty, just "?" will be returned.
      * in: { }
-     * out: "?
+     * out: "?"
      * <p>
      *
      * @param queryParams map of key -> value
