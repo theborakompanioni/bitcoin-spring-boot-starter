@@ -11,11 +11,6 @@ import java.util.Optional;
         ignoreUnknownFields = false
 )
 public class BitcoinZeroMqClientAutoConfigurationProperties {
-    public enum Network {
-        mainnet,
-        testnet,
-        regtest;
-    }
 
     private boolean enabled;
 

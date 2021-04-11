@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
-    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
+    compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
+    compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 

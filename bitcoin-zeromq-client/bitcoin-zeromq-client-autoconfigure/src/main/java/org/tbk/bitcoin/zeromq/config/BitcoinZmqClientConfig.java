@@ -3,8 +3,6 @@ package org.tbk.bitcoin.zeromq.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
 
 import java.util.Optional;
 
@@ -15,7 +13,7 @@ public class BitcoinZmqClientConfig {
         return new BitcoinZmqClientConfigBuilder();
     }
 
-    NetworkParameters network;
+    Network network;
 
     String zmqpubhashtx; // Publishes transaction hashes
     String zmqpubhashblock; // Publishes block hashes
@@ -38,22 +36,22 @@ public class BitcoinZmqClientConfig {
         return Optional.ofNullable(zmqpubrawtx);
     }
 
-    public NetworkParameters getNetwork() {
+    public Network getNetwork() {
         return Optional.ofNullable(network)
-                .orElse(MainNetParams.get());
+                .orElse(Network.mainnet);
     }
 
     @Getter
     @RequiredArgsConstructor
     public static class BitcoinZmqClientConfigBuilder {
-        private NetworkParameters network;
+        private Network network;
 
         private String zmqpubhashtx;
         private String zmqpubhashblock;
         private String zmqpubrawblock;
         private String zmqpubrawtx;
 
-        public BitcoinZmqClientConfigBuilder network(NetworkParameters network) {
+        public BitcoinZmqClientConfigBuilder network(Network network) {
             this.network = network;
             return this;
         }
