@@ -270,17 +270,16 @@ To run all tests pass arguments `-PexampleTest` and `-PtestcontainerTest`:
 Be aware this might take several minutes to complete (>= 10 minutes).
 
 
-### Dependency Checks
-```shell script
-# verifies checksums of dependencies
-./gradlew verifyChecksums
-```
+### Dependency Verification
+Gradle is used for checksum and signature verification.
 
 ```shell script
-# calculate checksums of dependencies
-./gradlew -q calculateChecksums | grep -v "bitcoin-spring-boot-starter" > checksums.gradle
+# write metadata for checksums and signature verification of dependencies
+./gradlew --write-verification-metadata pgp,sha256 --export-keys
 ```
 
+See [Gradle Userguide: Verifying dependencies](https://docs.gradle.org/current/userguide/dependency_verification.html)
+for more information.
 
 ## Contributing
 All contributions and ideas are always welcome. For any question, bug or feature request, 

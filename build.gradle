@@ -13,7 +13,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath files('gradle/witness/gradle-witness.jar')
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootGradlePluginVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${protobufGradleVersion}")
     }
@@ -58,15 +57,6 @@ configurations.all {
 
 allprojects {
     apply plugin: 'nebula.lint'
-    apply plugin: 'witness'
-    apply from: "${rootDir}/checksums.gradle"
-
-    dependencyVerification {
-        includeConfigurations = [
-                JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME,
-                JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
-        ]
-    }
 
     gradleLint {
         alwaysRun = false // do not automatically run - must be executed manually
@@ -215,7 +205,7 @@ subprojects {
 
     lombok {
         version = "${lombokVersion}"
-        sha256 = null // skip verifyLombok task - will be done by verifyChecksums task
+        sha256 = null // skip verifyLombok task - will be done by gradle dependency verification
     }
 
     protobuf {
