@@ -10,7 +10,7 @@ buildscript {
         protobufGradleVersion = '0.8.15'
     }
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath files('gradle/witness/gradle-witness.jar')
@@ -112,13 +112,9 @@ subprojects {
     targetCompatibility = JavaVersion.VERSION_11
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
-            // needed for consensusj packages
-            url "https://dl.bintray.com/msgilligan/maven"
-        }
-        maven {
-            // needed for netlayer packages
+            // needed for netlayer and consensusj packages
             url "https://jitpack.io"
         }
     }
