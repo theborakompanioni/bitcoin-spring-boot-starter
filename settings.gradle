@@ -66,13 +66,22 @@ include 'spring-xchange:spring-xchange-starter'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-util'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
-include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core'
-include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
-include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter'
+include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-core'
+include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-autoconfigure'
+include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter'
+
+include 'incubator:spring-mqtt:moquette-autoconfigure'
+include 'incubator:spring-mqtt:moquette-starter'
+
 include 'incubator:tbk-btcabuse-client:tbk-btcabuse-client-core'
 include 'incubator:tbk-btcabuse-client:tbk-btcabuse-client-autoconfigure'
 include 'incubator:tbk-btcabuse-client:tbk-btcabuse-client-starter'
 include 'incubator:tbk-btcabuse-client:tbk-btcabuse-incubator'
+
+include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core'
+include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
+include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter'
+
 include 'spring-tor:spring-tor-core'
 include 'spring-tor:spring-tor-hidden-service'
 include 'spring-tor:spring-tor-http'

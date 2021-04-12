@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin mqtt server autoconfigure package'
+
+dependencies {
+    compileOnly project(':incubator:bitcoin-mqtt:bitcoin-mqtt-server-core')
+
+    implementation project(':incubator:spring-mqtt:moquette-autoconfigure')
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}

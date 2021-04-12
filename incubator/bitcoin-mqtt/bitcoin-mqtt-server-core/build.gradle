@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin mqtt server core package'
+
+dependencies {
+    api "com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}"
+
+}
