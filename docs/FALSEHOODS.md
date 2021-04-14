@@ -37,7 +37,33 @@ here is a list of mistaken perspectives on Bitcoin.
    If you can come up with an additional scenario, please - for the sake of Satoshi - create a PR!
 
 1. **Block time will only increase.**
+
+   No. That's not how time works in Bitcoin. A block does not necessarily have to have a higher timestamp than its predecessor.
+   The network has no physical connection to the real world - so how does it know what time it is?
+   The only way for Bitcoin to know is by integrating a concept of time in the consensus rules.
    
+   Clocks are imprecise and [time is a difficult concept](https://github.com/kdeldycke/awesome-falsehood#dates-and-time). There is no single source of truth.
+   It is even stated in the comment of function [`GetTimeOffset()`](https://github.com/bitcoin/bitcoin/blob/ad90dd9f313aa4a2f87675b4392b85c0b06a5a83/src/timedata.cpp#L21-L32):
+   > Never go to sea with two chronometers; take one or three.
+
+   A beautiful explanation on why this has no negative impact on the proper functioning of the network has been described by [dergigi](https://dergigi.com):
+   > For Bitcoin, the fact that our human timestamps are imprecise doesn’t matter too much. It also doesn’t matter that we have no absolute reference frame in the first place. They only have to be precise enough to calculate a somewhat reliable average across 2016 blocks. To guarantee that, a block’s "meatspace" timestamp is only accepted if it fulfills two criteria:
+   >  1. The timestamp has to be greater than the median timestamp of the previous 11 blocks.
+   >  1. The timestamp has to be less than the network-adjusted time plus two hours. (The “network-adjusted time” is simply the median of the timestamps returned by all nodes connected to you.)
+
+   The whole article ["Bitcoin is Time"](https://dergigi.com/2021/01/14/bitcoin-is-time/) by dergigi is well worth reading.
+
+   It is these rules that allow a block with a lower timestamp than its predecessor to be considered valid.
+
+   However, if a block violates these rules either `"time-too-old: block's timestamp is too early"`
+   or `"time-too-new: block timestamp too far in the future"` validation errors in [`ContextualCheckBlockHeader()`](https://github.com/bitcoin/bitcoin/blob/a12962ca894075ae203ab808db4ba5dab23346d1/src/validation.cpp#L3361-L3367)
+   will keep it from being accepted.
+
+   Bitcoin has three sources of time:
+   - System clock
+   - Median of other nodes clocks (see [`GetMedianTimePast()`](https://github.com/bitcoin/bitcoin/blob/92fee79dab384acea47bf20741a9847a58253330/src/chain.h#L270-L284))
+   - The user (asking the user to fix the system clock if the first two disagree)
+
 1. **When a miner finds a valid block, it is guaranteed to be included in the blockchain.**
    
 1. **Okay, but when a miner finds a valid block single-handedly, it is guaranteed to be included in the blockchain.**
