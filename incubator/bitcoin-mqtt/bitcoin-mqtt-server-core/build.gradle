@@ -5,6 +5,10 @@ plugins {
 description = 'bitcoin mqtt server core package'
 
 dependencies {
-    api "com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}"
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
 
+    api("com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+    api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${pahoMqttClientVersion}"
 }

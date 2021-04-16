@@ -69,6 +69,7 @@ include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-core'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-autoconfigure'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter'
+include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-example-application'
 
 include 'incubator:spring-mqtt:moquette-autoconfigure'
 include 'incubator:spring-mqtt:moquette-starter'

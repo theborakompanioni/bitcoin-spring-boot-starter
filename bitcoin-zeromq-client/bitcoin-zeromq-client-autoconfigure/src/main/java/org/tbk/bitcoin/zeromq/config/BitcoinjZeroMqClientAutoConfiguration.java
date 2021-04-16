@@ -60,6 +60,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     }
 
     @Bean(name = "bitcoinjTransactionPublishService", initMethod = "startAsync", destroyMethod = "stopAsync")
+    @ConditionalOnMissingBean(value = Transaction.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(BitcoinjTransactionPublisherFactory.class)
     public MessagePublishService<Transaction> bitcoinjTransactionPublishService(
             BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory
@@ -78,6 +79,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     }
 
     @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
+    @ConditionalOnMissingBean(value = Block.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(BitcoinjBlockPublisherFactory.class)
     public MessagePublishService<Block> bitcoinjBlockPublishService(
             BitcoinjBlockPublisherFactory bitcoinjBlockPublisherFactory

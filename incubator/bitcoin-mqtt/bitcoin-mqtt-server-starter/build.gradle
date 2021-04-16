@@ -8,7 +8,13 @@ dependencies {
     api project(':incubator:bitcoin-mqtt:bitcoin-mqtt-server-core')
     api project(':incubator:bitcoin-mqtt:bitcoin-mqtt-server-autoconfigure')
 
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
     api project(':incubator:spring-mqtt:moquette-starter')
 
     implementation 'org.springframework.boot:spring-boot-starter'
+
+    integTestImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
+
+    integTestImplementation 'org.springframework.integration:spring-integration-mqtt'
 }

@@ -1,4 +1,4 @@
-package org.tbk.mqtt.moquette;
+package org.tbk.bitcoin.tool.mqtt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -28,11 +28,11 @@ import org.springframework.messaging.MessagingException;
 @SpringBootApplication
 @EnableIntegration
 @IntegrationComponentScan
-class MoquetteBrokerTestApplication {
+class BitcoinMqttServerTestApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(MoquetteBrokerTestApplication.class)
+                .sources(BitcoinMqttServerTestApplication.class)
                 .web(WebApplicationType.NONE)
                 .run(args);
     }

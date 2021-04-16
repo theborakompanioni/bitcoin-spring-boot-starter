@@ -16,6 +16,8 @@ public class BitcoinMqttServerAutoConfigProperties implements Validator {
      */
     private boolean enabled;
 
+    private String clientId = "BTC_MQTT_BROKER";
+
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz == BitcoinMqttServerAutoConfigProperties.class;

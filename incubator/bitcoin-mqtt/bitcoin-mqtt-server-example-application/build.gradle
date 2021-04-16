@@ -1,0 +1,10 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'bitcoin mqtt server example application package'
+
+dependencies {
+    implementation project(':incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

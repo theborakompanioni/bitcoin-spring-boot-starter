@@ -5,8 +5,9 @@ plugins {
 description = 'moquette autoconfigure package'
 
 dependencies {
-    compileOnly "com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}"
-
+    compileOnly("com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'

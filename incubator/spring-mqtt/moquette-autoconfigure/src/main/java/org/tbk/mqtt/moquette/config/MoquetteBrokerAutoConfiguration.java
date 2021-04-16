@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MoquetteBrokerAutoConfigProperties.class)
-@ConditionalOnProperty(value = "org.tbk.mqtt.moquette.broker.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "org.tbk.mqtt.moquette.broker.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass(Server.class)
 public class MoquetteBrokerAutoConfiguration {
 
@@ -31,10 +31,10 @@ public class MoquetteBrokerAutoConfiguration {
     @ConditionalOnMissingBean
     public MemoryConfig moquetteConfig() {
         MemoryConfig config = new MemoryConfig(new Properties());
-        config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, Integer.toString(BrokerConstants.PORT));
-        config.setProperty(BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME, Integer.toString(BrokerConstants.WEBSOCKET_PORT));
-        config.setProperty(BrokerConstants.HOST_PROPERTY_NAME, BrokerConstants.HOST);
-        config.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, Boolean.toString(false));
+        config.setProperty(BrokerConstants.HOST_PROPERTY_NAME, this.properties.getHost());
+        config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, Integer.toString(this.properties.getPort()));
+        config.setProperty(BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME, Integer.toString(this.properties.getWebsocketPort()));
+        config.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, Boolean.toString(this.properties.getAllowAnonymous()));
 
         return config;
     }

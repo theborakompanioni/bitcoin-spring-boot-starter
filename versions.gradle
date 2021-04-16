@@ -15,6 +15,7 @@ ext {
     protocVersion = protobufVersion
     jacksonDatatypeMoneyVersion = '1.2.2'
     moquetteVersion = '0.12.1'
+    pahoMqttClientVersion = '1.2.5'
     lombokVersion = '1.18.16'
     springfoxVersion = '3.0.0'
     mockserverVersion = '5.11.2'
