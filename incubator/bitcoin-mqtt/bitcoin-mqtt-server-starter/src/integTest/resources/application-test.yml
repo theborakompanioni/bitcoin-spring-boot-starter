@@ -23,10 +23,7 @@ org.tbk.spring.testcontainer.bitcoind-regtest-miner:
   enabled: true
   # secret to address: across distance search gym explain fruit sense tiny decrease ribbon day course
   coinbase-reward-address: bcrt1q0lhr8js5rrhjl7hf6e80ns3pgk5tjswgg9um9t
-  mine-initial-amount-of-blocks: 3
-  next-block-duration:
-    min-duration-in-millis: 1000
-    max-duration-in-millis: 10000
+  scheduled-mining-enabled: false
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

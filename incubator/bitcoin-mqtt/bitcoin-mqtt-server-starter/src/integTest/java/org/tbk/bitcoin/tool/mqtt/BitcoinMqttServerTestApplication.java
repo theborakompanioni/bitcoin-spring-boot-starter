@@ -58,12 +58,19 @@ class BitcoinMqttServerTestApplication {
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("testConsumer", mqttClientFactory(), "#");
         adapter.setCompletionTimeout(5000);
-        adapter.setConverter(new DefaultPahoMessageConverter());
+        adapter.setConverter(defaultPahoMessageConverter());
         adapter.setQos(1);
         adapter.setAutoStartup(true);
         adapter.setManualAcks(false);
         adapter.setOutputChannel(mqttInputChannel());
         return adapter;
+    }
+
+    @Bean
+    public DefaultPahoMessageConverter defaultPahoMessageConverter() {
+        DefaultPahoMessageConverter converter = new DefaultPahoMessageConverter();
+        converter.setPayloadAsBytes(true);
+        return converter;
     }
 
     @Bean

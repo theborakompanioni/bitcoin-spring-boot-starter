@@ -2,25 +2,25 @@ package org.tbk.bitcoin.tool.mqtt;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Queues;
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
-import io.moquette.broker.Server;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.params.RegTestParams;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.mqtt.event.MqttMessageDeliveryEvent;
-import org.springframework.integration.mqtt.event.MqttMessageSentEvent;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.mqtt.support.MqttHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.tool.mqtt.config.BitcoinMqttServerAutoConfigProperties;
-import org.tbk.bitcoin.zeromq.client.MessagePublishService;
-import org.tbk.spring.testcontainer.bitcoind.regtest.CoinbaseRewardAddressSupplier;
+import org.tbk.spring.testcontainer.bitcoind.regtest.BitcoindRegtestMiner;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Queue;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 @Slf4j
 @SpringBootTest(classes = {
@@ -38,31 +37,20 @@ import static org.hamcrest.Matchers.notNullValue;
 })
 @ActiveProfiles("test")
 class BitcoinMqttServerStarterTest {
+    private static final BitcoinSerializer regtestBitcoinSerializer = new BitcoinSerializer(RegTestParams.get(), false);
 
     @Autowired(required = false)
     private BitcoinMqttServerAutoConfigProperties properties;
 
     @Autowired
-    private Server server;
+    private BitcoindRegtestMiner bitcoindRegtestMiner;
 
     @Autowired
-    private BitcoinMqttServerTestApplication.MqttTestGateway gateway;
-
-    @Autowired
-    private CapturingApplicationListener<MqttMessageSentEvent> mqttMessageSentEventListener;
-
-    @Autowired
-    private BitcoinClient bitcoinClient;
-
-    @Autowired
-    private MessagePublishService<Block> bitcoinBlockPublishService;
-
-    @Autowired
-    private CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
+    private CapturingMessageHandler capturingMessageHandler;
 
     @BeforeEach
     void setUp() {
-        this.mqttMessageSentEventListener.reset();
+        this.capturingMessageHandler.reset();
     }
 
     @Test
@@ -72,52 +60,46 @@ class BitcoinMqttServerStarterTest {
         assertThat(properties.isEnabled(), is(true));
     }
 
-    // TODO: implement this test method!
     @Test
-    @Disabled("This currently does not work as 'internalPublish' will not trigger application events!")
     void canReceive() {
-        assertThat(mqttMessageSentEventListener.count(), is(0L));
+        assertThat(capturingMessageHandler.count(), is(0L));
 
-        Address coinbaseRewardAddress = coinbaseRewardAddressSupplier.get();
+        List<Sha256Hash> blockHashes = this.bitcoindRegtestMiner.mineBlocks(1);
 
-        /*Schedulers.single().schedule(() -> {
-            try {
-                log.info("Mine one block to trigger mqtt block message (to address {})", coinbaseRewardAddress);
-                List<Sha256Hash> sha256Hashes = this.bitcoinClient.generateToAddress(1, coinbaseRewardAddress);
-                log.info("Mined {} blocks with coinbase reward for address {}", sha256Hashes.size(), coinbaseRewardAddress);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }, 1000, TimeUnit.MILLISECONDS);*/
-
-        log.info("Waiting for mqtt block message..");
-        MqttMessageSentEvent sentEvent = Flux.interval(Duration.ofMillis(10))
-                .flatMapIterable(it -> mqttMessageSentEventListener.elements())
-                .blockFirst(Duration.ofSeconds(30));
+        log.info("Waiting for mqtt /rawblock message..");
+        Message<?> sentEvent = Flux.interval(Duration.ofMillis(10))
+                .flatMapIterable(it -> capturingMessageHandler.elements())
+                .filter(it -> "/rawblock".equals(it.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)))
+                .blockFirst(Duration.ofSeconds(10));
 
         assertThat(sentEvent, is(notNullValue()));
-        assertThat(sentEvent.getMessage().getPayload(), is(notNullValue()));
+
+        byte[] payload = (byte[]) sentEvent.getPayload();
+        Block block = regtestBitcoinSerializer.makeBlock(payload);
+
+        assertThat("the blocks mined contain the first block received via mqtt", blockHashes, hasItem(block.getHash()));
     }
 
     @ActiveProfiles("test")
     @Configuration(proxyBeanMethods = false)
     static class TestConfig {
         @Bean
-        public CapturingApplicationListener<MqttMessageSentEvent> mqttMessageSentEventListener() {
-            return new CapturingApplicationListener<>();
+        @ServiceActivator(inputChannel = "mqttInputChannel")
+        public CapturingMessageHandler capturingMessageHandler() {
+            return new CapturingMessageHandler();
         }
     }
 
-    private static class CapturingApplicationListener<T extends MqttMessageDeliveryEvent> implements ApplicationListener<T> {
+    private static class CapturingMessageHandler implements MessageHandler {
 
-        private final Queue<T> queue = Queues.newLinkedBlockingQueue();
+        private final Queue<Message<?>> queue = Queues.newLinkedBlockingQueue();
 
         @Override
-        public void onApplicationEvent(T event) {
-            queue.add(event);
+        public void handleMessage(Message<?> message) throws MessagingException {
+            queue.add(message);
         }
 
-        public List<T> elements() {
+        public List<Message<?>> elements() {
             return ImmutableList.copyOf(queue);
         }
 

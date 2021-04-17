@@ -51,8 +51,6 @@ public class BitcoinMqttServerImpl extends AbstractIdleService implements Bitcoi
         this.mqttServer = requireNonNull(mqttServer);
         this.blockMessagePublisherService = requireNonNull(blockMessagePublisherService);
         this.transactionMessagePublisherService = requireNonNull(transactionMessagePublisherService);
-
-        // new MqttClient(uri == null ? "tcp://NO_URL_PROVIDED" : uri, clientId, this.persistence)
     }
 
     @Override
