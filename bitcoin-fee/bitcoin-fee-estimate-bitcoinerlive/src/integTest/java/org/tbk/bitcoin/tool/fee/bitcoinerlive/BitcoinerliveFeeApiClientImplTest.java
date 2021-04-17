@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimate;
 
@@ -13,6 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confidence;
 
+@Disabled("bitcoiner.live seems to have DNS problems (2021-04-17)")
 public class BitcoinerliveFeeApiClientImplTest {
     private static final String BASE_URL = "https://bitcoiner.live";
     private static final String API_TOKEN = null;
