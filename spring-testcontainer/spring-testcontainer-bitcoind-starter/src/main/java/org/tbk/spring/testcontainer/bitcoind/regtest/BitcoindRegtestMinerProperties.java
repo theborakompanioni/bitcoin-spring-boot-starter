@@ -32,13 +32,15 @@ public class BitcoindRegtestMinerProperties implements Validator {
 
     private int mineInitialAmountOfBlocks = 0;
 
-    NextBlockDurationProperties nextBlockDuration;
+    private Boolean scheduledMiningEnabled;
+
+    private NextBlockDurationProperties nextBlockDuration;
 
     public Optional<String> getCoinbaseRewardAddress() {
         return Optional.ofNullable(coinbaseRewardAddress);
     }
 
-    public NextBlockDurationProperties getDefaultNextBlockDuration() {
+    public NextBlockDurationProperties getNextBlockDuration() {
         return Optional.ofNullable(nextBlockDuration)
                 .orElse(DEFAULT_NEXT_BLOCK_DURATION);
     }

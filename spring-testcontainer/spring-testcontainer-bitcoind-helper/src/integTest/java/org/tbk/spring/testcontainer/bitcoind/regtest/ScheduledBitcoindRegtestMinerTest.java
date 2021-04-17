@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.*;
 @ActiveProfiles("test")
 public class ScheduledBitcoindRegtestMinerTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
 
         public static void main(String[] args) {
@@ -38,12 +38,18 @@ public class ScheduledBitcoindRegtestMinerTest {
                     .run(args);
         }
 
+        @Bean
+        public BitcoindRegtestMiner bitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient) {
+            return new BitcoindRegtestMinerImpl(bitcoinJsonRpcClient);
+        }
 
-        @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
-        public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient,
+        @Bean(destroyMethod = "stopAsync")
+        public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoindRegtestMiner bitcoindRegtestMiner,
                                                                            @Qualifier("bitcoindRegtestMinerScheduler")
                                                                                    AbstractScheduledService.Scheduler scheduler) {
-            return new ScheduledBitcoindRegtestMiner(bitcoinJsonRpcClient, scheduler);
+            ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner = new ScheduledBitcoindRegtestMiner(bitcoindRegtestMiner, scheduler);
+            scheduledBitcoindRegtestMiner.startAsync();
+            return scheduledBitcoindRegtestMiner;
         }
 
         @Bean("bitcoindRegtestMinerScheduler")

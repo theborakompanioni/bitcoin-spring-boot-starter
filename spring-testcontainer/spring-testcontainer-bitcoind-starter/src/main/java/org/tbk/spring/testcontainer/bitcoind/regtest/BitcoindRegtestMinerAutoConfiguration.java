@@ -2,11 +2,13 @@ package org.tbk.spring.testcontainer.bitcoind.regtest;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.AbstractScheduledService;
+import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Sha256Hash;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -52,50 +55,17 @@ public class BitcoindRegtestMinerAutoConfiguration {
         return new BitcoinClientCoinbaseRewardAddressSupplier(bitcoinJsonRpcClient);
     }
 
-    @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
-    @ConditionalOnBean({BitcoinClient.class})
-    @ConditionalOnMissingBean(ScheduledBitcoindRegtestMiner.class)
-    public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient,
-                                                                       @Qualifier("bitcoindRegtestMinerScheduler")
-                                                                               AbstractScheduledService.Scheduler scheduler,
-                                                                       CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
-        return new ScheduledBitcoindRegtestMiner(bitcoinJsonRpcClient, scheduler, coinbaseRewardAddressSupplier);
-    }
-
     @Bean
-    @ConditionalOnBean({ScheduledBitcoindRegtestMiner.class})
-    public InitializingBean scheduledBitcoindRegtestMinerPreminer(ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner) {
-
-        int numberOfBlocksToMine = properties.getMineInitialAmountOfBlocks();
-
-        if (numberOfBlocksToMine == 0) {
-            return () -> {
-                log.debug("Will not mine initial number of blocks as 'numberOfBlocksToMine' is zero.");
-            };
-        }
-
-        return () -> {
-            log.info("Will mine an initial number of {} blocks.", numberOfBlocksToMine);
-
-            Stopwatch stopwatch = Stopwatch.createStarted();
-
-            scheduledBitcoindRegtestMiner.awaitRunning();
-
-            int counter = 0;
-            while (counter < numberOfBlocksToMine) {
-                scheduledBitcoindRegtestMiner.runOneIteration();
-                counter++;
-            }
-
-            log.info("Mined initial number of {} blocks in {}", counter, stopwatch);
-            stopwatch.stop();
-        };
+    @ConditionalOnBean({BitcoinClient.class})
+    @ConditionalOnMissingBean(BitcoindRegtestMiner.class)
+    public BitcoindRegtestMiner bitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient,
+                                                     CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+        return new BitcoindRegtestMinerImpl(bitcoinJsonRpcClient, coinbaseRewardAddressSupplier);
     }
-
 
     @Bean("bitcoindRegtestMinerScheduler")
     @ConditionalOnMissingBean(name = "bitcoindRegtestMinerScheduler")
-    public AbstractScheduledService.Scheduler bitcoindRegtestMinerScheduler() {
+    public MinMaxDurationScheduler bitcoindRegtestMinerScheduler() {
         Duration minDuration = properties.getNextBlockDuration().getMinDuration();
         Duration maxDuration = properties.getNextBlockDuration().getMaxDuration();
 
@@ -105,6 +75,43 @@ public class BitcoindRegtestMinerAutoConfiguration {
                 .minDuration(minDuration)
                 .maxDuration(maxDuration)
                 .build();
+    }
+
+    @Bean(destroyMethod = "stopAsync")
+    @ConditionalOnBean({
+            BitcoindRegtestMiner.class,
+            MinMaxDurationScheduler.class
+    })
+    @ConditionalOnMissingBean(ScheduledBitcoindRegtestMiner.class)
+    @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind-regtest-miner.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
+    public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoindRegtestMiner bitcoindRegtestMiner,
+                                                                       @Qualifier("bitcoindRegtestMinerScheduler") Scheduler scheduler) {
+        ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner = new ScheduledBitcoindRegtestMiner(bitcoindRegtestMiner, scheduler);
+        scheduledBitcoindRegtestMiner.startAsync();
+        return scheduledBitcoindRegtestMiner;
+    }
+
+    @Bean
+    @ConditionalOnBean({BitcoindRegtestMiner.class})
+    public InitializingBean bitcoindRegtestMinerPreminer(BitcoindRegtestMiner bitcoindRegtestMiner) {
+        int numberOfBlocksToMine = properties.getMineInitialAmountOfBlocks();
+
+        if (numberOfBlocksToMine == 0) {
+            return () -> {
+                log.debug("Will not mine initial number of blocks as 'mine-initial-amount-of-blocks' is zero.");
+            };
+        }
+
+        return () -> {
+            log.info("Will mine an initial number of {} blocks.", numberOfBlocksToMine);
+
+            Stopwatch stopwatch = Stopwatch.createStarted();
+
+            List<Sha256Hash> blockHashes = bitcoindRegtestMiner.mineBlocks(numberOfBlocksToMine);
+
+            log.info("Mined initial number of {} blocks in {}", blockHashes.size(), stopwatch);
+            stopwatch.stop();
+        };
     }
 
     public static class MinMaxDurationScheduler extends AbstractScheduledService.CustomScheduler {
