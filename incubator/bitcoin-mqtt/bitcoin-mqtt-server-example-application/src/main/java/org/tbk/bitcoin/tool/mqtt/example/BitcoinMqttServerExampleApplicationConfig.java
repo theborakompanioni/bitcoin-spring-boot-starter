@@ -19,7 +19,7 @@ public class BitcoinMqttServerExampleApplicationConfig {
     @Bean
     public MqttConnectOptions mqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{"tcp://localhost:1883"});
+        options.setServerURIs(new String[]{"tcp://localhost:18833"});
         options.setUserName("username");
         options.setPassword("password".toCharArray());
         return options;

@@ -33,8 +33,14 @@ public class MoquetteBrokerAutoConfiguration {
         MemoryConfig config = new MemoryConfig(new Properties());
         config.setProperty(BrokerConstants.HOST_PROPERTY_NAME, this.properties.getHost());
         config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, Integer.toString(this.properties.getPort()));
-        config.setProperty(BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME, Integer.toString(this.properties.getWebsocketPort()));
-        config.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, Boolean.toString(this.properties.getAllowAnonymous()));
+
+        if (this.properties.isWebsocketEnabled()) {
+            config.setProperty(BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME, Integer.toString(this.properties.getWebsocketPort()));
+        } else {
+            config.setProperty(BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME, BrokerConstants.DISABLED_PORT_BIND);
+        }
+
+        config.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, Boolean.toString(this.properties.isAllowAnonymous()));
 
         return config;
     }

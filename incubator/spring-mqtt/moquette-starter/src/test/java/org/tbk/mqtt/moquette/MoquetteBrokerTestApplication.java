@@ -41,7 +41,7 @@ class MoquetteBrokerTestApplication {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{"tcp://localhost:1883"});
+        options.setServerURIs(new String[]{"tcp://localhost:18831"});
         options.setUserName("username");
         options.setPassword("password".toCharArray());
         factory.setConnectionOptions(options);

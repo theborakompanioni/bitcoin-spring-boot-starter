@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.bitcoin.tool.mqtt.config.BitcoinMqttServerConfiguration
+org.tbk.bitcoin.tool.mqtt.config.BitcoinMqttServerAutoConfiguration

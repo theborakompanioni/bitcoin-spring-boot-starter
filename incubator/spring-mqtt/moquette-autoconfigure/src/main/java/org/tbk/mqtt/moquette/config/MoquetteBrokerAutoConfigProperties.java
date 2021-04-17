@@ -25,7 +25,17 @@ public class MoquetteBrokerAutoConfigProperties implements Validator {
 
     private int websocketPort = BrokerConstants.WEBSOCKET_PORT;
 
-    private Boolean allowAnonymous = false;
+    private Boolean websocketEnabled;
+
+    private Boolean allowAnonymous;
+
+    public boolean isWebsocketEnabled() {
+        return websocketEnabled != null ? websocketEnabled : false;
+    }
+
+    public boolean isAllowAnonymous() {
+        return allowAnonymous != null ? allowAnonymous : false;
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -45,9 +55,11 @@ public class MoquetteBrokerAutoConfigProperties implements Validator {
             errors.rejectValue("port", "port.invalid", errorMessage);
         }
 
-        if (properties.getWebsocketPort() < 0) {
-            String errorMessage = String.format("Websocket port must not be negative - invalid value: %d", properties.getWebsocketPort());
-            errors.rejectValue("websocketPort", "websocketPort.invalid", errorMessage);
+        if (properties.isWebsocketEnabled()) {
+            if (properties.getWebsocketPort() < 0) {
+                String errorMessage = String.format("Websocket port must not be negative - invalid value: %d", properties.getWebsocketPort());
+                errors.rejectValue("websocketPort", "websocketPort.invalid", errorMessage);
+            }
         }
     }
 }

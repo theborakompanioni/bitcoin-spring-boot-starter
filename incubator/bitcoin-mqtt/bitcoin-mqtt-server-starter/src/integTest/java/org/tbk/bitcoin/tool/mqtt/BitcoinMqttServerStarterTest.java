@@ -70,7 +70,7 @@ class BitcoinMqttServerStarterTest {
         Message<?> sentEvent = Flux.interval(Duration.ofMillis(10))
                 .flatMapIterable(it -> capturingMessageHandler.elements())
                 .filter(it -> "/rawblock".equals(it.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)))
-                .blockFirst(Duration.ofSeconds(10));
+                .blockFirst(Duration.ofSeconds(30));
 
         assertThat(sentEvent, is(notNullValue()));
 

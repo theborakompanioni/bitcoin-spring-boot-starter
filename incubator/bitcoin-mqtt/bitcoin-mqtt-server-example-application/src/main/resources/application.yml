@@ -64,6 +64,7 @@ org.tbk.bitcoin.zeromq:
 
 org.tbk.mqtt.moquette.broker:
   enabled: true
+  port: 18833
 
 org.tbk.bitcoin.tool.mqtt.server:
   enabled: true

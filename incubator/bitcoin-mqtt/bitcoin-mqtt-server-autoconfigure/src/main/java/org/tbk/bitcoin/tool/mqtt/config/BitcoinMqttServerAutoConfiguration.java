@@ -28,11 +28,11 @@ import static java.util.Objects.requireNonNull;
         MoquetteBrokerAutoConfiguration.class
 })
 @ConditionalOnClass(BitcoinMqttServer.class)
-public class BitcoinMqttServerConfiguration {
+public class BitcoinMqttServerAutoConfiguration {
 
     private final BitcoinMqttServerAutoConfigProperties properties;
 
-    public BitcoinMqttServerConfiguration(BitcoinMqttServerAutoConfigProperties properties) {
+    public BitcoinMqttServerAutoConfiguration(BitcoinMqttServerAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);
     }
 

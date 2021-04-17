@@ -1,2 +1,3 @@
 org.tbk.mqtt.moquette.broker:
   enabled: true
+  port: 18831
