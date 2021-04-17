@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeApiClient;
-import org.tbk.bitcoin.tool.fee.btcdotcom.BtcdotcomFeeProvider;
 import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeApiClient;
 import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeApiClientImpl;
 import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedBlocksMempoolspaceFeeProvider;
@@ -20,8 +18,7 @@ import static java.util.Objects.requireNonNull;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MempoolspaceFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
-        BtcdotcomFeeApiClient.class,
-        BtcdotcomFeeProvider.class
+        MempoolspaceFeeApiClient.class
 })
 @ConditionalOnProperty(name = {
         "org.tbk.bitcoin.tool.fee.enabled",
