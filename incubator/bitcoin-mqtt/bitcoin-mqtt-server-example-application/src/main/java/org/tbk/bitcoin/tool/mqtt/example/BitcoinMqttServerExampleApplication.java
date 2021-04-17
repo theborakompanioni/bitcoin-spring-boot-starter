@@ -1,22 +1,22 @@
 package org.tbk.bitcoin.tool.mqtt.example;
 
-import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.BitcoinSerializer;
+import org.bitcoinj.core.Block;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
-import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.MessageHandler;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
@@ -38,38 +38,25 @@ public class BitcoinMqttServerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
+    public CommandLineRunner mainRunner(MessagePublishService<Block> bitcoinjBlockPublishService) {
         return args -> {
-            log.info("Starting example application main runner");
+            AtomicLong zeromqBlockCounter = new AtomicLong();
+            Flux.from(bitcoinjBlockPublishService).subscribe(arg -> {
+                log.info("Received zeromq message: {} - {}", zeromqBlockCounter.incrementAndGet(), arg.getHash());
+            });
 
-            Stopwatch statsStopwatch = Stopwatch.createStarted();
-            Duration statsInterval = Duration.ofSeconds(10);
-            AtomicLong statsTxCounter = new AtomicLong();
+            bitcoinjBlockPublishService.awaitRunning(Duration.ofSeconds(10));
+        };
+    }
 
-            Flux.from(bitcoinjTransactionPublishService)
-                    .buffer(statsInterval)
-                    .subscribe(arg -> {
-                        statsTxCounter.addAndGet(arg.size());
-
-                        long intervalElapsedSeconds = Math.max(statsInterval.toSeconds(), 1);
-                        long statsTotalElapsedSeconds = Math.max(statsStopwatch.elapsed(TimeUnit.SECONDS), 1);
-
-                        log.info("=======================================");
-                        log.info("elapsed: {}", statsStopwatch);
-                        log.info("tx count last {} seconds: {}", intervalElapsedSeconds, arg.size());
-                        log.info("tx/s last {} seconds: {}", intervalElapsedSeconds, arg.size() / (float) intervalElapsedSeconds);
-                        log.info("total tx count: {}", statsTxCounter.get());
-                        log.info("total tx/s: {}", statsTxCounter.get() / (float) statsTotalElapsedSeconds);
-                        log.info("=======================================");
-                    });
-
-            AtomicLong singleTxCounter = new AtomicLong();
-            Flux.from(bitcoinjTransactionPublishService)
-                    .subscribe(arg -> {
-                        log.info("{} - {}", singleTxCounter.incrementAndGet(), arg);
-                    });
-
-            bitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
+    @Bean
+    @ServiceActivator(inputChannel = "mqttRawBlockInputChannel")
+    public MessageHandler mqttBlockInputChannelHandler(BitcoinSerializer bitcoinSerializer) {
+        AtomicLong mqttBlockCounter = new AtomicLong();
+        return message -> {
+            byte[] payload = (byte[]) message.getPayload();
+            Block block = bitcoinSerializer.makeBlock(payload);
+            log.info("Received mqtt message  : {} - {}", mqttBlockCounter.incrementAndGet(), block.getHash());
         };
     }
 
