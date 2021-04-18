@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.tool.mqtt.config;
 
+import io.moquette.BrokerConstants;
 import io.moquette.broker.Server;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Transaction;
@@ -14,8 +15,10 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.tool.mqtt.BitcoinMqttServer;
 import org.tbk.bitcoin.tool.mqtt.BitcoinMqttServerImpl;
+import org.tbk.bitcoin.tool.mqtt.ReadOnlyAuthorizationPolicy;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.config.BitcoinjZeroMqClientAutoConfiguration;
+import org.tbk.mqtt.moquette.config.MemoryConfigCustomizer;
 import org.tbk.mqtt.moquette.config.MoquetteBrokerAutoConfiguration;
 
 import static java.util.Objects.requireNonNull;
@@ -34,6 +37,13 @@ public class BitcoinMqttServerAutoConfiguration {
 
     public BitcoinMqttServerAutoConfiguration(BitcoinMqttServerAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);
+    }
+
+    @Bean
+    public MemoryConfigCustomizer bitcoinMqttServerMemoryConfigCustomizer() {
+        return config -> {
+            config.setProperty(BrokerConstants.AUTHORIZATOR_CLASS_NAME, ReadOnlyAuthorizationPolicy.class.getName());
+        };
     }
 
     @Bean(destroyMethod = "stopAsync")
