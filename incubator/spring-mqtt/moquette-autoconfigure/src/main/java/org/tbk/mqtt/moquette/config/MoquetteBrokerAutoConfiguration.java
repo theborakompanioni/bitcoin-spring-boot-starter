@@ -5,6 +5,7 @@ import io.moquette.BrokerConstants;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,7 +40,7 @@ public class MoquetteBrokerAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public MemoryConfig moquetteConfig() {
+    public MemoryConfig moquetteConfig(ObjectProvider<MemoryConfigCustomizer> memoryConfigCustomizer) {
         Properties moquetteProperties = moquetteProperties();
 
         typesafeMoquettePropertyNames.stream()
@@ -53,6 +54,8 @@ public class MoquetteBrokerAutoConfiguration {
         config.setProperty(BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME, this.properties.getWebsocketPort()
                 .map(it -> Integer.toString(it))
                 .orElse(BrokerConstants.DISABLED_PORT_BIND));
+
+        memoryConfigCustomizer.orderedStream().forEach(customizer -> customizer.customize(config));
 
         return config;
     }
