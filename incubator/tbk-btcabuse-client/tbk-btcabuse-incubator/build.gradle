@@ -9,5 +9,5 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.zaxxer:HikariCP'
-    implementation 'org.xerial:sqlite-jdbc:3.34.0'
+    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
 }

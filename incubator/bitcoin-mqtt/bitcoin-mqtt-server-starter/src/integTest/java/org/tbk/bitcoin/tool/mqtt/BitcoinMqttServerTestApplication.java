@@ -1,5 +1,8 @@
 package org.tbk.bitcoin.tool.mqtt;
 
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.boot.WebApplicationType;
@@ -12,6 +15,7 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
@@ -23,6 +27,10 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
+
+import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @SpringBootApplication
@@ -51,15 +59,24 @@ class BitcoinMqttServerTestApplication {
     /* INBOUND */
     @Bean
     public MessageChannel mqttInputChannel() {
-        return new DirectChannel();
+        ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                .setNameFormat("mqtt-input-pub-%d")
+                .setDaemon(false)
+                .build());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            MoreExecutors.shutdownAndAwaitTermination(executorService, Duration.ofSeconds(10));
+        }));
+
+        return new PublishSubscribeChannel(executorService);
     }
 
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("testConsumer", mqttClientFactory(), "#");
-        adapter.setCompletionTimeout(5000);
+        adapter.setCompletionTimeout(Duration.ofSeconds(5).toMillis());
         adapter.setConverter(defaultPahoMessageConverter());
-        adapter.setQos(1);
+        adapter.setQos(MqttQoS.AT_LEAST_ONCE.value());
         adapter.setAutoStartup(true);
         adapter.setManualAcks(false);
         adapter.setOutputChannel(mqttInputChannel());
@@ -98,7 +115,16 @@ class BitcoinMqttServerTestApplication {
 
     @Bean
     public MessageChannel mqttOutboundChannel() {
-        return new DirectChannel();
+        ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                .setNameFormat("mqtt-output-pub-%d")
+                .setDaemon(false)
+                .build());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            MoreExecutors.shutdownAndAwaitTermination(executorService, Duration.ofSeconds(10));
+        }));
+
+        return new PublishSubscribeChannel(executorService);
     }
     /* OUTBOUND - end */
 

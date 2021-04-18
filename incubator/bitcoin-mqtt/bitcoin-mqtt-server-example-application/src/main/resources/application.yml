@@ -67,6 +67,11 @@ org.tbk.mqtt.moquette.broker:
   port: 18833
   config:
     allow_anonymous: false
+    authenticator_class: 'io.moquette.broker.security.DBAuthenticator'
+    'authenticator.db.driver': 'org.sqlite.JDBC'
+    'authenticator.db.url': 'jdbc:sqlite:bitcoin_mqtt_server_example_application.db'
+    'authenticator.db.query': 'SELECT password_hash FROM moquette_user WHERE username = ? LIMIT 1'
+    'authenticator.db.digest': SHA-256
 
 org.tbk.bitcoin.tool.mqtt.server:
   enabled: true
