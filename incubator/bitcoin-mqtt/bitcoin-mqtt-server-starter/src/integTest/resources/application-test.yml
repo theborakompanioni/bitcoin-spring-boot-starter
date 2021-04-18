@@ -42,6 +42,8 @@ org.tbk.bitcoin.zeromq:
 org.tbk.mqtt.moquette.broker:
   enabled: true
   port: 18832
+  config:
+    allow_anonymous: false
 
 org.tbk.bitcoin.tool.mqtt.server:
   enabled: true
