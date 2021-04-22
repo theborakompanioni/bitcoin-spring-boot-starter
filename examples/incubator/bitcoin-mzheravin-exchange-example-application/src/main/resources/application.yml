@@ -33,5 +33,6 @@ org.tbk.xchange:
       exchangeClass: org.knowm.xchange.bittrex.BittrexExchange
     bitfinexExchange:
       exchangeClass: org.knowm.xchange.bitfinex.BitfinexExchange
+      shouldLoadRemoteMetaData: false # prevent exception since exchange added pair DOGE/USD
     geminiExchange:
       exchangeClass: org.knowm.xchange.gemini.v1.GeminiExchange
