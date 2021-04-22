@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+description = 'bitcoin regtest starter package'
+
+dependencies {
+    api project(':incubator:bitcoin-regtest:bitcoin-regtest-autoconfigure')
+
+    api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
+
+    api project(':lnd-grpc-client:lnd-grpc-client-starter')
+
+    api project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
+    api project(':spring-testcontainer:spring-testcontainer-lnd-starter')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+}

@@ -71,6 +71,9 @@ include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-autoconfigure'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-example-application'
 
+include 'incubator:bitcoin-regtest:bitcoin-regtest-autoconfigure'
+include 'incubator:bitcoin-regtest:bitcoin-regtest-starter'
+
 include 'incubator:spring-mqtt:moquette-autoconfigure'
 include 'incubator:spring-mqtt:moquette-starter'
 
