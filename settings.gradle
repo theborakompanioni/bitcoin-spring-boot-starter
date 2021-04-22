@@ -6,6 +6,10 @@ include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure'
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter'
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-example-application'
 
+include 'bitcoin-regtest:bitcoin-regtest-core'
+include 'bitcoin-regtest:bitcoin-regtest-autoconfigure'
+include 'bitcoin-regtest:bitcoin-regtest-starter'
+
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-core'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure'
@@ -70,10 +74,6 @@ include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-core'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-autoconfigure'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter'
 include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-example-application'
-
-include 'incubator:bitcoin-regtest:bitcoin-regtest-core'
-include 'incubator:bitcoin-regtest:bitcoin-regtest-autoconfigure'
-include 'incubator:bitcoin-regtest:bitcoin-regtest-starter'
 
 include 'incubator:spring-mqtt:moquette-autoconfigure'
 include 'incubator:spring-mqtt:moquette-starter'

@@ -217,14 +217,22 @@ Most of these spring boot starter modules contain a simple example application.
 They can be used in combination with other modules like [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client), 
 [bitcoin-zeromq-client](#bitcoin-zeromq-client), [lnd-grpc-client](#lnd-grpc-client), etc.
 
+### bitcoin-regtest
+A module containing spring boot starters for integration and regression testing your own application.
+It includes functionality to create and fund addresses, send transactions, mine blocks and much more.
 
 ### incubator
 This subproject is home to all almost-ready modules.
 
 #### tbk-electrum-daemon-client
-A module containing a spring boot starter for a [Electrum daemon](https://github.com/spesmilo/electrum) JSON-RPC API client.
+A module containing a spring boot starter for an [Electrum daemon](https://github.com/moquette-io/moquette) JSON-RPC API client.
 It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
+#### spring-mqtt
+A module containing a spring boot starter for [Moquette](https://github.com/moquette-io/moquette) MQTT broker.
+
+#### bitcoin-mqtt
+A module containing a spring boot starter for a broker publishing Bitcoin ZeroMQ messages via MQTT.
 
 ## Examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 

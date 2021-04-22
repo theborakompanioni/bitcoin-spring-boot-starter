@@ -3,7 +3,7 @@ apply plugin: 'org.springframework.boot'
 description = 'bitcoin testcontainer example application package'
 
 dependencies {
-    implementation project(':incubator:bitcoin-regtest:bitcoin-regtest-starter')
+    implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
     implementation "io.projectreactor:reactor-core"
 

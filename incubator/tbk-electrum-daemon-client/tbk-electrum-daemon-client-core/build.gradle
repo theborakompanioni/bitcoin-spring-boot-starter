@@ -10,7 +10,7 @@ dependencies {
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
 
-    integTestImplementation project(':incubator:bitcoin-regtest:bitcoin-regtest-starter')
+    integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')

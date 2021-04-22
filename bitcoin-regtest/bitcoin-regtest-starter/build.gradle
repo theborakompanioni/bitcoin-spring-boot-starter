@@ -5,8 +5,8 @@ plugins {
 description = 'bitcoin regtest starter package'
 
 dependencies {
-    api project(':incubator:bitcoin-regtest:bitcoin-regtest-core')
-    api project(':incubator:bitcoin-regtest:bitcoin-regtest-autoconfigure')
+    api project(':bitcoin-regtest:bitcoin-regtest-core')
+    api project(':bitcoin-regtest:bitcoin-regtest-autoconfigure')
 
     api project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
     api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
