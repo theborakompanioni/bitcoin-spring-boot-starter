@@ -13,12 +13,10 @@ import org.springframework.boot.actuate.autoconfigure.info.ConditionalOnEnabledI
 import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
 import org.tbk.lightning.lnd.grpc.actuator.health.LndJsonRpcHealthIndicator;
 
 import java.util.Map;
@@ -26,14 +24,18 @@ import java.util.Map;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
-@ConditionalOnClass(HealthContributor.class)
+@ConditionalOnClass({
+        HealthContributor.class,
+        LndJsonRpcClientFactory.class
+})
 @AutoConfigureAfter(LndJsonRpcClientAutoConfiguration.class)
 public class LndJsonRpcHealthContributorAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnEnabledHealthIndicator("lndJsonRpc")
+    @ConditionalOnBean(SynchronousLndAPI.class)
     @AutoConfigureAfter(LndJsonRpcClientAutoConfiguration.class)
-    public static class lndJsonRpcClientHealthContributorAutoConfiguration extends
+    public class LndJsonRpcClientHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<LndJsonRpcHealthIndicator, SynchronousLndAPI> {
 
         @Override

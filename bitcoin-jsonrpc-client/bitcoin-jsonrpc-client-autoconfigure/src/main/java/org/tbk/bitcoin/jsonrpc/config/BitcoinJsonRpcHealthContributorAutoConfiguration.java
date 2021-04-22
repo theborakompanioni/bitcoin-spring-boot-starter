@@ -24,7 +24,10 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
-@ConditionalOnClass(HealthContributor.class)
+@ConditionalOnClass({
+        HealthContributor.class,
+        BitcoinClient.class
+})
 @AutoConfigureAfter({
         BitcoinJsonRpcClientAutoConfiguration.class,
         BitcoinJsonRpcCacheAutoConfiguration.class
@@ -47,7 +50,6 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnBean(BitcoinClient.class)
         @ConditionalOnMissingBean(name = {"hiddenServiceHealthIndicator", "hiddenServiceHealthContributor"})
         public HealthContributor bitcoinJsonRpcHealthContributor(Map<String, BitcoinClient> beans) {
             return createContributor(beans);

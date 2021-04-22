@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.*;
 
 public class TorAutoConfigurationTest {
     // order of the autoconfig classes is important here!
-    private static Class<?>[] autoConfigClasses = new Class[]{
+    private static final Class<?>[] autoConfigClasses = new Class[]{
             TorHiddenServiceAutoConfiguration.class,
             TorAutoConfiguration.class,
             TorHttpClientAutoConfiguration.class,

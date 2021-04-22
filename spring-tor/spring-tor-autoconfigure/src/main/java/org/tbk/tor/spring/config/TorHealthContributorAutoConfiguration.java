@@ -14,13 +14,9 @@ import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.health.PingHealthIndicator;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 import org.tbk.tor.spring.actuate.health.HiddenServiceHealthIndicator;
 import org.tbk.tor.spring.actuate.health.HiddenServiceSocketHealthIndicator;
@@ -33,8 +29,11 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(HealthContributor.class)
 @ConditionalOnProperty(value = "org.tbk.tor.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnClass({
+        HealthContributor.class,
+        HiddenServiceDefinition.class
+})
 @AutoConfigureAfter({
         TorHiddenServiceAutoConfiguration.class,
         TorAutoConfiguration.class,
@@ -43,12 +42,13 @@ import static java.util.Objects.requireNonNull;
 public class TorHealthContributorAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
+    @ConditionalOnBean(HiddenServiceDefinition.class)
     @ConditionalOnEnabledHealthIndicator("hiddenService")
     @AutoConfigureAfter({
             TorHiddenServiceAutoConfiguration.class,
             TorHttpClientAutoConfiguration.class
     })
-    public static class TorHiddenServiceHealthContributorAutoConfiguration extends
+    public class TorHiddenServiceHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<HiddenServiceHealthIndicator, HiddenServiceDefinition> {
 
         private final CloseableHttpClient torHttpClient;
@@ -74,10 +74,11 @@ public class TorHealthContributorAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnEnabledHealthIndicator("hiddenServiceSocket")
+    @ConditionalOnBean(HiddenServiceSocket.class)
     @AutoConfigureAfter({
             TorAutoConfiguration.class
     })
-    public static class TorHiddenServiceSocketHealthContributorAutoConfiguration extends
+    public class TorHiddenServiceSocketHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<HiddenServiceSocketHealthIndicator, HiddenServiceSocket> {
 
         @Bean
@@ -91,7 +92,7 @@ public class TorHealthContributorAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(Tor.class)
+    @ConditionalOnSingleCandidate(Tor.class)
     @ConditionalOnEnabledInfoContributor("tor")
     @ConditionalOnMissingBean(name = "torInfoContributor")
     public InfoContributor torInfoContributor(Tor tor) {
