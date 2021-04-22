@@ -5,7 +5,7 @@ plugins {
 description = 'bitcoin regtest autoconfigure package'
 
 dependencies {
-    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    compileOnly project(':incubator:bitcoin-regtest:bitcoin-regtest-core')
 
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
 

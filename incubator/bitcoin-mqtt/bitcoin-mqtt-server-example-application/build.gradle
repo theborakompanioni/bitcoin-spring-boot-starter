@@ -5,8 +5,7 @@ description = 'bitcoin mqtt server example application package'
 dependencies {
     implementation project(':incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter')
 
-    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-    implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
+    implementation project(':incubator:bitcoin-regtest:bitcoin-regtest-starter')
 
     implementation 'org.flywaydb:flyway-core'
     implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"

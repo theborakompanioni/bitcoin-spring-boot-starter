@@ -1,4 +1,4 @@
-package org.tbk.spring.testcontainer.bitcoind.regtest;
+package org.tbk.bitcoin.regtest;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;

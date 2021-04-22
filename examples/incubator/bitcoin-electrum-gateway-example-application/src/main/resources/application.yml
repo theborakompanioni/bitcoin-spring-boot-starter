@@ -77,15 +77,17 @@ org.tbk.spring.testcontainer.bitcoind:
     # Send trace/debug info to console instead of debug.log.
     - '-printtoconsole=1'
 
-# mine blocks every 1 - 10 seconds
-org.tbk.spring.testcontainer.bitcoind-regtest-miner:
+org.tbk.bitcoin.regtest:
   enabled: true
-  # secret to address: truth fever mom transfer steak immense lake jacket glide bring fancy electric
-  coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
-  mine-initial-amount-of-blocks: 100
-  next-block-duration:
-    min-duration-in-millis: 1000
-    max-duration-in-millis: 10000
+  # mine blocks every 1 - 10 seconds
+  miner:
+    enabled: true
+    # secret to address: truth fever mom transfer steak immense lake jacket glide bring fancy electric
+    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+    mine-initial-amount-of-blocks: 100
+    next-block-duration:
+      min-duration-in-millis: 1000
+      max-duration-in-millis: 10000
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

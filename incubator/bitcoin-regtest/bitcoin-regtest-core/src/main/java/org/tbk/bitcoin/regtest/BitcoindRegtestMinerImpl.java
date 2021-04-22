@@ -1,4 +1,4 @@
-package org.tbk.spring.testcontainer.bitcoind.regtest;
+package org.tbk.bitcoin.regtest;
 
 import com.google.common.collect.Lists;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;

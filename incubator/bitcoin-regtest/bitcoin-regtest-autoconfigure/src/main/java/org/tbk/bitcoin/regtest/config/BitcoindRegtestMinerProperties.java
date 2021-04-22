@@ -1,4 +1,4 @@
-package org.tbk.spring.testcontainer.bitcoind.regtest;
+package org.tbk.bitcoin.regtest.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,10 +9,6 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Data
-@ConfigurationProperties(
-        prefix = "org.tbk.spring.testcontainer.bitcoind-regtest-miner",
-        ignoreUnknownFields = false
-)
 public class BitcoindRegtestMinerProperties implements Validator {
     private static final NextBlockDurationProperties DEFAULT_NEXT_BLOCK_DURATION = new NextBlockDurationProperties() {{
         setMinDurationInMillis(1_000L);
@@ -20,7 +16,7 @@ public class BitcoindRegtestMinerProperties implements Validator {
     }};
 
     /**
-     * Whether the client should be enabled
+     * Whether the miner should be enabled
      */
     private boolean enabled;
 

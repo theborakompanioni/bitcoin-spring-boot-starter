@@ -3,13 +3,10 @@ apply plugin: 'org.springframework.boot'
 description = 'lnd testcontainer example application package'
 
 dependencies {
-    implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
+    implementation project(':incubator:bitcoin-regtest:bitcoin-regtest-starter')
+
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
-
     implementation project(':lnd-grpc-client:lnd-grpc-client-starter')
-
-    implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
-    implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
     implementation "io.projectreactor:reactor-core"
 

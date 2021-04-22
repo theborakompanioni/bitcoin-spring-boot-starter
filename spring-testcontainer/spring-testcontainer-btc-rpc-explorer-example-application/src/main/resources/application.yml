@@ -82,15 +82,17 @@ org.tbk.spring.testcontainer.bitcoind:
     # Send trace/debug info to console instead of debug.log.
     - '-printtoconsole=1'
 
-# mine blocks every 1 - 10 seconds
-org.tbk.spring.testcontainer.bitcoind-regtest-miner:
+org.tbk.bitcoin.regtest:
   enabled: true
-  # secret to address: across distance search gym explain fruit sense tiny decrease ribbon day course
-  coinbase-reward-address: bcrt1q0lhr8js5rrhjl7hf6e80ns3pgk5tjswgg9um9t
-  mine-initial-amount-of-blocks: 144 # btc-rpc-explorer has problems when <144 blocks are mined (v2.1.0 - 2021-01-06)
-  next-block-duration:
-    min-duration-in-millis: 1000
-    max-duration-in-millis: 10000
+  # mine blocks every 1 - 10 seconds
+  miner:
+    enabled: true
+    # secret to address: across distance search gym explain fruit sense tiny decrease ribbon day course
+    coinbase-reward-address: bcrt1q0lhr8js5rrhjl7hf6e80ns3pgk5tjswgg9um9t
+    mine-initial-amount-of-blocks: 144 # btc-rpc-explorer has problems when <144 blocks are mined (v2.1.0 - 2021-01-06)
+    next-block-duration:
+      min-duration-in-millis: 1000
+      max-duration-in-millis: 10000
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

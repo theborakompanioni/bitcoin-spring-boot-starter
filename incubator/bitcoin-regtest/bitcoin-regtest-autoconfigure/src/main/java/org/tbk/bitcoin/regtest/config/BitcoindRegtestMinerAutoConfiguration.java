@@ -1,4 +1,4 @@
-package org.tbk.spring.testcontainer.bitcoind.regtest;
+package org.tbk.bitcoin.regtest.config;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.AbstractScheduledService;
@@ -11,12 +11,14 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Sha256Hash;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.bitcoin.regtest.*;
 
 import java.time.Duration;
 import java.util.List;
@@ -27,20 +29,21 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(BitcoindRegtestMinerProperties.class)
-@ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind-regtest-miner.enabled", havingValue = "true")
+@ConditionalOnClass(BitcoindRegtestMiner.class)
+@ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.miner.enabled", havingValue = "true")
+@AutoConfigureAfter(BitcoinRegtestAutoConfiguration.class)
 public class BitcoindRegtestMinerAutoConfiguration {
 
     private final BitcoindRegtestMinerProperties properties;
 
-    public BitcoindRegtestMinerAutoConfiguration(BitcoindRegtestMinerProperties properties) {
-        this.properties = requireNonNull(properties);
+    public BitcoindRegtestMinerAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
+        this.properties = requireNonNull(properties.getMiner());
     }
 
     @Bean
     @ConditionalOnBean({BitcoinClient.class})
-    @ConditionalOnMissingBean(CoinbaseRewardAddressSupplier.class)
-    @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind-regtest-miner.coinbase-reward-address")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.miner.coinbase-reward-address")
     public CoinbaseRewardAddressSupplier staticCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
         return this.properties.getCoinbaseRewardAddress()
                 .map(it -> Address.fromString(bitcoinJsonRpcClient.getNetParams(), it))
@@ -50,14 +53,14 @@ public class BitcoindRegtestMinerAutoConfiguration {
 
     @Bean
     @ConditionalOnBean({BitcoinClient.class})
-    @ConditionalOnMissingBean(CoinbaseRewardAddressSupplier.class)
+    @ConditionalOnMissingBean
     public CoinbaseRewardAddressSupplier bitcoinClientCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
         return new BitcoinClientCoinbaseRewardAddressSupplier(bitcoinJsonRpcClient);
     }
 
     @Bean
     @ConditionalOnBean({BitcoinClient.class})
-    @ConditionalOnMissingBean(BitcoindRegtestMiner.class)
+    @ConditionalOnMissingBean
     public BitcoindRegtestMiner bitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient,
                                                      CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         return new BitcoindRegtestMinerImpl(bitcoinJsonRpcClient, coinbaseRewardAddressSupplier);
@@ -83,7 +86,7 @@ public class BitcoindRegtestMinerAutoConfiguration {
             MinMaxDurationScheduler.class
     })
     @ConditionalOnMissingBean(ScheduledBitcoindRegtestMiner.class)
-    @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind-regtest-miner.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.miner.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
     public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoindRegtestMiner bitcoindRegtestMiner,
                                                                        @Qualifier("bitcoindRegtestMinerScheduler") Scheduler scheduler) {
         ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner = new ScheduledBitcoindRegtestMiner(bitcoindRegtestMiner, scheduler);
@@ -131,7 +134,7 @@ public class BitcoindRegtestMinerAutoConfiguration {
         }
 
         @Override
-        protected Schedule getNextSchedule() throws Exception {
+        protected Schedule getNextSchedule() {
             long minMillis = minDuration.toMillis();
             long maxMillis = maxDuration.toMillis();
 
