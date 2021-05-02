@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class ScheduledBitcoindRegtestMiner extends AbstractScheduledService implements BitcoindRegtestMiner {
     private static final Duration DEFAULT_DELAY = Duration.ofSeconds(60);
-    private static final Scheduler DEFAULT_SCHEDULER = Scheduler.newFixedDelaySchedule(0, DEFAULT_DELAY.toMillis(), TimeUnit.MILLISECONDS);
+    private static final Scheduler DEFAULT_SCHEDULER = Scheduler.newFixedDelaySchedule(Duration.ZERO, DEFAULT_DELAY);
 
     private final BitcoindRegtestMiner delegate;
     private final Scheduler scheduler;
@@ -28,11 +28,6 @@ public class ScheduledBitcoindRegtestMiner extends AbstractScheduledService impl
     }
 
     @Override
-    public List<Sha256Hash> mineBlocks(int count) {
-        return delegate.mineBlocks(count);
-    }
-
-    @Override
     protected void runOneIteration() {
         this.mineBlocks(1);
     }
@@ -40,6 +35,16 @@ public class ScheduledBitcoindRegtestMiner extends AbstractScheduledService impl
     @Override
     protected Scheduler scheduler() {
         return this.scheduler;
+    }
+
+    @Override
+    public List<Sha256Hash> mineBlocks(int count) {
+        return delegate.mineBlocks(count);
+    }
+
+    @Override
+    public List<Sha256Hash> mineBlocks(int count, CoinbaseRewardAddressSupplier addressSupplier) {
+        return delegate.mineBlocks(count, addressSupplier);
     }
 
 }

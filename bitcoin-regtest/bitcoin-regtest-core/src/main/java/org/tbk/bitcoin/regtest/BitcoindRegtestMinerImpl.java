@@ -18,7 +18,7 @@ public class BitcoindRegtestMinerImpl implements BitcoindRegtestMiner {
     private final CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
 
     public BitcoindRegtestMinerImpl(BitcoinClient client) {
-        this(client, new BitcoinClientCoinbaseRewardAddressSupplier(client));
+        this(client, new RegtestEaterAddressSupplier());
     }
 
     public BitcoindRegtestMinerImpl(BitcoinClient client, CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
@@ -28,9 +28,14 @@ public class BitcoindRegtestMinerImpl implements BitcoindRegtestMiner {
 
     @Override
     public List<Sha256Hash> mineBlocks(int count) {
+        return this.mineBlocks(count, this.coinbaseRewardAddressSupplier);
+    }
+
+    @Override
+    public List<Sha256Hash> mineBlocks(int count, CoinbaseRewardAddressSupplier addressSupplier) {
         List<Sha256Hash> blockHashes = Lists.newArrayListWithCapacity(count);
         try {
-            Address coinbaseRewardAddress = this.coinbaseRewardAddressSupplier.get();
+            Address coinbaseRewardAddress = addressSupplier.get();
 
             log.debug("Trying to mine {} block(s) with coinbase reward for address {}", count, coinbaseRewardAddress);
 
