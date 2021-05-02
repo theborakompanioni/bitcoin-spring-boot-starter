@@ -15,8 +15,10 @@ import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfigu
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 public class LndContainerAutoConfiguration {
 
     // currently only the image from "lnzap" is supported
-    private static final String DOCKER_IMAGE_NAME = "lnzap/lnd:0.11.1-beta";
+    private static final String DOCKER_IMAGE_NAME = "lnzap/lnd:0.12.1-beta";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -64,9 +66,11 @@ public class LndContainerAutoConfiguration {
                 .build();
 
         // only wait for rpc ports - zeromq ports wont work (we can live with that for now)
-        CustomHostPortWaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
+        WaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(hardcodedStandardPorts)
-                .build();
+                .build()
+                // lnd sometimes takes more than 120 seconds to start..
+                .withStartupTimeout(Duration.ofSeconds(180));
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                 Integer.toHexString(System.identityHashCode(this)))
