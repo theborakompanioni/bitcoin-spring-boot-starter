@@ -20,7 +20,14 @@ public class BalanceResponse {
     @JsonProperty("unconfirmed")
     private String unconfirmed;
 
+    @JsonProperty("unmatured")
+    private String unmatured;
+
     public Optional<String> getUnconfirmed() {
         return Optional.ofNullable(unconfirmed);
+    }
+
+    public Optional<String> getUnmatured() {
+        return Optional.ofNullable(unmatured);
     }
 }

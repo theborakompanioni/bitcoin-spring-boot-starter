@@ -10,6 +10,7 @@ public class SimpleBalance implements Balance {
     private static SimpleBalance ZERO = SimpleBalance.builder()
             .confirmed(SimpleTxoValue.zero())
             .unconfirmed(SimpleTxoValue.zero())
+            .unmatured(SimpleTxoValue.zero())
             .build();
 
     public static SimpleBalance zero() {
@@ -21,6 +22,9 @@ public class SimpleBalance implements Balance {
 
     @NonNull
     TxoValue unconfirmed;
+
+    @NonNull
+    TxoValue unmatured;
 
     @Override
     public TxoValue getTotal() {

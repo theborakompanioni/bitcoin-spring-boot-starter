@@ -5,5 +5,7 @@ public interface Balance {
 
     TxoValue getUnconfirmed();
 
+    TxoValue getUnmatured();
+
     TxoValue getTotal();
 }

@@ -151,7 +151,10 @@ public class ElectrumClientImpl implements ElectrumClient {
                 .confirmed(BtcTxoValues.fromBtcString(balance.getConfirmed()))
                 .unconfirmed(balance.getUnconfirmed()
                         .map(BtcTxoValues::fromBtcString)
-                        .orElse(SimpleTxoValue.zero()))
+                        .orElseGet(SimpleTxoValue::zero))
+                .unmatured(balance.getUnmatured()
+                        .map(BtcTxoValues::fromBtcString)
+                        .orElseGet(SimpleTxoValue::zero))
                 .build();
     }
 
