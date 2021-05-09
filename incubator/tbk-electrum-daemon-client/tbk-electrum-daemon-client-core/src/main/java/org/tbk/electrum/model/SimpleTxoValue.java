@@ -19,8 +19,11 @@ public class SimpleTxoValue implements TxoValue {
     }
 
     public static TxoValue of(long value) {
-        if (value == 0L) {
+        if (value == ZERO.getValue()) {
             return ZERO;
+        }
+        if (value == ONE.getValue()) {
+            return ONE;
         }
         return new SimpleTxoValue(value);
     }

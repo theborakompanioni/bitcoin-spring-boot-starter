@@ -6,8 +6,10 @@ description = 'bitcoin regtest autoconfigure package'
 
 dependencies {
     compileOnly project(':bitcoin-regtest:bitcoin-regtest-core')
+    compileOnly project(':bitcoin-regtest:bitcoin-regtest-electrum')
 
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-autoconfigure')
+    implementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
@@ -15,5 +17,6 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+
     integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
 }

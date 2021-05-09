@@ -8,4 +8,6 @@ public interface Balance {
     TxoValue getUnmatured();
 
     TxoValue getTotal();
+
+    TxoValue getSpendable();
 }

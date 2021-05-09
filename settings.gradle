@@ -7,8 +7,10 @@ include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter'
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-example-application'
 
 include 'bitcoin-regtest:bitcoin-regtest-core'
+include 'bitcoin-regtest:bitcoin-regtest-electrum'
 include 'bitcoin-regtest:bitcoin-regtest-autoconfigure'
 include 'bitcoin-regtest:bitcoin-regtest-starter'
+include 'bitcoin-regtest:bitcoin-regtest-example-application'
 
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-core'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj'

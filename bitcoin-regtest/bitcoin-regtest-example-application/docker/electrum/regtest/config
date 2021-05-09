@@ -1,0 +1,10 @@
+{
+    "config_version": 3,
+    "log_to_file": true,
+    "oneserver": true,
+    "rpchost": "0.0.0.0",
+    "rpcpassword": "rpc-pwd",
+    "rpcport": 7000,
+    "rpcuser": "rpc-user",
+    "server": "127.0.0.1:50002:s"
+}

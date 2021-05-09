@@ -1,0 +1,89 @@
+version: "3"
+
+# Currently config "network_mode='host'" is still needed.
+# Otherwise electrumx cannot connect to bitcoind
+# (which should theoretically work, but does not on fedora 33 with docker 19.03.13).
+# This is just an example application so it might not ever be a problem.
+
+services:
+  bitcoind_regtest:
+    container_name: bitcoind_regtest
+    image: ruimarinho/bitcoin-core:0.21.1-alpine
+    restart: always
+    network_mode: "host"
+    command:
+      -regtest=1
+      -server=1
+      -whitelist=0.0.0.0/0
+      -txindex=1
+      -debug=mempool
+      -dns=0
+      -dnsseed=0
+      -networkactive=0
+      -uacomment=tbkdevbitcoindregtest
+      -debug=mempool
+      -printpriority=1
+      -logtimemicros=1
+      -rpcuser=regtest-rpc-user
+      -rpcpassword=regtest-rpc-pass
+      -rpcbind=0.0.0.0
+      -rpcallowip=0.0.0.0/0
+      -zmqpubrawblock=tcp://0.0.0.0:28332
+      -zmqpubrawtx=tcp://0.0.0.0:28333
+      -zmqpubhashblock=tcp://0.0.0.0:28334
+      -zmqpubhashtx=tcp://0.0.0.0:28335
+    expose:
+      - "18443"
+      - "28332"
+      - "28333"
+      - "28334"
+      - "28335"
+    ports:
+      - "18443:18443"
+      - "28332:28332"
+      - "28333:28333"
+      - "28334:28334"
+      - "28335:28335"
+
+  electrumx_regtest:
+    container_name: electrumx_regtest
+    image: lukechilds/electrumx:v1.15.0
+    restart: always
+    network_mode: "host"
+    depends_on:
+      - bitcoind_regtest
+    expose:
+      - "50001"
+      - "50002"
+    ports:
+      - "50001:50001"
+      - "50002:50002"
+    environment:
+      DAEMON_URL: http://regtest-rpc-user:regtest-rpc-pass@localhost:18443
+      COIN: BitcoinSegwit
+      NET: regtest
+      LOG_LEVEL: debug
+      DB_ENGINE: leveldb
+      MAX_SEND: 10000000 # max RPC message size: increase this to support addresses with large histories
+      COST_SOFT_LIMIT: 10000 # default=1000
+      COST_HARD_LIMIT: 100000 # default=10000
+      INITIAL_CONCURRENT: 100 # default=10
+
+  electrumd_regtest:
+    container_name: electrumd_regtest
+    image: osminogin/electrum-daemon:3.3.8
+    network_mode: "host"
+    restart: always
+    depends_on:
+      - electrumx_regtest
+    volumes:
+      - ./docker/electrum/regtest/wallets/:/home/electrum/.electrum/regtest/wallets/:z
+      - ./docker/electrum/regtest/config:/home/electrum/.electrum/regtest/config:z
+    environment:
+      - ELECTRUM_USER=rpc-user
+      - ELECTRUM_PASSWORD=rpc-pwd
+      - ELECTRUM_NETWORK=regtest
+    expose:
+      - "7000"
+    ports:
+      - "7000:7000"

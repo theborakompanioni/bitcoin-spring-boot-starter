@@ -1,0 +1,10 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'bitcoin regtest example application package'
+
+dependencies {
+    implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

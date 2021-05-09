@@ -1,0 +1,66 @@
+
+logging.level.org.tbk.bitcoin.regtest: DEBUG
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc,zmq'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-spring-bitcoin-regtest-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: myrpcuser
+  rpcpassword: correcthorsebatterystaple
+
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true
+  rpchost: localhost
+  rpcport: 18443
+  rpcuser: myrpcuser
+  rpcpass: correcthorsebatterystaple
+  environment:
+    NET: regtest
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
+
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: true
+  default-wallet: electrum/wallets/regtest/default_wallet
+  environment:
+    ELECTRUM_NETWORK: regtest
+    ELECTRUM_USER: electrum
+    ELECTRUM_PASSWORD: correct_horse_battery_staple_20210508
+
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 7000
+  rpcuser: electrum
+  rpcpassword: correct_horse_battery_staple_20210508
