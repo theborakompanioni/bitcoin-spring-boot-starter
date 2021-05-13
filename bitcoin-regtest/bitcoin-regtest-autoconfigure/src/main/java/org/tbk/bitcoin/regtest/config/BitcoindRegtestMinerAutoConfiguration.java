@@ -18,7 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.regtest.*;
+import org.tbk.bitcoin.regtest.mining.*;
 
 import java.time.Duration;
 import java.util.List;
@@ -30,20 +30,20 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(BitcoindRegtestMiner.class)
-@ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.miner.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoinRegtestAutoConfiguration.class)
 public class BitcoindRegtestMinerAutoConfiguration {
 
-    private final BitcoindRegtestMinerProperties properties;
+    private final BitcoindRegtestMiningProperties properties;
 
     public BitcoindRegtestMinerAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
-        this.properties = requireNonNull(properties.getMiner());
+        this.properties = requireNonNull(properties.getMining());
     }
 
     @Bean
     @ConditionalOnBean({BitcoinClient.class})
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.miner.coinbase-reward-address")
+    @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.coinbase-reward-address")
     public CoinbaseRewardAddressSupplier staticCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
         return this.properties.getCoinbaseRewardAddress()
                 .map(it -> Address.fromString(bitcoinJsonRpcClient.getNetParams(), it))
@@ -86,7 +86,7 @@ public class BitcoindRegtestMinerAutoConfiguration {
             MinMaxDurationScheduler.class
     })
     @ConditionalOnMissingBean(ScheduledBitcoindRegtestMiner.class)
-    @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.miner.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
     public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoindRegtestMiner bitcoindRegtestMiner,
                                                                        @Qualifier("bitcoindRegtestMinerScheduler") Scheduler scheduler) {
         ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner = new ScheduledBitcoindRegtestMiner(bitcoindRegtestMiner, scheduler);

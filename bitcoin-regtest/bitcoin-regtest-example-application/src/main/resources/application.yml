@@ -22,7 +22,7 @@ logging.level.org.tbk.bitcoin.regtest: DEBUG
 org.tbk.bitcoin.regtest:
   enabled: true
   # mine blocks every 1 - 10 seconds
-  miner:
+  mining:
     enabled: true
     coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
     mine-initial-amount-of-blocks: 99

@@ -1,10 +1,10 @@
-package org.tbk.bitcoin.regtest;
+package org.tbk.bitcoin.regtest.mining;
 
 import org.bitcoinj.core.Address;
 
 import static java.util.Objects.requireNonNull;
 
-public class StaticCoinbaseRewardAddressSupplier implements CoinbaseRewardAddressSupplier {
+public final class StaticCoinbaseRewardAddressSupplier implements CoinbaseRewardAddressSupplier {
 
     private final Address address;
 

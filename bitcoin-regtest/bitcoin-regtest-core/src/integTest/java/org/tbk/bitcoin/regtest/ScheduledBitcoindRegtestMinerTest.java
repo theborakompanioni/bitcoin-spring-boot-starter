@@ -14,6 +14,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMiner;
+import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMinerImpl;
+import org.tbk.bitcoin.regtest.mining.ScheduledBitcoindRegtestMiner;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;

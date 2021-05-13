@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.regtest;
+package org.tbk.bitcoin.regtest.mining;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import org.bitcoinj.core.Address;
@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import static java.util.Objects.requireNonNull;
 
-public class BitcoinClientCoinbaseRewardAddressSupplier implements CoinbaseRewardAddressSupplier {
+public final class BitcoinClientCoinbaseRewardAddressSupplier implements CoinbaseRewardAddressSupplier {
 
     private final BitcoinClient client;
 

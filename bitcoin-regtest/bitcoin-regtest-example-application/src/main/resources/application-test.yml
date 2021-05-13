@@ -6,6 +6,6 @@ spring.http.log-request-details: true
 
 org.tbk.bitcoin.regtest:
   enabled: true
-  miner:
+  mining:
     enabled: false # disable miner as no services will run in test profile
 

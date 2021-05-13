@@ -69,7 +69,7 @@ org.tbk.spring.testcontainer.bitcoind:
 org.tbk.bitcoin.regtest:
   enabled: true
   # mine blocks every 1 - 10 seconds
-  miner:
+  mining:
     enabled: true
     next-block-duration:
       min-duration-in-millis: 1000

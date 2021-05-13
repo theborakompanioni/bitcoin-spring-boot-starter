@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.regtest;
+package org.tbk.bitcoin.regtest.mining;
 
 import org.bitcoinj.core.Sha256Hash;
 

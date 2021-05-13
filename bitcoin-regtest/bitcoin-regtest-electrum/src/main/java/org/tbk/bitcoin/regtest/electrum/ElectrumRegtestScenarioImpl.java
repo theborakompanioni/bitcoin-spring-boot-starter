@@ -5,7 +5,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.RegTestParams;
 import org.jetbrains.annotations.NotNull;
-import org.tbk.bitcoin.regtest.BitcoindRegtestMiner;
+import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMiner;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.History;
@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class ElectrumRegtestScenarioImpl {
+public class ElectrumRegtestScenarioImpl implements ElectrumRegtestScenario {
 
     private static final Coin defaultTxFee = Coin.valueOf(200_000);
 
@@ -112,7 +112,7 @@ public class ElectrumRegtestScenarioImpl {
      * solution: poll every 10ms for 10s as a short workaround
      */
     private Flux<History.Transaction> waitForTransactionIsProcessedByElectrum(Duration checkInterval, String txid, int confirmations) {
-        return  Flux.interval(checkInterval)
+        return Flux.interval(checkInterval)
                 .doOnNext(it -> log.trace("Waiting for tx {} to be processed by electrum.. ({} attempt)", txid, it))
                 .flatMapIterable(it -> this.client.getHistory().getTransactions())
                 .filter(it -> txid.equals(it.getTxHash()))

@@ -1,7 +1,6 @@
 package org.tbk.bitcoin.regtest.config;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -9,14 +8,14 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Data
-public class BitcoindRegtestMinerProperties implements Validator {
+public class BitcoindRegtestMiningProperties implements Validator {
     private static final NextBlockDurationProperties DEFAULT_NEXT_BLOCK_DURATION = new NextBlockDurationProperties() {{
         setMinDurationInMillis(1_000L);
         setMaxDurationInMillis(10_000L);
     }};
 
     /**
-     * Whether the miner should be enabled
+     * Whether mining should be enabled
      */
     private boolean enabled;
 
@@ -43,12 +42,12 @@ public class BitcoindRegtestMinerProperties implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz == BitcoindRegtestMinerProperties.class;
+        return clazz == BitcoindRegtestMiningProperties.class;
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        BitcoindRegtestMinerProperties properties = (BitcoindRegtestMinerProperties) target;
+        BitcoindRegtestMiningProperties properties = (BitcoindRegtestMiningProperties) target;
 
         if (mineInitialAmountOfBlocks < 0) {
             String errorMessage = String.format("'mineInitialAmountOfBlocks' must not be less than zero - invalid value: %d", properties.getMineInitialAmountOfBlocks());

@@ -19,7 +19,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.bitcoin.regtest.BitcoindRegtestMiner;
+import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMiner;
 import org.tbk.bitcoin.tool.mqtt.config.BitcoinMqttServerAutoConfigProperties;
 import reactor.core.publisher.Flux;
 

@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.regtest;
+package org.tbk.bitcoin.regtest.mining;
 
 import com.google.common.collect.Lists;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
@@ -12,7 +12,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class BitcoindRegtestMinerImpl implements BitcoindRegtestMiner {
+public final class BitcoindRegtestMinerImpl implements BitcoindRegtestMiner {
 
     private final BitcoinClient client;
     private final CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
