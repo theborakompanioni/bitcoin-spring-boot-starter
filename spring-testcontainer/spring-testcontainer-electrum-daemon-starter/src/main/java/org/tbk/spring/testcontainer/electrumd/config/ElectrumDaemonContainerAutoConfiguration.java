@@ -2,6 +2,7 @@ package org.tbk.spring.testcontainer.electrumd.config;
 
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +21,7 @@ import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.electrumx.config.ElectrumxContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
 import org.tbk.spring.testcontainer.eps.config.ElectrumPersonalServerContainerAutoConfiguration;
+import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
@@ -204,13 +206,14 @@ public class ElectrumDaemonContainerAutoConfiguration {
 
         daemonStart(electrumDaemonContainer);
 
-        loadWalletIfNecessary(electrumDaemonContainer, Duration.ofMillis(3_000));
+        // let the daemon some time to startup; 5000ms seems to be enough
+        loadWalletIfNecessary(electrumDaemonContainer, Duration.ofMillis(5_000));
     }
 
     /**
      * Currently a ugly hack: osminogins docker image is currently not able
      * to specify the arguments during startup. A workaround is to start the container as it is
-     * and then setting all necessary config options. When the daemon restarts it will pick up
+     * and then apply all necessary config options. When the daemon restarts it will pick up
      * the proper settings.
      * TODO: try to make the docker setup more customizable e.g. like lnzap/docker-lnd does.
      */
@@ -240,10 +243,10 @@ public class ElectrumDaemonContainerAutoConfiguration {
         daemonExec(electrumDaemonContainer, "stop");
     }
 
-    private void loadWalletIfNecessary(ElectrumDaemonContainer<?> electrumDaemonContainer, Duration sleepDuration) {
+    private void loadWalletIfNecessary(ElectrumDaemonContainer<?> electrumDaemonContainer, Duration timeout) {
         if (this.properties.getDefaultWallet().isPresent()) {
             try {
-                Thread.sleep(sleepDuration.toMillis()); // let the daemon some time to startup; 3000ms seems to be enough
+                Thread.sleep(timeout.toMillis());
 
                 daemonExec(electrumDaemonContainer, "load_wallet");
             } catch (InterruptedException e) {
@@ -252,14 +255,14 @@ public class ElectrumDaemonContainerAutoConfiguration {
         }
     }
 
-    private void daemonExec(ElectrumDaemonContainer<?> electrumDaemonContainer, String command) {
+    private Container.ExecResult daemonExec(ElectrumDaemonContainer<?> electrumDaemonContainer, String command) {
         try {
             Optional<String> networkFlag = networkFlag();
 
             if (networkFlag.isEmpty()) {
-                electrumDaemonContainer.execInContainer("electrum", "daemon", command);
+                return electrumDaemonContainer.execInContainer("electrum", "daemon", command);
             } else {
-                electrumDaemonContainer.execInContainer("electrum", networkFlag.get(), "daemon", command);
+                return electrumDaemonContainer.execInContainer("electrum", networkFlag.get(), "daemon", command);
             }
         } catch (InterruptedException | IOException e) {
             String errorMessage = String.format("Error while executing `electrum daemon %s`", command);

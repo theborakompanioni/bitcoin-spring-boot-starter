@@ -35,7 +35,7 @@ public class ElectrumPersonalServerContainerApplicationTest {
     private ElectrumPersonalServerContainer<?> container;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 

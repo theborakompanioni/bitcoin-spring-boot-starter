@@ -2,10 +2,12 @@ package org.tbk.spring.testcontainer.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import lombok.Data;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
@@ -19,6 +21,8 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     private final List<String> reservedCommands;
 
     private final Map<String, String> defaultEnvironment;
+
+    private String image;
 
     private List<String> commands;
 
@@ -42,6 +46,11 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     @Override
     public final boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public final Optional<String> getImage() {
+        return Optional.ofNullable(image);
     }
 
     @Override
@@ -84,6 +93,10 @@ public abstract class AbstractContainerProperties implements ContainerProperties
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public void setCommands(List<String> commands) {

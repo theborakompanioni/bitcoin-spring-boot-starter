@@ -7,6 +7,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.params.RegTestParams;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -41,27 +43,32 @@ public class BitcoinContainerWithJsonRpcClientTest {
     }
 
     @Autowired
-    private BitcoinClient bitcoinJsonRpcClient;
+    private BitcoinClient bitcoinClient;
+
+    @BeforeEach
+    void setUp() throws IOException {
+        BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+    }
 
     @Test
     public void testGetBlockChainInfo() throws IOException {
-        BlockChainInfo blockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
+        BlockChainInfo blockChainInfo = bitcoinClient.getBlockChainInfo();
         assertThat(blockChainInfo.getChain(), is("regtest"));
     }
 
     @Test
     public void testGenerateToAddress() throws IOException {
-        BlockChainInfo blockChainInfoBefore = bitcoinJsonRpcClient.getBlockChainInfo();
+        BlockChainInfo blockChainInfoBefore = bitcoinClient.getBlockChainInfo();
         int blocksAmountBefore = blockChainInfoBefore.getBlocks();
 
-        Address newAddress = bitcoinJsonRpcClient.getNewAddress();
+        Address newAddress = bitcoinClient.getNewAddress();
 
-        List<Sha256Hash> initialMinedBlockHashes = bitcoinJsonRpcClient.generateToAddress(1, newAddress);
+        List<Sha256Hash> initialMinedBlockHashes = bitcoinClient.generateToAddress(1, newAddress);
         assertThat(initialMinedBlockHashes, hasSize(1));
 
         Sha256Hash initialMinedBlockHash = initialMinedBlockHashes.get(0);
 
-        BlockChainInfo blockChainInfoAfter = bitcoinJsonRpcClient.getBlockChainInfo();
+        BlockChainInfo blockChainInfoAfter = bitcoinClient.getBlockChainInfo();
 
         int blocksAmountAfter = blockChainInfoAfter.getBlocks();
         assertThat(blocksAmountAfter, is(blocksAmountBefore + 1));
@@ -71,20 +78,20 @@ public class BitcoinContainerWithJsonRpcClientTest {
 
     @Test
     public void testGenerateToAddressExpectingCoins() throws IOException {
-        Address newAddress = bitcoinJsonRpcClient.getNewAddress();
+        Address newAddress = bitcoinClient.getNewAddress();
         // an address not controlled by the bitcoin core testcontainer (taken from second_wallet in electrum module)
         Address regtestEaterAddress = Address.fromString(RegTestParams.get(), "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j");
 
-        Coin balanceBefore = bitcoinJsonRpcClient.getBalance();
+        Coin balanceBefore = bitcoinClient.getBalance();
         assertThat(balanceBefore, is(Coin.ZERO));
 
-        List<Sha256Hash> initialMinedBlockHashes = bitcoinJsonRpcClient.generateToAddress(1, newAddress);
+        List<Sha256Hash> initialMinedBlockHashes = bitcoinClient.generateToAddress(1, newAddress);
         assertThat("an additional block has been mined", initialMinedBlockHashes, hasSize(1));
 
         // mine a 100 blocks in order for the coinbase transaction to be spendable
         long counter = 0L;
         while (counter < 100L) {
-            List<Sha256Hash> newlyMinedBlocks = bitcoinJsonRpcClient.generateToAddress(1, regtestEaterAddress);
+            List<Sha256Hash> newlyMinedBlocks = bitcoinClient.generateToAddress(1, regtestEaterAddress);
             counter += newlyMinedBlocks.size();
         }
 
@@ -94,7 +101,7 @@ public class BitcoinContainerWithJsonRpcClientTest {
         Coin balanceAfter = Flux.interval(Duration.ofMillis(10))
                 .map(foo -> {
                     try {
-                        return bitcoinJsonRpcClient.getBalance();
+                        return bitcoinClient.getBalance();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

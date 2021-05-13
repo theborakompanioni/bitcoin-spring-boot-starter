@@ -33,6 +33,10 @@ public interface ContainerProperties {
      */
     boolean isEnabled();
 
+    default Optional<String> getImage() {
+        return Optional.empty();
+    }
+
     default List<String> getCommands() {
         return Collections.emptyList();
     }

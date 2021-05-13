@@ -6,8 +6,6 @@ dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 
-    api project(':spring-testcontainer:spring-testcontainer-bitcoind-helper')
-
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation 'org.springframework.boot:spring-boot-starter'
 
@@ -21,5 +19,6 @@ dependencies {
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
     testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
+    testImplementation project(':bitcoin-regtest:bitcoin-regtest-core')
     testImplementation "io.projectreactor:reactor-core"
 }

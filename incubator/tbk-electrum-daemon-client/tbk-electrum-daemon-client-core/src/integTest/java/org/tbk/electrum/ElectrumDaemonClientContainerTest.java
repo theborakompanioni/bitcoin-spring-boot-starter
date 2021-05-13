@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class ElectrumDaemonClientContainerTest {
+class ElectrumDaemonClientContainerTest {
 
     private static final String firstAddress = "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz";
 
@@ -50,27 +50,27 @@ public class ElectrumDaemonClientContainerTest {
     private ElectrumClient sut;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(sut, is(notNullValue()));
         assertThat(electrumDaemonContainer, is(notNullValue()));
-        assertThat(electrumDaemonContainer.isRunning(), is(true));
+        assertThat("electrum daemon container is running", electrumDaemonContainer.isRunning(), is(true));
 
         assertThat(electrumxContainer, is(notNullValue()));
-        assertThat(electrumxContainer.isRunning(), is(true));
+        assertThat("electrumx container is running", electrumxContainer.isRunning(), is(true));
 
         Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumDaemonContainer).blockFirst();
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }
 
     @Test
-    public void testDaemonVersion() {
+    void testDaemonVersion() {
         Version version = sut.daemonVersion();
 
         assertThat(version.getVersion(), is(not(emptyOrNullString())));
     }
 
     @Test
-    public void testDaemonStatus() {
+    void testDaemonStatus() {
         DaemonStatusResponse daemonStatusResponse = sut.daemonStatus();
 
         assertThat(daemonStatusResponse, is(notNullValue()));
@@ -85,30 +85,30 @@ public class ElectrumDaemonClientContainerTest {
         Map.Entry<String, Boolean> walletSyncState = wallets.entrySet().stream()
                 .findFirst().orElseThrow();
 
-        assertThat(walletSyncState.getKey(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
-        assertThat(walletSyncState.getValue(), is(true));
+        assertThat("wallet is known", walletSyncState.getKey(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
+        assertThat("wallet is loaded", walletSyncState.getValue(), is(true));
     }
 
     @Test
-    public void testWalletSynchronized() {
+    void testWalletSynchronized() {
         Boolean walletSynchronized = sut.isWalletSynchronized();
 
-        assertThat(walletSynchronized, is(true));
+        assertThat("wallet is synchronized", walletSynchronized, is(true));
     }
 
     @Test
-    public void testOwnerOfAddress() {
+    void testOwnerOfAddress() {
         Boolean ownerOfAddress = sut.isOwnerOfAddress(firstAddress);
-        assertThat(ownerOfAddress, is(true));
+        assertThat("address is controlled by wallet", ownerOfAddress, is(true));
 
         // an address not controlled by wallet (taken from "second_wallet")
         String addressNotControlledByWallet = "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j";
         Boolean ownerOfAddress2 = sut.isOwnerOfAddress(addressNotControlledByWallet);
-        assertThat(ownerOfAddress2, is(false));
+        assertThat("address is not controlled by wallet", ownerOfAddress2, is(false));
     }
 
     @Test
-    public void testGetPublicKeys() {
+    void testGetPublicKeys() {
         List<String> publicKeys = this.sut.getPublicKeys(firstAddress);
         String firstPublicKey = publicKeys.stream()
                 .findFirst().orElseThrow(IllegalStateException::new);
@@ -117,7 +117,7 @@ public class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    public void testListAddresses() {
+    void testListAddresses() {
         List<String> addresses = sut.listAddresses();
 
         assertThat(addresses, hasSize(greaterThan(0)));
@@ -125,17 +125,19 @@ public class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    public void testGetBalance() {
+    void testGetBalance() {
         Balance balance = sut.getBalance();
 
         assertThat(balance, is(notNullValue()));
         assertThat(balance.getTotal(), is(notNullValue()));
         assertThat(balance.getUnconfirmed(), is(notNullValue()));
         assertThat(balance.getConfirmed(), is(notNullValue()));
+        assertThat(balance.getSpendable(), is(notNullValue()));
+        assertThat(balance.getUnmatured(), is(notNullValue()));
     }
 
     @Test
-    public void testSignAndVerifyMessage() {
+    void testSignAndVerifyMessage() {
         String address = firstAddress;
         String randomMessage = RandomStringUtils.randomAlphanumeric(127);
 
@@ -149,7 +151,7 @@ public class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    public void testEncryptAndDecryptMessage() {
+    void testEncryptAndDecryptMessage() {
         List<String> publicKeys = this.sut.getPublicKeys(firstAddress);
         String firstPublicKey = publicKeys.stream()
                 .findFirst().orElseThrow(IllegalStateException::new);

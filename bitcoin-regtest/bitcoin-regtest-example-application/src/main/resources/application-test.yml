@@ -1,0 +1,11 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo (test)
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo (test)'
+spring.http.log-request-details: true
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  miner:
+    enabled: false # disable miner as no services will run in test profile
+

@@ -99,7 +99,7 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
         Socket incomingSocket = socketFlux.blockFirst(Duration.ofSeconds(10));
         log.info("Got an incoming connection to socket {}: {}", hiddenServiceSocket, incomingSocket);
 
-        boolean await = countDownLatch.await(1, TimeUnit.MINUTES);
+        boolean await = countDownLatch.await(90, TimeUnit.SECONDS);
         assertThat("socket has been accepted", await, is(true));
 
         try {

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.testcontainers.shaded.org.apache.commons.lang.math.RandomUtils;
 import reactor.core.publisher.Flux;
@@ -49,8 +51,13 @@ public class BitcoinContainerWithZeroMqClientTest {
     @Autowired
     private MessagePublishService<Block> bitcoinBlockPublishService;
 
+    @BeforeEach
+    void setUp() throws IOException {
+        BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+    }
+
     @Test
-    public void testPubzmqrawblock() throws InterruptedException, ExecutionException, TimeoutException {
+    void testPubzmqrawblock() throws InterruptedException, ExecutionException, TimeoutException {
         Duration timeout = Duration.ofSeconds(10);
         int amountOfBlockToGenerate = Math.max(1, RandomUtils.nextInt(10));
         ExecutorService executorService = Executors.newFixedThreadPool(2);
