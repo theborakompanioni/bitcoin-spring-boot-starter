@@ -6,7 +6,7 @@ import lombok.NonNull;
 import java.net.URI;
 
 @Getter
-public class ElectrumDeamonJsonrpcConfigBuilder {
+public class ElectrumDaemonJsonrpcConfigBuilder {
     String host;
 
     Integer port;
@@ -15,28 +15,28 @@ public class ElectrumDeamonJsonrpcConfigBuilder {
 
     String password;
 
-    public ElectrumDeamonJsonrpcConfigBuilder host(@NonNull String host) {
+    public ElectrumDaemonJsonrpcConfigBuilder host(@NonNull String host) {
         this.host = host;
         return this;
     }
 
-    public ElectrumDeamonJsonrpcConfigBuilder port(int port) {
+    public ElectrumDaemonJsonrpcConfigBuilder port(int port) {
         this.port = port;
         return this;
     }
 
-    public ElectrumDeamonJsonrpcConfigBuilder username(String username) {
+    public ElectrumDaemonJsonrpcConfigBuilder username(String username) {
         this.username = username;
         return this;
     }
 
-    public ElectrumDeamonJsonrpcConfigBuilder password(String password) {
+    public ElectrumDaemonJsonrpcConfigBuilder password(String password) {
         this.password = password;
         return this;
     }
 
-    public ElectrumDeamonJsonrpcConfig build() {
+    public ElectrumDaemonJsonrpcConfig build() {
         URI uri = URI.create(this.host + ":" + this.port);
-        return new ElectrumDeamonJsonrpcConfig(uri, username, password);
+        return new ElectrumDaemonJsonrpcConfig(uri, username, password);
     }
 }

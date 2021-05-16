@@ -32,11 +32,11 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnClass(BitcoindRegtestMiner.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoinRegtestAutoConfiguration.class)
-public class BitcoindRegtestMinerAutoConfiguration {
+public class BitcoindRegtestMiningAutoConfiguration {
 
     private final BitcoindRegtestMiningProperties properties;
 
-    public BitcoindRegtestMinerAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
+    public BitcoindRegtestMiningAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
         this.properties = requireNonNull(properties.getMining());
     }
 

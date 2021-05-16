@@ -13,25 +13,27 @@ import org.tbk.electrum.ElectrumClientFactoryImpl;
 
 import java.net.URI;
 
+import static java.util.Objects.requireNonNull;
+
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumDaemonJsonrpcClientProperties.class)
 @ConditionalOnClass(ElectrumClientFactory.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.electrum-daemon.jsonrpc.enabled", havingValue = "true")
 public class ElectrumDaemonJsonrpcClientAutoConfiguration {
 
-    private ElectrumDaemonJsonrpcClientProperties properties;
+    private final ElectrumDaemonJsonrpcClientProperties properties;
 
     public ElectrumDaemonJsonrpcClientAutoConfiguration(ElectrumDaemonJsonrpcClientProperties properties) {
-        this.properties = properties;
+        this.properties = requireNonNull(properties);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ElectrumClient electrumClient(ElectrumDeamonJsonrpcConfig electrumDeamonJsonrpcConfig,
+    public ElectrumClient electrumClient(ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig,
                                          ElectrumClientFactory factory) {
-        URI uri = electrumDeamonJsonrpcConfig.getUri();
+        URI uri = electrumDaemonJsonrpcConfig.getUri();
 
-        return factory.create(uri, electrumDeamonJsonrpcConfig.getUsername(), electrumDeamonJsonrpcConfig.getPassword());
+        return factory.create(uri, electrumDaemonJsonrpcConfig.getUsername(), electrumDaemonJsonrpcConfig.getPassword());
     }
 
     @Bean
@@ -42,8 +44,8 @@ public class ElectrumDaemonJsonrpcClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ElectrumDeamonJsonrpcConfig electrumDeamonJsonrpcConfig(ObjectProvider<ElectrumDeamonJsonrpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
-        ElectrumDeamonJsonrpcConfigBuilder rpcConfigBuilder = new ElectrumDeamonJsonrpcConfigBuilder()
+    public ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig(ObjectProvider<ElectrumDaemonJsonrpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
+        ElectrumDaemonJsonrpcConfigBuilder rpcConfigBuilder = new ElectrumDaemonJsonrpcConfigBuilder()
                 .host(properties.getRpchost())
                 .port(properties.getRpcport())
                 .username(properties.getRpcuser())

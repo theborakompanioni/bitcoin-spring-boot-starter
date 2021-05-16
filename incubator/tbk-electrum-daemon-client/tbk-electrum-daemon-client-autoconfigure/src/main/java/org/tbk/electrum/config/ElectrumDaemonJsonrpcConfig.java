@@ -6,7 +6,7 @@ import lombok.Value;
 import java.net.URI;
 
 @Value
-public class ElectrumDeamonJsonrpcConfig {
+public class ElectrumDaemonJsonrpcConfig {
     @NonNull
     URI uri;
 

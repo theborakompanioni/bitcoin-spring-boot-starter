@@ -1,0 +1,33 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo
+app.description: A spring boot bitcoin demo application (test)
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
+
+my.application:
+  # an address from "second_wallet" with key:
+  # castle else craft crush glass leisure client click embrace original bar senior
+  destinationAddress: bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j
+  initial-delay: 0
+  delay: 1
+  time-unit: SECONDS
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  # mine blocks every 1 - 10 seconds
+  mining:
+    enabled: true
+    # an address from "default_wallet" with key:
+    # truth fever mom transfer steak immense lake jacket glide bring fancy electric
+    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+    mine-initial-amount-of-blocks: 101
+    next-block-duration:
+      min-duration-in-millis: 1000
+      max-duration-in-millis: 2000
+
+# disable electrum daemon container autoconfig - we will create two electrum daemon container programmatically
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: false
+
+# disable electrum client autoconfig - we will create two electrum clients programmatically
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: false

@@ -21,8 +21,8 @@ import static java.util.Objects.requireNonNull;
         ignoreUnknownFields = false
 )
 public class ElectrumDaemonContainerProperties extends AbstractContainerProperties implements Validator {
-    private static final String ELECTRUM_HOME_ENV_NAME = "ELECTRUM_HOME";
-    private static final String ELECTRUM_NETWORK_ENV_NAME = "ELECTRUM_NETWORK";
+    static final String ELECTRUM_HOME_ENV_NAME = "ELECTRUM_HOME";
+    static final String ELECTRUM_NETWORK_ENV_NAME = "ELECTRUM_NETWORK";
 
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
             .put("ELECTRUM_USER", "electrum")
