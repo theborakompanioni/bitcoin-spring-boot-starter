@@ -5,10 +5,12 @@ plugins {
 description = 'bitcoin regtest core package'
 
 dependencies {
+    api "io.projectreactor:reactor-core"
+
     api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
 
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
 
-    testImplementation "io.projectreactor:reactor-core"
 }

@@ -1,11 +1,10 @@
 package org.tbk.electrum.gateway.example;
 
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
-import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +13,10 @@ import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
-import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
-
-import java.io.IOException;
-import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
+import static org.tbk.bitcoin.regtest.common.BitcoindStatusLogging.logBitcoinStatusOnNewBlock;
+import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.logElectrumStatusOnNewBlock;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -33,7 +29,7 @@ public class ElectrumGatewayExampleApplicationConfig {
         this.properties = requireNonNull(properties);
     }
 
-    @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
+    @Bean(destroyMethod = "stopAsync")
     public ElectrumWalletWatchLoop electrumWalletWatchLoop(ElectrumClient electrumClient) {
         Scheduler scheduler = Scheduler.newFixedDelaySchedule(
                 this.properties.getInitialDelay(),
@@ -48,27 +44,21 @@ public class ElectrumGatewayExampleApplicationConfig {
                 .destinationAddress(destinationAddress)
                 .build();
 
-        return new ElectrumWalletWatchLoop(electrumClient, build, scheduler);
+        ElectrumWalletWatchLoop electrumWalletWatchLoop = new ElectrumWalletWatchLoop(electrumClient, build, scheduler);
+        return (ElectrumWalletWatchLoop) electrumWalletWatchLoop.startAsync();
     }
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
-                                             MessagePublishService<Block> bitcoinBlockPublishService) {
-        return args -> {
-            bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
-
-            Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
-                try {
-                    BlockChainInfo info = bitcoinJsonRpcClient.getBlockChainInfo();
-                    log.info("[bitcoind] new best block (height: {}): {}", info.getBlocks(), info.getBestBlockHash());
-                } catch (IOException e) {
-                    log.error("", e);
-                }
-            });
-
-            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
-        };
+    public CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+                                              BitcoinClient bitcoinClient) {
+        return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
     }
 
+    @Bean
+    @Profile("!test")
+    public CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+                                               ElectrumClient electrumClient) {
+        return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient);
+    }
 }

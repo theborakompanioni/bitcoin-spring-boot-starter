@@ -5,10 +5,10 @@ plugins {
 description = 'bitcoin regtest electrum package'
 
 dependencies {
+    api "io.projectreactor:reactor-core"
+
     api project(':bitcoin-regtest:bitcoin-regtest-core')
     api project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core')
-
-    implementation "io.projectreactor:reactor-core"
 
     integTestImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')

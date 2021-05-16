@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.Coin;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.History;
 import org.tbk.electrum.model.RawTx;
@@ -65,7 +66,7 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
             return false;
         }
 
-        log.info("found end balance: {}", summary.getEndBalance().getValue());
+        log.info("found end balance: {}", Coin.valueOf(summary.getEndBalance().getValue()).toFriendlyString());
 
         RawTx unsignedTransaction = client
                 .createUnsignedTransactionSendingEntireBalance(options.getDestinationAddress());

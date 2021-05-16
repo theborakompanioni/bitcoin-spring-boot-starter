@@ -75,7 +75,7 @@ public class ElectrumGatewayExampleApplicationWebMvcConfigurer implements WebMvc
     }
 
 
-    public static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
+    private static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
 
         @Override
         public Class<BigDecimal> handledType() {
