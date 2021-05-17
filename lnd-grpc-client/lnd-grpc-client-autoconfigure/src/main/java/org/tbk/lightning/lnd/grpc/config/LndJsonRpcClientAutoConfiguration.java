@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
 public class LndJsonRpcClientAutoConfiguration {
 
-    private LndJsonRpcClientAutoConfigProperties properties;
+    private final LndJsonRpcClientAutoConfigProperties properties;
 
     public LndJsonRpcClientAutoConfiguration(LndJsonRpcClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

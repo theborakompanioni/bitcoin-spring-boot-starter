@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 @AutoConfigureAfter(BitcoinJsonRpcClientAutoConfiguration.class)
 public class BitcoinJsonRpcCacheAutoConfiguration {
 
-    private BitcoinJsonRpcCacheAutoConfigProperties properties;
+    private final BitcoinJsonRpcCacheAutoConfigProperties properties;
 
     public BitcoinJsonRpcCacheAutoConfiguration(BitcoinJsonRpcCacheAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

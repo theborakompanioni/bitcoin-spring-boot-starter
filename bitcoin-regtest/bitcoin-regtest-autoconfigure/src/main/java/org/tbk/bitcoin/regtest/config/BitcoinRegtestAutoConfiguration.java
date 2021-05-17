@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.enabled", havingValue = "true")
 public class BitcoinRegtestAutoConfiguration {
 
-    private BitcoinJsonRpcClientAutoConfigProperties properties;
+    private final BitcoinJsonRpcClientAutoConfigProperties properties;
 
     public BitcoinRegtestAutoConfiguration(BitcoinJsonRpcClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

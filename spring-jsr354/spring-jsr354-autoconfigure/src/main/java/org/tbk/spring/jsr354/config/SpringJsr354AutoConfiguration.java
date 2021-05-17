@@ -17,6 +17,8 @@ import javax.money.spi.ServiceProvider;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SpringJsr354AutoConfigProperties.class)
@@ -24,11 +26,10 @@ import java.util.ServiceLoader;
 @ConditionalOnProperty(value = "org.tbk.spring.jsr354.enabled", havingValue = "true", matchIfMissing = true)
 public class SpringJsr354AutoConfiguration {
 
-    @NonNull
-    private SpringJsr354AutoConfigProperties properties;
+    private final SpringJsr354AutoConfigProperties properties;
 
     public SpringJsr354AutoConfiguration(SpringJsr354AutoConfigProperties properties) {
-        this.properties = properties;
+        this.properties = requireNonNull(properties);
     }
 
     @Bean

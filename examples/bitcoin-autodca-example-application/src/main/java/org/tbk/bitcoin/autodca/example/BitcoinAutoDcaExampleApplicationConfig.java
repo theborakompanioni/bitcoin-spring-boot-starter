@@ -27,7 +27,7 @@ public class BitcoinAutoDcaExampleApplicationConfig {
         boolean enabled;
     }
 
-    private BitcoinAutoDcaExampleProperties properties;
+    private final BitcoinAutoDcaExampleProperties properties;
 
     public BitcoinAutoDcaExampleApplicationConfig(BitcoinAutoDcaExampleProperties properties) {
         this.properties = requireNonNull(properties);

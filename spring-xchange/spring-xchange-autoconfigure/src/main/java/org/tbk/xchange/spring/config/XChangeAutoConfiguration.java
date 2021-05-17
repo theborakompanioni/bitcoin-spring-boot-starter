@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.xchange.enabled", havingValue = "true", matchIfMissing = true)
 public class XChangeAutoConfiguration {
 
-    private XChangeAutoConfigProperties properties;
+    private final XChangeAutoConfigProperties properties;
 
     public XChangeAutoConfiguration(XChangeAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);

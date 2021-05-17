@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
 public class BitcoinJsonRpcClientAutoConfiguration {
 
-    private BitcoinJsonRpcClientAutoConfigProperties properties;
+    private final BitcoinJsonRpcClientAutoConfigProperties properties;
 
     public BitcoinJsonRpcClientAutoConfiguration(BitcoinJsonRpcClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);
