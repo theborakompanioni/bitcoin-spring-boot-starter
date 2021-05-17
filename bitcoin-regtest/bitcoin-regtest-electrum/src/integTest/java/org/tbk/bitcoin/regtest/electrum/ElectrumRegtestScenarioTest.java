@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.regtest.electrum;
 
+import com.google.common.base.Stopwatch;
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
@@ -13,9 +14,16 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMiner;
-import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMinerImpl;
+import org.tbk.bitcoin.regtest.common.AddressSupplier;
+import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
+import org.tbk.bitcoin.regtest.mining.RegtestMiner;
+import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
+import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.model.TxoValue;
+import reactor.core.publisher.Flux;
+
+import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -24,7 +32,6 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest
 @ActiveProfiles("test")
 class ElectrumRegtestScenarioTest {
-    private static final Coin defaultTxFee = Coin.valueOf(200_000);
 
     @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
@@ -37,50 +44,82 @@ class ElectrumRegtestScenarioTest {
         }
 
         @Bean
-        public BitcoindRegtestMiner bitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient) {
-            BitcoindRegtestMinerImpl bitcoindRegtestMiner = new BitcoindRegtestMinerImpl(bitcoinJsonRpcClient);
+        public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
+            RegtestMinerImpl regtestMiner = new RegtestMinerImpl(bitcoinJsonRpcClient);
 
             // electrum daemon has problems when starting with zero blocks..
             // .. lets mine one before the tests start!
-            bitcoindRegtestMiner.mineBlocks(1);
+            regtestMiner.mineBlocks(1);
 
-            return bitcoindRegtestMiner;
+            return regtestMiner;
+        }
+
+        @Bean
+        public BitcoinRegtestActions bitcoinScenarioFactory(RegtestMiner regtestMiner) {
+            return new BitcoinRegtestActions(regtestMiner);
+        }
+
+        @Bean
+        public ElectrumRegtestActions electrumScenarioFactory(ElectrumClient electrumClient) {
+            return new ElectrumRegtestActions(electrumClient);
         }
     }
 
     @Autowired
-    private ElectrumClient electrumClient;
+    private BitcoinRegtestActions bitcoinScenarioFactory;
 
     @Autowired
-    private BitcoindRegtestMiner bitcoindRegtestMiner;
+    private ElectrumRegtestActions electrumScenarioFactory;
+
+    @Autowired
+    private ElectrumClient electrumClient;
 
     @Test
-    void itShouldVerifySimpleTransactionSendingScenario() {
-        ElectrumRegtestScenarioImpl regtestScenario = new ElectrumRegtestScenarioImpl(bitcoindRegtestMiner, electrumClient);
+    void itShouldHaveFluentSyntaxToSendBalance() {
+        Stopwatch sw = Stopwatch.createStarted();
 
-        ElectrumRegtestScenarioImpl.RegtestFundingSource fundingSource = new ElectrumRegtestScenarioImpl.ElectrumRegtestFundingSource(electrumClient);
+        AddressSupplier createNewAddress = () -> {
+            String address = this.electrumClient.createNewAddress();
+            return Address.fromString(RegTestParams.get(), address);
+        };
 
-        Coin balanceBefore = fundingSource.getSpendableBalance();
-        log.info("Balance now: {}", balanceBefore);
-        assertThat("funding source balance is zero initially", balanceBefore, is(Coin.ZERO));
+        Address address1 = createNewAddress.get();
+        Address address2 = createNewAddress.get();
 
-        Coin sendAmount1 = Coin.valueOf(1337);
+        Coin balanceOnAddress2Before = toCoin(this.electrumClient.getAddressBalance(address2.toString()).getTotal());
+        assertThat(balanceOnAddress2Before, is(Coin.ZERO));
 
-        // a target address that is not controlled by the funding source
-        Address targetAddress = Address.fromString(RegTestParams.get(), "bcrt1qtnh0ytrmrt6jlpfmrg9dw9cl5gzglguy62wjgg");
+        Coin amountSentFromAddress1ToAddress2 = Flux.from(bitcoinScenarioFactory.mineBlock())
+                .flatMap(lastBlockHash -> bitcoinScenarioFactory.fundAddress(() -> address1))
+                .flatMap(minedBlockHashes -> electrumScenarioFactory.awaitExactPayment(Coin.FIFTY_COINS, address1))
+                .flatMap(utxo -> electrumScenarioFactory.awaitBalanceOnAddress(Coin.FIFTY_COINS, address1))
+                .flatMap(balanceOnAddress -> electrumScenarioFactory.awaitSpendableBalance(Coin.FIFTY_COINS))
+                // FIRST PAYMENT 1000 sats
+                .flatMap(receivedAmount -> electrumScenarioFactory.sendPayment(address2, Coin.valueOf(1000L)))
+                .flatMap(txId -> electrumScenarioFactory.awaitTransaction(txId, 0))
+                .flatMap(tx -> electrumScenarioFactory.awaitExactPayment(Coin.valueOf(1000L), address2))
+                .flatMap(utxo -> electrumScenarioFactory.awaitBalanceOnAddress(Coin.valueOf(1000L), address2))
+                // SECOND PAYMENT 2000 sats
+                .flatMap(receivedAmount -> electrumScenarioFactory.sendPayment(address2, Coin.valueOf(2000L)))
+                .flatMap(txId -> electrumScenarioFactory.awaitTransaction(txId, 0))
+                .flatMap(tx -> electrumScenarioFactory.awaitExactPayment(Coin.valueOf(2000L), address2))
+                .flatMap(utxo -> electrumScenarioFactory.awaitBalanceOnAddress(Coin.valueOf(3000L), address2))
+                // THIRD PAYMENT 3000 sats
+                .flatMap(receivedAmount -> electrumScenarioFactory.sendPayment(address2, Coin.valueOf(4000L)))
+                .flatMap(txId -> electrumScenarioFactory.awaitTransaction(txId, 0))
+                .flatMap(tx -> electrumScenarioFactory.awaitExactPayment(Coin.valueOf(4000L), address2))
+                .flatMap(utxo -> electrumScenarioFactory.awaitBalanceOnAddress(Coin.valueOf(7000L), address2))
+                .blockFirst(Duration.ofSeconds(90));
 
-        regtestScenario.sendToAddress(targetAddress, sendAmount1, defaultTxFee, 1);
+        log.debug("Finished after {}", sw.stop());
 
-        Coin balanceAfterFirstSend = fundingSource.getSpendableBalance();
-        log.info("Balance now: {}", balanceAfterFirstSend);
-
-        Coin secondSendValue = Coin.valueOf(1337);
-        regtestScenario.sendToAddress(targetAddress, secondSendValue, defaultTxFee, 1);
-
-        Coin balanceAfterSecondSend = fundingSource.getSpendableBalance();
-        log.info("Balance now: {}", balanceAfterSecondSend);
-
-        Coin expectedBalance = balanceAfterFirstSend.minus(secondSendValue).minus(defaultTxFee);
-        assertThat("funding source has expected balance after sending", balanceAfterSecondSend, is(expectedBalance));
+        Coin balanceOnAddress2After = toCoin(this.electrumClient.getAddressBalance(address2.toString()).getTotal());
+        assertThat(balanceOnAddress2After, is(Coin.valueOf(1000 + 2000 + 4000)));
+        assertThat(amountSentFromAddress1ToAddress2, is(balanceOnAddress2After));
     }
+
+    private Coin toCoin(TxoValue val) {
+        return Coin.valueOf(val.getValue());
+    }
+
 }

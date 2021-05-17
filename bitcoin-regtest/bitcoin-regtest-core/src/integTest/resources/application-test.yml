@@ -1,3 +1,5 @@
+logging.level.org.tbk.bitcoin.regtest: DEBUG
+
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: myrpcuser

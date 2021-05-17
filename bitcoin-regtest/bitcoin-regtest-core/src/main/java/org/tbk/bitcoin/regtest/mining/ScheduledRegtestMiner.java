@@ -10,18 +10,18 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public final class ScheduledBitcoindRegtestMiner extends AbstractScheduledService implements BitcoindRegtestMiner {
+public final class ScheduledRegtestMiner extends AbstractScheduledService implements RegtestMiner {
     private static final Duration DEFAULT_DELAY = Duration.ofSeconds(60);
     private static final Scheduler DEFAULT_SCHEDULER = Scheduler.newFixedDelaySchedule(Duration.ZERO, DEFAULT_DELAY);
 
-    private final BitcoindRegtestMiner delegate;
+    private final RegtestMiner delegate;
     private final Scheduler scheduler;
 
-    public ScheduledBitcoindRegtestMiner(BitcoindRegtestMiner delegate) {
+    public ScheduledRegtestMiner(RegtestMiner delegate) {
         this(delegate, DEFAULT_SCHEDULER);
     }
 
-    public ScheduledBitcoindRegtestMiner(BitcoindRegtestMiner delegate, Scheduler scheduler) {
+    public ScheduledRegtestMiner(RegtestMiner delegate, Scheduler scheduler) {
         this.delegate = requireNonNull(delegate);
         this.scheduler = requireNonNull(scheduler);
     }

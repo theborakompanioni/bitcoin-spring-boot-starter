@@ -1,9 +1,7 @@
 package org.tbk.bitcoin.regtest.mining;
 
-import org.bitcoinj.core.Address;
+import org.tbk.bitcoin.regtest.common.AddressSupplier;
 
-import java.util.function.Supplier;
-
-public interface CoinbaseRewardAddressSupplier extends Supplier<Address> {
+public interface CoinbaseRewardAddressSupplier extends AddressSupplier {
 }
 

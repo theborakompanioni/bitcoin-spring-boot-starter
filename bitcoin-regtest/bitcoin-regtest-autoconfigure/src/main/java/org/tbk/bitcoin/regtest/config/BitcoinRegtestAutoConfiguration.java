@@ -2,12 +2,7 @@ package org.tbk.bitcoin.regtest.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinExtendedClient;
 import com.msgilligan.bitcoinj.rpc.RpcConfig;
-import com.msgilligan.bitcoinj.test.FundingSource;
-import com.msgilligan.bitcoinj.test.RegTestFundingSource;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Sha256Hash;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -53,45 +48,5 @@ public class BitcoinRegtestAutoConfiguration {
         }
 
         return new BitcoinExtendedClient(rpcConfig);
-    }
-
-    /*@Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnBean(BitcoinExtendedClient.class)
-    public FundingSource bitcoinFundingSource(BitcoinExtendedClient bitcoinExtendedClient) {
-        return new RegtestFundingSourceWithDelay(bitcoinExtendedClient);
-    }*/
-
-    /**
-     * A class to workaround the initial request in the constructor of the current version
-     * of {@link RegTestFundingSource}. The underlying funding source will be created
-     * on every request which adds some but negligible overhead.
-     */
-    private static final class RegtestFundingSourceWithDelay implements FundingSource {
-
-        private final BitcoinExtendedClient client;
-
-        private RegtestFundingSourceWithDelay(BitcoinExtendedClient client) {
-            this.client = requireNonNull(client);
-        }
-
-        private RegTestFundingSource create() {
-            return new RegTestFundingSource(client);
-        }
-
-        @Override
-        public Sha256Hash requestBitcoin(Address toAddress, Coin requestedAmount) throws Exception {
-            return create().requestBitcoin(toAddress, requestedAmount);
-        }
-
-        @Override
-        public Address createFundedAddress(Coin amount) throws Exception {
-            return create().createFundedAddress(amount);
-        }
-
-        @Override
-        public void fundingSourceMaintenance() {
-            create().fundingSourceMaintenance();
-        }
     }
 }

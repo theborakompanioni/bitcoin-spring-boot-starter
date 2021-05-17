@@ -14,9 +14,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMiner;
-import org.tbk.bitcoin.regtest.mining.BitcoindRegtestMinerImpl;
-import org.tbk.bitcoin.regtest.mining.ScheduledBitcoindRegtestMiner;
+import org.tbk.bitcoin.regtest.mining.RegtestMiner;
+import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
+import org.tbk.bitcoin.regtest.mining.ScheduledRegtestMiner;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class ScheduledBitcoindRegtestMinerTest {
+public class ScheduledRegtestMinerTest {
 
     @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
@@ -42,21 +42,21 @@ public class ScheduledBitcoindRegtestMinerTest {
         }
 
         @Bean
-        public BitcoindRegtestMiner bitcoindRegtestMiner(BitcoinClient bitcoinJsonRpcClient) {
-            return new BitcoindRegtestMinerImpl(bitcoinJsonRpcClient);
+        public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
+            return new RegtestMinerImpl(bitcoinJsonRpcClient);
         }
 
         @Bean(destroyMethod = "stopAsync")
-        public ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner(BitcoindRegtestMiner bitcoindRegtestMiner,
-                                                                           @Qualifier("bitcoindRegtestMinerScheduler")
+        public ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
+                                                           @Qualifier("regtestMinerScheduler")
                                                                                    AbstractScheduledService.Scheduler scheduler) {
-            ScheduledBitcoindRegtestMiner scheduledBitcoindRegtestMiner = new ScheduledBitcoindRegtestMiner(bitcoindRegtestMiner, scheduler);
-            scheduledBitcoindRegtestMiner.startAsync();
-            return scheduledBitcoindRegtestMiner;
+            ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
+            scheduledregtestMiner.startAsync();
+            return scheduledregtestMiner;
         }
 
-        @Bean("bitcoindRegtestMinerScheduler")
-        public AbstractScheduledService.Scheduler bitcoindRegtestMinerScheduler() {
+        @Bean("regtestMinerScheduler")
+        public AbstractScheduledService.Scheduler regtestMinerScheduler() {
             return new AbstractScheduledService.CustomScheduler() {
                 private final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1000);
                 private final Duration MAX_BLOCK_DURATION = Duration.ofMillis(3000);

@@ -12,16 +12,16 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public final class BitcoindRegtestMinerImpl implements BitcoindRegtestMiner {
+public final class RegtestMinerImpl implements RegtestMiner {
 
     private final BitcoinClient client;
     private final CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
 
-    public BitcoindRegtestMinerImpl(BitcoinClient client) {
+    public RegtestMinerImpl(BitcoinClient client) {
         this(client, new RegtestEaterAddressSupplier());
     }
 
-    public BitcoindRegtestMinerImpl(BitcoinClient client, CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+    public RegtestMinerImpl(BitcoinClient client, CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         this.client = requireNonNull(client);
         this.coinbaseRewardAddressSupplier = requireNonNull(coinbaseRewardAddressSupplier);
     }
