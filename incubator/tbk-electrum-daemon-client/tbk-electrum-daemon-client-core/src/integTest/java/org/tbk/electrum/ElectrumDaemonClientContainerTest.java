@@ -58,7 +58,7 @@ class ElectrumDaemonClientContainerTest {
         assertThat(electrumxContainer, is(notNullValue()));
         assertThat("electrumx container is running", electrumxContainer.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumDaemonContainer).blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumDaemonContainer).block();
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }
 

@@ -76,7 +76,7 @@ public class ElectrumGatewayExampleApplicationTest {
         assertThat(electrumxContainer, is(notNullValue()));
         assertThat(electrumxContainer.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumxContainer).blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumxContainer).block();
 
         assertThat("electrumx ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }
@@ -86,7 +86,7 @@ public class ElectrumGatewayExampleApplicationTest {
         assertThat(primaryElectrumDaemonContainer, is(notNullValue()));
         assertThat(primaryElectrumDaemonContainer.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(primaryElectrumDaemonContainer).blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(primaryElectrumDaemonContainer).block();
 
         assertThat("primary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 
@@ -100,7 +100,7 @@ public class ElectrumGatewayExampleApplicationTest {
         assertThat(secondaryElectrumDaemonContainer, is(notNullValue()));
         assertThat(secondaryElectrumDaemonContainer.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(secondaryElectrumDaemonContainer).blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(secondaryElectrumDaemonContainer).block();
 
         assertThat("secondary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 

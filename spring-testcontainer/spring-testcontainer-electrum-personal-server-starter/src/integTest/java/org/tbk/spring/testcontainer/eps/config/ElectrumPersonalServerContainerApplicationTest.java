@@ -39,7 +39,7 @@ public class ElectrumPersonalServerContainerApplicationTest {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(container).blockFirst();
+        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(container).block();
 
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }
