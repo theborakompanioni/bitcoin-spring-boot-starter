@@ -62,7 +62,7 @@ public class BitcoindRegtestMiningAutoConfiguration {
     @ConditionalOnBean({BitcoinClient.class})
     @ConditionalOnMissingBean
     public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient,
-                                             CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+                                     CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         return new RegtestMinerImpl(bitcoinJsonRpcClient, coinbaseRewardAddressSupplier);
     }
 

@@ -6,8 +6,12 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
-import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.model.*;
+import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
+import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.RawTx;
+import org.tbk.electrum.model.SimpleTxoValue;
+import org.tbk.electrum.model.TxoValue;
 import reactor.core.publisher.Flux;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -18,16 +22,16 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
 
     private static final Coin defaultTxFee = Coin.valueOf(200_000);
 
-    private final ElectrumClient client;
+    private final BitcoinjElectrumClient client;
     private final Address address;
     private final Coin amount;
     private final Coin txFee;
 
-    public SendToAddressAction(ElectrumClient client, Address address, Coin amount) {
+    public SendToAddressAction(BitcoinjElectrumClient client, Address address, Coin amount) {
         this(client, address, amount, defaultTxFee);
     }
 
-    public SendToAddressAction(ElectrumClient client, Address address, Coin amount, Coin txFee) {
+    public SendToAddressAction(BitcoinjElectrumClient client, Address address, Coin amount, Coin txFee) {
         this.client = requireNonNull(client);
         this.address = requireNonNull(address);
         this.amount = requireNonNull(amount);
@@ -51,32 +55,34 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
 
     private Flux<Sha256Hash> create() {
         return Flux.defer(() -> {
-            String changeAddress = client.createNewAddress();
+            Address changeAddress = client.createNewAddress();
 
             log.debug("Will try to send {} to address {} (with change to {})", amount.toFriendlyString(), address, changeAddress);
 
-            Balance balance = client.getBalance();
+            if (log.isTraceEnabled()) {
+                BitcoinjBalance balance = client.getBalance();
 
-            log.trace("Balance: {} total", friendlyBtcString(balance.getTotal()));
-            log.trace("         {} confirmed", friendlyBtcString(balance.getConfirmed()));
-            log.trace("         {} unconfirmed", friendlyBtcString(balance.getUnconfirmed()));
-            log.trace("         {} spendable", friendlyBtcString(balance.getSpendable()));
-            log.trace("         {} unmatured", friendlyBtcString(balance.getUnmatured()));
+                log.trace("Balance: {} total", balance.getTotal().toFriendlyString());
+                log.trace("         {} confirmed", balance.getConfirmed().toFriendlyString());
+                log.trace("         {} unconfirmed", balance.getUnconfirmed().toFriendlyString());
+                log.trace("         {} spendable", balance.getSpendable().toFriendlyString());
+                log.trace("         {} unmatured", balance.getUnmatured().toFriendlyString());
 
-            History history = client.getHistory();
-            History.Summary summary = history.getSummary();
+                History history = client.delegate().getHistory();
+                History.Summary summary = history.getSummary();
 
-            log.trace("History: {} end balance", friendlyBtcString(summary.getEndBalance()));
-            log.trace("         {} start balance", friendlyBtcString(summary.getStartBalance()));
-            log.trace("         {} outgoing", friendlyBtcString(summary.getIncoming()));
-            log.trace("         {} incoming", friendlyBtcString(summary.getOutgoing()));
+                log.trace("History: {} end balance", friendlyBtcString(summary.getEndBalance()));
+                log.trace("         {} start balance", friendlyBtcString(summary.getStartBalance()));
+                log.trace("         {} outgoing", friendlyBtcString(summary.getIncoming()));
+                log.trace("         {} incoming", friendlyBtcString(summary.getOutgoing()));
+            }
 
-            RawTx unsignedTransaction = client.createUnsignedTransaction(SimpleTxoValue.of(amount.getValue()),
-                    address.toString(), changeAddress, SimpleTxoValue.of(txFee.getValue()));
+            RawTx unsignedTransaction = client.delegate().createUnsignedTransaction(SimpleTxoValue.of(amount.getValue()),
+                    address.toString(), changeAddress.toString(), SimpleTxoValue.of(txFee.getValue()));
 
-            RawTx rawTx = client.signTransaction(unsignedTransaction, null);
+            RawTx rawTx = client.delegate().signTransaction(unsignedTransaction, null);
 
-            String broadcastTxid = client.broadcast(rawTx);
+            String broadcastTxid = client.delegate().broadcast(rawTx);
 
             log.debug("Broadcast tx {} with electrum.. ", broadcastTxid);
 

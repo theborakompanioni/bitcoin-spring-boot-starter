@@ -5,7 +5,6 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.script.Script;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -13,14 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import org.tbk.electrum.command.DaemonStatusResponse;
 import org.tbk.electrum.model.Version;
-import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
-import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
-import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -48,34 +43,8 @@ class SimpleBitcoinjElectrumClientContainerTest {
         }
     }
 
-    @Autowired(required = false)
-    private ElectrumDaemonContainer<?> electrumDaemonContainer;
-
-    @Autowired(required = false)
-    private ElectrumxContainer<?> electrumxContainer;
-
-    @Autowired(required = false)
-    private ElectrumClient electrumClient;
-
+    @Autowired
     private BitcoinjElectrumClient sut;
-
-    @BeforeEach
-    void setUp() {
-        this.sut = new BitcoinjElectrumClientImpl(RegTestParams.get(), electrumClient);
-    }
-
-    @Test
-    void contextLoads() {
-        assertThat(sut, is(notNullValue()));
-        assertThat(electrumDaemonContainer, is(notNullValue()));
-        assertThat("electrum daemon container is running", electrumDaemonContainer.isRunning(), is(true));
-
-        assertThat(electrumxContainer, is(notNullValue()));
-        assertThat("electrumx container is running", electrumxContainer.isRunning(), is(true));
-
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumDaemonContainer).block();
-        assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
-    }
 
     @Test
     void testDaemonVersion() {

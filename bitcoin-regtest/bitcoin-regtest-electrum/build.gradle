@@ -8,8 +8,9 @@ dependencies {
     api "io.projectreactor:reactor-core"
 
     api project(':bitcoin-regtest:bitcoin-regtest-core')
-    api project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core')
+    api project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoinj')
 
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
     integTestImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')

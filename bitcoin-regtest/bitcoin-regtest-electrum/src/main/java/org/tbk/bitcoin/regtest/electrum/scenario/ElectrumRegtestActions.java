@@ -3,15 +3,15 @@ package org.tbk.bitcoin.regtest.electrum.scenario;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
-import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 
 import static java.util.Objects.requireNonNull;
 
 public final class ElectrumRegtestActions {
 
-    private final ElectrumClient electrumClient;
+    private final BitcoinjElectrumClient electrumClient;
 
-    public ElectrumRegtestActions(ElectrumClient electrumClient) {
+    public ElectrumRegtestActions(BitcoinjElectrumClient electrumClient) {
         this.electrumClient = requireNonNull(electrumClient);
     }
 
@@ -28,7 +28,7 @@ public final class ElectrumRegtestActions {
     }
 
     public AwaitTransactionAction awaitTransaction(Sha256Hash txid, int confirmations) {
-        return new AwaitTransactionAction(electrumClient, txid, confirmations);
+        return new AwaitTransactionAction(electrumClient.delegate(), txid, confirmations);
     }
 
     public SendToAddressAction sendPayment(Address address, Coin amount) {

@@ -6,9 +6,8 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
-import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.model.Balance;
-import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -21,19 +20,19 @@ public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final Duration defaultTimeout = Duration.ofSeconds(30);
 
-    private final ElectrumClient client;
+    private final BitcoinjElectrumClient client;
     private final Address address;
     private final Coin expectedAmount;
     private final Duration checkInterval;
     private final Duration timeout;
 
-    public AwaitSpendableBalanceOnAddressAction(ElectrumClient client,
+    public AwaitSpendableBalanceOnAddressAction(BitcoinjElectrumClient client,
                                                 Coin expectedAmount,
                                                 Address address) {
         this(client, expectedAmount, address, defaultCheckInterval, defaultTimeout);
     }
 
-    public AwaitSpendableBalanceOnAddressAction(ElectrumClient client,
+    public AwaitSpendableBalanceOnAddressAction(BitcoinjElectrumClient client,
                                                 Coin expectedAmount,
                                                 Address address,
                                                 Duration checkInterval,
@@ -64,18 +63,15 @@ public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction
 
             Coin coin = Flux.interval(this.checkInterval)
                     .doOnNext(it -> log.trace("Waiting for coinbase reward to be spendable by electrum.. ({} attempt)", it))
-                    .map(it -> {
-                        Balance balance = this.client.getAddressBalance(this.address.toString());
-
-                        log.trace("Balance: {} total", friendlyBtcString(balance.getTotal()));
-                        log.trace("         {} confirmed", friendlyBtcString(balance.getConfirmed()));
-                        log.trace("         {} unconfirmed", friendlyBtcString(balance.getUnconfirmed()));
-                        log.trace("         {} spendable", friendlyBtcString(balance.getSpendable()));
-                        log.trace("         {} unmatured", friendlyBtcString(balance.getUnmatured()));
-
-                        return balance;
+                    .map(it -> this.client.getAddressBalance(this.address))
+                    .doOnNext(balance -> {
+                        log.trace("Balance: {} total", balance.getTotal().toFriendlyString());
+                        log.trace("         {} confirmed", balance.getConfirmed().toFriendlyString());
+                        log.trace("         {} unconfirmed", balance.getUnconfirmed().toFriendlyString());
+                        log.trace("         {} spendable", balance.getSpendable().toFriendlyString());
+                        log.trace("         {} unmatured", balance.getUnmatured().toFriendlyString());
                     })
-                    .map(it -> Coin.valueOf(it.getSpendable().getValue()))
+                    .map(BitcoinjBalance::getSpendable)
                     .filter(it -> !it.isLessThan(this.expectedAmount))
                     .blockFirst(this.timeout);
 
@@ -85,9 +81,5 @@ public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction
 
             return Flux.just(coin);
         });
-    }
-
-    private static String friendlyBtcString(TxoValue txoValue) {
-        return Coin.valueOf(txoValue.getValue()).toFriendlyString();
     }
 }

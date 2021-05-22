@@ -6,10 +6,9 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
-import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.model.TxoValue;
-import org.tbk.electrum.model.Utxo;
-import org.tbk.electrum.model.Utxos;
+import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
+import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -18,23 +17,23 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public final class AwaitExactPaymentAction implements RegtestAction<Utxo> {
+public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo> {
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final Duration defaultTimeout = Duration.ofSeconds(30);
 
-    private final ElectrumClient client;
+    private final BitcoinjElectrumClient client;
     private final Address address;
     private final Coin expectedAmount;
     private final Duration checkInterval;
     private final Duration timeout;
 
-    public AwaitExactPaymentAction(ElectrumClient client,
+    public AwaitExactPaymentAction(BitcoinjElectrumClient client,
                                    Coin expectedAmount,
                                    Address address) {
         this(client, expectedAmount, address, defaultCheckInterval, defaultTimeout);
     }
 
-    public AwaitExactPaymentAction(ElectrumClient client,
+    public AwaitExactPaymentAction(BitcoinjElectrumClient client,
                                    Coin expectedAmount,
                                    Address address,
                                    Duration checkInterval,
@@ -53,26 +52,26 @@ public final class AwaitExactPaymentAction implements RegtestAction<Utxo> {
     }
 
     @Override
-    public void subscribe(Subscriber<? super Utxo> s) {
+    public void subscribe(Subscriber<? super BitcoinjUtxo> s) {
         create().subscribe(s);
     }
 
-    private Flux<Utxo> create() {
+    private Flux<BitcoinjUtxo> create() {
         return Flux.defer(() -> {
             Stopwatch sw = Stopwatch.createStarted();
 
             log.debug("Poll electrum every {} till address {} controls a utxo of {} for {}",
                     this.checkInterval, this.address, this.expectedAmount.toFriendlyString(), this.timeout);
 
-            Utxo foundUtxo = Flux.interval(this.checkInterval)
+            BitcoinjUtxo foundUtxo = Flux.interval(this.checkInterval)
                     .doOnNext(it -> log.trace("Waiting  till address {} controls a utxo of {}.. ({} attempt)",
                             this.address, this.expectedAmount.toFriendlyString(), it))
                     .flatMapIterable(it -> {
-                        Utxos addressUnspent = this.client.getAddressUnspent(this.address.toString());
+                        BitcoinjUtxos addressUnspent = this.client.getAddressUnspent(this.address);
 
-                        log.trace("UTXOs: {} total", friendlyBtcString(addressUnspent.getValue()));
+                        log.trace("UTXOs: {} total", addressUnspent.getValue().toFriendlyString());
                         addressUnspent.getUtxos().forEach(utxo -> {
-                            log.trace("       {} ({} in {})", friendlyBtcString(utxo.getValue()), utxo.getTxPos(), utxo.getTxHash());
+                            log.trace("       {} ({} in {})", utxo.getValue().toFriendlyString(), utxo.getTxPos(), utxo.getTxHash());
                         });
 
                         return addressUnspent.getUtxos();
@@ -89,9 +88,5 @@ public final class AwaitExactPaymentAction implements RegtestAction<Utxo> {
 
             return Flux.just(foundUtxo);
         });
-    }
-
-    private static String friendlyBtcString(TxoValue txoValue) {
-        return Coin.valueOf(txoValue.getValue()).toFriendlyString();
     }
 }

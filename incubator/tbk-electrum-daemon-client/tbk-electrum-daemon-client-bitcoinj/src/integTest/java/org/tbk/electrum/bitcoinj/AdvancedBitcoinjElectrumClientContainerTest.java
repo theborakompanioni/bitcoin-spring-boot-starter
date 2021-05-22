@@ -5,8 +5,10 @@ import com.msgilligan.bitcoinj.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.RegTestParams;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,12 +20,8 @@ import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
-import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
-import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
-import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
-import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -35,9 +33,8 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AdvancedBitcoinjElectrumClientContainerTest {
-
-    private static final Address firstAddress = Address.fromString(RegTestParams.get(), "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz");
 
     @SpringBootApplication
     public static class ElectrumDaemonContainerTestApplication {
@@ -60,53 +57,34 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         }
 
         @Bean
-        public ElectrumRegtestActions electrumRegtestActions(ElectrumClient electrumClient) {
+        public ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
             return new ElectrumRegtestActions(electrumClient);
         }
     }
 
-    @Autowired(required = false)
-    private ElectrumDaemonContainer<?> electrumDaemonContainer;
-
-    @Autowired(required = false)
-    private ElectrumxContainer<?> electrumxContainer;
-
-    @Autowired(required = false)
-    private ElectrumClient electrumClient;
-
-    @Autowired(required = false)
+    @Autowired
     private BitcoinRegtestActions bitcoinRegtestActions;
 
-    @Autowired(required = false)
+    @Autowired
     private ElectrumRegtestActions electrumRegtestActions;
 
+    @Autowired
     private BitcoinjElectrumClient sut;
 
-    @BeforeEach
-    void setUp() {
-        this.sut = new BitcoinjElectrumClientImpl(RegTestParams.get(), electrumClient);
-    }
-
     @Test
+    @Order(1)
     void contextLoads() {
         assertThat(sut, is(notNullValue()));
-        assertThat(electrumDaemonContainer, is(notNullValue()));
-        assertThat("electrum daemon container is running", electrumDaemonContainer.isRunning(), is(true));
-
-        assertThat(electrumxContainer, is(notNullValue()));
-        assertThat("electrumx container is running", electrumxContainer.isRunning(), is(true));
-
-        Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumDaemonContainer).block();
-        assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
     }
-    
+
     @Test
     void testWalletSynchronized() {
-        // wallet might need some time to be synchronized as some addresses beyond the gap limit are created in other methods
+        // wallet might need some time to be synchronized as some addresses beyond
+        // the gap limit are created in other test methods
         Boolean walletSynchronized = Flux.interval(Duration.ofMillis(100))
                 .map(it -> sut.delegate().isWalletSynchronized())
                 .filter(it -> it)
-                .blockFirst(Duration.ofSeconds(3));
+                .blockFirst(Duration.ofSeconds(10));
 
         assertThat("wallet is synchronized", walletSynchronized, is(true));
     }

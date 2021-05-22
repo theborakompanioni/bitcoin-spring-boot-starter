@@ -9,5 +9,4 @@ dependencies {
     api "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
 
     integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
-    integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
 }
