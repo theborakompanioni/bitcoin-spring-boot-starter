@@ -24,12 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "server.port=13337",
         "management.server.port=13337",
+        "management.endpoints.web.exposure.include=info",
         "org.tbk.lightning.lnd.grpc.rpchost=localhost",
         "org.tbk.lightning.lnd.grpc.rpcport=13337",
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-public class LndJsonRpcInfoContributorIntegrationTest {
+class LndJsonRpcInfoContributorIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {
@@ -46,7 +47,7 @@ public class LndJsonRpcInfoContributorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldAddInformationToInfoEndpoint() throws Exception {
+    void itShouldAddInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
                 .andExpect(jsonPath("lndJsonRpc").exists())
                 .andExpect(jsonPath("lndJsonRpc.performValidation").exists())

@@ -24,9 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "server.port=13337",
         "management.server.port=13337",
-        "management.endpoint.health.show-details=always"
+        "management.endpoints.web.exposure.include=info"
 })
-public class TorInfoContributorIntegrationTest {
+class TorInfoContributorIntegrationTest {
 
     @SpringBootApplication
     public static class HiddenServiceTestApplication {
@@ -43,7 +43,7 @@ public class TorInfoContributorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldAddTorInformationToInfoEndpoint() throws Exception {
+    void itShouldAddTorInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
                 .andExpect(jsonPath("tor").exists())
                 .andExpect(jsonPath("tor.proxy_available").exists())
@@ -53,7 +53,7 @@ public class TorInfoContributorIntegrationTest {
     }
 
     @Test
-    public void itShouldAddHiddenServiceInformationToInfoEndpoint() throws Exception {
+    void itShouldAddHiddenServiceInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
                 .andExpect(jsonPath("hiddenService").exists())
                 .andExpect(jsonPath("hiddenService.spring_boot_app").exists())

@@ -24,13 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "server.port=13337",
         "management.server.port=13337",
+        "management.endpoints.web.exposure.include=info",
         "org.tbk.bitcoin.jsonrpc.network=regtest",
         "org.tbk.bitcoin.jsonrpc.rpchost=http://localhost",
         "org.tbk.bitcoin.jsonrpc.rpcport=13337",
         "org.tbk.bitcoin.jsonrpc.rpcuser=test",
         "org.tbk.bitcoin.jsonrpc.rpcpassword=test"
 })
-public class BitcoinJsonRpcInfoContributorIntegrationTest {
+class BitcoinJsonRpcInfoContributorIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {
@@ -47,7 +48,7 @@ public class BitcoinJsonRpcInfoContributorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldAddInformationToInfoEndpoint() throws Exception {
+    void itShouldAddInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
                 .andExpect(jsonPath("bitcoinJsonRpc").exists())
                 .andExpect(jsonPath("bitcoinJsonRpc.network").exists())
