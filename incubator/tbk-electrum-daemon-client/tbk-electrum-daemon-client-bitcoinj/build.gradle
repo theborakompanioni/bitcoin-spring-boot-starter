@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+description = 'electrum daemon jsonrpc client bitcoinj extension package'
+
+dependencies {
+    api project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core')
+    api "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
+
+    integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
+}
