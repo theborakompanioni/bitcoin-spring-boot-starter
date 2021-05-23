@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -16,9 +17,19 @@ public final class MineBlockWithCoinbaseAction implements RegtestAction<List<Sha
 
     private final RegtestMiner regtestMiner;
     private final CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
+    private int blocks;
 
     public MineBlockWithCoinbaseAction(RegtestMiner regtestMiner,
                                        CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+        this(regtestMiner, coinbaseRewardAddressSupplier, 1);
+    }
+
+    public MineBlockWithCoinbaseAction(RegtestMiner regtestMiner,
+                                       CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier,
+                                       int blocks) {
+        this.blocks = blocks;
+        checkArgument(blocks > 0, "'blocks' must be greater than or equal to zero");
+
         this.regtestMiner = requireNonNull(regtestMiner);
         this.coinbaseRewardAddressSupplier = requireNonNull(coinbaseRewardAddressSupplier);
     }
@@ -29,6 +40,6 @@ public final class MineBlockWithCoinbaseAction implements RegtestAction<List<Sha
     }
 
     private Mono<List<Sha256Hash>> create() {
-        return Mono.defer(() -> Mono.just(this.regtestMiner.mineBlocks(1, this.coinbaseRewardAddressSupplier)));
+        return Mono.fromCallable(() -> this.regtestMiner.mineBlocks(blocks, this.coinbaseRewardAddressSupplier));
     }
 }

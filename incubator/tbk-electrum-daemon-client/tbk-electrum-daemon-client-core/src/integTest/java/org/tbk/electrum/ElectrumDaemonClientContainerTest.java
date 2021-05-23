@@ -1,7 +1,10 @@
 package org.tbk.electrum;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +28,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElectrumDaemonClientContainerTest {
 
     private static final String firstAddress = "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz";
@@ -50,6 +54,7 @@ class ElectrumDaemonClientContainerTest {
     private ElectrumClient sut;
 
     @Test
+    @Order(1)
     void contextLoads() {
         assertThat(sut, is(notNullValue()));
         assertThat(electrumDaemonContainer, is(notNullValue()));

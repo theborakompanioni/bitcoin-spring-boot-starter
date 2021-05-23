@@ -8,6 +8,7 @@ import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -50,8 +51,8 @@ public final class AwaitSpendableBalanceAction implements RegtestAction<Coin> {
         create().subscribe(s);
     }
 
-    private Flux<Coin> create() {
-        return Flux.defer(() -> {
+    private Mono<Coin> create() {
+        return Mono.fromCallable(() -> {
             Stopwatch sw = Stopwatch.createStarted();
 
             log.debug("Poll electrum every {} till balance reaches {} for {}",
@@ -76,7 +77,7 @@ public final class AwaitSpendableBalanceAction implements RegtestAction<Coin> {
 
             log.debug("Found balance {} after {}.. ", coin.toFriendlyString(), sw.stop());
 
-            return Flux.just(coin);
+            return coin;
         });
     }
 }

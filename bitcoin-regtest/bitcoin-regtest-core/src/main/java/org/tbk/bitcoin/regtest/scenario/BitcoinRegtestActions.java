@@ -29,18 +29,15 @@ public final class BitcoinRegtestActions {
         return new MineBlockWithCoinbaseAction(this.regtestMiner, coinbaseRewardAddressSupplier);
     }
 
-    /**
-     * Funds the
-     * @param coinbaseRewardAddressSupplier
-     * @return
-     */
+    public RegtestAction<List<Sha256Hash>> mineBlockWithCoinbase(CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier, int blocks) {
+        return new MineBlockWithCoinbaseAction(this.regtestMiner, coinbaseRewardAddressSupplier, blocks);
+    }
+
     public RegtestAction<List<Sha256Hash>> fundAddress(CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
-        return (s) -> {
-            Mono.from(mineBlockWithCoinbase(coinbaseRewardAddressSupplier))
-                    .concatWith(mineBlocks(100))
-                    .flatMapIterable(it -> it)
-                    .collectList()
-                    .subscribe(s);
-        };
+        return (s) -> Mono.from(mineBlockWithCoinbase(coinbaseRewardAddressSupplier))
+                .concatWith(mineBlocks(100))
+                .flatMapIterable(it -> it)
+                .collectList()
+                .subscribe(s);
     }
 }

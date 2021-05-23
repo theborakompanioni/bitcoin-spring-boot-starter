@@ -12,7 +12,7 @@ import org.tbk.electrum.model.History;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.TxoValue;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -39,13 +39,6 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
 
         checkArgument(amount.isPositive(), "'amount' must be positive");
         checkArgument(txFee.isPositive(), "'txFee' must be positive");
-
-        // move to fund and send
-        boolean acceptableAmount = amount.isLessThan(Coin.FIFTY_COINS.minus(txFee));
-        if (!acceptableAmount) {
-            String errorMessage = String.format("Cannot send more than %s with this action", Coin.FIFTY_COINS.toFriendlyString());
-            throw new IllegalArgumentException(errorMessage);
-        }
     }
 
     @Override
@@ -53,8 +46,8 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
         create().subscribe(s);
     }
 
-    private Flux<Sha256Hash> create() {
-        return Flux.defer(() -> {
+    private Mono<Sha256Hash> create() {
+        return Mono.fromCallable(() -> {
             Address changeAddress = client.createNewAddress();
 
             log.debug("Will try to send {} to address {} (with change to {})", amount.toFriendlyString(), address, changeAddress);
@@ -86,7 +79,7 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
 
             log.debug("Broadcast tx {} with electrum.. ", broadcastTxid);
 
-            return Flux.just(Sha256Hash.wrap(broadcastTxid));
+            return Sha256Hash.wrap(broadcastTxid);
         });
     }
 

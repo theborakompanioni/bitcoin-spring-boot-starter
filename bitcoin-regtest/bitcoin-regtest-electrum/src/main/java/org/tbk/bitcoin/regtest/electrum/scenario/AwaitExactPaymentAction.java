@@ -10,6 +10,7 @@ import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -56,8 +57,8 @@ public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo
         create().subscribe(s);
     }
 
-    private Flux<BitcoinjUtxo> create() {
-        return Flux.defer(() -> {
+    private Mono<BitcoinjUtxo> create() {
+        return Mono.fromCallable(() -> {
             Stopwatch sw = Stopwatch.createStarted();
 
             log.debug("Poll electrum every {} till address {} controls a utxo of {} for {}",
@@ -86,7 +87,7 @@ public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo
 
             log.debug("Found utxo {} on address {} after {}.. ", foundUtxo, this.address, sw.stop());
 
-            return Flux.just(foundUtxo);
+            return foundUtxo;
         });
     }
 }

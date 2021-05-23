@@ -8,6 +8,7 @@ import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.History;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -62,8 +63,8 @@ public final class AwaitTransactionAction implements RegtestAction<History.Trans
         create().subscribe(s);
     }
 
-    private Flux<History.Transaction> create() {
-        return Flux.defer(() -> {
+    private Mono<History.Transaction> create() {
+        return Mono.fromCallable(() -> {
             Stopwatch sw = Stopwatch.createStarted();
 
             /*
@@ -82,10 +83,10 @@ public final class AwaitTransactionAction implements RegtestAction<History.Trans
 
             requireNonNull(broadcastedTx, "electrum could not processes transaction in time");
 
-            log.debug("Tx {} with confirmations {} has been processed by electrum after {}.. ",
+            log.debug("Tx {} with {} confirmations has been processed by electrum after {}.. ",
                     broadcastedTx.getTxHash(), broadcastedTx.getConfirmations(), sw.stop());
 
-            return Flux.just(broadcastedTx);
+            return broadcastedTx;
         });
     }
 }

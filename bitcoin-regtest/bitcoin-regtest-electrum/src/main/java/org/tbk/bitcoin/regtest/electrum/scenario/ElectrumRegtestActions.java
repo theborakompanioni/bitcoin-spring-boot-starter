@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.regtest.electrum.scenario;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
@@ -8,8 +9,11 @@ import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.model.History;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 import static java.util.Objects.requireNonNull;
 
+@Slf4j
 public final class ElectrumRegtestActions {
 
     private final BitcoinjElectrumClient electrumClient;
@@ -47,7 +51,7 @@ public final class ElectrumRegtestActions {
      * This action usually takes around 5 seconds to complete.
      *
      * @param address the destination address
-     * @param amount the amount sent to address
+     * @param amount  the amount sent to address
      * @return the action itself
      */
     public RegtestAction<History.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount) {
@@ -61,13 +65,17 @@ public final class ElectrumRegtestActions {
      * This action usually takes around 5 seconds to complete.
      *
      * @param address the destination address
-     * @param amount the amount sent to address
-     * @param txFee the transaction fee
+     * @param amount  the amount sent to address
+     * @param txFee   the transaction fee
      * @return the action itself
      */
     public RegtestAction<History.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount, Coin txFee) {
         return s -> Mono.from(sendPayment(address, amount, txFee))
                 .flatMap(txId -> Mono.from(awaitTransaction(txId, 0)))
                 .subscribe(s);
+    }
+
+    public AwaitWalletSynchronizedAction awaitWalletSynchronized(Duration timeout) {
+        return new AwaitWalletSynchronizedAction(electrumClient.delegate(), timeout);
     }
 }

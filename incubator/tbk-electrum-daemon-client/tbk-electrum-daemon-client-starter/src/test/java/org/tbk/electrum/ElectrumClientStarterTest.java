@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest(classes = ElectrumClientTestApplication.class)
-public class ElectrumClientStarterTest {
+class ElectrumClientStarterTest {
 
     @Autowired(required = false)
     private ElectrumDaemonJsonrpcClientProperties properties;
@@ -22,7 +22,7 @@ public class ElectrumClientStarterTest {
     private ElectrumClient client;
 
     @Test
-    public void propertiesPresent() {
+    void propertiesPresent() {
         assertThat(properties, is(notNullValue()));
 
         assertThat(properties.isEnabled(), is(true));
@@ -33,12 +33,12 @@ public class ElectrumClientStarterTest {
     }
 
     @Test
-    public void factoryPresent() {
+    void factoryPresent() {
         assertThat(factory, is(notNullValue()));
     }
 
     @Test
-    public void clientPresent() {
+    void clientPresent() {
         assertThat(client, is(notNullValue()));
     }
 }

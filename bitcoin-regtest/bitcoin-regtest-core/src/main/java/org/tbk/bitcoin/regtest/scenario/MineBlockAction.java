@@ -32,6 +32,6 @@ public final class MineBlockAction implements RegtestAction<List<Sha256Hash>> {
     }
 
     private Mono<List<Sha256Hash>> create() {
-        return Mono.defer(() -> Mono.just(this.regtestMiner.mineBlocks(this.amountOfBlocks)));
+        return Mono.fromCallable(() -> this.regtestMiner.mineBlocks(this.amountOfBlocks));
     }
 }
