@@ -17,7 +17,7 @@ public class BitcoinRegtestAutoConfigProperties implements Validator {
      */
     private boolean enabled;
 
-    private BitcoindRegtestMiningProperties mining;
+    private BitcoinRegtestMiningProperties mining;
 
     @Override
     public boolean supports(Class<?> clazz) {

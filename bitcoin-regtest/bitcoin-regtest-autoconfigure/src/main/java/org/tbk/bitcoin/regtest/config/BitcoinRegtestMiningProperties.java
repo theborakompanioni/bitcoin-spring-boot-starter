@@ -8,12 +8,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Data
-public class BitcoindRegtestMiningProperties implements Validator {
-    private static final NextBlockDurationProperties DEFAULT_NEXT_BLOCK_DURATION = new NextBlockDurationProperties() {{
-        setMinDurationInMillis(1_000L);
-        setMaxDurationInMillis(10_000L);
-    }};
-
+public class BitcoinRegtestMiningProperties implements Validator {
     /**
      * Whether mining should be enabled
      */
@@ -37,19 +32,19 @@ public class BitcoindRegtestMiningProperties implements Validator {
 
     public NextBlockDurationProperties getNextBlockDuration() {
         return Optional.ofNullable(nextBlockDuration)
-                .orElse(DEFAULT_NEXT_BLOCK_DURATION);
+                .orElseGet(NextBlockDurationProperties::new);
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz == BitcoindRegtestMiningProperties.class;
+        return clazz == BitcoinRegtestMiningProperties.class;
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        BitcoindRegtestMiningProperties properties = (BitcoindRegtestMiningProperties) target;
+        BitcoinRegtestMiningProperties properties = (BitcoinRegtestMiningProperties) target;
 
-        if (mineInitialAmountOfBlocks < 0) {
+        if (properties.getMineInitialAmountOfBlocks() < 0) {
             String errorMessage = String.format("'mineInitialAmountOfBlocks' must not be less than zero - invalid value: %d", properties.getMineInitialAmountOfBlocks());
             errors.rejectValue("mineInitialAmountOfBlocks", "mineInitialAmountOfBlocks.invalid", errorMessage);
         }
@@ -57,29 +52,27 @@ public class BitcoindRegtestMiningProperties implements Validator {
 
     @Data
     public static class NextBlockDurationProperties {
-        private static final long DEFAULT_MIN_DURATION_IN_MILLIS = 1_000L;
-        private static final long DEFAULT_MAX_DURATION_IN_MILLIS = 60_000L;
+        private static final Duration DEFAULT_MIN_DURATION = Duration.ofSeconds(1);
+        private static final Duration DEFAULT_MAX_DURATION = Duration.ofSeconds(60);
 
-        private Long minDurationInMillis;
-        private Long maxDurationInMillis;
-
-        public long getMinDurationInMillis() {
-            return Optional.ofNullable(minDurationInMillis)
-                    .orElse(DEFAULT_MIN_DURATION_IN_MILLIS);
-        }
-
-        public long getMaxDurationInMillis() {
-            return Optional.ofNullable(maxDurationInMillis)
-                    .filter(val -> val >= getMinDurationInMillis())
-                    .orElseGet(() -> Math.max(getMinDurationInMillis(), DEFAULT_MAX_DURATION_IN_MILLIS));
-        }
+        private Duration minDuration;
+        private Duration maxDuration;
 
         public Duration getMinDuration() {
-            return Duration.ofMillis(getMinDurationInMillis());
+            return Optional.ofNullable(minDuration)
+                    .orElse(DEFAULT_MIN_DURATION);
         }
 
         public Duration getMaxDuration() {
-            return Duration.ofMillis(getMaxDurationInMillis());
+            Duration min = getMinDuration();
+
+            return Optional.ofNullable(maxDuration)
+                    .filter(val -> val.compareTo(min) >= 0)
+                    .orElseGet(() -> max(min, DEFAULT_MAX_DURATION));
+        }
+
+        private static Duration max(Duration a, Duration b) {
+            return a.compareTo(b) > 0 ? a : b;
         }
     }
 }

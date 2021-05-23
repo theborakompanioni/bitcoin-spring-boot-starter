@@ -55,8 +55,8 @@ org.tbk.bitcoin.regtest:
   mining:
     enabled: true
     next-block-duration:
-      min-duration-in-millis: 1000
-      max-duration-in-millis: 10000
+      min-duration: PT1S
+      max-duration: PT10S
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

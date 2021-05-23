@@ -47,8 +47,8 @@ org.tbk.bitcoin.regtest:
     # secret to address: across distance search gym explain fruit sense tiny decrease ribbon day course
     coinbase-reward-address: bcrt1q0lhr8js5rrhjl7hf6e80ns3pgk5tjswgg9um9t
     next-block-duration:
-      min-duration-in-millis: 1000
-      max-duration-in-millis: 10000
+      min-duration: PT1S
+      max-duration: PT10S
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

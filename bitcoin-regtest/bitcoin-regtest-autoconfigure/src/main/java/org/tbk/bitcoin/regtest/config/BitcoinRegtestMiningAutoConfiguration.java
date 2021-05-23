@@ -32,11 +32,11 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnClass(RegtestMiner.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoinRegtestAutoConfiguration.class)
-public class BitcoindRegtestMiningAutoConfiguration {
+public class BitcoinRegtestMiningAutoConfiguration {
 
-    private final BitcoindRegtestMiningProperties properties;
+    private final BitcoinRegtestMiningProperties properties;
 
-    public BitcoindRegtestMiningAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
+    public BitcoinRegtestMiningAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
         this.properties = requireNonNull(properties.getMining());
     }
 
@@ -124,13 +124,13 @@ public class BitcoindRegtestMiningAutoConfiguration {
 
         @Builder
         public MinMaxDurationScheduler(@NonNull Duration minDuration, @NonNull Duration maxDuration) {
+            this.minDuration = requireNonNull(minDuration);
+            this.maxDuration = requireNonNull(maxDuration);
+
             checkArgument(!minDuration.isNegative(), "'minDuration' must be positive or zero");
             checkArgument(!maxDuration.isNegative(), "'maxDuration' must be positive");
             checkArgument(!maxDuration.isZero(), "'maxDuration' must be positive");
             checkArgument(maxDuration.compareTo(minDuration) >= 0, "'maxDuration' must be greater or equal to 'minDuration'");
-
-            this.minDuration = requireNonNull(minDuration);
-            this.maxDuration = requireNonNull(maxDuration);
         }
 
         @Override

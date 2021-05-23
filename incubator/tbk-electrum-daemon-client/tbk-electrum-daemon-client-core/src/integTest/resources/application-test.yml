@@ -57,8 +57,8 @@ org.tbk.bitcoin.regtest:
     coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
     mine-initial-amount-of-blocks: 1
     next-block-duration:
-      min-duration-in-millis: 1000
-      max-duration-in-millis: 10000
+      min-duration: PT1S
+      max-duration: PT10S
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest

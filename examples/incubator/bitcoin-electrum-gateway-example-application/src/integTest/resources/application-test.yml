@@ -21,8 +21,8 @@ org.tbk.bitcoin.regtest:
     coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
     mine-initial-amount-of-blocks: 101
     next-block-duration:
-      min-duration-in-millis: 1000
-      max-duration-in-millis: 2000
+      min-duration: PT1S
+      max-duration: PT2S
 
 # disable electrum daemon container autoconfig - we will create two electrum daemon container programmatically
 org.tbk.spring.testcontainer.electrum-daemon:
