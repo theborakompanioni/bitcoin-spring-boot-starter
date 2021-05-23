@@ -109,18 +109,15 @@ class ElectrumRegtestScenarioTest {
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.FIFTY_COINS, address1))
                 .flatMap(balanceOnAddress -> electrumRegtestActions.awaitSpendableBalance(Coin.FIFTY_COINS))
                 // FIRST PAYMENT 1000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(address2, Coin.valueOf(1000L)))
-                .flatMap(txId -> electrumRegtestActions.awaitTransaction(txId, 0))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(1000L)))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(1000L), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1000L), address2))
                 // SECOND PAYMENT 2000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(address2, Coin.valueOf(2000L)))
-                .flatMap(txId -> electrumRegtestActions.awaitTransaction(txId, 0))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(2000L)))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(2000L), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(3000L), address2))
                 // THIRD PAYMENT 3000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(address2, Coin.valueOf(4000L)))
-                .flatMap(txId -> electrumRegtestActions.awaitTransaction(txId, 0))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(4000L)))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(4000L), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(7000L), address2))
                 .blockFirst(Duration.ofSeconds(90));

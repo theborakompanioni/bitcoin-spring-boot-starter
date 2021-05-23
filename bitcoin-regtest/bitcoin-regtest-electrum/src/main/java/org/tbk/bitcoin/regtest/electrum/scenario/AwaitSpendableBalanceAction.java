@@ -16,27 +16,27 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public final class AwaitSpendableBalanceAction implements RegtestAction<Coin> {
-    private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final Duration defaultTimeout = Duration.ofSeconds(30);
+    private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final BitcoinjElectrumClient client;
     private final Coin expectedAmount;
-    private final Duration checkInterval;
     private final Duration timeout;
+    private final Duration checkInterval;
 
     public AwaitSpendableBalanceAction(BitcoinjElectrumClient client,
                                        Coin expectedAmount) {
-        this(client, expectedAmount, defaultCheckInterval, defaultTimeout);
+        this(client, expectedAmount, defaultTimeout, defaultCheckInterval);
     }
 
     public AwaitSpendableBalanceAction(BitcoinjElectrumClient client,
                                        Coin expectedAmount,
-                                       Duration checkInterval,
-                                       Duration timeout) {
+                                       Duration timeout,
+                                       Duration checkInterval) {
         this.client = requireNonNull(client);
         this.expectedAmount = requireNonNull(expectedAmount);
-        this.checkInterval = requireNonNull(checkInterval);
         this.timeout = requireNonNull(timeout);
+        this.checkInterval = requireNonNull(checkInterval);
 
         checkArgument(expectedAmount.isPositive(), "'expectedAmount' must be positive");
         checkArgument(!checkInterval.isNegative(), "'checkInterval' must be positive");

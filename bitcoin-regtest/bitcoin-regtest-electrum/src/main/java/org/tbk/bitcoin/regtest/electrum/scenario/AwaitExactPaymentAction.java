@@ -18,31 +18,31 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo> {
-    private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final Duration defaultTimeout = Duration.ofSeconds(30);
+    private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final BitcoinjElectrumClient client;
     private final Address address;
     private final Coin expectedAmount;
-    private final Duration checkInterval;
     private final Duration timeout;
+    private final Duration checkInterval;
 
     public AwaitExactPaymentAction(BitcoinjElectrumClient client,
                                    Coin expectedAmount,
                                    Address address) {
-        this(client, expectedAmount, address, defaultCheckInterval, defaultTimeout);
+        this(client, expectedAmount, address, defaultTimeout, defaultCheckInterval);
     }
 
     public AwaitExactPaymentAction(BitcoinjElectrumClient client,
                                    Coin expectedAmount,
                                    Address address,
-                                   Duration checkInterval,
-                                   Duration timeout) {
+                                   Duration timeout,
+                                   Duration checkInterval) {
         this.client = requireNonNull(client);
         this.address = requireNonNull(address);
         this.expectedAmount = requireNonNull(expectedAmount);
-        this.checkInterval = requireNonNull(checkInterval);
         this.timeout = requireNonNull(timeout);
+        this.checkInterval = requireNonNull(checkInterval);
 
         checkArgument(expectedAmount.isPositive(), "'expectedAmount' must be positive");
         checkArgument(!checkInterval.isNegative(), "'checkInterval' must be positive");
@@ -70,9 +70,9 @@ public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo
                         BitcoinjUtxos addressUnspent = this.client.getAddressUnspent(this.address);
 
                         log.trace("UTXOs: {} total", addressUnspent.getValue().toFriendlyString());
-                        addressUnspent.getUtxos().forEach(utxo -> {
+                        for (BitcoinjUtxo utxo : addressUnspent.getUtxos()) {
                             log.trace("       {} ({} in {})", utxo.getValue().toFriendlyString(), utxo.getTxPos(), utxo.getTxHash());
-                        });
+                        }
 
                         return addressUnspent.getUtxos();
                     })

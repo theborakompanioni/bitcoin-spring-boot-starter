@@ -17,31 +17,31 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction<Coin> {
-    private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final Duration defaultTimeout = Duration.ofSeconds(30);
+    private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final BitcoinjElectrumClient client;
     private final Address address;
     private final Coin expectedAmount;
-    private final Duration checkInterval;
     private final Duration timeout;
+    private final Duration checkInterval;
 
     public AwaitSpendableBalanceOnAddressAction(BitcoinjElectrumClient client,
                                                 Coin expectedAmount,
                                                 Address address) {
-        this(client, expectedAmount, address, defaultCheckInterval, defaultTimeout);
+        this(client, expectedAmount, address, defaultTimeout, defaultCheckInterval);
     }
 
     public AwaitSpendableBalanceOnAddressAction(BitcoinjElectrumClient client,
                                                 Coin expectedAmount,
                                                 Address address,
-                                                Duration checkInterval,
-                                                Duration timeout) {
+                                                Duration timeout,
+                                                Duration checkInterval) {
         this.client = requireNonNull(client);
         this.address = requireNonNull(address);
         this.expectedAmount = requireNonNull(expectedAmount);
-        this.checkInterval = requireNonNull(checkInterval);
         this.timeout = requireNonNull(timeout);
+        this.checkInterval = requireNonNull(checkInterval);
 
         checkArgument(expectedAmount.isPositive(), "'expectedAmount' must be positive");
         checkArgument(!checkInterval.isNegative(), "'checkInterval' must be positive");
