@@ -1,7 +1,6 @@
 package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimate;
 
@@ -14,20 +13,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confidence;
 
-@Disabled("bitcoiner.live seems to have DNS problems (2021-04-17)")
-public class BitcoinerliveFeeApiClientImplTest {
+class BitcoinerliveFeeApiClientImplTest {
     private static final String BASE_URL = "https://bitcoiner.live";
     private static final String API_TOKEN = null;
 
     private BitcoinerliveFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BitcoinerliveFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetFeeEstimatesLatest() {
+    void itShouldGetFeeEstimatesLatest() {
         List<Confidence> confidences = Arrays.stream(Confidence.values())
                 .filter(val -> val != Confidence.UNRECOGNIZED)
                 .collect(Collectors.toUnmodifiableList());
@@ -37,6 +35,8 @@ public class BitcoinerliveFeeApiClientImplTest {
                         .setConfidenceType(val)
                         .build())
                 .collect(Collectors.toList());
+
+        assertThat("sanity check - requests is not empty", requests, hasSize(greaterThan(0)));
 
         for (FeeEstimatesLatestRequest request : requests) {
             FeeEstimatesLatestResponse response = this.sut.feeEstimatesLatest(request);
@@ -69,7 +69,6 @@ public class BitcoinerliveFeeApiClientImplTest {
                 for (Estimate.Entry entry : total.values()) {
                     assertThat(entry.getUsd(), is(greaterThanOrEqualTo(0d)));
                     assertThat(entry.getSatoshi(), is(greaterThanOrEqualTo(0L)));
-
                 }
             }
         }
