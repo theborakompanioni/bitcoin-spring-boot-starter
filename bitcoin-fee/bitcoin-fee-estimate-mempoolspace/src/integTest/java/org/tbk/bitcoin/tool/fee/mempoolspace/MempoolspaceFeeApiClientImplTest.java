@@ -1,24 +1,39 @@
 package org.tbk.bitcoin.tool.fee.mempoolspace;
 
+import com.google.common.collect.ImmutableList;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class MempoolspaceFeeApiClientImplTest {
-    private static final String BASE_URL = "https://mempool.space";
+@Slf4j
+class MempoolspaceFeeApiClientImplTest {
+    private static final List<String> baseUrls = ImmutableList.<String>builder()
+            .add("https://mempool.space")
+            .add("https://mempool.emzy.de")
+            .add("https://mempool.ninja")
+            .add("https://mempool.bisq.services")
+            .build();
+
     private static final String API_TOKEN = null;
 
     private MempoolspaceFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
-        this.sut = new MempoolspaceFeeApiClientImpl(BASE_URL, API_TOKEN);
+    void setUp() {
+        String url = baseUrls.get(((int) Math.ceil(Math.random() * 4)) - 1);
+
+        log.debug("Using service {} for current test", url);
+
+        this.sut = new MempoolspaceFeeApiClientImpl(url, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetFeesRecommended() {
+    void itShouldGetFeesRecommended() {
         FeesRecommended feesRecommended = this.sut.feesRecommended();
 
         assertThat(feesRecommended, is(notNullValue()));
@@ -28,7 +43,7 @@ public class MempoolspaceFeeApiClientImplTest {
     }
 
     @Test
-    public void itShouldGetProjectedBlocks() {
+    void itShouldGetProjectedBlocks() {
         ProjectedMempoolBlocks projectedBlocks = this.sut.projectedBlocks();
 
         assertThat(projectedBlocks, is(notNullValue()));

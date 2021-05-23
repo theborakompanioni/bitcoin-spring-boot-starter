@@ -11,6 +11,10 @@ public class MempoolspaceFeeClientAutoConfigProperties extends AbstractFeeClient
 
     @Override
     protected String getDefaultBaseUrl() {
+        // alternatives are:
+        // - https://mempool.bisq.services
+        // - https://mempool.emzy.de
+        // - https://mempool.ninja
         return "https://mempool.space";
     }
 }
