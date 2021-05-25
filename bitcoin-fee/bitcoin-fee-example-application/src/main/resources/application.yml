@@ -20,3 +20,16 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 #logging.level.web: DEBUG
 
 # logging.level.org.tbk.bitcoin: DEBUG
+
+# enable or disable fee providers taking part in fee recommendations.
+# as most fee providers are included in this example application,
+# be aware that some providers will skew the result with rather low quality estimations.
+#org.tbk.bitcoin.tool.fee.bitcoinerlive.enabled: false
+#org.tbk.bitcoin.tool.fee.bitcore.enabled: false
+#org.tbk.bitcoin.tool.fee.bitgo.enabled: false
+#org.tbk.bitcoin.tool.fee.blockchaininfo.enabled: false
+#org.tbk.bitcoin.tool.fee.blockchair.enabled: false
+#org.tbk.bitcoin.tool.fee.blockcypher.enabled: true
+#org.tbk.bitcoin.tool.fee.blockstreaminfo.enabled: false
+#org.tbk.bitcoin.tool.fee.btcdotcom.enabled: false
+#org.tbk.bitcoin.tool.fee.earndotcom.enabled: false

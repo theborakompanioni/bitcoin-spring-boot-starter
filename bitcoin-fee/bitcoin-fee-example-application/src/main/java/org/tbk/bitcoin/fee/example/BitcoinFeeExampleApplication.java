@@ -47,7 +47,7 @@ public class BitcoinFeeExampleApplication {
         return args -> {
             log.info("=====================");
             List<Duration> durations = IntStream.range(0, 12)
-                    .mapToObj(val -> Duration.ofMinutes(val * 30))
+                    .mapToObj(val -> Duration.ofMinutes(val * 30L))
                     .collect(Collectors.toList());
 
             for (Duration duration : durations) {
