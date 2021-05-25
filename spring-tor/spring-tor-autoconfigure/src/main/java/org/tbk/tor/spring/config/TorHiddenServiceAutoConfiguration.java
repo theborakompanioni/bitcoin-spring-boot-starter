@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
@@ -35,8 +34,7 @@ public class TorHiddenServiceAutoConfiguration {
     @ConditionalOnMissingBean(name = "applicationHiddenServiceDefinition")
     @ConditionalOnBean(ServerProperties.class)
     @Conditional(OnAutoPublishEnabledAndServerPortSpecified.class)
-    public HiddenServiceDefinition applicationHiddenServiceDefinition(ServerProperties serverProperties,
-                                                                      TorAutoConfigProperties properties) {
+    public HiddenServiceDefinition applicationHiddenServiceDefinition(ServerProperties serverProperties) {
         Integer port = serverProperties.getPort();
         if (port == null) {
             throw new IllegalStateException("Cannot publish hidden service for application. " +
@@ -87,6 +85,36 @@ public class TorHiddenServiceAutoConfiguration {
     @AutoConfigureBefore(TorAutoConfiguration.class)
     @AutoConfigureAfter(ManagementContextAutoConfiguration.class)
     public static class ManagementApplicationHiddenServicePublishAutoConfiguration {
+
+        private final TorAutoConfigProperties properties;
+
+        public ManagementApplicationHiddenServicePublishAutoConfiguration(TorAutoConfigProperties properties) {
+            this.properties = requireNonNull(properties);
+        }
+
+        @Bean("applicationManagementHiddenServiceDefinition")
+        @ConditionalOnMissingBean(name = "applicationManagementHiddenServiceDefinition")
+        @ConditionalOnBean(ManagementServerProperties.class)
+        @Conditional(OnAutoPublishEnabledAndManagementServerPortSpecified.class)
+        public HiddenServiceDefinition applicationManagementHiddenServiceDefinition(ManagementServerProperties managementServerProperties) {
+            Integer managementPort = managementServerProperties.getPort();
+            if (managementPort == null) {
+                throw new IllegalStateException("Cannot publish hidden service for application management. " +
+                        "Please specify 'management.server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
+            }
+
+            String hiddenServiceDir = String.format("%s/%s", properties.getWorkingDirectory(), "spring_boot_app_management");
+
+            return HiddenServiceDefinition.builder()
+                    .directory(new File(hiddenServiceDir))
+                    .virtualPort(managementPort)
+                    .port(managementPort)
+                    .host(Optional.ofNullable(managementServerProperties.getAddress())
+                            .map(InetAddress::getHostAddress)
+                            .orElseGet(() -> InetAddress.getLoopbackAddress().getHostName()))
+                    .build();
+        }
+
         static class OnAutoPublishEnabledAndManagementServerPortSpecified extends AllNestedConditions {
 
             OnAutoPublishEnabledAndManagementServerPortSpecified() {
@@ -105,30 +133,6 @@ public class TorHiddenServiceAutoConfiguration {
             static class OnMissingBean {
                 // this conditional is necessary till netlayer supports more than one hidden service in torrc file
             }
-        }
-
-        @Bean("applicationManagementHiddenServiceDefinition")
-        @ConditionalOnMissingBean(name = "applicationManagementHiddenServiceDefinition")
-        @ConditionalOnBean(ManagementServerProperties.class)
-        @Conditional(OnAutoPublishEnabledAndManagementServerPortSpecified.class)
-        public HiddenServiceDefinition applicationManagementHiddenServiceDefinition(ManagementServerProperties managementServerProperties,
-                                                                                    TorAutoConfigProperties properties) {
-            Integer managementPort = managementServerProperties.getPort();
-            if (managementPort == null) {
-                throw new IllegalStateException("Cannot publish hidden service for application management. " +
-                        "Please specify 'management.server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
-            }
-
-            String hiddenServiceDir = String.format("%s/%s", properties.getWorkingDirectory(), "spring_boot_app_management");
-
-            return HiddenServiceDefinition.builder()
-                    .directory(new File(hiddenServiceDir))
-                    .virtualPort(managementPort)
-                    .port(managementPort)
-                    .host(Optional.ofNullable(managementServerProperties.getAddress())
-                            .map(InetAddress::getHostAddress)
-                            .orElseGet(() -> InetAddress.getLoopbackAddress().getHostName()))
-                    .build();
         }
     }
 }
