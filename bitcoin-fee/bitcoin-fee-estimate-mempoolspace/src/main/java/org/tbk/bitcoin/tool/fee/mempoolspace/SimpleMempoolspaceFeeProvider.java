@@ -5,6 +5,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl.SatPerVbyteImplBuilder;
+import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
 
-    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+    private static final SimpleProviderInfo defaultProviderInfo = SimpleProviderInfo.builder()
             .name("mempool.space-simple")
             .description("Simple fee recommendation")
             .build();
@@ -26,6 +27,10 @@ public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
     private final MempoolspaceFeeApiClient client;
 
     public SimpleMempoolspaceFeeProvider(MempoolspaceFeeApiClient client) {
+        this(client, defaultProviderInfo);
+    }
+
+    public SimpleMempoolspaceFeeProvider(MempoolspaceFeeApiClient client, ProviderInfo providerInfo) {
         super(providerInfo);
 
         this.client = requireNonNull(client);

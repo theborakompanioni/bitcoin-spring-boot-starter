@@ -7,6 +7,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse.FeeUnit;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
 import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedMempoolBlocks.ProjectedBlock;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import reactor.core.publisher.Flux;
@@ -27,7 +28,7 @@ public class ProjectedBlocksMempoolspaceFeeProvider extends AbstractFeeProvider 
         FeeUnit get(FeeRecommendationRequest request, ProjectedBlock projectedBlock);
     }
 
-    private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
+    private static final ProviderInfo defaultProviderInfo = SimpleProviderInfo.builder()
             .name("mempool.space")
             .description("Fee recommendation using projected blocks of the mempool")
             .build();
@@ -42,20 +43,31 @@ public class ProjectedBlocksMempoolspaceFeeProvider extends AbstractFeeProvider 
     private final FeesFromProjectedBlockStrategy feesFromProjectedBlockSupplier;
 
     public ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client) {
-        this(client, DEFAULT_CACHE_TIMEOUT);
+        this(client, defaultProviderInfo);
     }
 
-    @VisibleForTesting
-    ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client, Duration cacheDuration) {
-        this(client, DEFAULT_STRATEGY, cacheDuration);
+    public ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client, ProviderInfo providerInfo) {
+        this(client, providerInfo, DEFAULT_STRATEGY);
     }
 
     public ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client,
                                                   FeesFromProjectedBlockStrategy feesFromProjectedBlockSupplier) {
-        this(client, feesFromProjectedBlockSupplier, DEFAULT_CACHE_TIMEOUT);
+        this(client, defaultProviderInfo, feesFromProjectedBlockSupplier, DEFAULT_CACHE_TIMEOUT);
+    }
+
+    @VisibleForTesting
+    ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client, Duration cacheDuration) {
+        this(client, defaultProviderInfo, DEFAULT_STRATEGY, cacheDuration);
     }
 
     public ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client,
+                                                  ProviderInfo providerInfo,
+                                                  FeesFromProjectedBlockStrategy feesFromProjectedBlockSupplier) {
+        this(client, providerInfo, feesFromProjectedBlockSupplier, DEFAULT_CACHE_TIMEOUT);
+    }
+
+    public ProjectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient client,
+                                                  ProviderInfo providerInfo,
                                                   FeesFromProjectedBlockStrategy feesFromProjectedBlockSupplier,
                                                   Duration cacheDuration) {
         super(providerInfo);
