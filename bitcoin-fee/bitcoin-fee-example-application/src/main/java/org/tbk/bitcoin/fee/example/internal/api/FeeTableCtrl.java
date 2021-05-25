@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import lombok.RequiredArgsConstructor;
@@ -107,9 +108,8 @@ public class FeeTableCtrl {
                         .orElseGet(Collections::emptyList)));
 
 
-        Map<Duration, BigDecimal> values = durationToFeeRecommendations.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-
+        Map<Duration, BigDecimal> averageValues = durationToFeeRecommendations.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
                     DoubleSummaryStatistics feeSummaryStatistics = entry.getValue().stream()
                             .map(FeeRecommendationResponse::getFeeRecommendations)
                             .flatMap(Collection::stream)
@@ -120,11 +120,26 @@ public class FeeTableCtrl {
                     return BigDecimal.valueOf(feeSummaryStatistics.getAverage());
                 }));
 
+        // as not all providers will return results for every duration, the average values per duration
+        // might container higher values for longer durations - this should be prevented
+        ImmutableMap.Builder<Duration, BigDecimal> rectifiedAverageValuesBuilder = ImmutableMap.builder();
+        BigDecimal lastValue = averageValues.get(Duration.ZERO);
+        for (Duration duration : durations) {
+            BigDecimal currentValue = averageValues.get(duration);
+            if (currentValue.compareTo(lastValue) > 0) {
+                rectifiedAverageValuesBuilder.put(duration, lastValue);
+            } else {
+                rectifiedAverageValuesBuilder.put(duration, currentValue);
+                lastValue = currentValue;
+            }
+        }
+        Map<Duration, BigDecimal> rectifiedAverageValues = rectifiedAverageValuesBuilder.build();
+
         return FeeTableResponse.newBuilder()
                 .addColumn(FeeTableResponse.Column.newBuilder()
                         .setText("(without conf value)")
                         .build())
-                .addAllRow(values.entrySet().stream()
+                .addAllRow(rectifiedAverageValues.entrySet().stream()
                         .sorted(Comparator.comparingLong(val -> val.getKey().toMillis()))
                         .map(val -> FeeTableResponse.Row.newBuilder()
                                 .setHeader(FeeTableResponse.Row.RowHeader.newBuilder()
@@ -166,7 +181,7 @@ public class FeeTableCtrl {
 
         RowEntry missingEstimationRowEntry = RowEntry.newBuilder()
                 .setText("-")
-                .setValue(0d)
+                .setValue(1d)
                 .build();
 
         List<FeeTableResponse.Row> rows = feeTable.getRowList().stream()
