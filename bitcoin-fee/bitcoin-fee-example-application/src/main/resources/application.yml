@@ -31,5 +31,5 @@ logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappi
 #org.tbk.bitcoin.tool.fee.blockchair.enabled: false
 #org.tbk.bitcoin.tool.fee.blockcypher.enabled: true
 #org.tbk.bitcoin.tool.fee.blockstreaminfo.enabled: false
-#org.tbk.bitcoin.tool.fee.btcdotcom.enabled: false
+org.tbk.bitcoin.tool.fee.btcdotcom.enabled: false # disabled as it gives rather bad quality estimates (on 2021-05-27)
 #org.tbk.bitcoin.tool.fee.earndotcom.enabled: false
