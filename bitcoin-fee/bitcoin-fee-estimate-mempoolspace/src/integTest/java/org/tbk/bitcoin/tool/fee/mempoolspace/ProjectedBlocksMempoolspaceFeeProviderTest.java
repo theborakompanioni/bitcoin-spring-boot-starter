@@ -14,20 +14,20 @@ import java.util.stream.IntStream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ProjectedBlocksMempoolspaceFeeProviderTest {
+class ProjectedBlocksMempoolspaceFeeProviderTest {
     private static final String BASE_URL = "https://mempool.space";
     private static final String API_TOKEN = null;
 
     private ProjectedBlocksMempoolspaceFeeProvider sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MempoolspaceFeeApiClientImpl mempoolspaceFeeApiClient = new MempoolspaceFeeApiClientImpl(BASE_URL, API_TOKEN);
         this.sut = new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, Duration.ofSeconds(60));
     }
 
     @Test
-    public void itShouldNotSupportDurationTargetOverEightyMinutes() {
+    void itShouldNotSupportDurationTargetOverEightyMinutes() {
         FeeRecommendationRequest request = FeeRecommendationRequestImpl.builder()
                 .durationTarget(Duration.ofMinutes(90))
                 .build();
@@ -40,8 +40,10 @@ public class ProjectedBlocksMempoolspaceFeeProviderTest {
     }
 
     @Test
-    public void itShouldGetFeesRecommendation() {
-        List<Duration> durations = IntStream.range(0, 80)
+    void itShouldGetFeesRecommendation() {
+        // we cannot ensure that mempool.space block projection based fee recommendations
+        // have more than 1 block -> so at least just ensure that first block estimates are present
+        List<Duration> durations = IntStream.range(0, 10)
                 .mapToObj(Duration::ofMinutes)
                 .collect(Collectors.toList());
 
