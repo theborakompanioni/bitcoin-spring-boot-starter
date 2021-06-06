@@ -28,7 +28,7 @@ $ torsocks -p 33243 curl kizeqfbins5mp3pdsvcn2baqaqfmrvv7fx5gak2flfmagffhpetkjiq
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Tor Container Example Application</title>
 </head>
 <body>
