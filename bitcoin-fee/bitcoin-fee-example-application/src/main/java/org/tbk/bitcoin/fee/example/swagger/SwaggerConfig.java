@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.fee.example.api.FeeCtrl;
-import org.tbk.bitcoin.fee.example.internal.api.FeeTableCtrl;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -26,19 +25,24 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public SecurityConfiguration securityConfiguration() {
+    public SecurityConfiguration swaggerSecurityConfiguration() {
         return SecurityConfigurationBuilder.builder()
                 .enableCsrfSupport(true)
                 .build();
     }
 
     @Bean
-    public ApiInfo apiInfo() {
+    public Contact swaggerContact() {
+        return new Contact("tbk", "", "");
+    }
+
+    @Bean
+    public ApiInfo swaggerApiInfo(Contact swaggerContact) {
         return new ApiInfoBuilder()
                 .title("Bitcoin Fee Recommendation API")
                 .description("A Bitcoin Fee Recommendation API built with bitcoin-spring-boot-starter.")
                 .termsOfServiceUrl("https://github.com/theborakompanioni/bitcoin-spring-boot-starter")
-                .contact(new Contact("tbk", "", ""))
+                .contact(swaggerContact)
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE")
                 .version(implementationVersion)
@@ -46,10 +50,10 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public Docket feeApi() {
+    public Docket swaggerFeeApiDocket(ApiInfo swaggerApiInfo) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("fee")
-                .apiInfo(apiInfo())
+                .apiInfo(swaggerApiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(FeeCtrl.class.getPackageName()))
                 .build();

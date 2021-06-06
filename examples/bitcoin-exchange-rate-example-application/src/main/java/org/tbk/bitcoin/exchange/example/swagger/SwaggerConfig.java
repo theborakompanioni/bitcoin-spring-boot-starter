@@ -26,19 +26,24 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public SecurityConfiguration securityConfiguration() {
+    public SecurityConfiguration swaggerSecurityConfiguration() {
         return SecurityConfigurationBuilder.builder()
                 .enableCsrfSupport(true)
                 .build();
     }
 
     @Bean
-    public ApiInfo apiInfo() {
+    public Contact swaggerContact() {
+        return new Contact("tbk", "", "");
+    }
+
+    @Bean
+    public ApiInfo swaggerApiInfo(Contact swaggerContact) {
         return new ApiInfoBuilder()
                 .title("Bitcoin Exchange Rate API")
                 .description("A Bitcoin Exchange Rate API built with bitcoin-spring-boot-starter.")
                 .termsOfServiceUrl("https://github.com/theborakompanioni/bitcoin-spring-boot-starter")
-                .contact(new Contact("tbk", "", ""))
+                .contact(swaggerContact)
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE")
                 .version(implementationVersion)
@@ -46,10 +51,10 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public Docket currencyApi() {
+    public Docket swaggerCurrencyApiDocket(ApiInfo swaggerApiInfo) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("currency")
-                .apiInfo(apiInfo())
+                .apiInfo(swaggerApiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(CurrencyUnitCtrl.class.getPackageName()))
                 .build();
@@ -57,10 +62,10 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public Docket exchangeApi() {
+    public Docket swaggerExchangeApiDocket(ApiInfo swaggerApiInfo) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("exchange")
-                .apiInfo(apiInfo())
+                .apiInfo(swaggerApiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(ExchangeRateCtrl.class.getPackageName()))
                 .build();
