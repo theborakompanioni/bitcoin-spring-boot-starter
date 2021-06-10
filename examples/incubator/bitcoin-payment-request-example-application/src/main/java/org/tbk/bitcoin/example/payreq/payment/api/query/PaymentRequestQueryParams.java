@@ -1,10 +1,11 @@
-package org.tbk.bitcoin.example.payreq.api.query;
+package org.tbk.bitcoin.example.payreq.payment.api.query;
 
 import lombok.Data;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
+import org.tbk.bitcoin.example.payreq.common.Network;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.*;
@@ -24,7 +25,7 @@ public class PaymentRequestQueryParams {
     private BigDecimal amount;
 
     @Nullable
-    @Size(min = 0, max = 64)
+    @Size(max = 64)
     private String label;
 
     @Nullable
@@ -50,7 +51,7 @@ public class PaymentRequestQueryParams {
 
     public NetworkParameters getBitcoinjNetwork() {
         return getNetwork()
-                .flatMap(NetworkQueryParam::ofNullable)
+                .flatMap(Network::ofNullable)
                 .orElseGet(MainNetParams::get);
     }
 
@@ -58,18 +59,4 @@ public class PaymentRequestQueryParams {
         return getAmount()
                 .map(Coin::parseCoin);
     }
-
-    /*public static final class PaymentRequestQueryParamsValidator implements Validator {
-        @Override
-        public boolean supports(Class<?> clazz) {
-            return clazz == PaymentRequestQueryParams.class;
-        }
-
-        @Override
-        public void validate(Object target, Errors errors) {
-            PaymentRequestQueryParams properties = (PaymentRequestQueryParams) target;
-
-
-        }
-    }*/
 }

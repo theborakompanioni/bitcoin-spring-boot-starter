@@ -13,6 +13,12 @@ dependencies {
 
     implementation "io.projectreactor:reactor-core"
 
+    implementation 'org.flywaydb:flyway-core'
+    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
+    implementation 'com.github.gwenn:sqlite-dialect:0.1.2'
+
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

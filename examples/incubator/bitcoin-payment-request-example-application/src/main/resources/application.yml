@@ -31,6 +31,15 @@ management.info.lndJsonRpc.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
 management.health.lndJsonRpc.enabled: true
 
+spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+spring.jpa.properties.hibernate.jdbc.time_zone: UTC
+#spring.datasource.url: jdbc:postgresql://localhost/database_name
+#spring.datasource.username: username
+#spring.datasource.password: password
+#spring.datasource.hikari.connectionTimeout: 30000
+#spring.datasource.hikari.idleTimeout: 45000
+#spring.datasource.hikari.maxLifetime: 1800000
+
 org.tbk.spring.testcontainer.lnd:
   enabled: true
   restport: 20080

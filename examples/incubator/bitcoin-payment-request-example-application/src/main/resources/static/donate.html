@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Donate</title>
+    <link rel="stylesheet" href="css/milligram.css"/>
+    <link rel="stylesheet" href="donate.css" />
+</head>
+<body>
+<div id="tbk-btc-invoice-form-container">
+    <div class="container">
+        <div id="header">
+            <div class="row">
+                <div class="column">
+                    <span class="logo">
+                        <img width="105px" src="images/logo.png">
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <h1 id="h1">Donate bitcoin</h1>
+                </div>
+            </div>
+        </div>
+
+        <div id="paymentForm">
+            <form id="pay" action="/api/v1/invoice/form" method="post" autocomplete="off">
+                    <label for="amountField">Amount (in USD)</label>
+                    <input id="amountField"
+                           type="number" name="amount" placeholder="USD"
+                           min="1" size="5" required>
+                    <label for="commentField">Comment</label>
+                    <textarea id="commentField" placeholder="The Times 03/Jan/2009 Chancellor on brink of second bailout for banks."></textarea>
+
+                <input id="main-button" class="button-primary" type="submit" value="Donate">
+            </form>
+        </div>
+
+        <div id="footer">
+        </div>
+    </div>
+</div>
+</body>
+</html>

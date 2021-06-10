@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.example.payreq.api;
+package org.tbk.bitcoin.example.payreq.payment.api;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.zxing.BarcodeFormat;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
-import org.tbk.bitcoin.example.payreq.api.query.PaymentRequestQueryParams;
+import org.tbk.bitcoin.example.payreq.payment.api.query.PaymentRequestQueryParams;
 
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.util.Map;
 
-import static org.tbk.bitcoin.example.payreq.api.PaymentRequestUrlHelper.toPaymentUrl;
+import static org.tbk.bitcoin.example.payreq.payment.api.PaymentRequestUrlHelper.toPaymentUrl;
 
 @RestController
 @RequestMapping("/api/v1/payment/request")

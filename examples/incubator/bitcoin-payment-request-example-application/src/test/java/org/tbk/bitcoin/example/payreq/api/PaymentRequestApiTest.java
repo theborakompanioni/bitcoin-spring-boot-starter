@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.tbk.bitcoin.example.payreq.payment.api.PaymentRequestApi;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -91,7 +92,6 @@ class PaymentRequestApiTest {
                 .queryParam("network", "regtest")
                 .queryParam("address", address.toString())
                 .accept(MediaType.IMAGE_PNG))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 }

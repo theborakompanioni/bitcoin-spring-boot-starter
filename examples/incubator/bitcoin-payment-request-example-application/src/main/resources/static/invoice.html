@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Invoice</title>
+    <link rel="stylesheet" href="css/milligram.css">
+</head>
+<body>
+<h1>Invoice!</h1>
+
+<div id="loading-indicator">
+</div>
+<div id="error-indicator" hidden>
+</div>
+
+<div id="tbk-btc-invoice-container" hidden>
+</div>
+</body>
+
+<script>
+    const httpGetAsync = (url, onSuccess, onError) => {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4) {
+                if (xmlHttp.status === 200) {
+                    onSuccess(xmlHttp.responseText);
+                } else {
+                    onError(xmlHttp);
+                }
+            }
+        }
+
+        xmlHttp.open("GET", url, true); // true for asynchronous
+        xmlHttp.send(null);
+    };
+
+    const errorIndicatorElement = document.getElementById("error-indicator");
+    const loadingIndicatorElement = document.getElementById("loading-indicator");
+    loadingIndicatorElement.textContent = "loading...";
+
+    let queryParams = new URLSearchParams(window.location.search);
+    let invoiceId = queryParams.get("invoice_id");
+
+    httpGetAsync("/api/v1/invoice/" + invoiceId, (invoiceJson) => {
+        loadingIndicatorElement.textContent = "";
+
+        const invoiceMap = JSON.parse(invoiceJson);
+
+        const invoiceElement = document.getElementById("tbk-btc-invoice-container")
+
+        invoiceElement.textContent = JSON.stringify(invoiceMap);
+        invoiceElement.removeAttribute("hidden");
+    }, (e) => {
+        loadingIndicatorElement.textContent = "";
+
+        errorIndicatorElement.textContent = "error : (";
+        errorIndicatorElement.removeAttribute("hidden");
+    });
+
+</script>
+</html>

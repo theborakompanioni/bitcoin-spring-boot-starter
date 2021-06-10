@@ -8,9 +8,14 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 
+import java.util.TimeZone;
+
 @Slf4j
 @SpringBootApplication
 public class BitcoinPaymentRequestExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()

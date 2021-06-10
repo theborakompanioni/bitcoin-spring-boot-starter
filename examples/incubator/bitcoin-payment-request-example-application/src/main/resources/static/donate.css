@@ -1,0 +1,36 @@
+body {
+  background-color: black;
+  /*font-family: monospace;*/
+}
+
+#tbk-btc-invoice-form-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    width: 360px;
+
+    background-color: #efefef;
+
+    border-radius: 21px;
+    padding: 21px 10px 10px 10px;
+}
+
+#header {
+    text-align: center;
+}
+
+#footer {
+    text-align: center;
+}
+
+#h1 {
+    margin: 21px 0;
+    font-size: 32px;
+}
+
+#tbk-btc-invoice-form-container textarea {
+  resize: vertical; /* user can resize vertically, but width is fixed */
+}
