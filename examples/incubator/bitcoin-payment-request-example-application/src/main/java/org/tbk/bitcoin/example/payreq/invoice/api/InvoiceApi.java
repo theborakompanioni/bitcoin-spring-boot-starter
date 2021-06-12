@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tbk.bitcoin.example.payreq.invoice.Invoice;
+import org.tbk.bitcoin.example.payreq.invoice.Invoice.InvoiceId;
 import org.tbk.bitcoin.example.payreq.invoice.Invoices;
 
 import javax.transaction.Transactional;
@@ -26,7 +27,9 @@ public class InvoiceApi {
     @Transactional
     @GetMapping(path = "/{id}")
     public ResponseEntity<Invoice> get(@PathVariable UUID id) {
-        Invoice entity = invoiceRequestRepository.findById(id)
+        var invoiceId = InvoiceId.of(id.toString());
+
+        Invoice entity = invoiceRequestRepository.findById(invoiceId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found"));
 
         return ResponseEntity.ok(entity);

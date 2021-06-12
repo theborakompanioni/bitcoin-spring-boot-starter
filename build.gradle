@@ -8,6 +8,10 @@ buildscript {
         springBootVersion = '2.5.0.RELEASE'
         springBootGradlePluginVersion = '2.5.0'
         protobufGradleVersion = '0.8.15'
+        jmoleculesBomVersion = '2021.0.1'
+        // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
+        // drawback: has issues on project import in intellij; '1.10.14' would work with intellij but does not work on command line : /
+        bytebuddyPluginVersion = '1.10.22'
     }
     repositories {
         mavenCentral()
@@ -15,6 +19,14 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootGradlePluginVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${protobufGradleVersion}")
+
+        // some example projects use jmolecules which allows syntactic sugar via bytebuddy
+        // bytebuddy plugin is disabled by default and must be manually enabled via
+        // 1) `apply plugin: 'net.bytebuddy.byte-buddy-gradle-plugin'`
+        // 2) specify bytebuddy plugin `byteBuddy { transformation { plugin = JMoleculesPlugin.class } }`
+        // by submodules.
+        classpath platform("org.jmolecules:jmolecules-bom:${jmoleculesBomVersion}")
+        classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
     }
 }
 
@@ -24,6 +36,7 @@ plugins {
     id 'nebula.lint' version '16.17.0'
     id 'nebula.project' version '7.0.9'
     id 'nebula.info' version '9.3.0'
+    id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
     id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
 }

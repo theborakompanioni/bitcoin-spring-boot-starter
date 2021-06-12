@@ -1,8 +1,8 @@
 package org.tbk.bitcoin.example.payreq.invoice;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.jmolecules.spring.AssociationResolver;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.tbk.bitcoin.example.payreq.invoice.Invoice.InvoiceId;
 
-import java.util.UUID;
-
-public interface Invoices extends JpaRepository<Invoice, UUID> {
+public interface Invoices extends PagingAndSortingRepository<Invoice, InvoiceId>, AssociationResolver<Invoice, InvoiceId> {
 }
