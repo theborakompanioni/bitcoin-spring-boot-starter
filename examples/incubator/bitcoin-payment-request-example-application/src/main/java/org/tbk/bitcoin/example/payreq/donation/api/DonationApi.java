@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.example.payreq.invoice.api;
+package org.tbk.bitcoin.example.payreq.donation.api;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -9,27 +9,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.tbk.bitcoin.example.payreq.invoice.Invoice;
-import org.tbk.bitcoin.example.payreq.invoice.Invoice.InvoiceId;
-import org.tbk.bitcoin.example.payreq.invoice.Invoices;
+import org.tbk.bitcoin.example.payreq.donation.Donation;
+import org.tbk.bitcoin.example.payreq.donation.Donations;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/invoice")
+@RequestMapping("/api/v1/donation")
 @RequiredArgsConstructor
-public class InvoiceApi {
+public class DonationApi {
 
     @NonNull
-    private final Invoices invoices;
+    private final Donations donations;
 
     @Transactional
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Invoice> get(@PathVariable UUID id) {
-        var invoiceId = InvoiceId.of(id.toString());
+    public ResponseEntity<Donation> get(@PathVariable UUID id) {
+        var donationId = Donation.DonationId.of(id.toString());
 
-        Invoice entity = invoices.findById(invoiceId)
+        Donation entity = donations.findById(donationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found"));
 
         return ResponseEntity.ok(entity);

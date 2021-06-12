@@ -33,6 +33,7 @@ management.health.lndJsonRpc.enabled: true
 
 spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
 spring.jpa.properties.hibernate.jdbc.time_zone: UTC
+
 #spring.datasource.url: jdbc:postgresql://localhost/database_name
 #spring.datasource.username: username
 #spring.datasource.password: password

@@ -21,7 +21,7 @@ class OnChainInvoiceService implements InvoiceService {
     private final BitcoinClient bitcoinClient;
 
     @NonNull
-    private final Invoices invoiceRequestRepository;
+    private final Invoices invoices;
 
     @Override
     @Transactional
@@ -49,6 +49,6 @@ class OnChainInvoiceService implements InvoiceService {
             throw new RuntimeException(e);
         }
 
-        return invoiceRequestRepository.save(invoice);
+        return invoices.save(invoice);
     }
 }

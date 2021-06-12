@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Donation</title>
+    <link rel="stylesheet" href="css/milligram.css">
+</head>
+<body>
+<h1>Invoice!</h1>
+
+<div id="loading-indicator">
+</div>
+<div id="error-indicator" hidden>
+</div>
+
+<div id="tbk-btc-donation-container" hidden>
+</div>
+</body>
+
+<script>
+    const httpGetAsync = (url, onSuccess, onError) => {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4) {
+                if (xmlHttp.status === 200) {
+                    onSuccess(xmlHttp.responseText);
+                } else {
+                    onError(xmlHttp);
+                }
+            }
+        }
+
+        xmlHttp.open("GET", url, true); // true for asynchronous
+        xmlHttp.send(null);
+    };
+
+    const errorIndicatorElement = document.getElementById("error-indicator");
+    const loadingIndicatorElement = document.getElementById("loading-indicator");
+    loadingIndicatorElement.textContent = "loading...";
+
+    let queryParams = new URLSearchParams(window.location.search);
+    let donationId = queryParams.get("donation_id");
+
+    httpGetAsync("/api/v1/donation/" + donationId, (donationJson) => {
+        loadingIndicatorElement.textContent = "";
+
+        const donationMap = JSON.parse(donationJson);
+
+        const donationElement = document.getElementById("tbk-btc-donation-container")
+
+        donationElement.textContent = JSON.stringify(donationMap);
+        donationElement.removeAttribute("hidden");
+    }, (e) => {
+        loadingIndicatorElement.textContent = "";
+
+        errorIndicatorElement.textContent = "error : (";
+        errorIndicatorElement.removeAttribute("hidden");
+    });
+
+</script>
+</html>

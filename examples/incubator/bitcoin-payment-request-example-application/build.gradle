@@ -18,6 +18,15 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
     implementation project(':lnd-grpc-client:lnd-grpc-client-starter')
 
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-starter')
+    implementation project(':spring-jsr354:spring-jsr354-starter')
+    implementation project(':xchange-jsr354:xchange-jsr354-starter')
+    implementation project(':spring-xchange:spring-xchange-starter')
+
+    implementation "org.javamoney:moneta:${monetaVersion}"
+
+    implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
+
     implementation "io.projectreactor:reactor-core"
 
     implementation 'org.flywaydb:flyway-core'
