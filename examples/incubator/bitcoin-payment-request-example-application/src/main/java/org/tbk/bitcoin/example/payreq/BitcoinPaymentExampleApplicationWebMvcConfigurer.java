@@ -73,7 +73,7 @@ public class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcC
         objectMapper
                 .registerModule(internalModule)
                 .registerModule(new JMoleculesModule())
-                .registerModule(new MoneyModule())
+                .registerModule(new MoneyModule().withQuotedDecimalNumbers())
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
                 .enable(SerializationFeature.INDENT_OUTPUT)

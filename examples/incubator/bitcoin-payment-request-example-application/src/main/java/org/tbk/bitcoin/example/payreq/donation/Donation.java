@@ -38,6 +38,8 @@ public class Donation extends AbstractAggregateRoot<Invoice> implements Aggregat
     @Column(name = "payment_request_id")
     private final Association<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestIdentifier> paymentRequest;
 
+    private String description;
+
     private String paymentUrl;
 
     private String comment;

@@ -2,8 +2,11 @@ package org.tbk.bitcoin.example.payreq.donation;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.bitcoinj.core.Coin;
+import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.tbk.bitcoin.example.payreq.common.Currencies;
 import org.tbk.bitcoin.example.payreq.common.Network;
 import org.tbk.bitcoin.example.payreq.donation.api.query.DonationForm;
 import org.tbk.bitcoin.example.payreq.order.LineItem;
@@ -12,7 +15,16 @@ import org.tbk.bitcoin.example.payreq.order.OrderService;
 import org.tbk.bitcoin.example.payreq.payment.BitcoinOnchainPaymentRequest;
 import org.tbk.bitcoin.example.payreq.payment.PaymentRequestService;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.convert.ConversionQueryBuilder;
+import javax.money.convert.CurrencyConversion;
+import javax.money.convert.MonetaryConversions;
+import java.math.BigInteger;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
@@ -36,7 +48,23 @@ class DonationServiceImpl implements DonationService {
                 .map(Network::valueOf)
                 .orElse(Network.mainnet);
 
-        LineItem lineItem = new LineItem("Donation", 123);
+        CurrencyUnit sourceCurrency = Monetary.getCurrency(form.getCurrency());
+
+        CurrencyConversion toBtcConversion = MonetaryConversions.getConversion(ConversionQueryBuilder.of()
+                .setBaseCurrency(sourceCurrency)
+                .setTermCurrency(Currencies.BTC)
+                .build());
+
+        Money sourceMonetaryAmount = Money.of(form.getAmount(), sourceCurrency);
+        Money bitcoinMonetaryAmount = sourceMonetaryAmount.with(toBtcConversion)
+                .with(Monetary.getRounding(Currencies.BTC));
+
+        BigInteger satoshiMonetaryAmount = bitcoinMonetaryAmount.getNumberStripped().unscaledValue();
+
+        Coin donationAmount = Coin.valueOf(satoshiMonetaryAmount.longValue());
+
+        String lineItemName = "Donation/" + donationAmount.toFriendlyString();
+        LineItem lineItem = new LineItem(lineItemName, satoshiMonetaryAmount.longValue());
 
         Order order = orderService.createOrder(Collections.singletonList(lineItem));
 
@@ -44,7 +72,12 @@ class DonationServiceImpl implements DonationService {
         Instant paymentRequestValidUntil = now.plus(5, ChronoUnit.MINUTES);
         BitcoinOnchainPaymentRequest paymentRequest = (BitcoinOnchainPaymentRequest) paymentRequestService.create(order, network, paymentRequestValidUntil);
 
+        String description = String.format("Donation of %s (%s) on %s",
+                donationAmount.toFriendlyString(), sourceMonetaryAmount,
+                ZonedDateTime.ofInstant(now, ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT));
+
         Donation donation = new Donation(order, paymentRequest);
+        donation.setDescription(description);
         donation.setComment(form.getComment().orElse(null));
 
         return donations.save(donation);

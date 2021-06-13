@@ -18,6 +18,9 @@ public class DonationForm {
     @Digits(integer = 8, fraction = 8)
     private BigDecimal amount;
 
+    @NotNull
+    private String currency;
+
     @Nullable
     @Pattern(regexp = "(mainnet|testnet|regtest)")
     private String network;
@@ -32,11 +35,6 @@ public class DonationForm {
 
     public Optional<String> getComment() {
         return Optional.ofNullable(comment);
-    }
-
-    public Optional<String> getAmount() {
-        return Optional.ofNullable(amount)
-                .map(BigDecimal::toPlainString);
     }
 
     public NetworkParameters getBitcoinjNetwork() {

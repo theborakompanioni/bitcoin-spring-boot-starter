@@ -29,7 +29,7 @@ public class V1__init extends BaseJavaMigration {
                 ")";
 
         String sql5 = "create table if not exists donation " +
-                "(id string PRIMARY KEY, version integer, created_at integer, order_id string, payment_request_id string, payment_url string, comment string, " +
+                "(id string PRIMARY KEY, version integer, created_at integer, order_id string, payment_request_id string, description string, payment_url string, comment string, " +
                 "FOREIGN KEY(order_id) REFERENCES customer_order(id), " +
                 "FOREIGN KEY(payment_request_id) REFERENCES payment_request(id), " +
                 "UNIQUE(order_id), " +

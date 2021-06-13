@@ -108,3 +108,15 @@ org.tbk.bitcoin.zeromq:
   network: regtest
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333
+
+org.tbk.xchange:
+  enabled: true
+  specifications:
+    krakenExchange:
+      exchangeClass: org.knowm.xchange.kraken.KrakenExchange
+    bitstampExchange:
+      exchangeClass: org.knowm.xchange.bitstamp.BitstampExchange
+    bittrexExchange:
+      exchangeClass: org.knowm.xchange.bittrex.BittrexExchange
+    geminiExchange:
+      exchangeClass: org.knowm.xchange.gemini.v1.GeminiExchange
