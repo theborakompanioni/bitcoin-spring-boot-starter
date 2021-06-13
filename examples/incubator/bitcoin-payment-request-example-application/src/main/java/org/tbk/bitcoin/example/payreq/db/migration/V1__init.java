@@ -12,19 +12,22 @@ public class V1__init extends BaseJavaMigration {
 
     @Override
     public void migrate(Context context) throws Exception {
-        String sql1 = "create table if not exists invoice " +
-                "(id string PRIMARY KEY, version integer, created_at integer, valid_until integer, network string, comment string)";
 
-        String sql2 = "create table if not exists customer_order " +
+        String sql1 = "create table if not exists customer_order " +
                 "(id string PRIMARY KEY, version integer, created_at integer, status string)";
 
-        String sql3 = "create table if not exists customer_order_line_item " +
+        String sql2 = "create table if not exists customer_order_line_item " +
                 "(id string PRIMARY KEY, order_id string, position integer, name string, price string, currency_unit string, display_price string, quantity integer, " +
                 "FOREIGN KEY(order_id) REFERENCES customer_order(id)" +
                 ")";
 
-        String sql4 = "create table if not exists payment_request " +
-                "(id string PRIMARY KEY, version integer, order_id string, dtype string, valid_until integer, network string, address string, amount string, currency_unit string, display_price string, " +
+        String sql3 = "create table if not exists payment_request " +
+                "(id string PRIMARY KEY, version integer, created_at integer, order_id string, dtype string, valid_until integer, network string, address string, amount string, currency_unit string, display_price string, " +
+                "FOREIGN KEY(order_id) REFERENCES customer_order(id)" +
+                ")";
+
+        String sql4 = "create table if not exists invoice " +
+                "(id string PRIMARY KEY, version integer, created_at integer, order_id string, comment string," +
                 "FOREIGN KEY(order_id) REFERENCES customer_order(id)" +
                 ")";
 

@@ -55,7 +55,7 @@ public class ExchangeRate extends AbstractAggregateRoot<Invoice> implements Aggr
 
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
-        log.info("AfterDomainEventPublication");
+        log.trace("AfterDomainEventPublication");
     }
 
     @Override

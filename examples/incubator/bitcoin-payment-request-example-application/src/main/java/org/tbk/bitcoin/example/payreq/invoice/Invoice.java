@@ -7,14 +7,19 @@ import lombok.Setter;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.AggregateRoot;
+import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
+import org.tbk.bitcoin.example.payreq.order.Order;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.Instant;
 import java.util.UUID;
+
+import static com.google.gdata.util.common.base.Preconditions.checkArgument;
 
 @Slf4j
 @Getter
@@ -26,9 +31,8 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
 
     private final long createdAt;
 
-    private final long validUntil;
-
-    private String network;
+    @Column(name = "order_id")
+    private final Association<Order, Order.OrderIdentifier> order;
 
     private String comment;
 
@@ -36,21 +40,20 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
     @Version
     private Long version;
 
-    Invoice(Instant validUntil) {
+    Invoice(Order order) {
+        checkArgument(order != null, "Order must not be null");
+        checkArgument(order.isPaid(), "Order not paid");
+
         this.id = InvoiceId.of(UUID.randomUUID().toString());
         this.createdAt = Instant.now().toEpochMilli();
-        this.validUntil = validUntil.toEpochMilli();
+        this.order = Association.forAggregate(order);
 
         registerEvent(new InvoiceCreatedEvent(this));
     }
 
-    Invoice() {
-        this(Instant.EPOCH);
-    }
-
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
-        log.info("AfterDomainEventPublication");
+        log.trace("AfterDomainEventPublication");
     }
 
     @Value(staticConstructor = "of")

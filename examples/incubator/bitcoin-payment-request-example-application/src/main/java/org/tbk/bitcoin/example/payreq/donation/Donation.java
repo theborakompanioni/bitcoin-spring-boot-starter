@@ -60,7 +60,7 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
 
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
-        log.info("AfterDomainEventPublication");
+        log.trace("AfterDomainEventPublication");
     }
 
     @Value(staticConstructor = "of")

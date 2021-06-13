@@ -15,6 +15,7 @@ import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -31,6 +32,8 @@ public abstract class PaymentRequest<T extends PaymentRequest<T>>
 
     private final PaymentRequestIdentifier id;
 
+    private final long createdAt;
+
     @Column(name = "order_id")
     private final Association<Order, Order.OrderIdentifier> order;
 
@@ -40,9 +43,10 @@ public abstract class PaymentRequest<T extends PaymentRequest<T>>
      * @param order must not be {@literal null}.
      */
     protected PaymentRequest(Order order) {
-        Assert.notNull(order, "Order must not be null!");
+        Assert.notNull(order, "Order must not be null");
 
         this.id = PaymentRequestIdentifier.of(UUID.randomUUID().toString());
+        this.createdAt = Instant.now().toEpochMilli();
         this.order = Association.forAggregate(order);
     }
 
