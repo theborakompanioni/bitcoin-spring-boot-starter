@@ -1,0 +1,9 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
+
+    testImplementation "org.javamoney:moneta:${monetaVersion}"
+}

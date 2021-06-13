@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.currency.format;
+package org.tbk.bitcoin.format;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -10,7 +10,6 @@ import javax.money.format.MonetaryParseException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 
 public final class BitcoinAmountFormat implements MonetaryAmountFormat {
     private final static String SEPARATOR = " ";
@@ -32,12 +31,13 @@ public final class BitcoinAmountFormat implements MonetaryAmountFormat {
 
     @Override
     public MonetaryAmount parse(CharSequence text) throws MonetaryParseException {
-        String[] array = Objects.requireNonNull(text).toString().split(SEPARATOR);
+        String[] array = text.toString().split(SEPARATOR);
         if (array.length != 2) {
             String errorMessage = String.format("An error happened when try to parse the Monetary Amount. " +
                     "Expected length of 2 after split, but got: %d", array.length);
             throw new MonetaryParseException(errorMessage, text, 0);
         }
+
         CurrencyUnit currencyUnit = Monetary.getCurrency(array[0]);
         BigDecimal number = new BigDecimal(array[1]);
 
@@ -49,11 +49,13 @@ public final class BitcoinAmountFormat implements MonetaryAmountFormat {
 
     @Override
     public String queryFrom(MonetaryAmount amount) {
-        BigDecimal dec = amount.getNumber().numberValue(BigDecimal.class)
+        BigDecimal number = amount.getNumber().numberValue(BigDecimal.class)
                 .setScale(amount.getCurrency().getDefaultFractionDigits(), RoundingMode.HALF_UP);
 
-        return amount.getCurrency().getCurrencyCode() + SEPARATOR + dec
+        String numberFormatted = number
                 .stripTrailingZeros()
                 .toPlainString();
+
+        return amount.getCurrency().getCurrencyCode() + SEPARATOR + numberFormatted;
     }
 }

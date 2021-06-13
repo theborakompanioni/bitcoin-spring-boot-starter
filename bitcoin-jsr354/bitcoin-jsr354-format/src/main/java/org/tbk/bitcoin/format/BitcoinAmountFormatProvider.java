@@ -1,6 +1,4 @@
-package org.tbk.bitcoin.currency.format;
-
-import org.tbk.bitcoin.currency.BitcoinCurrencyProvider;
+package org.tbk.bitcoin.format;
 
 import javax.money.format.AmountFormatContextBuilder;
 import javax.money.format.AmountFormatQuery;
@@ -11,6 +9,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public final class BitcoinAmountFormatProvider implements MonetaryAmountFormatProviderSpi {
+    private static final String PROVIDER_NAME = "BitcoinAmountFormatProvider";
     private static final String FORMAT_NAME_BITCOIN = "bitcoin";
     private static final Set<String> FORMAT_NAMES = Set.of(FORMAT_NAME_BITCOIN);
 
@@ -20,7 +19,7 @@ public final class BitcoinAmountFormatProvider implements MonetaryAmountFormatPr
 
     @Override
     public String getProviderName() {
-        return BitcoinCurrencyProvider.providerName();
+        return PROVIDER_NAME;
     }
 
     @Override

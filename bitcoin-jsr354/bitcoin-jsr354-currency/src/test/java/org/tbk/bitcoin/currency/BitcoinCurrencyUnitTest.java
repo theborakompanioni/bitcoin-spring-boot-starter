@@ -14,10 +14,10 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BitcoinCurrencyUnitTest {
+class BitcoinCurrencyUnitTest {
 
     @Test
-    public void itShouldRegisterBitcoinAsCurrencyCorrectly() {
+    void itShouldRegisterBitcoinAsCurrencyCorrectly() {
         CurrencyUnit bitcoinCurrencyUnit = Monetary.getCurrency("BTC");
 
         assertThat(bitcoinCurrencyUnit).isNotNull();
@@ -33,7 +33,7 @@ public class BitcoinCurrencyUnitTest {
     }
 
     @Test
-    public void itShouldReturnBitcoinForAnyLocale() {
+    void itShouldReturnBitcoinForAnyLocale() {
         CurrencyUnit bitcoinCurrencyUnit = Monetary.getCurrency("BTC");
 
         List<Locale> availableLocales = Arrays.asList(Locale.getAvailableLocales());
@@ -46,7 +46,7 @@ public class BitcoinCurrencyUnitTest {
     }
 
     @Test
-    public void itShouldBePossibleToMakeMonetaryCalculations() {
+    void itShouldBePossibleToMakeMonetaryCalculations() {
         final CurrencyUnit bitcoinCurrencyUnit = Monetary.getCurrency("BTC");
         Money singleSatoshi = Money.ofMinor(bitcoinCurrencyUnit, 1);
         Money anotherSingleSatoshi = Money.of(new BigDecimal("0.00000001"), "BTC");

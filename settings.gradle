@@ -39,6 +39,7 @@ include 'spring-testcontainer:spring-testcontainer-tor-example-application'
 
 include 'bitcoin-jsr354:bitcoin-jsr354-currency'
 include 'bitcoin-jsr354:bitcoin-jsr354-exchange-rate'
+include 'bitcoin-jsr354:bitcoin-jsr354-format'
 include 'bitcoin-jsr354:bitcoin-jsr354-starter'
 
 include 'bitcoin-fee:bitcoin-fee-estimate-core'

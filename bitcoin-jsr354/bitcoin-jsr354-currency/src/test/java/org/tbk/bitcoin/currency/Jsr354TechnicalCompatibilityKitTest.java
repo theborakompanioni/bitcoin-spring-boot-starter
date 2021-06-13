@@ -28,7 +28,7 @@ public class Jsr354TechnicalCompatibilityKitTest {
     private static final Path targetPath = Path.of("build/reports/tck-target");
 
     @BeforeEach
-    public void setUp() throws IOException {
+    void setUp() throws IOException {
         FileSystemUtils.deleteRecursively(targetPath);
         Path directory = Files.createDirectory(targetPath);
 
@@ -37,7 +37,7 @@ public class Jsr354TechnicalCompatibilityKitTest {
     }
 
     @Test
-    public void runTCK() {
+    void runTCK() {
         TCKRunner.main();
     }
 
