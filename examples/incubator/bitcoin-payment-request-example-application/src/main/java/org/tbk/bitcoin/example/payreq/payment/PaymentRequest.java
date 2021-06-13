@@ -7,6 +7,7 @@ import lombok.Value;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.util.Assert;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
@@ -24,7 +25,8 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "payment_request")
-public abstract class PaymentRequest<T extends AggregateRoot<T, PaymentRequest.PaymentRequestIdentifier>>
+public abstract class PaymentRequest<T extends PaymentRequest<T>>
+        extends AbstractAggregateRoot<T>
         implements AggregateRoot<T, PaymentRequest.PaymentRequestIdentifier> {
 
     private final PaymentRequestIdentifier id;

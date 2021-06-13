@@ -6,4 +6,5 @@
     <logger name="org.tbk.spring.testcontainer.lnd" level="DEBUG"/>
 
     <logger name="org.tbk.bitcoin.example.payreq" level="DEBUG"/>
+    <logger name="org.tbk.bitcoin.example.payreq.exchangerate.ScheduledExchangeRateUpdater" level="WARN"/>
 </configuration>

@@ -65,7 +65,7 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
     @Value(staticConstructor = "of")
     public static class InvoiceCreatedEvent {
 
-        Invoice invoice;
+        Invoice domain;
 
         public String toString() {
             return "InvoiceCreatedEvent";

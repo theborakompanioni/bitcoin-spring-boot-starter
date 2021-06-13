@@ -28,14 +28,19 @@ import java.util.Set;
  * @author Sean Gilligan
  * @author Werner Keil
  */
-public class BitcoinCurrencyProvider implements CurrencyProviderSpi {
+public final class BitcoinCurrencyProvider implements CurrencyProviderSpi {
+    private static final String PROVIDER_NAME = "BitcoinCurrencyProvider";
 
-    private static final CurrencyContext CONTEXT = CurrencyContextBuilder.of("BitcoinCurrencyProvider")
+    private static final CurrencyContext CONTEXT = CurrencyContextBuilder.of(PROVIDER_NAME)
             .build();
 
     private static final CurrencyUnit bitcoinUnit = new BitcoinCurrencyUnit(CONTEXT);
 
     private static final Set<CurrencyUnit> bitcoinUnitSet = Collections.singleton(bitcoinUnit);
+
+    public static String providerName() {
+        return PROVIDER_NAME;
+    }
 
     /**
      * Return a {@link CurrencyUnit} instances matching the given

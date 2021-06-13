@@ -1,11 +1,17 @@
 package org.tbk.bitcoin.example.payreq.order;
 
+import com.google.common.base.MoreObjects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
+import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
+import javax.money.NumberValue;
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.util.UUID;
@@ -17,26 +23,47 @@ import java.util.UUID;
 public class LineItem implements Entity<Order, LineItem.LineItemIdentifier> {
 
     private final LineItemIdentifier id;
+
     private final String name;
-    // private final MonetaryAmount price;
-    private final long price;
-    //private final Association<Drink, DrinkIdentifier> drink;
+
+    private final NumberValue price;
+
+    private final CurrencyUnit currencyUnit;
+
+    private final String displayPrice;
+
     private int quantity;
 
     @Column(name = "position")
     private Integer position;
 
-    public LineItem(String name, long price) {
+    public LineItem(String name, MonetaryAmount price) {
         this.id = LineItemIdentifier.of(UUID.randomUUID());
         this.name = name;
+        this.price = price.getNumber();
+        this.currencyUnit = price.getCurrency();
+        this.displayPrice = price.with(Monetary.getRounding(price.getCurrency())).toString();
         this.quantity = 1;
-        this.price = price;
-        // this.drink = Association.forAggregate(drink);
     }
 
-    LineItem increaseAmount() {
+    LineItem increaseQuantity() {
         this.quantity++;
         return this;
+    }
+
+    public MonetaryAmount getPrice() {
+        return Money.of(price, currencyUnit).multiply(quantity);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("displayPrice", displayPrice)
+                .add("quantity", quantity)
+                .add("position", position)
+                .toString();
     }
 
     @Value(staticConstructor = "of")

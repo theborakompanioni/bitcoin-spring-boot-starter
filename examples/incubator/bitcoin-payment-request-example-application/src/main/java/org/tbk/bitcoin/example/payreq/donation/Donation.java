@@ -1,17 +1,13 @@
 package org.tbk.bitcoin.example.payreq.donation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
-import org.tbk.bitcoin.example.payreq.invoice.Invoice;
 import org.tbk.bitcoin.example.payreq.order.Order;
 import org.tbk.bitcoin.example.payreq.payment.BitcoinOnchainPaymentRequest;
 import org.tbk.bitcoin.example.payreq.payment.PaymentRequest;
@@ -26,7 +22,8 @@ import java.util.UUID;
 @Getter
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "donation")
-public class Donation extends AbstractAggregateRoot<Invoice> implements AggregateRoot<Donation, Donation.DonationId> {
+@ToString
+public class Donation extends AbstractAggregateRoot<Donation> implements AggregateRoot<Donation, Donation.DonationId> {
 
     private final DonationId id;
 
@@ -42,6 +39,8 @@ public class Donation extends AbstractAggregateRoot<Invoice> implements Aggregat
 
     private String paymentUrl;
 
+    private String displayPrice;
+
     private String comment;
 
     @JsonIgnore
@@ -54,6 +53,7 @@ public class Donation extends AbstractAggregateRoot<Invoice> implements Aggregat
         this.order = Association.forAggregate(order);
         this.paymentRequest = Association.forAggregate(paymentRequest);
         this.paymentUrl = paymentRequest.getPaymentUrl();
+        this.displayPrice = paymentRequest.getDisplayPrice();
 
         registerEvent(new DonationCreatedEvent(this));
     }
@@ -75,10 +75,10 @@ public class Donation extends AbstractAggregateRoot<Invoice> implements Aggregat
     @Value(staticConstructor = "of")
     public static class DonationCreatedEvent {
 
-        Donation invoice;
+        Donation domain;
 
         public String toString() {
-            return "InvoiceCreatedEvent";
+            return "DonationCreatedEvent";
         }
     }
 }

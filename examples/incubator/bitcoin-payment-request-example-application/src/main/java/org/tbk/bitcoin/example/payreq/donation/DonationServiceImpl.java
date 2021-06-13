@@ -64,7 +64,7 @@ class DonationServiceImpl implements DonationService {
         Coin donationAmount = Coin.valueOf(satoshiMonetaryAmount.longValue());
 
         String lineItemName = "Donation/" + donationAmount.toFriendlyString();
-        LineItem lineItem = new LineItem(lineItemName, satoshiMonetaryAmount.longValue());
+        LineItem lineItem = new LineItem(lineItemName, bitcoinMonetaryAmount);
 
         Order order = orderService.createOrder(Collections.singletonList(lineItem));
 

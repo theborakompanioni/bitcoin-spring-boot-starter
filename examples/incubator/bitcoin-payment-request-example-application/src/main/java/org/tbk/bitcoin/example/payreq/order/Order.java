@@ -4,14 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.Value;
+import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.tbk.bitcoin.example.payreq.common.Currencies;
+import org.tbk.bitcoin.example.payreq.common.MonetaryAmountFormats;
 
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import javax.persistence.JoinColumn;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,10 +74,17 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      *
      * @return will never be {@literal null}.
      */
-    public long getPrice() {
-        return lineItems.stream()
-                .mapToLong(LineItem::getPrice)
-                .sum();
+    public MonetaryAmount getPrice() {
+        return lineItems.stream().
+                map(LineItem::getPrice).
+                reduce(MonetaryAmount::add)
+                .orElse(Money.of(BigDecimal.ZERO, Currencies.BTC));
+    }
+
+    public String getDisplayPrice() {
+        MonetaryAmount price = this.getPrice();
+        MonetaryAmount rounded = price.with(Monetary.getRounding(price.getCurrency()));
+        return MonetaryAmountFormats.bitcoin.format(rounded);
     }
 
     /**
@@ -96,8 +109,9 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     public Order markInPreparation() {
 
         if (this.status != Status.PAID) {
+            String errorMessage = String.format("Order must be in state payed to start preparation! Current status: %s", this.status);
             throw new IllegalStateException(
-                    String.format("Order must be in state payed to start preparation! Current status: %s", this.status));
+                    errorMessage);
         }
 
         this.status = Status.PREPARING;
@@ -111,8 +125,8 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     public Order markPrepared() {
 
         if (this.status != Status.PREPARING) {
-            throw new IllegalStateException(String
-                    .format("Cannot mark Order prepared that is currently not preparing! Current status: %s.", this.status));
+            String errorMessage = String.format("Cannot mark Order prepared that is currently not preparing! Current status: %s.", this.status);
+            throw new IllegalStateException(errorMessage);
         }
 
         this.status = Status.READY;
@@ -123,8 +137,8 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     public Order markTaken() {
 
         if (this.status != Status.READY) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark Order taken that is currently not paid! Current status: %s.", this.status));
+            String errorMessage = String.format("Cannot mark Order taken that is currently not paid! Current status: %s.", this.status);
+            throw new IllegalStateException(errorMessage);
         }
 
         this.status = Status.TAKEN;

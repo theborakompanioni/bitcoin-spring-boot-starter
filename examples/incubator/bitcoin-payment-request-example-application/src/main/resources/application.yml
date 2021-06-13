@@ -21,8 +21,9 @@ logging.file.path: ./var/log
 logging.file.name: application.log
 logging.config: classpath:logback.xml
 logging.level.org.springframework: INFO
-logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+#logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
+logging.level.org.javamoney.moneta.Money: WARN
 
 management.endpoint.health.show-details: 'always'
 management.endpoints.web.exposure.include: '*'
@@ -90,12 +91,12 @@ org.tbk.spring.testcontainer.bitcoind:
 
 org.tbk.bitcoin.regtest:
   enabled: true
-  # mine blocks every 1 - 10 seconds
+  # mine blocks every 10 - 120 seconds
   mining:
     enabled: true
     next-block-duration:
-      min-duration: PT1S
-      max-duration: PT10S
+      min-duration: PT10S
+      max-duration: PT120S
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest
