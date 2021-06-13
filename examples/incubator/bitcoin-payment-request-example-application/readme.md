@@ -5,5 +5,5 @@ bitcoin-payment-request-example-application
 - Lightning Network: https://lightning.network/
 - lnd (GitHub): https://github.com/LightningNetwork/lnd
 - Lightningj (GitHub): https://github.com/lightningj-org/lightningj
-- Protocol Buffers: https://developers.google.com/protocol-buffers
-
+- jMolecules (GitHub): https://github.com/xmolecules/jmolecules
+- jMolecules - Technology integrations (GitHub): https://github.com/xmolecules/jmolecules-integrations
