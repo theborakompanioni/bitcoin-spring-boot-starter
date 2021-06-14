@@ -1,4 +1,3 @@
-[![Build Status](https://www.travis-ci.org/theborakompanioni/bitcoin-spring-boot-starter.svg?branch=master)](https://www.travis-ci.org/theborakompanioni/bitcoin-spring-boot-starter)
 [![Download](https://jitpack.io/v/theborakompanioni/bitcoin-spring-boot-starter.svg)](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter)
 [![License](https://img.shields.io/github/license/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE)
 
