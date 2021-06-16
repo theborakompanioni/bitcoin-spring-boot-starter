@@ -2,68 +2,67 @@ package org.tbk.electrum.command;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
-@Data
-@Setter(AccessLevel.NONE)
+@Value
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeserializeResponse {
+
     @JsonProperty("partial")
-    private boolean partial;
+    boolean partial;
 
     @JsonProperty("version")
-    private int version;
+    int version;
 
     @JsonProperty("segwit_ser")
-    private boolean segwit;
+    boolean segwit;
 
     @JsonProperty("lockTime")
-    private int lockTime;
+    int lockTime;
 
     @JsonProperty("inputs")
-    private List<Input> inputs;
+    List<Input> inputs;
 
     @JsonProperty("outputs")
-    private List<Output> outputs;
+    List<Output> outputs;
 
-    @Data
-    @Setter(AccessLevel.NONE)
+    @Value
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Input {
         @JsonProperty("prevout_hash")
-        private String prevoutHash;
+        String prevoutHash;
 
         @JsonProperty("prevout_n")
-        private int prevoutN;
+        int prevoutN;
 
         @JsonProperty("scriptSig")
-        private String scriptSig;
+        String scriptSig;
 
         @JsonProperty("sequence")
-        private long sequence;
+        long sequence;
 
         @JsonProperty("type")
-        private String type;
+        String type;
 
         @JsonProperty("address")
-        private String address;
+        String address;
 
         @JsonProperty("num_sig")
-        private int numSig;
+        int numSig;
 
         @JsonProperty("x_pubkeys")
-        private List<String> xpubKeys;
+        List<String> xpubKeys;
 
         @JsonProperty("pubkeys")
-        private List<String> pubkeys;
+        List<String> pubkeys;
 
         // TODO: we are getting an exception on deserialization:
         //  "Cannot deserialize instance of `java.util.ArrayList<java.lang.Object>` out of START_OBJECT token"
@@ -72,42 +71,39 @@ public class DeserializeResponse {
         // private List<String> signatures;
 
         @JsonProperty("witness")
-        private String witness;
+        String witness;
 
         @JsonProperty("witness_version")
-        private Integer witnessVersion;
+        Integer witnessVersion;
 
         @JsonProperty("witness_script")
-        private String witnessScript;
+        String witnessScript;
 
         @JsonProperty("redeem_script")
-        private String redeemScript;
+        String redeemScript;
 
         @JsonProperty("value")
-        private Long value;
+        Long value;
     }
 
-    @Data
-    @Setter(AccessLevel.NONE)
+    @Value
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Output {
         @JsonProperty("value")
-        private long value;
+        long value;
 
         @JsonProperty("type")
-        private int type;
+        int type;
 
         @JsonProperty("address")
-        private String address;
+        String address;
 
         @JsonProperty("scriptPubKey")
-        private String scriptPubKey;
-
-        // TODO: whats the prevoutN in an output?
+        String scriptPubKey;
+        
         @JsonProperty("prevout_n")
-        private int prevoutN;
+        int prevoutN;
     }
 }

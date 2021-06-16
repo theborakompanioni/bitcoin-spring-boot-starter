@@ -2,53 +2,54 @@ package org.tbk.electrum.command;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.Map;
 import java.util.Optional;
 
-@Data
-@Setter(AccessLevel.NONE)
+@Value
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DaemonStatusResponse {
+
     @JsonProperty("path")
-    private String path;
+    String path;
 
     @JsonProperty("server")
-    private String server;
+    String server;
 
     @JsonProperty("blockchain_height")
-    private int blockchainHeight;
+    int blockchainHeight;
 
     @JsonProperty("server_height")
-    private int serverHeight;
+    int serverHeight;
 
     @JsonProperty("spv_nodes")
-    private int spvNodes;
+    int spvNodes;
 
     @JsonProperty("connected")
-    private boolean connected;
+    boolean connected;
 
     @JsonProperty("auto_connect")
-    private boolean autoConnect;
+    boolean autoConnect;
 
     @JsonProperty("version")
-    private String version;
+    String version;
 
     @JsonProperty("wallets")
-    private Map<String, Boolean> wallets;
+    Map<String, Boolean> wallets;
 
     @JsonProperty("fee_per_kb")
-    private int feePerKb;
+    int feePerKb;
 
     /**
      * Path to currently loaded wallet
      */
     @JsonProperty("current_wallet")
-    private String currentWallet;
+    String currentWallet;
 
     public Optional<String> getCurrentWallet() {
         return Optional.ofNullable(currentWallet);

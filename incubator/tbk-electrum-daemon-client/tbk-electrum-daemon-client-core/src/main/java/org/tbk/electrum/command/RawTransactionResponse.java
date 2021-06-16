@@ -2,29 +2,29 @@ package org.tbk.electrum.command;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.Optional;
 
-@Data
-@Setter(AccessLevel.NONE)
+@Value
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RawTransactionResponse {
 
     @JsonProperty("hex")
-    private String hex;
+    String hex;
 
     @JsonProperty("complete")
-    private boolean complete;
+    boolean complete;
 
     @JsonProperty("final")
-    private boolean finalized;
+    boolean finalized;
 
     @JsonProperty("error")
-    private String error;
+    String error;
 
     public Optional<String> getError() {
         return Optional.ofNullable(error);

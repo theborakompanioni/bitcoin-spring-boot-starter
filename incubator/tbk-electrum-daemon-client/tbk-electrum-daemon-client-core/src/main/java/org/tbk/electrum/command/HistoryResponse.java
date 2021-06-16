@@ -2,7 +2,9 @@ package org.tbk.electrum.command;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -175,143 +177,132 @@ import java.util.List;
  * ]
  * }
  */
-@Data
-@Setter(AccessLevel.NONE)
+@Value
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HistoryResponse {
 
     @JsonProperty("summary")
-    private Summary summary;
+    Summary summary;
 
     @JsonProperty("transactions")
-    private List<Transaction> transactions;
+    List<Transaction> transactions;
 
-    @Data
-    @Setter(AccessLevel.NONE)
+    @Value
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Summary {
 
         @Nullable
         @JsonProperty("start_balance")
-        private String startBalance;
+        String startBalance;
 
         @Nullable
         @JsonProperty("end_balance")
-        private String endBalance;
+        String endBalance;
 
         @Nullable
         @JsonProperty("incoming")
-        private String incoming;
+        String incoming;
 
         @Nullable
         @JsonProperty("outgoing")
-        private String outgoing;
+        String outgoing;
 
         @Nullable
         @JsonProperty("start_date")
         // TODO: probably "String"? only ever got "null" from electrum
-        private Object startDate;
+        Object startDate;
 
         @Nullable
         @JsonProperty("end_date")
         // TODO: probably "String"? only ever got "null" from electrum
-        private Object endDate;
+        Object endDate;
 
         @Nullable
         @JsonProperty("from_height")
         // TODO: probably "long"? only ever got "null" from electrum
-        private Object fromHeight;
+        Object fromHeight;
 
         @Nullable
         @JsonProperty("to_height")
         // TODO: probably "long"? only ever got "null" from electrum
-        private Object toHeight;
+        Object toHeight;
     }
 
-
-    @Data
-    @Setter(AccessLevel.NONE)
+    @Value
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Transaction {
 
         @JsonProperty("balance")
-        private String balance;
+        String balance;
 
         @JsonProperty("confirmations")
-        private long confirmations;
+        long confirmations;
 
         // timestamp e.g. 1415528603
         @Nullable
         @JsonProperty("timestamp")
-        private Long timestamp;
+        Long timestamp;
 
         // pattern e.g. 2014-11-09 10:23
         @Nullable
         @JsonProperty("date")
-        private String date;
+        String date;
 
         @Nullable
         @JsonProperty("height")
-        private Long height;
+        Long height;
 
         @JsonProperty("incoming")
-        private boolean incoming;
+        boolean incoming;
 
         @JsonProperty("label")
-        private String label;
+        String label;
 
         @JsonProperty("txid")
-        private String txId;
+        String txId;
 
         @JsonProperty("txpos_in_block")
-        private Integer txPosInBlock;
+        Integer txPosInBlock;
 
         @JsonProperty("value")
-        private String value;
+        String value;
 
         @Nullable
         @JsonProperty("inputs")
-        private List<Input> inputs;
+        List<Input> inputs;
 
         @Nullable
         @JsonProperty("outputs")
-        private List<Output> outputs;
+        List<Output> outputs;
 
-        @Data
-        @Setter(AccessLevel.NONE)
+        @Value
         @Builder
-        @AllArgsConstructor
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        @Jacksonized
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Input {
             @JsonProperty("prevout_hash")
-            private String prevoutHash;
+            String prevoutHash;
 
             @JsonProperty("prevout_n")
-            private long prevoutN;
+            long prevoutN;
         }
 
-        @Data
-        @Setter(AccessLevel.NONE)
+        @Value
         @Builder
-        @AllArgsConstructor
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        @Jacksonized
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Output {
             @JsonProperty("address")
-            private String address;
+            String address;
 
             @JsonProperty("value")
-            private String value;
+            String value;
         }
     }
 }
