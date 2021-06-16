@@ -1,3 +1,4 @@
+[![Build](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/main.yml/badge.svg)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/main.yml)
 [![Download](https://jitpack.io/v/theborakompanioni/bitcoin-spring-boot-starter.svg)](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter)
 [![License](https://img.shields.io/github/license/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE)
 
