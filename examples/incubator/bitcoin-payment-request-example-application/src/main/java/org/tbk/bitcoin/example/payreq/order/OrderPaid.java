@@ -9,14 +9,14 @@ import lombok.ToString;
 @ToString
 public class OrderPaid {
 
-	private final Order.OrderIdentifier orderId;
+	private final Order.OrderId orderId;
 
 	/**
 	 * Creates a new {@link OrderPaid}
 	 *
 	 * @param orderId the id of the order that just has been payed
 	 */
-	public OrderPaid(Order.OrderIdentifier orderId) {
+	public OrderPaid(Order.OrderId orderId) {
 		this.orderId = orderId;
 	}
 }

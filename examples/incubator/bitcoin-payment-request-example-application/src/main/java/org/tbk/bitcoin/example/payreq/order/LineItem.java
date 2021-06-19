@@ -3,6 +3,7 @@ package org.tbk.bitcoin.example.payreq.order;
 import com.google.common.base.MoreObjects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Value;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.Entity;
@@ -16,13 +17,12 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 import java.util.UUID;
 
-
 @Getter
 @Table(name = "customer_order_line_item")
 @AllArgsConstructor
-public class LineItem implements Entity<Order, LineItem.LineItemIdentifier> {
+public class LineItem implements Entity<Order, LineItem.LineItemId> {
 
-    private final LineItemIdentifier id;
+    private final LineItemId id;
 
     private final String name;
 
@@ -38,7 +38,7 @@ public class LineItem implements Entity<Order, LineItem.LineItemIdentifier> {
     private Integer position;
 
     public LineItem(String name, MonetaryAmount price) {
-        this.id = LineItemIdentifier.of(UUID.randomUUID());
+        this.id = LineItemId.of(UUID.randomUUID());
         this.name = name;
         this.price = price.getNumber();
         this.currencyUnit = price.getCurrency();
@@ -67,7 +67,8 @@ public class LineItem implements Entity<Order, LineItem.LineItemIdentifier> {
     }
 
     @Value(staticConstructor = "of")
-    public static class LineItemIdentifier implements Identifier {
+    public static class LineItemId implements Identifier {
+        @NonNull
         UUID id;
     }
 }

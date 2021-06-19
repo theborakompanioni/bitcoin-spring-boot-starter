@@ -20,7 +20,7 @@ public class DatabaseConfig {
         HikariConfig config = new HikariConfig();
         config.setPoolName("SQLitePool");
         config.setMinimumIdle(1);
-        config.setMaximumPoolSize(3);
+        config.setMaximumPoolSize(1);
         config.setDriverClassName(org.sqlite.JDBC.class.getName());
         config.setJdbcUrl("jdbc:sqlite:" + database + ".db");
         config.setConnectionTestQuery("SELECT 1");

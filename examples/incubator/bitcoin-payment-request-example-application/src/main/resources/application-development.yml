@@ -25,3 +25,12 @@ logging.level.org.springframework: INFO
 
 spring.jpa.properties.hibernate.format_sql: true
 spring.jpa.properties.hibernate.show_sql: false
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  # mine blocks every 10 - 30 seconds
+  mining:
+    enabled: true
+    next-block-duration:
+      min-duration: PT10S
+      max-duration: PT30S

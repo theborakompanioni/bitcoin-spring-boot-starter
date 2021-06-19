@@ -1,10 +1,7 @@
 package org.tbk.bitcoin.example.payreq.invoice;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
@@ -32,7 +29,7 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
     private final long createdAt;
 
     @Column(name = "order_id")
-    private final Association<Order, Order.OrderIdentifier> order;
+    private final Association<Order, Order.OrderId> order;
 
     private String comment;
 
@@ -44,11 +41,11 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
         checkArgument(order != null, "Order must not be null");
         checkArgument(order.isPaid(), "Order not paid");
 
-        this.id = InvoiceId.of(UUID.randomUUID().toString());
+        this.id = InvoiceId.create();
         this.createdAt = Instant.now().toEpochMilli();
         this.order = Association.forAggregate(order);
 
-        registerEvent(new InvoiceCreatedEvent(this));
+        registerEvent(new InvoiceCreatedEvent(this.getId()));
     }
 
     @AfterDomainEventPublication
@@ -62,13 +59,15 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
             return InvoiceId.of(UUID.randomUUID().toString());
         }
 
+        @NonNull
         String id;
     }
 
     @Value(staticConstructor = "of")
     public static class InvoiceCreatedEvent {
 
-        Invoice domain;
+        @NonNull
+        InvoiceId domainId;
 
         public String toString() {
             return "InvoiceCreatedEvent";

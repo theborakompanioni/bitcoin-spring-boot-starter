@@ -42,7 +42,33 @@ public class V1__init extends BaseJavaMigration {
         String sql6 = "create table if not exists exchange_rate " +
                 "(id string PRIMARY KEY, created_at integer, provider_name string, rate_type string, base_currency string, term_currency string, factor string)";
 
-        for (String sql : Lists.newArrayList(sql1, sql2, sql3, sql4, sql5, sql6)) {
+        String sql7 = "create table if not exists bitcoin_block " +
+                "(id string PRIMARY KEY, " +
+                "created_at integer, " +
+                "updated_at integer, " +
+                "hash string NOT NULL, " +
+                "time integer NOT NULL," +
+                "nonce integer NOT NULL, " +
+                "confirmations integer NOT NULL, " +
+                "size integer NOT NULL, " +
+                "height integer NOT NULL, " +
+                "version integer NOT NULL, " +
+                "previousblockhash string NOT NULL, " +
+                "nextblockhash string" +
+                ")";
+
+        String sql8 = "create table if not exists bitcoin_chain_info " +
+                "(id string PRIMARY KEY, created_at integer, chain string, blocks integer, headers integer, " +
+                "best_block_hash string, difficulty string, verification_progress string, chain_work string, " +
+                "UNIQUE(chain, best_block_hash) " +
+                ")";
+
+        String sql9 = "create table if not exists lnd_info " +
+                "(id string PRIMARY KEY, created_at integer, block_height integer, block_hash string, best_header_timestamp integer, " +
+                "UNIQUE(block_hash) " +
+                ")";
+
+        for (String sql : Lists.newArrayList(sql1, sql2, sql3, sql4, sql5, sql6, sql7, sql8, sql9)) {
             try (PreparedStatement statement = context.getConnection().prepareStatement(sql)) {
                 statement.execute();
             }

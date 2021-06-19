@@ -1,9 +1,7 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.Value;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
@@ -28,14 +26,15 @@ import java.util.UUID;
 @Table(name = "payment_request")
 public abstract class PaymentRequest<T extends PaymentRequest<T>>
         extends AbstractAggregateRoot<T>
-        implements AggregateRoot<T, PaymentRequest.PaymentRequestIdentifier> {
+        implements AggregateRoot<T, PaymentRequest.PaymentRequestId> {
 
-    private final PaymentRequestIdentifier id;
+    private final PaymentRequestId id;
 
-    private final long createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
 
     @Column(name = "order_id")
-    private final Association<Order, Order.OrderIdentifier> order;
+    private final Association<Order, Order.OrderId> order;
 
     /**
      * Creates a new {@link PaymentRequest} referring to the given {@link Order}.
@@ -45,13 +44,17 @@ public abstract class PaymentRequest<T extends PaymentRequest<T>>
     protected PaymentRequest(Order order) {
         Assert.notNull(order, "Order must not be null");
 
-        this.id = PaymentRequestIdentifier.of(UUID.randomUUID().toString());
-        this.createdAt = Instant.now().toEpochMilli();
+        this.id = PaymentRequestId.create();
         this.order = Association.forAggregate(order);
     }
 
     @Value(staticConstructor = "of")
-    public static class PaymentRequestIdentifier implements Identifier {
+    public static class PaymentRequestId implements Identifier {
+        public static PaymentRequestId create() {
+            return PaymentRequestId.of(UUID.randomUUID().toString());
+        }
+
+        @NonNull
         String id;
     }
 }

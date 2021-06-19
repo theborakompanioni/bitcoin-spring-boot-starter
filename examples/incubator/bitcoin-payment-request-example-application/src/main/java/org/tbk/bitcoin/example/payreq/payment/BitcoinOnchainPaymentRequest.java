@@ -51,7 +51,7 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest<BitcoinOnchainP
         this.currencyUnit = price.getCurrency();
         this.displayPrice = order.getDisplayPrice();
 
-        registerEvent(BitcoinOnchainPaymentRequestCreatedEvent.of(this));
+        registerEvent(BitcoinOnchainPaymentRequestCreatedEvent.of(this.getId()));
     }
 
     public MonetaryAmount getAmount() {
@@ -79,7 +79,7 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest<BitcoinOnchainP
     @Value(staticConstructor = "of")
     public static class BitcoinOnchainPaymentRequestCreatedEvent {
 
-        BitcoinOnchainPaymentRequest domain;
+        PaymentRequestId domainId;
 
         public String toString() {
             return "BitcoinOnchainPaymentRequestCreatedEvent";

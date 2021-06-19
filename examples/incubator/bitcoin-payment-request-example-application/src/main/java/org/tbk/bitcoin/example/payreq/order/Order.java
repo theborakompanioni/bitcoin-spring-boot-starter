@@ -2,8 +2,10 @@ package org.tbk.bitcoin.example.payreq.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.Value;
+import org.hibernate.annotations.CreationTimestamp;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
@@ -30,10 +32,13 @@ import java.util.UUID;
 @Getter
 @ToString(exclude = "lineItems")
 @Table(name = "customer_order")
-public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot<Order, Order.OrderIdentifier> {
+public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot<Order, Order.OrderId> {
 
-    private final OrderIdentifier id;
-    private final long createdAt;
+    private final OrderId id;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
     private Status status;
 
     @JsonIgnore
@@ -50,8 +55,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      * @param lineItems must not be {@literal null}.
      */
     public Order(Collection<LineItem> lineItems) {
-        this.id = OrderIdentifier.of(UUID.randomUUID().toString());
-        this.createdAt = Instant.now().toEpochMilli();
+        this.id = OrderId.create();
         this.status = Status.PAYMENT_EXPECTED;
         this.lineItems.addAll(lineItems);
     }
@@ -200,7 +204,13 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     }
 
     @Value(staticConstructor = "of")
-    public static class OrderIdentifier implements Identifier {
+    public static class OrderId implements Identifier {
+        public static OrderId create() {
+            return OrderId.of(UUID.randomUUID().toString());
+        }
+
+        @NonNull
         String id;
     }
+
 }

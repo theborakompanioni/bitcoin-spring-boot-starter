@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface Orders extends AssociationResolver<Order, Order.OrderIdentifier>, PagingAndSortingRepository<Order, Order.OrderIdentifier> {
+public interface Orders extends AssociationResolver<Order, Order.OrderId>, PagingAndSortingRepository<Order, Order.OrderId> {
 
 	/**
 	 * Returns all {@link Order}s with the given {@link Order.Status}.

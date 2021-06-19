@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,12 +19,13 @@ import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.RateType;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-class ScheduledExchangeRateUpdater implements ApplicationContextAware {
+class ScheduledExchangeRateUpdater implements ApplicationContextAware, DisposableBean {
 
     @NonNull
     private final ExchangeRates exchangeRates;
@@ -31,15 +33,25 @@ class ScheduledExchangeRateUpdater implements ApplicationContextAware {
     @NonNull
     private final TransactionTemplate transactionTemplate;
 
-    private ApplicationContext applicationContext;
+    private final AtomicReference<ApplicationContext> applicationContext = new AtomicReference<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        this.applicationContext.set(applicationContext);
     }
 
-    @Scheduled(initialDelay = 0, fixedDelay = 60_000)
+    @Override
+    public void destroy() {
+        // reset application context - avoid accessing beans during shutdown phase
+        this.applicationContext.set(null);
+    }
+
+    @Scheduled(initialDelay = 0, fixedDelay = 120_000)
     public void fetchExchangeRatesOneIteration() {
+        fetchExchangeRates();
+    }
+
+    private void fetchExchangeRates() {
         Collection<ExchangeRateProvider> exchangeRateProviders = exchangeRateProviders();
         if (exchangeRateProviders.isEmpty()) {
             log.warn("No ExchangeRateProvider found.");
@@ -59,7 +71,7 @@ class ScheduledExchangeRateUpdater implements ApplicationContextAware {
     }
 
     private Collection<ExchangeRateProvider> exchangeRateProviders() {
-        return Optional.ofNullable(applicationContext)
+        return Optional.ofNullable(applicationContext.get())
                 .map(it -> it.getBeansOfType(ExchangeRateProvider.class))
                 .map(Map::values)
                 .orElseGet(Collections::emptyList);

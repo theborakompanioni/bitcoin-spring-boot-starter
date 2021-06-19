@@ -3,6 +3,7 @@ package org.tbk.bitcoin.example.payreq.donation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
@@ -27,13 +28,14 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
 
     private final DonationId id;
 
-    private final long createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
 
     @Column(name = "order_id")
-    private final Association<Order, Order.OrderIdentifier> order;
+    private final Association<Order, Order.OrderId> order;
 
     @Column(name = "payment_request_id")
-    private final Association<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestIdentifier> paymentRequest;
+    private final Association<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestId> paymentRequest;
 
     private String description;
 
@@ -49,13 +51,12 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
 
     Donation(Order order, BitcoinOnchainPaymentRequest paymentRequest) {
         this.id = DonationId.of(UUID.randomUUID().toString());
-        this.createdAt = Instant.now().toEpochMilli();
         this.order = Association.forAggregate(order);
         this.paymentRequest = Association.forAggregate(paymentRequest);
         this.paymentUrl = paymentRequest.getPaymentUrl();
         this.displayPrice = paymentRequest.getDisplayPrice();
 
-        registerEvent(new DonationCreatedEvent(this));
+        registerEvent(new DonationCreatedEvent(this.getId()));
     }
 
     @AfterDomainEventPublication
@@ -69,13 +70,15 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
             return DonationId.of(UUID.randomUUID().toString());
         }
 
+        @NonNull
         String id;
     }
 
     @Value(staticConstructor = "of")
     public static class DonationCreatedEvent {
 
-        Donation domain;
+        @NonNull
+        DonationId domainId;
 
         public String toString() {
             return "DonationCreatedEvent";

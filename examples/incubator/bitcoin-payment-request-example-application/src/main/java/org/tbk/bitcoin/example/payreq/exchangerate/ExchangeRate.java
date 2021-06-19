@@ -1,11 +1,9 @@
 package org.tbk.bitcoin.example.payreq.exchangerate;
 
 import com.google.common.base.MoreObjects;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -29,7 +27,8 @@ public class ExchangeRate extends AbstractAggregateRoot<Invoice> implements Aggr
 
     private final ExchangeRateId id;
 
-    private final long createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
 
     private final String providerName;
 
@@ -43,14 +42,13 @@ public class ExchangeRate extends AbstractAggregateRoot<Invoice> implements Aggr
 
     ExchangeRate(String providerName, RateType rateType, CurrencyUnit baseCurrency, CurrencyUnit termCurrency, NumberValue factor) {
         this.id = ExchangeRateId.of(UUID.randomUUID().toString());
-        this.createdAt = Instant.now().toEpochMilli();
         this.providerName = requireNonNull(providerName);
         this.rateType = requireNonNull(rateType);
         this.baseCurrency = requireNonNull(baseCurrency);
         this.termCurrency = requireNonNull(termCurrency);
         this.factor = requireNonNull(factor);
 
-        registerEvent(new ExchangeRateCreatedEvent(this));
+        registerEvent(new ExchangeRateCreatedEvent(this.getId()));
     }
 
     @AfterDomainEventPublication
@@ -76,13 +74,15 @@ public class ExchangeRate extends AbstractAggregateRoot<Invoice> implements Aggr
             return ExchangeRateId.of(UUID.randomUUID().toString());
         }
 
+        @NonNull
         String id;
     }
 
     @Value(staticConstructor = "of")
     public static class ExchangeRateCreatedEvent {
 
-        ExchangeRate domain;
+        @NonNull
+        ExchangeRateId domainId;
 
         public String toString() {
             return "ExchangeRateCreatedEvent";
