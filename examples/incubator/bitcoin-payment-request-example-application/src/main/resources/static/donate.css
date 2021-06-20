@@ -3,7 +3,7 @@ body {
   /*font-family: monospace;*/
 }
 
-#tbk-btc-invoice-form-container {
+#tbk-btc-donation-container {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -27,10 +27,10 @@ body {
 }
 
 #h1 {
-    margin: 21px 0;
-    font-size: 32px;
+    margin: 0 0 32px 0;
+    font-size: 16px;
 }
 
-#tbk-btc-invoice-form-container textarea {
+#tbk-btc-donation-container textarea {
   resize: vertical; /* user can resize vertically, but width is fixed */
 }

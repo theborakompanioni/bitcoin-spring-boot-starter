@@ -2,6 +2,7 @@ package org.tbk.bitcoin.example.payreq.payment;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
@@ -9,6 +10,9 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.util.Assert;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
+import javax.money.NumberValue;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -24,11 +28,17 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "payment_request")
-public abstract class PaymentRequest<T extends PaymentRequest<T>>
-        extends AbstractAggregateRoot<T>
-        implements AggregateRoot<T, PaymentRequest.PaymentRequestId> {
+public abstract class PaymentRequest
+        extends AbstractAggregateRoot<PaymentRequest>
+        implements AggregateRoot<PaymentRequest, PaymentRequest.PaymentRequestId> {
 
     private final PaymentRequestId id;
+
+    private final NumberValue amount;
+
+    private final CurrencyUnit currencyUnit;
+
+    private final String displayPrice;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -45,8 +55,20 @@ public abstract class PaymentRequest<T extends PaymentRequest<T>>
         Assert.notNull(order, "Order must not be null");
 
         this.id = PaymentRequestId.create();
+
+        MonetaryAmount price = order.getPrice();
+        this.amount = price.getNumber();
+        this.currencyUnit = price.getCurrency();
+        this.displayPrice = order.getDisplayPrice();
+
         this.order = Association.forAggregate(order);
     }
+
+    public MonetaryAmount getAmount() {
+        return Money.of(this.amount, this.currencyUnit);
+    }
+
+    public abstract String getPaymentUrl();
 
     @Value(staticConstructor = "of")
     public static class PaymentRequestId implements Identifier {

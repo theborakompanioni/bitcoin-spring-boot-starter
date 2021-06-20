@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="donate.css" />
 </head>
 <body>
-<div id="tbk-btc-invoice-form-container">
+<div id="tbk-btc-donation-container">
     <div class="container">
         <div id="header">
             <div class="row">
                 <div class="column">
                     <span class="logo">
-                        <img width="105px" src="images/logo.png">
+                        <img width="55px" src="images/logo.png">
                     </span>
                 </div>
             </div>
@@ -30,16 +30,34 @@
                 <label for="amountField">Amount (in USD)</label>
                 <input id="amountField"
                        type="number" name="amount" placeholder="USD"
-                       min="1" size="5" required>
+                       min="1" size="5" required autofocus>
                 <label for="commentField">Comment</label>
                 <textarea id="commentField" name="comment" placeholder="The Times 03/Jan/2009 Chancellor on brink of second bailout for banks."></textarea>
 
+                <label for="paymentMethodField">Payment Method</label>
+                <select id="paymentMethodField" name="paymentMethod" required>
+                    <option value="lightning">lightning</option>
+                    <option value="onchain">onchain</option>
+                </select>
+
+                <!--input id="paymentMethodField"
+                       type="hidden" name="paymentMethod" placeholder="onchain" value="lightning"
+                       required-->
+
+                <!--label for="networkField">Network</label>
+                <select id="networkField" name="network" required>
+                    <option value="regtest">regtest</option>
+                    <option value="testnet">testnet</option>
+                    <option value="mainnet">mainnet</option>
+                </select>-->
                 <input id="networkField"
                        type="hidden" name="network" placeholder="mainnet" value="regtest"
                        required>
+
                 <input id="currencyField"
                        type="hidden" name="currency" placeholder="USD" value="USD"
                        required>
+
                 <input id="main-button" class="button-primary" type="submit" value="Donate">
             </form>
         </div>

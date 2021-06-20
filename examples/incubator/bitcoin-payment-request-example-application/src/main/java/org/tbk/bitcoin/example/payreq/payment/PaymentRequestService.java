@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface PaymentRequestService {
 
-    PaymentRequest<?> create(Order order, Network network, Instant validUntil);
+    PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil);
+    PaymentRequest createLightningPayment(Order order, Network network, Instant validUntil);
 
     /**
      * Returns the {@link PaymentRequest} for the given {@link Order}.
@@ -17,5 +18,5 @@ public interface PaymentRequestService {
      * @return the {@link PaymentRequest} for the given {@link Order} or {@link Optional#empty()} if the Order hasn't been payed
      * yet.
      */
-    Optional<PaymentRequest<?>> getPaymentRequestFor(Order order);
+    Optional<PaymentRequest> getPaymentRequestFor(Order order);
 }

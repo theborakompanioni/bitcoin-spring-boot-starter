@@ -4,23 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import lombok.Getter;
 import lombok.Value;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
-import org.javamoney.moneta.Money;
+import org.bitcoinj.core.NetworkParameters;
 import org.tbk.bitcoin.example.payreq.common.Network;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
-import java.math.BigInteger;
 import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
 
 /**
- * A {@link PaymentRequest} done through a {@link BitcoinOnchainPaymentRequest}.
+ * A {@link PaymentRequest} done through a {@link LightningPaymentRequest}.
  */
 @Getter
-public class BitcoinOnchainPaymentRequest extends PaymentRequest {
+public class LightningPaymentRequest extends PaymentRequest {
 
     private final Instant validUntil;
 
@@ -29,15 +26,15 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest {
     private final String address;
 
     /**
-     * Creates a new {@link BitcoinOnchainPaymentRequest} referring to the given {@link Order}.
+     * Creates a new {@link LightningPaymentRequest} referring to the given {@link Order}.
      *
      * @param order must not be {@literal null}.
      */
-    protected BitcoinOnchainPaymentRequest(Order order, Instant validUntil, Address address) {
+    protected LightningPaymentRequest(Order order, Instant validUntil, NetworkParameters network, String address) {
         super(order);
         this.validUntil = requireNonNull(validUntil);
-        this.address = address.toString();
-        this.network = Network.fromNetworkParameters(address.getParameters()).name();
+        this.network = Network.fromNetworkParameters(network).name();
+        this.address = requireNonNull(address);
 
         registerEvent(BitcoinOnchainPaymentRequestCreatedEvent.of(this.getId()));
     }
@@ -45,9 +42,7 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest {
     @Override
     @JsonProperty
     public String getPaymentUrl() {
-        // String.format("bitcoin:%s?amount={}&label={}");
-        BigInteger satoshi = Money.from(getAmount()).getNumberStripped().unscaledValue();
-        return String.format("bitcoin:%s?amount=%s", address, Coin.valueOf(satoshi.longValue()).toPlainString());
+        return String.format("lightning:%s", address);
     }
 
     @Override

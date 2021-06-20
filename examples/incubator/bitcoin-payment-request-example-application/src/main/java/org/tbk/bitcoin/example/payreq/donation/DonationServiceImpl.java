@@ -12,7 +12,7 @@ import org.tbk.bitcoin.example.payreq.donation.api.query.DonationForm;
 import org.tbk.bitcoin.example.payreq.order.LineItem;
 import org.tbk.bitcoin.example.payreq.order.Order;
 import org.tbk.bitcoin.example.payreq.order.OrderService;
-import org.tbk.bitcoin.example.payreq.payment.BitcoinOnchainPaymentRequest;
+import org.tbk.bitcoin.example.payreq.payment.PaymentRequest;
 import org.tbk.bitcoin.example.payreq.payment.PaymentRequestService;
 
 import javax.money.CurrencyUnit;
@@ -20,6 +20,7 @@ import javax.money.Monetary;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.CurrencyConversion;
 import javax.money.convert.MonetaryConversions;
+import javax.validation.ValidationException;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -59,6 +60,15 @@ class DonationServiceImpl implements DonationService {
         Money bitcoinMonetaryAmount = sourceMonetaryAmount.with(toBtcConversion)
                 .with(Monetary.getRounding(Currencies.BTC));
 
+
+        if ("onchain".equals(form.getPaymentMethod())) {
+
+        } else if ("lightning".equals(form.getPaymentMethod())) {
+
+        } else {
+            throw new ValidationException();
+        }
+
         BigInteger satoshiMonetaryAmount = bitcoinMonetaryAmount.getNumberStripped().unscaledValue();
 
         Coin donationAmount = Coin.valueOf(satoshiMonetaryAmount.longValue());
@@ -70,7 +80,15 @@ class DonationServiceImpl implements DonationService {
 
         Instant now = Instant.now();
         Instant paymentRequestValidUntil = now.plus(5, ChronoUnit.MINUTES);
-        BitcoinOnchainPaymentRequest paymentRequest = (BitcoinOnchainPaymentRequest) paymentRequestService.create(order, network, paymentRequestValidUntil);
+
+        PaymentRequest paymentRequest = null;
+        if ("onchain".equals(form.getPaymentMethod())) {
+            paymentRequest =  paymentRequestService.createOnchainPayment(order, network, paymentRequestValidUntil);
+        } else if ("lightning".equals(form.getPaymentMethod())) {
+            paymentRequest = paymentRequestService.createLightningPayment(order, network, paymentRequestValidUntil);
+        } else {
+            throw new ValidationException();
+        }
 
         String description = String.format("Donation of %s (%s) on %s",
                 donationAmount.toFriendlyString(), sourceMonetaryAmount,

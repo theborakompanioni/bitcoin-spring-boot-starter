@@ -10,7 +10,6 @@ import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.tbk.bitcoin.example.payreq.order.Order;
-import org.tbk.bitcoin.example.payreq.payment.BitcoinOnchainPaymentRequest;
 import org.tbk.bitcoin.example.payreq.payment.PaymentRequest;
 
 import javax.persistence.Column;
@@ -35,7 +34,7 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
     private final Association<Order, Order.OrderId> order;
 
     @Column(name = "payment_request_id")
-    private final Association<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestId> paymentRequest;
+    private final Association<PaymentRequest, PaymentRequest.PaymentRequestId> paymentRequest;
 
     private String description;
 
@@ -49,7 +48,7 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
     @Version
     private Long version;
 
-    Donation(Order order, BitcoinOnchainPaymentRequest paymentRequest) {
+    Donation(Order order, PaymentRequest paymentRequest) {
         this.id = DonationId.of(UUID.randomUUID().toString());
         this.order = Association.forAggregate(order);
         this.paymentRequest = Association.forAggregate(paymentRequest);

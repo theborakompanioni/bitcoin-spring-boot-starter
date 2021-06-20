@@ -26,6 +26,10 @@ public class DonationForm {
     private String network;
 
     @Nullable
+    @Pattern(regexp = "(onchain|lightning)")
+    private String paymentMethod;
+
+    @Nullable
     @Size(max = 255)
     private String comment;
 
