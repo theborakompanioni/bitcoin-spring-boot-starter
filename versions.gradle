@@ -14,7 +14,7 @@ ext {
     protobufVersion = '3.17.3'
     protocVersion = protobufVersion
     jmoleculesVersion = '1.2.0'
-    jmoleculesIntegrationsVersion = '0.3.0'
+    jmoleculesIntegrationsVersion = '0.4.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
     moquetteVersion = '0.12.1'
     pahoMqttClientVersion = '1.2.5'
