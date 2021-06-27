@@ -43,14 +43,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-### Intellij Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
-
 ### Java ###
 # Compiled class file
 *.class
@@ -83,9 +75,8 @@ gradle-app.setting
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!gradle/witness/gradle-witness.jar
-!**/src/main/**
-!**/src/test/**
+gradle/verification-keyring-dryrun.gpg
+gradle/verification-metadata.dryrun.xml
 
 ######################
 # Project Specific

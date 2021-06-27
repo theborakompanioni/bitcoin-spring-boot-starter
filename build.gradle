@@ -5,8 +5,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        springBootVersion = '2.5.1.RELEASE'
-        springBootGradlePluginVersion = '2.5.1'
+        springBootGradlePluginVersion = '2.5.2'
         protobufGradleVersion = '0.8.16'
         jmoleculesBomVersion = '2021.0.2'
         // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
