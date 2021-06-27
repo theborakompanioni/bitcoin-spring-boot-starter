@@ -60,13 +60,11 @@ class DonationServiceImpl implements DonationService {
         Money bitcoinMonetaryAmount = sourceMonetaryAmount.with(toBtcConversion)
                 .with(Monetary.getRounding(Currencies.BTC));
 
-
-        if ("onchain".equals(form.getPaymentMethod())) {
-
-        } else if ("lightning".equals(form.getPaymentMethod())) {
-
-        } else {
-            throw new ValidationException();
+        // TODO: externalize payment method provider
+        String paymentMethod = form.getPaymentMethod().orElse("lightning");
+        if (!"onchain".equals(paymentMethod) && !"lightning".equals(paymentMethod)) {
+            String errorMessage = String.format("Unsupported payment method: '%s'", paymentMethod);
+            throw new ValidationException(errorMessage);
         }
 
         BigInteger satoshiMonetaryAmount = bitcoinMonetaryAmount.getNumberStripped().unscaledValue();
@@ -82,12 +80,10 @@ class DonationServiceImpl implements DonationService {
         Instant paymentRequestValidUntil = now.plus(5, ChronoUnit.MINUTES);
 
         PaymentRequest paymentRequest = null;
-        if ("onchain".equals(form.getPaymentMethod())) {
+        if ("onchain".equals(paymentMethod)) {
             paymentRequest =  paymentRequestService.createOnchainPayment(order, network, paymentRequestValidUntil);
-        } else if ("lightning".equals(form.getPaymentMethod())) {
-            paymentRequest = paymentRequestService.createLightningPayment(order, network, paymentRequestValidUntil);
         } else {
-            throw new ValidationException();
+            paymentRequest = paymentRequestService.createLightningPayment(order, network, paymentRequestValidUntil);
         }
 
         String description = String.format("Donation of %s (%s) on %s",

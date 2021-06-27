@@ -47,6 +47,7 @@ class DonationFormApiTest {
                 .param("network", "regtest")
                 .param("amount", "1")
                 .param("currency", "USD")
+                .param("paymentMethod", "onchain")
                 .param("comment", "hello world."))
                 .andDo(print())
                 .andExpect(status().isFound())

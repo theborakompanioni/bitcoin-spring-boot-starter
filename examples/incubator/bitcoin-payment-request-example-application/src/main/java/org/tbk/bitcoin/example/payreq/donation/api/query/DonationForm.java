@@ -41,6 +41,10 @@ public class DonationForm {
         return Optional.ofNullable(comment);
     }
 
+    public Optional<String> getPaymentMethod() {
+        return Optional.ofNullable(paymentMethod);
+    }
+
     public NetworkParameters getBitcoinjNetwork() {
         return getNetwork()
                 .flatMap(Network::ofNullable)
