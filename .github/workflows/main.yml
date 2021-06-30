@@ -3,7 +3,15 @@ on: [push, pull_request]
 
 jobs:
 
+  validation:
+    name: "Gradle Wrapper Validation"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+
   build:
+    needs: validation
     runs-on: ubuntu-latest
 
     steps:
