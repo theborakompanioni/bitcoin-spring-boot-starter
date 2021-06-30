@@ -49,8 +49,16 @@ jobs:
       - name: Integration Test
         run: ./gradlew integrationTest
 
+      - name: Publish Candidate
+        if: |
+          startsWith(github.ref, 'refs/tags/v') &&
+          contains(github.ref, '-rc.')
+        run: ./gradlew --info --stacktrace -Prelease.useLastTag=true candidate
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
+        if: |
+          startsWith(github.ref, 'refs/tags/v')
         with:
           name: Package
           path: ./**/build/libs/*.jar
