@@ -1,4 +1,4 @@
-name: Create Release
+name: Create GitHub Release Page
 on:
   push:
     # Sequence of patterns matched against refs/tags
