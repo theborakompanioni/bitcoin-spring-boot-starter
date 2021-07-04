@@ -61,8 +61,8 @@ public class BitcoinBlock extends AbstractAggregateRoot<BitcoinBlock> implements
         this.previousblockhash = previousblockhash;
         this.nextblockhash = nextblockhash;
 
-        registerEvent(new BitcoinBlockCreatedEvent(this.getId()));
-        registerEvent(new BitcoinBlockConfirmationEvent(this.getId(), confirmations));
+        registerEvent(new BitcoinBlockCreatedEvent(this.id));
+        registerEvent(new BitcoinBlockConfirmationEvent(this.id, confirmations));
     }
 
     @AfterDomainEventPublication
@@ -76,7 +76,7 @@ public class BitcoinBlock extends AbstractAggregateRoot<BitcoinBlock> implements
         boolean confirmationUpdate = this.getConfirmations() != blockInfo.getConfirmations();
         if (confirmationUpdate) {
             this.setConfirmations(blockInfo.getConfirmations());
-            registerEvent(new BitcoinBlockConfirmationEvent(this.getId(), blockInfo.getConfirmations()));
+            registerEvent(new BitcoinBlockConfirmationEvent(this.id, blockInfo.getConfirmations()));
         }
     }
 

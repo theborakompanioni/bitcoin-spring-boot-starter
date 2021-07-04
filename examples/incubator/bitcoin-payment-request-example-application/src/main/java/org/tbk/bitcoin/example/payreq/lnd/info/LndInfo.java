@@ -35,7 +35,7 @@ public class LndInfo extends AbstractAggregateRoot<LndInfo> implements Aggregate
         this.blockHash = blockHash;
         this.bestHeaderTimestamp = bestHeaderTimestamp;
 
-        registerEvent(new LndInfoCreatedEvent(this.getId()));
+        registerEvent(new LndInfoCreatedEvent(this.id));
     }
 
     @AfterDomainEventPublication

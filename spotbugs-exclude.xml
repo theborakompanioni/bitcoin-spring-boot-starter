@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.2.2/spotbugs/etc/findbugsfilter.xsd">
     <!--
-    see https://spotbugs.readthedocs.io/en/latest/filter.html for documentation
+        see https://spotbugs.readthedocs.io/en/latest/filter.html for documentation
     -->
     <Match>
         <Or>
@@ -12,21 +12,31 @@
             <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE"/>
             <!-- exclude 'serialVersionUID' warnings: https://github.com/projectlombok/lombok/wiki/WHY-NOT:-serialVersionUID -->
             <Bug pattern="SE_NO_SERIALVERSIONID"/>
+            <!--
+                prevents false positives for 'nullcheck of nonnull' in try-catch clauses
+                can be removed when #600 is merged: https://github.com/spotbugs/spotbugs/pull/1575/files
+             -->
+            <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
         </Or>
     </Match>
 
     <Match>
         <!-- prevents jMolecules class name pattern errors, e.g. 'The class name$jMolecules$oTL6KGeP doesn't start with an upper case letter' -->
-        <Class name="~.*\$jMolecules\$.*" />
+        <Class name="~.*\$jMolecules\$.*"/>
         <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
     </Match>
 
     <Match>
         <!-- prevents false positives in flyway migration scripts, e.g. 'A prepared statement is generated from a nonconstant String in [..].V1__init.migrate(Context) -->
-        <Class name="~.*V\d+__.*" />
-        <Method name="migrate" />
+        <Class name="~.*V\d+__.*"/>
+        <Method name="migrate"/>
         <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"/>
     </Match>
 
+    <Match>
+        <!-- prevents false positives in constructors of domain classes extending org.springframework.data.domain.AbstractAggregateRoot -->
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+    </Match>
 
 </FindBugsFilter>

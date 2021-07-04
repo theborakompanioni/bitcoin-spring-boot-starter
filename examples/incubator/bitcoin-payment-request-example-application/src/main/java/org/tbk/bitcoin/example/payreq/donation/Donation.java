@@ -49,13 +49,13 @@ public class Donation extends AbstractAggregateRoot<Donation> implements Aggrega
     private Long version;
 
     Donation(Order order, PaymentRequest paymentRequest) {
-        this.id = DonationId.of(UUID.randomUUID().toString());
+        this.id = DonationId.create();
         this.order = Association.forAggregate(order);
         this.paymentRequest = Association.forAggregate(paymentRequest);
         this.paymentUrl = paymentRequest.getPaymentUrl();
         this.displayPrice = paymentRequest.getDisplayPrice();
 
-        registerEvent(new DonationCreatedEvent(this.getId()));
+        registerEvent(new DonationCreatedEvent(this.id));
     }
 
     @AfterDomainEventPublication

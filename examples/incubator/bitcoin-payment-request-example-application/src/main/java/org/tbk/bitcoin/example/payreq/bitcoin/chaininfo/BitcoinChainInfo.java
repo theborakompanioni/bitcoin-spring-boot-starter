@@ -49,7 +49,7 @@ public class BitcoinChainInfo extends AbstractAggregateRoot<BitcoinChainInfo> im
         this.verificationProgress = verificationProgress;
         this.chainWork = chainWork;
 
-        registerEvent(new BitcoinChainInfoCreatedEvent(this.getId()));
+        registerEvent(new BitcoinChainInfoCreatedEvent(this.id));
     }
 
     @AfterDomainEventPublication

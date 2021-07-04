@@ -48,7 +48,7 @@ public class ExchangeRate extends AbstractAggregateRoot<Invoice> implements Aggr
         this.termCurrency = requireNonNull(termCurrency);
         this.factor = requireNonNull(factor);
 
-        registerEvent(new ExchangeRateCreatedEvent(this.getId()));
+        registerEvent(new ExchangeRateCreatedEvent(this.id));
     }
 
     @AfterDomainEventPublication

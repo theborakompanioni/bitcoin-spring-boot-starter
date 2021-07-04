@@ -45,7 +45,7 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
         this.createdAt = Instant.now().toEpochMilli();
         this.order = Association.forAggregate(order);
 
-        registerEvent(new InvoiceCreatedEvent(this.getId()));
+        registerEvent(new InvoiceCreatedEvent(this.id));
     }
 
     @AfterDomainEventPublication
