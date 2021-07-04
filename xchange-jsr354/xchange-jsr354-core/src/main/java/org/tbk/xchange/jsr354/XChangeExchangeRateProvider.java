@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class XChangeExchangeRateProvider extends AbstractRateProvider implements ExchangeRateProvider {
+public class XChangeExchangeRateProvider extends AbstractRateProvider {
 
     private final Exchange exchange;
 

@@ -12,7 +12,7 @@ import javax.money.convert.*;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class CachingExchangeRateProvider extends AbstractRateProvider implements ExchangeRateProvider {
+public class CachingExchangeRateProvider extends AbstractRateProvider {
 
     private final ExchangeRateAvailabilityCache availabilityCache;
 
