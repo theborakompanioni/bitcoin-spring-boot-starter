@@ -201,6 +201,7 @@
             <trusting group="org.xmlunit"/>
          </trusted-key>
          <trusted-key id="cf17e92c9ffa55316b5db83901d734ee5ee9c3f8" group="org.eclipse.sisu"/>
+         <trusted-key id="cfc10b69382cbcf5387e51484ece492b63e38acf" group="com.h3xstream.findsecbugs"/>
          <trusted-key id="d196a5e3e70732eeb2e5007f1861c322c56014b2">
             <trusting group="commons-lang"/>
             <trusting group="org.apache.commons"/>

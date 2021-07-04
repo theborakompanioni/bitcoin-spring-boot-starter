@@ -147,6 +147,7 @@ subprojects {
 
     dependencies {
         compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
+        spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
 
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
@@ -298,12 +299,12 @@ subprojects {
 
     spotbugs {
         effort = 'max'
-        reportLevel = 'low'
+        reportLevel = 'medium' // TODO: set to 'low' to also find 'low confidence issues'
         ignoreFailures = true // TODO: fix reported issues over time and set this to `false`
         excludeFilter = rootProject.file('./spotbugs-exclude.xml')
         reportsDir = rootProject.file("$rootProject.buildDir/reports/spotbugs/$project.name")
     }
-    spotbugsMain {
+    tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
         reports {
             html.enabled = true
             xml.enabled = false

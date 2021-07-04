@@ -17,6 +17,18 @@
                 can be removed when #600 is merged: https://github.com/spotbugs/spotbugs/pull/1575/files
              -->
             <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+            <!-- disable minor 'include CRLF characters into log messages' warning in example apps -->
+            <Bug pattern="CRLF_INJECTION_LOGS"/>
+        </Or>
+    </Match>
+    <Match>
+        <!-- disable some known risks or minor warnings in example apps -->
+        <Package name="~org\.tbk\..*\.example\.?.*" />
+        <Or>
+            <!-- disable 'Persistent objects should never be returned by APIs.' warning in example apps -->
+            <Bug pattern="ENTITY_LEAK"/>
+            <!-- disable 'Spring CSRF protection disabled' warning in example apps -->
+            <Bug pattern="SPRING_CSRF_PROTECTION_DISABLED"/>
         </Or>
     </Match>
 
@@ -27,10 +39,31 @@
     </Match>
 
     <Match>
-        <!-- prevents false positives in flyway migration scripts, e.g. 'A prepared statement is generated from a nonconstant String in [..].V1__init.migrate(Context) -->
+        <!-- prevents protobuf false positives, e.g. 'Useless control flow' in generated builder classes -->
+        <Class name="~.*\$Builder"/>
+        <Method name="maybeForceBuilderInitialization"/>
+        <Bug pattern="UCF_USELESS_CONTROL_FLOW"/>
+    </Match>
+
+    <Match>
+        <!-- prevents false positives in flyway migration scripts -->
         <Class name="~.*V\d+__.*"/>
         <Method name="migrate"/>
-        <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"/>
+        <Or>
+            <!-- e.g. 'A prepared statement is generated from a nonconstant String in [..].V1__init.migrate(Context) -->
+            <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"/>
+            <!-- e.g. 'prepareStatement(Ljava/lang/String;)Ljava/sql/PreparedStatement; can be vulnerable to SQL injection (with JDBC) -->
+            <Bug pattern="SQL_INJECTION_JDBC"/>
+        </Or>
+    </Match>
+
+    <Match>
+        <Or>
+            <!-- all classes named '*Api' or '*Ctrl' are known to be Spring endpoints and should not be reported -->
+            <Class name="~.*Api"/>
+            <Class name="~.*Ctrl"/>
+        </Or>
+        <Bug pattern="SPRING_ENDPOINT"/>
     </Match>
 
     <Match>
