@@ -21,4 +21,12 @@
         <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
     </Match>
 
+    <Match>
+        <!-- prevents false positives in flyway migration scripts, e.g. 'A prepared statement is generated from a nonconstant String in [..].V1__init.migrate(Context) -->
+        <Class name="~.*V\d+__.*" />
+        <Method name="migrate" />
+        <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"/>
+    </Match>
+
+
 </FindBugsFilter>
