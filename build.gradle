@@ -105,6 +105,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'java-library'
+    apply plugin: 'jacoco'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
     apply plugin: 'nebula.integtest-standalone'
@@ -204,6 +205,8 @@ subprojects {
     test {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
 
+        finalizedBy jacocoTestReport // report is always generated after tests run
+
         useJUnitPlatform()
     }
 
@@ -211,6 +214,16 @@ subprojects {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
 
         useJUnitPlatform()
+    }
+
+    jacocoTestReport {
+        dependsOn test // tests are required to run before generating the report
+
+        reports {
+            xml.enabled = true
+            html.enabled = true
+            csv.enabled = false
+        }
     }
 
     artifacts {
