@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<FindBugsFilter>
+<FindBugsFilter
+        xmlns="https://github.com/spotbugs/filter/3.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.2.2/spotbugs/etc/findbugsfilter.xsd">
+    <!--
+    see https://spotbugs.readthedocs.io/en/latest/filter.html for documentation
+    -->
+    <Match>
+        <Or>
+            <!-- suggests using '%n rather than \n' in string formats.. did not work properly in manual tests -->
+            <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE"/>
+            <!-- exclude 'serialVersionUID' warnings: https://github.com/projectlombok/lombok/wiki/WHY-NOT:-serialVersionUID -->
+            <Bug pattern="SE_NO_SERIALVERSIONID"/>
+        </Or>
+    </Match>
 
     <Match>
-        <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE" />
-        <!-- exclude 'serialVersionUID' warnings: https://github.com/projectlombok/lombok/wiki/WHY-NOT:-serialVersionUID -->
-        <Bug pattern="SE_NO_SERIALVERSIONID" />
+        <!-- prevents jMolecules class name pattern errors, e.g. 'The class name$jMolecules$oTL6KGeP doesn't start with an upper case letter' -->
+        <Class name="~.*\$jMolecules\$.*" />
+        <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
     </Match>
 
 </FindBugsFilter>

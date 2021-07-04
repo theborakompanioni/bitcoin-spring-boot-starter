@@ -300,6 +300,7 @@ subprojects {
         reportLevel = 'low'
         ignoreFailures = true // TODO: fix reported issues over time and set this to `false`
         excludeFilter = rootProject.file('./spotbugs-exclude.xml')
+        reportsDir = rootProject.file("$rootProject.buildDir/reports/spotbugs/$project.name")
     }
     spotbugsMain {
         reports {
