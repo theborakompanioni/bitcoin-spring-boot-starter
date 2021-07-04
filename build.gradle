@@ -35,6 +35,7 @@ plugins {
     id 'nebula.lint' version '16.17.0'
     id 'nebula.project' version '7.0.9'
     id 'nebula.info' version '9.3.0'
+    id 'com.github.spotbugs' version '4.7.1' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
     id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
@@ -106,6 +107,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'jacoco'
+    apply plugin: 'com.github.spotbugs'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
     apply plugin: 'nebula.integtest-standalone'
@@ -144,6 +146,7 @@ subprojects {
     }
 
     dependencies {
+        // compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
 
@@ -290,6 +293,19 @@ subprojects {
         dependsOn delombok
         source = delombok.outputDir
         failOnError = false
+    }
+
+    spotbugs {
+        effort = 'max'
+        reportLevel = 'low'
+        ignoreFailures = true // TODO: fix reported issues over time and set this to `false`
+        excludeFilter = rootProject.file('./spotbugs-exclude.xml')
+    }
+    spotbugsMain {
+        reports {
+            html.enabled = true
+            xml.enabled = false
+        }
     }
 
     tasks.withType(AbstractArchiveTask) {

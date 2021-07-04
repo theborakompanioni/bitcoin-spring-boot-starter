@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+
+    <Match>
+        <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE" />
+        <!-- exclude 'serialVersionUID' warnings: https://github.com/projectlombok/lombok/wiki/WHY-NOT:-serialVersionUID -->
+        <Bug pattern="SE_NO_SERIALVERSIONID" />
+    </Match>
+
+</FindBugsFilter>
