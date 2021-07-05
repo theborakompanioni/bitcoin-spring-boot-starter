@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 
@@ -64,12 +65,37 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
     public void validate(Object target, Errors errors) {
         TorContainerProperties properties = (TorContainerProperties) target;
 
+        properties.getHiddenServices().forEach((key, value) -> {
+            errors.pushNestedPath("hiddenServices[" + key + "]");
+            ValidationUtils.invokeValidator(value, value, errors);
+            errors.popNestedPath();
+        });
     }
 
     @Data
-    public static class HiddenServiceDefinition {
+    public static class HiddenServiceDefinition implements Validator {
         private int virtualPort;
         private int hostPort;
+
+        @Override
+        public boolean supports(Class<?> clazz) {
+            return clazz == HiddenServiceDefinition.class;
+        }
+
+        @Override
+        public void validate(Object target, Errors errors) {
+            HiddenServiceDefinition properties = (HiddenServiceDefinition) target;
+
+            if (properties.virtualPort <= 0) {
+                String errorMessage = String.format("'virtualPort' must be a positive integer - got: %d", properties.virtualPort);
+                errors.rejectValue("virtualPort", "virtualPort.invalid", errorMessage);
+            }
+
+            if (properties.hostPort <= 0) {
+                String errorMessage = String.format("'hostPort' must be a positive integer - got: %d", properties.hostPort);
+                errors.rejectValue("virtualPort", "virtualPort.invalid", errorMessage);
+            }
+        }
     }
 }
 

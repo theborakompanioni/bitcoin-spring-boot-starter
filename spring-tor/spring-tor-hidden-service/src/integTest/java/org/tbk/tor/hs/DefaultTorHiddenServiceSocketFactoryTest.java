@@ -1,6 +1,7 @@
 package org.tbk.tor.hs;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.berndpruenster.netlayer.tor.HiddenServiceSocket;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.Tor;
@@ -23,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @Slf4j
-public class DefaultTorHiddenServiceSocketFactoryTest {
+class DefaultTorHiddenServiceSocketFactoryTest {
 
     private final int port = 21011;
 
@@ -32,7 +33,7 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
     private NativeTor nativeTor;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         File workingDirectory = new File("build/tmp/tor-working-dir");
         NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
 
@@ -46,12 +47,12 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         this.nativeTor.shutdown();
     }
 
     @Test
-    public void itShouldCreateHiddenService() throws InterruptedException {
+    void itShouldCreateHiddenService() throws InterruptedException {
         // create a hidden service in directory 'test' inside the tor installation directory
         HiddenServiceSocketCreateContext context = HiddenServiceSocketCreateContext.builder()
                 .hostPort(port)
@@ -81,15 +82,16 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
                 log.info("Successfully connected to {}", hiddenServiceSocket);
 
                 log.info("Closing socket now...");
-                hiddenServiceSocket.close();
-            } catch (Exception e) {
-                log.error("Exception while handling socket connection");
+                IOUtils.closeQuietly(hiddenServiceSocket);
+            } catch (IOException e) {
+                log.error("Exception while handling socket connection", e);
             }
 
             // retry connecting
-            try (TorSocket s2 = new TorSocket(hiddenServiceSocket.getServiceName(), hiddenServiceSocket.getHiddenServicePort(), "Foo")) {
+            try (TorSocket s2 = new TorSocket(hiddenServiceSocket.getServiceName(), hiddenServiceSocket.getHiddenServicePort(), "foo")) {
                 // do nothing on purpose
-            } catch (Exception e) {
+                log.error("expected an error when opening connection to closed hidden service socket");
+            } catch (IOException e) {
                 log.debug("As expected, connection to {} failed with: {}", hiddenServiceSocket, e.getMessage());
             }
 
@@ -102,11 +104,7 @@ public class DefaultTorHiddenServiceSocketFactoryTest {
         boolean await = countDownLatch.await(90, TimeUnit.SECONDS);
         assertThat("socket has been accepted", await, is(true));
 
-        try {
-            incomingSocket.close();
-        } catch (IOException e) {
-            log.warn("Error while closing hidden service socket", e);
-        }
+        IOUtils.closeQuietly(incomingSocket);
     }
 
 }

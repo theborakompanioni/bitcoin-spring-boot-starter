@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.berndpruenster.netlayer.tor.Tor;
@@ -17,6 +18,8 @@ import org.tbk.tor.hs.HiddenServiceDefinition;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
@@ -26,7 +29,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class TorExampleApplicationTest {
+class TorExampleApplicationTest {
 
     @Autowired(required = false)
     private Tor tor;
@@ -40,14 +43,14 @@ public class TorExampleApplicationTest {
     private HiddenServiceDefinition applicationHiddenServiceDefinition;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(tor, is(notNullValue()));
         assertThat(torHttpClient, is(notNullValue()));
         assertThat(applicationHiddenServiceDefinition, is(notNullValue()));
     }
 
     @Test
-    public void itShouldVerifyHiddenServiceIsAvailable() {
+    void itShouldVerifyHiddenServiceIsAvailable() {
         String onionUrl = applicationHiddenServiceDefinition.getVirtualHostOrThrow();
 
         boolean hiddenServiceAvailable = tor.isHiddenServiceAvailable(onionUrl);
@@ -56,9 +59,13 @@ public class TorExampleApplicationTest {
 
     @Test
     @Disabled("Does not work at the moment.. always times out. Works outside of the tests (e.g. in health checks) - investigate!")
-    public void itShouldVerifyServerIsReachableViaOnionUrl() {
-        String onionUrl = applicationHiddenServiceDefinition.getVirtualHostOrThrow();
-        String url = String.format("http://%s:%d/index.html", onionUrl, applicationHiddenServiceDefinition.getVirtualPort());
+    void itShouldVerifyServerIsReachableViaOnionUrl() throws URISyntaxException {
+        URI url = new URIBuilder()
+                .setScheme("http")
+                .setHost(applicationHiddenServiceDefinition.getVirtualHostOrThrow())
+                .setPort(applicationHiddenServiceDefinition.getVirtualPort())
+                .setPath("index.html")
+                .build();
 
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout((int) Duration.ofSeconds(10).toMillis())
@@ -72,7 +79,7 @@ public class TorExampleApplicationTest {
         // the hidden service takes a while to be published.
         // poll till the onion url is reachable in the tor network.
         // timeout if it takes too long
-        String body  = Flux.interval(Duration.ofSeconds(10))
+        String body = Flux.interval(Duration.ofSeconds(10))
                 .flatMap(i -> {
                     try (CloseableHttpResponse response = torHttpClient.execute(request)) {
                         String entity = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);

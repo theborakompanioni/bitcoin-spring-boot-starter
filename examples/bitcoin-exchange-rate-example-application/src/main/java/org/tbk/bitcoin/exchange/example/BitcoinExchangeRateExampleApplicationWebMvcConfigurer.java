@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -38,6 +39,7 @@ public class BitcoinExchangeRateExampleApplicationWebMvcConfigurer implements We
     }
 
     @Override
+    @SuppressFBWarnings("PERMISSIVE_CORS")
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*");

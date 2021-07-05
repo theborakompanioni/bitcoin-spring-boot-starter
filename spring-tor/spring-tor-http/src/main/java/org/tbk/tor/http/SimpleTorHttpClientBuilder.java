@@ -1,6 +1,7 @@
 package org.tbk.tor.http;
 
 import com.runjva.sourceforge.jsocks.protocol.Socks5Proxy;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.http.HttpHost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -54,6 +55,7 @@ public final class SimpleTorHttpClientBuilder {
                 .setConnectionManager(cm);
     }
 
+    @SuppressFBWarnings("UNENCRYPTED_SOCKET")
     private static Socket createSocket(HttpContext context, Proxy proxyOrNull) {
         HttpHost httpTargetHost = (HttpHost) context.getAttribute(HttpCoreContext.HTTP_TARGET_HOST);
         URI uri = URI.create(httpTargetHost.toURI());

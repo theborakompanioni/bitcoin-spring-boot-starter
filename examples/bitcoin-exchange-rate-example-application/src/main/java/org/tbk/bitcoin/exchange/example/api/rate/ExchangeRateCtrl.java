@@ -45,11 +45,9 @@ public class ExchangeRateCtrl {
     public ResponseEntity<ExchangeRateResponseImpl> latest(
             @RequestParam(name = "base", required = false) CurrencyUnit baseParamOrNull,
             @RequestParam(name = "target", required = false) List<CurrencyUnit> targetParamOrNull,
-            @RequestParam(name = "provider", required = false) List<String> providerParamOrNull,
-            @RequestParam(name = "days", required = false, defaultValue = "1") Integer daysParam
+            @RequestParam(name = "provider", required = false) List<String> providerParamOrNull
     ) {
         checkArgument(baseParamOrNull != null, "'base' must not be empty");
-        checkArgument(daysParam > 0, "'days' must be positive");
 
         CurrencyUnit baseCurrency = requireNonNull(baseParamOrNull);
 
@@ -61,13 +59,8 @@ public class ExchangeRateCtrl {
                 .map(MonetaryConversions::getExchangeRateProvider)
                 .collect(Collectors.toList());
 
-        LocalDate[] dates = SlidingWindows.withSlidingWindow(LocalDate.now(), daysParam)
-                .toArray(LocalDate[]::new);
-
         ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
-                .setBaseCurrency(baseCurrency)
-                //.set(dates)
-                ;
+                .setBaseCurrency(baseCurrency);
 
         Optional<ExchangeRateResponseImpl> exchangeRateResponse = Flux.fromIterable(targetCurrencies)
                 .map(conversionQueryBuilder::setTermCurrency)

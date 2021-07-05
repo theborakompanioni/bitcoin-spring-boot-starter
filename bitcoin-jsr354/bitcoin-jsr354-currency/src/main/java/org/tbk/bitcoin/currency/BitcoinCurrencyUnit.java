@@ -42,6 +42,23 @@ public final class BitcoinCurrencyUnit implements CurrencyUnit, Serializable, Co
         return this.getCurrencyCode().compareTo(other.getCurrencyCode());
     }
 
+    @Override
+    public int hashCode() {
+        return getCurrencyCode().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CurrencyUnit) {
+            CurrencyUnit other = (CurrencyUnit) obj;
+            return getCurrencyCode().equals(other.getCurrencyCode());
+        }
+        return false;
+    }
+
     /**
      * Does the same what {@link java.util.Currency} would do:
      * Returns the unofficial ISO 4217 currency code of bitcoin.

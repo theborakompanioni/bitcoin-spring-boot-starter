@@ -20,10 +20,8 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnClass(CompositeFeeProvider.class)
 public class BitcoinFeeClientAutoConfiguration {
 
-    private final BitcoinFeeClientAutoConfigProperties properties;
-
     public BitcoinFeeClientAutoConfiguration(BitcoinFeeClientAutoConfigProperties properties) {
-        this.properties = requireNonNull(properties);
+        requireNonNull(properties);
     }
 
     @Primary

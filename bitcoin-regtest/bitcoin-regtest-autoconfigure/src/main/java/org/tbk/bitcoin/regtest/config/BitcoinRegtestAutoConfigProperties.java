@@ -3,6 +3,7 @@ package org.tbk.bitcoin.regtest.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 @Data
@@ -28,5 +29,10 @@ public class BitcoinRegtestAutoConfigProperties implements Validator {
     public void validate(Object target, Errors errors) {
         BitcoinRegtestAutoConfigProperties properties = (BitcoinRegtestAutoConfigProperties) target;
 
+        if (properties.mining != null) {
+            errors.pushNestedPath("mining");
+            ValidationUtils.invokeValidator(properties.mining, properties.mining, errors);
+            errors.popNestedPath();
+        }
     }
 }

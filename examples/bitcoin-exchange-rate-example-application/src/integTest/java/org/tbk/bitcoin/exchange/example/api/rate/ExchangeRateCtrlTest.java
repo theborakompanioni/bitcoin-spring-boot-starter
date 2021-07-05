@@ -16,18 +16,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class ExchangeRateCtrlTest {
+class ExchangeRateCtrlTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Test
-    public void itShouldFetchExchangeRateFromKrakenSuccessfully() {
+    void itShouldFetchExchangeRateFromKrakenSuccessfully() {
         UriComponents uriComponents = UriComponentsBuilder.fromUriString("/api/v1/exchange/latest?base={base}&target={target}&provider={provider}")
                 .buildAndExpand(ImmutableMap.<String, String>builder()
                         .put("base", "BTC")
@@ -43,7 +44,7 @@ public class ExchangeRateCtrlTest {
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 
-        Map<String, Object> body = responseEntity.getBody();
+        Map<String, Object> body = requireNonNull(responseEntity.getBody());
 
         assertThat(body.get("base"), is("BTC"));
 

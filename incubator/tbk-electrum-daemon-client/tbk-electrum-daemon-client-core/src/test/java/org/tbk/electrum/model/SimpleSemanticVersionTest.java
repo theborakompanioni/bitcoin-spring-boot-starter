@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.tbk.electrum.model.SimpleSemanticVersion.tryParse;
 
 public class SimpleSemanticVersionTest {
@@ -42,12 +43,17 @@ public class SimpleSemanticVersionTest {
     }
 
     @Test
-    public void itShouldParseFromStringWithOneNumber() {
+    public void itShouldParseFromStringWithSingleNumber() {
         SemanticVersion semanticVersion = tryParseOrThrow("42");
 
         assertThat(semanticVersion.getMajor(), is(42));
         assertThat(semanticVersion.getMinor(), is(0));
         assertThat(semanticVersion.getPatch(), is(0));
+    }
+
+    @Test
+    public void itShouldThrowWhenParsingFromStringWithNegativeNumber() {
+        assertThrows(IllegalStateException.class, () -> tryParseOrThrow("-42"));
     }
 
     @Test
@@ -71,9 +77,9 @@ public class SimpleSemanticVersionTest {
     @Test
     public void itShouldParseFromRandomVersionString() {
         SecureRandom secureRandom = new SecureRandom();
-        int randomMajor = Math.abs(secureRandom.nextInt());
-        int randomMinor = Math.abs(secureRandom.nextInt());
-        int randomPatch = Math.abs(secureRandom.nextInt());
+        int randomMajor = secureRandom.nextInt(Integer.MAX_VALUE);
+        int randomMinor = secureRandom.nextInt(Integer.MAX_VALUE);
+        int randomPatch = secureRandom.nextInt(Integer.MAX_VALUE);
 
         String version = String.format("%d.%d.%d", randomMajor, randomMinor, randomPatch);
         SemanticVersion semanticVersion = tryParseOrThrow(version);

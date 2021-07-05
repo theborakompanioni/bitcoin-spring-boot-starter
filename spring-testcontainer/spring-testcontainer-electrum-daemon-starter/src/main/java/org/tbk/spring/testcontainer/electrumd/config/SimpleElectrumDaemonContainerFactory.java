@@ -199,12 +199,6 @@ public final class SimpleElectrumDaemonContainerFactory {
         updateElectrumConfigHack(electrumDaemonContainer, "dont_show_testnet_warning", "true");
     }
 
-    private Optional<String> networkFlag(ElectrumDaemonContainerConfig config) {
-        return Optional.of(config.getNetwork())
-                .filter(it -> !"mainnet".equals(it))
-                .map(it -> "--" + it);
-    }
-
     private Optional<String> networkFlag(ElectrumDaemonContainer<?> container) {
         return Optional.of(container.getEnvMap())
                 .map(it -> it.get(ELECTRUM_NETWORK_ENV_NAME))

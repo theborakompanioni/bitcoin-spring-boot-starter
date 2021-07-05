@@ -85,7 +85,7 @@ public class XChangeAutoConfigurationTest {
                     Object useSandbox = exchangeSpecification.getExchangeSpecificParametersItem("Use_Sandbox");
 
                     assertThat(useSandbox, is(instanceOf(Boolean.class)));
-                    assertThat((boolean) useSandbox, is(true));
+                    assertThat(useSandbox, is(Boolean.TRUE));
                 });
     }
 

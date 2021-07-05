@@ -1,13 +1,21 @@
 package org.tbk.bitcoin.tool.fee.bitcore;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import lombok.SneakyThrows;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,20 +38,26 @@ public class BitcoreFeeApiClientImpl implements BitcoreFeeApiClient {
         return Optional.ofNullable(this.apiToken);
     }
 
-    private Map<String, String> createDefaultParamMap() {
-        ImmutableMap.Builder<String, String> queryParamsBuilder = ImmutableMap.builder();
-        getApiToken().ifPresent(val -> queryParamsBuilder.put(TOKEN_PARAM_NAME, val));
+    private List<NameValuePair> createDefaultParams() {
+        ImmutableList.Builder<NameValuePair> queryParamsBuilder = ImmutableList.builder();
+        getApiToken()
+                .map(token -> new BasicNameValuePair(TOKEN_PARAM_NAME, token))
+                .ifPresent(queryParamsBuilder::add);
         return queryParamsBuilder.build();
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public FeeEstimationResponse bitcoinMainnetFee(FeeEstimationRequest feeEstimationRequest) {
         checkArgument(feeEstimationRequest.getBlocks() > 0L, "'blocks' must be between 1 and 100");
         checkArgument(feeEstimationRequest.getBlocks() <= 100L, "'blocks' must be between 1 and 100");
 
         // https://api.bitcore.io/api/BTC/mainnet/fee/1
-        String query = MoreQueryString.toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s/%d%s", baseUrl, "api/BTC/mainnet/fee", feeEstimationRequest.getBlocks(), query);
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/BTC/mainnet/fee/" + feeEstimationRequest.getBlocks())
+                .addParameters(createDefaultParams())
+                .build();
+
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);
         return MoreJsonFormat.jsonToProto(json, FeeEstimationResponse.newBuilder()).build();

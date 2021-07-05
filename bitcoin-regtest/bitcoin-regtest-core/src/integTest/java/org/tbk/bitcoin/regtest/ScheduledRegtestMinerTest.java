@@ -20,6 +20,7 @@ import org.tbk.bitcoin.regtest.mining.ScheduledRegtestMiner;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class ScheduledRegtestMinerTest {
+class ScheduledRegtestMinerTest {
 
     @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
@@ -49,7 +50,7 @@ public class ScheduledRegtestMinerTest {
         @Bean(destroyMethod = "stopAsync")
         public ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
                                                            @Qualifier("regtestMinerScheduler")
-                                                                                   AbstractScheduledService.Scheduler scheduler) {
+                                                                   AbstractScheduledService.Scheduler scheduler) {
             ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
             scheduledregtestMiner.startAsync();
             return scheduledregtestMiner;
@@ -58,6 +59,7 @@ public class ScheduledRegtestMinerTest {
         @Bean("regtestMinerScheduler")
         public AbstractScheduledService.Scheduler regtestMinerScheduler() {
             return new AbstractScheduledService.CustomScheduler() {
+                private final SecureRandom random = new SecureRandom();
                 private final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1000);
                 private final Duration MAX_BLOCK_DURATION = Duration.ofMillis(3000);
 
@@ -65,7 +67,7 @@ public class ScheduledRegtestMinerTest {
                 protected Schedule getNextSchedule() {
                     long randomMillis = (long) Math.max(
                             MIN_BLOCK_DURATION.toMillis(),
-                            MAX_BLOCK_DURATION.toMillis() * Math.random()
+                            MAX_BLOCK_DURATION.toMillis() * random.nextDouble()
                     );
 
                     Duration durationTillNewBlock = Duration.ofMillis(randomMillis);
@@ -82,7 +84,7 @@ public class ScheduledRegtestMinerTest {
     private BitcoinClient bitcoinJsonRpcClient;
 
     @Test
-    public void itShouldVerifyNewBestBlockHashChangesWhenNewBlockIsFound() throws IOException {
+    void itShouldVerifyNewBestBlockHashChangesWhenNewBlockIsFound() throws IOException {
         BlockChainInfo initBlockChainInfo = bitcoinJsonRpcClient.getBlockChainInfo();
         assertThat(initBlockChainInfo.getChain(), is("regtest"));
 
@@ -96,8 +98,7 @@ public class ScheduledRegtestMinerTest {
                     try {
                         return bitcoinJsonRpcClient.getBlockChainInfo();
                     } catch (IOException e) {
-                        String message = "Error while fetching blockchain info";
-                        throw new RuntimeException(message, e);
+                        throw new IllegalStateException("Error while fetching blockchain info", e);
                     }
                 })
                 .map(BlockChainInfo::getBestBlockHash)

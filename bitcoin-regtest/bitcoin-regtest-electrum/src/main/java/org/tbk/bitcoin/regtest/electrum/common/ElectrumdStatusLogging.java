@@ -40,7 +40,7 @@ public final class ElectrumdStatusLogging {
             log.info("Blockheight: {}/{}", daemonStatusResponse.getBlockchainHeight(), daemonStatusResponse.getServerHeight());
             log.info("Current wallet: {}", daemonStatusResponse.getCurrentWallet().orElse("<none>"));
             log.info("Wallet synchronized: {}", walletSynchronized);
-            if (Boolean.TRUE == walletSynchronized) {
+            if (Boolean.TRUE.equals(walletSynchronized)) {
                 History history = electrumClient.getHistory();
 
                 log.info("Transactions: {}", history.getTransactions().size());

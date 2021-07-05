@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.regtest.mining.*;
 
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -118,6 +119,8 @@ public class BitcoinRegtestMiningAutoConfiguration {
     }
 
     public static class MinMaxDurationScheduler extends AbstractScheduledService.CustomScheduler {
+        private static final SecureRandom random = new SecureRandom();
+
         private final Duration minDuration;
 
         private final Duration maxDuration;
@@ -140,7 +143,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
 
             long randomMillis = (long) Math.max(
                     minMillis,
-                    minMillis + (Math.random() * (maxMillis - minMillis))
+                    minMillis + (random.nextDouble() * (maxMillis - minMillis))
             );
 
             Duration durationTillNewBlock = Duration.ofMillis(randomMillis);

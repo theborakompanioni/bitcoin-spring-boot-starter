@@ -17,6 +17,7 @@ import org.tbk.tor.NativeTorFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -24,21 +25,22 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
-public class TorHttpClientTest {
+class TorHttpClientTest {
     // "onion.torproject.org" as onion. taken from https://onion.torproject.org/ on 2020-01-13
-    private static final String ONION_URL = "http://yz7lpwfhhzcdyc5y.on" + "ion/";
+    private static final URI ONION_URL = URI.create("http://yz7lpwfhhzcdyc5y.on" + "ion/");
 
-    private static final String CHECK_TOR_URL_HTTP = "http://check.torproject.org/";
-    private static final String CHECK_TOR_URL_HTTPS = "https://check.torproject.org/";
+    private static final URI CHECK_TOR_URL_HTTP = URI.create("http://check.torproject.org/");
+    private static final URI CHECK_TOR_URL_HTTPS = URI.create("https://check.torproject.org/");
 
     private CloseableHttpClient sut;
 
     private NativeTor nativeTor;
 
     @BeforeEach
-    public void setUp() throws TorCtlException {
+    void setUp() throws TorCtlException {
         File workingDirectory = new File("build/tmp/tor-working-dir");
         NativeTorFactory torFactory = new NativeTorFactory(workingDirectory);
 
@@ -51,7 +53,7 @@ public class TorHttpClientTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         try {
             this.sut.close();
         } catch (IOException e) {
@@ -62,7 +64,7 @@ public class TorHttpClientTest {
     }
 
     @Test
-    public void testOnionWithTor() throws IOException {
+    void testOnionWithTor() throws IOException {
         HttpGet req = new HttpGet(ONION_URL);
 
         try (CloseableHttpResponse rsp = this.sut.execute(req)) {
@@ -70,15 +72,15 @@ public class TorHttpClientTest {
 
             // body should contain a list of addresses - including the one we fetched from!
             assertThat(body, containsString("onion.torproject.org"));
-            assertThat(body, containsString(ONION_URL));
+            assertThat(body, containsString(ONION_URL.toString()));
         }
     }
 
     @Test
-    public void testHttpWithTor() throws IOException {
-        List<String> urls = Lists.newArrayList(CHECK_TOR_URL_HTTP, CHECK_TOR_URL_HTTPS);
+    void testHttpWithTor() throws IOException {
+        List<URI> urls = Lists.newArrayList(CHECK_TOR_URL_HTTP, CHECK_TOR_URL_HTTPS);
 
-        for (String url : urls) {
+        for (URI url : urls) {
             HttpGet req = new HttpGet(url);
 
             try (CloseableHttpResponse rsp = this.sut.execute(req)) {
@@ -92,23 +94,24 @@ public class TorHttpClientTest {
     }
 
     @Test
-    public void testOnionWithoutTor() throws IOException {
+    void testOnionWithoutTor() {
         HttpGet req = new HttpGet(ONION_URL);
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (CloseableHttpResponse ignoredOnPurpose = client.execute(req)) {
-                Assertions.fail("Should have thrown exception");
+        UnknownHostException expectedException = Assertions.assertThrows(UnknownHostException.class, () -> {
+            try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+                try (CloseableHttpResponse ignoredOnPurpose = client.execute(req)) {
+                    fail("Should have thrown exception");
+                }
             }
-        } catch (UnknownHostException e) {
-            assertThat(e.getMessage(), containsString("Name or service not known"));
-        }
+        });
+
+        assertThat(expectedException.getMessage(), containsString("Name or service not known"));
     }
 
     @Test
-    public void testHttpWithoutTor() throws IOException {
+    void testHttpWithoutTor() throws IOException {
         HttpGet req = new HttpGet(CHECK_TOR_URL_HTTPS);
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-
             try (CloseableHttpResponse rsp = client.execute(req)) {
                 String body = EntityUtils.toString(rsp.getEntity(), StandardCharsets.UTF_8);
 

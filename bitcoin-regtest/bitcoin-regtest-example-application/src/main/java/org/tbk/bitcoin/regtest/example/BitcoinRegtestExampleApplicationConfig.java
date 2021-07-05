@@ -74,7 +74,7 @@ public class BitcoinRegtestExampleApplicationConfig {
 
                 log.info("Electrum wallet synchronized after {}: {}", sw.stop(), walletSynchronizedAfterWaiting);
 
-                if (walletSynchronizedAfterWaiting != Boolean.TRUE) {
+                if (!Boolean.TRUE.equals(walletSynchronizedAfterWaiting)) {
                     throw new IllegalStateException("Could not synchronized electrum wallet");
                 }
             }

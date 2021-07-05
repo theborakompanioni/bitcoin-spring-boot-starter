@@ -17,10 +17,7 @@ import org.testcontainers.shaded.com.google.common.io.CharStreams;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +27,7 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest
 @ActiveProfiles("test")
 public class TorContainerApplicationTest {
-    private static final String CHECK_TOR_URL = "https://check.torproject.org/";
+    private static final URI CHECK_TOR_URL = URI.create("https://check.torproject.org/");
 
     @SpringBootApplication
     public static class TorContainerTestApplication {
@@ -59,9 +56,9 @@ public class TorContainerApplicationTest {
     public void fetchPageWithTor() throws IOException {
         SocketAddress sockAddr = new InetSocketAddress("localhost", container.getMappedPort(9050));
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, sockAddr);
-        URL url = new URL(CHECK_TOR_URL);
+        URL url = CHECK_TOR_URL.toURL();
 
-        try (InputStreamReader r = new InputStreamReader(url.openConnection(proxy).getInputStream())) {
+        try (InputStreamReader r = new InputStreamReader(url.openConnection(proxy).getInputStream(), StandardCharsets.UTF_8)) {
             String body = CharStreams.toString(r);
 
             assertThat(body, containsString("Congratulations. This browser is configured to use Tor."));
@@ -72,9 +69,9 @@ public class TorContainerApplicationTest {
 
     @Test
     public void fetchPageWithoutTor() throws IOException {
-        URL url = new URL(CHECK_TOR_URL);
+        URL url = CHECK_TOR_URL.toURL();
 
-        try (InputStreamReader r = new InputStreamReader(url.openConnection().getInputStream())) {
+        try (InputStreamReader r = new InputStreamReader(url.openConnection().getInputStream(), StandardCharsets.UTF_8)) {
             String body = CharStreams.toString(r);
 
             assertThat(body, containsString("Sorry. You are not using Tor."));

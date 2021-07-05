@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.util.concurrent.MoreExecutors.shutdownAndAwaitTermination;
 import static java.util.Objects.requireNonNull;
 
@@ -47,7 +48,10 @@ public class BitcoinMqttServerImpl extends AbstractIdleService implements Bitcoi
                                  Server mqttServer,
                                  MessagePublishService<Block> blockMessagePublisherService,
                                  MessagePublishService<Transaction> transactionMessagePublisherService) {
-        this.clientId = requireNonNull(Strings.emptyToNull(clientId));
+        requireNonNull(clientId);
+        checkArgument(!clientId.isBlank(), "'clientId' must not be blank.");
+
+        this.clientId = requireNonNull(clientId);
         this.mqttServer = requireNonNull(mqttServer);
         this.blockMessagePublisherService = requireNonNull(blockMessagePublisherService);
         this.transactionMessagePublisherService = requireNonNull(transactionMessagePublisherService);

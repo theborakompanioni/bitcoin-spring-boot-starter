@@ -38,7 +38,7 @@ public class BitcoreFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BitcoreFeeProvider.class)
-    public BitcoreFeeProvider BitcoreFeeProvider(BitcoreFeeApiClient bitcoreFeeApiClient) {
+    public BitcoreFeeProvider bitcoreFeeProvider(BitcoreFeeApiClient bitcoreFeeApiClient) {
         return new BitcoreFeeProvider(bitcoreFeeApiClient);
     }
 

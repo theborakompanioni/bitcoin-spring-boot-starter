@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class BitcoinJsonrpcClientExampleApplicationConfig {
                 final List<UnspentOutput> unspentOutputs = bitcoinClient.listUnspent();
                 log.info("'listUnspent' after {}", stopwatch);
                 log.info("UnspentOutputs: {}", unspentOutputs);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error("", e);
             } finally {
                 stopwatch.stop();

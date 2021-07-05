@@ -1,6 +1,7 @@
 package org.tbk.electrum.command;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Value;
 
 @Value
@@ -13,5 +14,6 @@ public class DaemonStatusRequest {
     }
 
     @JsonProperty("subcommand")
+    @SuppressFBWarnings("SS_SHOULD_BE_STATIC")
     String subcommand = "status";
 }

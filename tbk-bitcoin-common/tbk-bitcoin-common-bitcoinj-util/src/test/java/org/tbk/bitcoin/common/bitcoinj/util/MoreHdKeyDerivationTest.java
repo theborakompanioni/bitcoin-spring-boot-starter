@@ -19,13 +19,13 @@ import static org.hamcrest.Matchers.is;
 
 public class MoreHdKeyDerivationTest {
 
-    private final NetworkParameters network = MainNetParams.get();
+    private static final NetworkParameters network = MainNetParams.get();
 
-    private final String mnemonicCode = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-    private final List<String> mnemonicCodeList = Arrays.asList(mnemonicCode.split(" "));
+    private static final String mnemonicCode = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+    private static final List<String> mnemonicCodeList = Arrays.asList(mnemonicCode.split(" "));
 
-    private final String xpriv = "xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu";
-    private final String xpub = "xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8";
+    private static final String xpriv = "xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu";
+    private static final String xpub = "xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8";
 
     @BeforeEach
     public void setup() {

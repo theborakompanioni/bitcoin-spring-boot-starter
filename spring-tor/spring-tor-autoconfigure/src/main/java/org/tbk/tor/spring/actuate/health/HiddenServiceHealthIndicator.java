@@ -1,11 +1,13 @@
 package org.tbk.tor.spring.actuate.health;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -16,6 +18,8 @@ import org.springframework.boot.actuate.health.HealthContributor;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -54,6 +58,7 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
         }
     }
 
+    @SneakyThrows(URISyntaxException.class)
     private void doHealthCheckInternal(Health.Builder builder) {
         Optional<String> virtualHost = hiddenService.getVirtualHost();
 
@@ -66,7 +71,11 @@ public class HiddenServiceHealthIndicator extends AbstractHealthIndicator implem
 
         log.debug("Performing health check on {}", hiddenService);
 
-        String url = String.format("http://%s:%d", virtualHost.get(), hiddenService.getVirtualPort());
+        URI url = new URIBuilder(virtualHost.get())
+                .setScheme("http")
+                .setHost(virtualHost.get())
+                .setPort(hiddenService.getVirtualPort())
+                .build();
 
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout((int) Duration.ofSeconds(10).toMillis())

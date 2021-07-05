@@ -56,11 +56,12 @@ public class Playground {
             statement.executeUpdate("insert into btcabuse_check_response values(strftime('%s','now'), '12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw', 2)");
             statement.executeUpdate("insert into btcabuse_check_response values(strftime('%s','now'), '1PaLmmeoe5Ktv613UGBCxCUZ27owv9Q6XY', 0)");
 
-            ResultSet rs = statement.executeQuery("select * from btcabuse_check_response");
-            while (rs.next()) {
-                log.info("created_at := {}", rs.getInt("created_at"));
-                log.info("address := {}", rs.getString("address"));
-                log.info("count := {}", rs.getInt("count"));
+            try (ResultSet rs = statement.executeQuery("select * from btcabuse_check_response")) {
+                while (rs.next()) {
+                    log.info("created_at := {}", rs.getInt("created_at"));
+                    log.info("address := {}", rs.getString("address"));
+                    log.info("count := {}", rs.getInt("count"));
+                }
             }
         }
     }

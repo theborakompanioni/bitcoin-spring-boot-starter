@@ -69,20 +69,9 @@ public class TorAutoConfigProperties implements Validator {
     }
 
     @Data
-    public static class OnionLocationHeaderProperties implements Validator {
+    public static class OnionLocationHeaderProperties {
         private boolean enabled;
         private boolean allowOnLocalhostHttp;
-
-        @Override
-        public boolean supports(Class<?> clazz) {
-            return clazz == OnionLocationHeaderProperties.class;
-        }
-
-        @Override
-        public void validate(Object target, Errors errors) {
-            OnionLocationHeaderProperties properties = (OnionLocationHeaderProperties) target;
-
-        }
     }
 
     /**
