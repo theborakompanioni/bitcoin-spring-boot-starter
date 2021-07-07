@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.tor.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -26,7 +27,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class TorContainerApplicationTest {
+class TorContainerApplicationTest {
     private static final URI CHECK_TOR_URL = URI.create("https://check.torproject.org/");
 
     @SpringBootApplication
@@ -47,13 +48,14 @@ public class TorContainerApplicationTest {
     private CloseableHttpClient torHttpClient;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
     }
 
     @Test
-    public void fetchPageWithTor() throws IOException {
+    @SuppressFBWarnings("URLCONNECTION_SSRF_FD") // we are in control of the request
+    void fetchPageWithTor() throws IOException {
         SocketAddress sockAddr = new InetSocketAddress("localhost", container.getMappedPort(9050));
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, sockAddr);
         URL url = CHECK_TOR_URL.toURL();
@@ -68,9 +70,10 @@ public class TorContainerApplicationTest {
     }
 
     @Test
-    public void fetchPageWithoutTor() throws IOException {
+    void fetchPageWithoutTor() throws IOException {
         URL url = CHECK_TOR_URL.toURL();
 
+        assert url.getHost().equals(CHECK_TOR_URL.getHost()); // spotbugs
         try (InputStreamReader r = new InputStreamReader(url.openConnection().getInputStream(), StandardCharsets.UTF_8)) {
             String body = CharStreams.toString(r);
 
@@ -81,7 +84,7 @@ public class TorContainerApplicationTest {
     }
 
     @Test
-    public void fetchPageWithHttpClientOverTor() throws IOException {
+    void fetchPageWithHttpClientOverTor() throws IOException {
         HttpGet req = new HttpGet(CHECK_TOR_URL);
 
         try (CloseableHttpResponse rsp = torHttpClient.execute(req)) {

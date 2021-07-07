@@ -17,8 +17,6 @@
                 can be removed when #600 is merged: https://github.com/spotbugs/spotbugs/pull/1575/files
              -->
             <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
-            <!-- disable minor 'include CRLF characters into log messages' warning in example apps -->
-            <Bug pattern="CRLF_INJECTION_LOGS"/>
         </Or>
     </Match>
     <Match>
@@ -29,6 +27,17 @@
             <Bug pattern="ENTITY_LEAK"/>
             <!-- disable 'Spring CSRF protection disabled' warning in example apps -->
             <Bug pattern="SPRING_CSRF_PROTECTION_DISABLED"/>
+            <!-- disable minor 'include CRLF characters into log messages' warning in example apps -->
+            <Bug pattern="CRLF_INJECTION_LOGS"/>
+        </Or>
+    </Match>
+
+    <Match>
+        <!-- disable some known risks or minor warnings in test classes -->
+        <Class name="~.*Test"/>
+        <Or>
+            <!-- disable minor 'include CRLF characters into log messages' warning in test classes -->
+            <Bug pattern="CRLF_INJECTION_LOGS"/>
         </Or>
     </Match>
 
@@ -46,6 +55,15 @@
     </Match>
 
     <Match>
+        <!-- prevents protobuf false positives in fee module -->
+        <Or>
+            <Class name="~org\.tbk\.bitcoin\.tool\.fee\..*Response(\$.*)?"/>
+            <Class name="~org\.tbk\.bitcoin\.tool\.fee\..*Request(\$.*)?"/>
+        </Or>
+        <Bug pattern="SE_BAD_FIELD"/>
+    </Match>
+
+    <Match>
         <!-- prevents false positives in flyway migration scripts -->
         <Class name="~.*V\d+__.*"/>
         <Method name="migrate"/>
@@ -55,6 +73,15 @@
             <!-- e.g. 'prepareStatement(Ljava/lang/String;)Ljava/sql/PreparedStatement; can be vulnerable to SQL injection (with JDBC) -->
             <Bug pattern="SQL_INJECTION_JDBC"/>
         </Or>
+    </Match>
+
+    <Match>
+        <!--
+            prevents false positives in spring boot:
+            HealthContributorAutoConfigs cannot be an inner static class - would not be picked up by spring correctly
+        -->
+        <Class name="~.*HealthContributorAutoConfiguration"/>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
     </Match>
 
     <Match>

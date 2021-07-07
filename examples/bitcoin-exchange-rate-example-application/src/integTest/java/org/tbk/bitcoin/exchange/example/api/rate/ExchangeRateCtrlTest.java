@@ -44,8 +44,9 @@ class ExchangeRateCtrlTest {
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 
-        Map<String, Object> body = requireNonNull(responseEntity.getBody());
+        Map<String, Object> body = responseEntity.getBody();
 
+        assertThat(body, is(notNullValue()));
         assertThat(body.get("base"), is("BTC"));
 
         @SuppressWarnings("unchecked")

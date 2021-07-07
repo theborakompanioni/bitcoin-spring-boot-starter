@@ -1,6 +1,7 @@
 package org.tbk.electrum.gateway.example;
 
 import com.google.common.base.Stopwatch;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Coin;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -139,7 +141,10 @@ public class ElectrumGatewayExampleApplicationTest {
     @ActiveProfiles("test")
     @Configuration(proxyBeanMethods = false)
     @AutoConfigureAfter(ElectrumxContainerAutoConfiguration.class)
+    @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay for this test
     public static class TestConfig {
+        private static final String TEST_ELECTRUM_PASSWORD1 = "correct_horse_battery_staple_20210516-0";
+        private static final String TEST_ELECTRUM_PASSWORD2 = "correct_horse_battery_staple_20210516-1";
 
         @Bean
         public SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory() {
@@ -154,7 +159,7 @@ public class ElectrumGatewayExampleApplicationTest {
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet("electrum/wallets/regtest/default_wallet")
                     .addEnvVar("ELECTRUM_USER", "electrum")
-                    .addEnvVar("ELECTRUM_PASSWORD", "correct_horse_battery_staple_20210516-0")
+                    .addEnvVar("ELECTRUM_PASSWORD", TEST_ELECTRUM_PASSWORD1)
                     .build();
 
             return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
@@ -167,7 +172,7 @@ public class ElectrumGatewayExampleApplicationTest {
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet("electrum/wallets/regtest/second_wallet")
                     .addEnvVar("ELECTRUM_USER", "electrum")
-                    .addEnvVar("ELECTRUM_PASSWORD", "correct_horse_battery_staple_20210516-1")
+                    .addEnvVar("ELECTRUM_PASSWORD", TEST_ELECTRUM_PASSWORD2)
                     .build();
 
             return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
@@ -186,7 +191,7 @@ public class ElectrumGatewayExampleApplicationTest {
                     .host("http://" + electrumDaemonContainer.getHost())
                     .port(electrumDaemonContainer.getMappedPort(7000))
                     .username("electrum")
-                    .password("correct_horse_battery_staple_20210516-0")
+                    .password(TEST_ELECTRUM_PASSWORD1)
                     .build();
 
             return electrumClientFactory.create(config.getUri(), config.getUsername(), config.getPassword());
@@ -199,7 +204,7 @@ public class ElectrumGatewayExampleApplicationTest {
                     .host("http://" + electrumDaemonContainer.getHost())
                     .port(electrumDaemonContainer.getMappedPort(7000))
                     .username("electrum")
-                    .password("correct_horse_battery_staple_20210516-1")
+                    .password(TEST_ELECTRUM_PASSWORD2)
                     .build();
 
             return electrumClientFactory.create(config.getUri(), config.getUsername(), config.getPassword());

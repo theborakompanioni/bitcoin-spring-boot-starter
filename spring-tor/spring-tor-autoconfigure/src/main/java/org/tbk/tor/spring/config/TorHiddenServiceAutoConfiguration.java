@@ -1,5 +1,6 @@
 package org.tbk.tor.spring.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
@@ -34,6 +35,7 @@ public class TorHiddenServiceAutoConfiguration {
     @ConditionalOnMissingBean(name = "applicationHiddenServiceDefinition")
     @ConditionalOnBean(ServerProperties.class)
     @Conditional(OnAutoPublishEnabledAndServerPortSpecified.class)
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public HiddenServiceDefinition applicationHiddenServiceDefinition(ServerProperties serverProperties) {
         Integer port = serverProperties.getPort();
         if (port == null) {
@@ -96,6 +98,7 @@ public class TorHiddenServiceAutoConfiguration {
         @ConditionalOnMissingBean(name = "applicationManagementHiddenServiceDefinition")
         @ConditionalOnBean(ManagementServerProperties.class)
         @Conditional(OnAutoPublishEnabledAndManagementServerPortSpecified.class)
+        @SuppressFBWarnings("PATH_TRAVERSAL_IN")
         public HiddenServiceDefinition applicationManagementHiddenServiceDefinition(ManagementServerProperties managementServerProperties) {
             Integer managementPort = managementServerProperties.getPort();
             if (managementPort == null) {

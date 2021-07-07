@@ -2,6 +2,7 @@ package org.tbk.tor.spring.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.Tor;
@@ -74,6 +75,7 @@ public class TorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(Tor.class)
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public TorFactory<NativeTor> nativeTorFactory(Torrc torrc) {
         File workingDirectory = new File(properties.getWorkingDirectory());
         return new NativeTorFactory(workingDirectory, torrc);

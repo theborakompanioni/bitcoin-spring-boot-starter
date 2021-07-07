@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class ElectrumDaemonContainerApplicationTest {
+class ElectrumDaemonContainerApplicationTest {
 
     @SpringBootApplication
     public static class ElectrumDaemonContainerTestApplication {
@@ -35,7 +35,7 @@ public class ElectrumDaemonContainerApplicationTest {
     private ElectrumDaemonContainer<?> container;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 

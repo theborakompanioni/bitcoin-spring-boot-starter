@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +26,7 @@ class MempoolspaceFeeApiClientImplTest {
 
     @BeforeEach
     void setUp() {
-        String url = baseUrls.get(((int) Math.ceil(Math.random() * 4)) - 1);
+        String url = baseUrls.get(((int) Math.ceil(new SecureRandom().nextDouble() * 4)) - 1);
 
         log.debug("Using service {} for current test", url);
 

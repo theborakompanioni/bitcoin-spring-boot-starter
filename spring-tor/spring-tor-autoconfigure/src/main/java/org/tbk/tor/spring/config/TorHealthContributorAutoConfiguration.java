@@ -48,6 +48,7 @@ public class TorHealthContributorAutoConfiguration {
             TorHiddenServiceAutoConfiguration.class,
             TorHttpClientAutoConfiguration.class
     })
+    // cannot be an inner static class - would not be picked up by spring correctly
     public class TorHiddenServiceHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<HiddenServiceHealthIndicator, HiddenServiceDefinition> {
 

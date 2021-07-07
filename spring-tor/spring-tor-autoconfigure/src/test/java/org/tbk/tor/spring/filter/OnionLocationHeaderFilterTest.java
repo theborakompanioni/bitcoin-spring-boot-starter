@@ -1,5 +1,6 @@
 package org.tbk.tor.spring.filter;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
@@ -23,6 +24,7 @@ class OnionLocationHeaderFilterTest {
     private File hostnameFile;
 
     @BeforeEach
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     void setUp() {
         this.request = new MockHttpServletRequest("GET", "/");
         this.request.setSecure(true);
@@ -31,8 +33,12 @@ class OnionLocationHeaderFilterTest {
         this.filterChain = new MockFilterChain();
 
         URL hostnameUrl = getClass().getClassLoader().getResource("org/tbk/tor/spring/filter/hostname");
-        assertThat("sanity check - hostname file must exist", hostnameUrl, is(notNullValue()));
+        assertThat("sanity check", hostnameUrl, is(notNullValue()));
+
         this.hostnameFile = new File(hostnameUrl.getFile());
+
+        assertThat("sanity check - hostname file must exist", this.hostnameFile.exists(), is(true));
+        assertThat("sanity check - hostname file is readable", this.hostnameFile.canRead(), is(true));
     }
 
     @Test

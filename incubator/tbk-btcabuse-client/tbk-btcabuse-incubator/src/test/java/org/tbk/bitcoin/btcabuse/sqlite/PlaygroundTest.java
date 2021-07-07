@@ -14,7 +14,7 @@ import java.sql.*;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class Playground {
+class PlaygroundTest {
 
     private static HikariConfig createHikariConfig(String database) {
         HikariConfig config = new HikariConfig();
@@ -32,8 +32,8 @@ public class Playground {
     private DataSource dataSource;
 
     @BeforeEach
-    public void setup() {
-        String database = Playground.class.getSimpleName() + "-test";
+    void setup() {
+        String database = PlaygroundTest.class.getSimpleName() + "-test";
 
         HikariConfig config = createHikariConfig(database);
         this.dataSource = new HikariDataSource(config);
@@ -48,7 +48,7 @@ public class Playground {
     }
 
     @Test
-    public void test() throws SQLException {
+    void test() throws SQLException {
         try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement()) {
             statement.setQueryTimeout(30);

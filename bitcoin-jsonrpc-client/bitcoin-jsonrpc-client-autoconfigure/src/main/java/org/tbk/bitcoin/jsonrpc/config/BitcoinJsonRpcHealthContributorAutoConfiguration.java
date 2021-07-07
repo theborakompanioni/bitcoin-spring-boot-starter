@@ -41,6 +41,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
             BitcoinJsonRpcClientAutoConfiguration.class,
             BitcoinJsonRpcCacheAutoConfiguration.class
     })
+    // cannot be an inner static class - would not be picked up by spring correctly
     public class BitcoinJsonRpcClientHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<BitcoinJsonRpcHealthIndicator, BitcoinClient> {
 

@@ -1,5 +1,6 @@
 package org.tbk.lightning.lnd.grpc.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
@@ -52,6 +53,7 @@ public class LndJsonRpcClientAutoConfiguration {
             "org.tbk.lightning.lnd.grpc.macaroonFilePath"
     })
     @SneakyThrows
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public MacaroonContext lndJsonRpcMacaroonContext() {
         requireNonNull(properties.getMacaroonFilePath(), "'macaroonFilePath' must not be null");
 
@@ -70,6 +72,7 @@ public class LndJsonRpcClientAutoConfiguration {
             "org.tbk.lightning.lnd.grpc.certFilePath"
     })
     @SneakyThrows
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public SslContext lndJsonRpcSslContext() {
         requireNonNull(properties.getCertFilePath(), "'certFilePath' must not be null");
 
