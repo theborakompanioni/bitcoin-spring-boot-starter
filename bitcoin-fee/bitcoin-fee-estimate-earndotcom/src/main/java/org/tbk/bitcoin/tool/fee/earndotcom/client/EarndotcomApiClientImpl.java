@@ -1,10 +1,15 @@
 package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
+import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,18 +25,26 @@ public class EarndotcomApiClientImpl implements EarndotcomApiClient {
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public RecommendedTransactionFees recommendedTransactionFees() {
         // https://bitcoinfees.earn.com/api/v1/fees/recommended
-        String url = String.format("%s/%s", baseUrl, "api/v1/fees/recommended");
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/v1/fees/recommended")
+                .build();
+
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);
         return MoreJsonFormat.jsonToProto(json, RecommendedTransactionFees.newBuilder()).build();
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public TransactionFeesSummary transactionFeesSummary() {
         // https://bitcoinfees.earn.com/api/v1/fees/list
-        String url = String.format("%s/%s", baseUrl, "api/v1/fees/list");
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/v1/fees/list")
+                .build();
+
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);
         return MoreJsonFormat.jsonToProto(json, TransactionFeesSummary.newBuilder()).build();

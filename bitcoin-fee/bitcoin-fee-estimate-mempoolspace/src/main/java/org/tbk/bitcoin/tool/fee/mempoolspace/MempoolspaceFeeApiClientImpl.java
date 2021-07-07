@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.net.HttpHeaders;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
+import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedMempoolBlocks.ProjectedBlock;
@@ -12,6 +14,8 @@ import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,21 +42,15 @@ public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
         this.apiToken = apiToken;
     }
 
-    private Optional<String> getApiToken() {
-        return Optional.ofNullable(this.apiToken);
-    }
-
-    private Map<String, String> createDefaultParamMap() {
-        ImmutableMap.Builder<String, String> queryParamsBuilder = ImmutableMap.builder();
-        getApiToken().ifPresent(val -> queryParamsBuilder.put(TOKEN_PARAM_NAME, val));
-        return queryParamsBuilder.build();
-    }
-
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public FeesRecommended feesRecommended() {
         // https://mempool.space/api/v1/fees/recommended
-        String query = MoreQueryString.toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s%s", baseUrl, "api/v1/fees/recommended", query);
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/v1/fees/recommended")
+                .addParameters(MoreQueryString.toParams(createDefaultParamMap()))
+                .build();
+
         HttpGet request = new HttpGet(url);
         request.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
         String json = MoreHttpClient.executeToJson(client, request);
@@ -60,10 +58,14 @@ public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public ProjectedMempoolBlocks projectedBlocks() {
         // https://mempool.space/api/v1/fees/mempool-blocks
-        String query = MoreQueryString.toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s%s", baseUrl, "api/v1/fees/mempool-blocks", query);
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/v1/fees/mempool-blocks")
+                .addParameters(MoreQueryString.toParams(createDefaultParamMap()))
+                .build();
+
         HttpGet request = new HttpGet(url);
         request.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
         String json = MoreHttpClient.executeToJson(client, request);
@@ -89,4 +91,15 @@ public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
                 .addAllBlocks(projectedBlocks)
                 .build();
     }
+
+    private Optional<String> getApiToken() {
+        return Optional.ofNullable(this.apiToken);
+    }
+
+    private Map<String, String> createDefaultParamMap() {
+        ImmutableMap.Builder<String, String> queryParamsBuilder = ImmutableMap.builder();
+        getApiToken().ifPresent(val -> queryParamsBuilder.put(TOKEN_PARAM_NAME, val));
+        return queryParamsBuilder.build();
+    }
+
 }

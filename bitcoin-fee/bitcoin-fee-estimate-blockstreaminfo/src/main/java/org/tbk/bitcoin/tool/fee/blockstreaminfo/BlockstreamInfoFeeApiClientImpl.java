@@ -2,12 +2,16 @@ package org.tbk.bitcoin.tool.fee.blockstreaminfo;
 
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
+import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,9 +30,13 @@ public class BlockstreamInfoFeeApiClientImpl implements BlockstreamInfoFeeApiCli
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public FeeEstimates feeEstimates() {
         // https://blockstream.info/api/fee-estimates
-        String url = String.format("%s/%s", baseUrl, "api/fee-estimates");
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/fee-estimates")
+                .build();
+
         HttpGet request = new HttpGet(url);
         String json = MoreHttpClient.executeToJson(client, request);
         Struct messageAsStruct = MoreJsonFormat.jsonToProto(json, Struct.newBuilder()).build();

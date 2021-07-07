@@ -27,7 +27,8 @@ public final class MoreHttpClient {
                 EntityUtils.consumeQuietly(entity);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            String errorMessage = String.format("Error while executing request to %s", request.getURI().getHost());
+            throw new RuntimeException(errorMessage, e);
         }
     }
 }

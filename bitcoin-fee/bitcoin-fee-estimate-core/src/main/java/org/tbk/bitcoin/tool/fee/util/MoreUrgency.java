@@ -41,7 +41,7 @@ public final class MoreUrgency {
         Optional<Urgency> urgencyOrEmpty = urgencyToDurationMapping.entrySet().stream()
                 .sorted(Comparator.comparingLong(val -> val.getValue().toSeconds()))
                 .filter(val -> !val.getValue().minus(duration).isNegative())
-                .map(val -> val.getKey())
+                .map(Map.Entry::getKey)
                 .findFirst();
 
         return urgencyOrEmpty.orElse(Urgency.MIN);

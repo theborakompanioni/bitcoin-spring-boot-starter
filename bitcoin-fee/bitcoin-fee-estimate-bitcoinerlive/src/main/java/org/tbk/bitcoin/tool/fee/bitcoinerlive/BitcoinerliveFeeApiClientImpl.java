@@ -1,13 +1,19 @@
 package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.net.HttpHeaders;
+import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -20,7 +26,6 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
 
     private static final String DEFAULT_USERAGENT = "tbk-bitcoinerlive-client/" + DEFAULT_VERSION;
 
-    private final static String TOKEN_PARAM_NAME = "token";
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final String baseUrl;
@@ -38,14 +43,16 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public FeeEstimatesLatestResponse feeEstimatesLatest(FeeEstimatesLatestRequest request) {
-        String query = MoreQueryString.toQueryString(ImmutableMap.<String, String>builder()
-                .put("confidence", toConfidenceValue(request))
-                .build());
-
         // https://bitcoiner.live/api/fees/estimates/latest
-        String url = String.format("%s/%s%s", baseUrl, "api/fees/estimates/latest", query);
+        URI url = new URIBuilder(baseUrl)
+                .setPath("api/fees/estimates/latest")
+                .addParameters(MoreQueryString.toParams(createDefaultParams(request)))
+                .build();
+
         HttpGet httpRequest = new HttpGet(url);
+        httpRequest.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
         String json = MoreHttpClient.executeToJson(client, httpRequest);
         return MoreJsonFormat.jsonToProto(json, FeeEstimatesLatestResponse.newBuilder()).build();
     }
@@ -61,5 +68,11 @@ public class BitcoinerliveFeeApiClientImpl implements BitcoinerliveFeeApiClient 
             default:
                 return ConfidenceConstants.HIGH;
         }
+    }
+
+    private Map<String, String> createDefaultParams(FeeEstimatesLatestRequest request) {
+        ImmutableMap.Builder<String, String> params = ImmutableMap.<String, String>builder()
+                .put("confidence", toConfidenceValue(request));
+        return params.build();
     }
 }

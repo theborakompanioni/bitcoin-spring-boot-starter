@@ -2,13 +2,17 @@ package org.tbk.bitcoin.tool.fee.btcdotcom;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.HttpHeaders;
+import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,17 +41,21 @@ public class BtcdotcomFeeApiClientImpl implements BtcdotcomFeeApiClient {
         return Optional.ofNullable(this.apiToken);
     }
 
-    private Map<String, String> createDefaultParamMap() {
+    private Map<String, String> createDefaultParams() {
         ImmutableMap.Builder<String, String> queryParamsBuilder = ImmutableMap.builder();
         getApiToken().ifPresent(val -> queryParamsBuilder.put(TOKEN_PARAM_NAME, val));
         return queryParamsBuilder.build();
     }
 
     @Override
+    @SneakyThrows(URISyntaxException.class)
     public FeeDistribution feeDistribution() {
         // https://btc.com/service/fees/distribution
-        String query = MoreQueryString.toQueryString(createDefaultParamMap());
-        String url = String.format("%s/%s%s", baseUrl, "service/fees/distribution", query);
+        URI url = new URIBuilder(baseUrl)
+                .setPath("service/fees/distribution")
+                .addParameters(MoreQueryString.toParams(createDefaultParams()))
+                .build();
+
         HttpGet request = new HttpGet(url);
         request.addHeader(HttpHeaders.USER_AGENT, DEFAULT_USERAGENT);
         String json = MoreHttpClient.executeToJson(client, request);

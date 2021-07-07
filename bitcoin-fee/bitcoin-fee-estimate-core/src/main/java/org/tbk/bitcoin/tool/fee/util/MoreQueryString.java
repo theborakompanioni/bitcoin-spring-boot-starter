@@ -1,5 +1,9 @@
 package org.tbk.bitcoin.tool.fee.util;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -10,23 +14,14 @@ public final class MoreQueryString {
     }
 
     /**
-     * Simple query string from map. Does not support multi values.
-     * <p>
-     * in: { "key" -> "value", "key2" -> "value2" }
-     * out: "?key=value&key2=value2
-     * <p>
-     * If map is empty, just "?" will be returned.
-     * in: { }
-     * out: "?"
-     * <p>
+     * Simple {@link NameValuePair} list from a map. Does not support multi values.
      *
      * @param queryParams map of key -> value
-     * @return string to be used as query in an url
+     * @return a list to be used as query in an {@link org.apache.http.client.utils.URIBuilder}
      */
-    public static String toQueryString(Map<String, String> queryParams) {
-        // todo: should be escaped
+    public static List<NameValuePair> toParams(Map<String, String> queryParams) {
         return queryParams.entrySet().stream()
-                .map(val -> val.getKey() + "=" + val.getValue())
-                .collect(Collectors.joining("&", "?", ""));
+                .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toUnmodifiableList());
     }
 }
