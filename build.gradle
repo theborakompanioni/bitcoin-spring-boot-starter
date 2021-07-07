@@ -147,10 +147,8 @@ subprojects {
 
     dependencies {
         compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
+        testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
         spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
-
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
 
         implementation 'org.slf4j:slf4j-api'
         implementation "com.google.guava:guava:${guavaVersion}"
@@ -158,6 +156,8 @@ subprojects {
         implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
         implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
 
