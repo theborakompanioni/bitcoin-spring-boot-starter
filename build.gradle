@@ -107,6 +107,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'jacoco'
+    apply plugin: 'checkstyle'
     apply plugin: 'com.github.spotbugs'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
@@ -309,6 +310,14 @@ subprojects {
             html.enabled = true
             xml.enabled = false
         }
+    }
+
+    checkstyle {
+        toolVersion = '8.44'
+        configFile = rootProject.file('./checkstyle.xml')
+        maxErrors = 0
+        maxWarnings = 0
+        ignoreFailures = true // TODO: change to false if all issues are solved
     }
 
     tasks.withType(AbstractArchiveTask) {
