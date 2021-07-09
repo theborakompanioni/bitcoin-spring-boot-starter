@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.tbk.bitcoin.currency;
 
 import javax.money.CurrencyContext;
@@ -52,8 +53,8 @@ public final class BitcoinCurrencyProvider implements CurrencyProviderSpi {
     @Override
     public Set<CurrencyUnit> getCurrencies(CurrencyQuery query) {
         // Query for currencyCode BTC or default query returns bitcoinSet else emptySet.
-        return (query.getCurrencyCodes().contains(bitcoinUnit.getCurrencyCode()) ||
-                query.getCurrencyCodes().isEmpty()) ? bitcoinUnitSet : Collections.emptySet();
+        return (query.getCurrencyCodes().contains(bitcoinUnit.getCurrencyCode())
+                || query.getCurrencyCodes().isEmpty()) ? bitcoinUnitSet : Collections.emptySet();
     }
 
 }

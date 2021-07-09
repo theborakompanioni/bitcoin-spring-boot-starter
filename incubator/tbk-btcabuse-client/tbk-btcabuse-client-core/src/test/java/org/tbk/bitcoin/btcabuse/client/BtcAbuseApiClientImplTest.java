@@ -79,10 +79,10 @@ class BtcAbuseApiClientImplTest {
             ).respond(response()
                     .withHeader(Header.header("Content-Type", "application/json"))
                     .withStatusCode(200)
-                    .withBody("{\n" +
-                            "  \"address\": \"12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw\",\n" +
-                            "  \"count\": 2\n" +
-                            "}"));
+                    .withBody("{\n"
+                            + "  \"address\": \"12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw\",\n"
+                            + "  \"count\": 2\n"
+                            + "}"));
 
             // "check" endpoint with unreported address
             client.when(request()
@@ -93,10 +93,10 @@ class BtcAbuseApiClientImplTest {
             ).respond(response()
                     .withHeader(Header.header("Content-Type", "application/json"))
                     .withStatusCode(200)
-                    .withBody("{\n" +
-                            "  \"address\": \"1PaLmmeoe5Ktv613UGBCxCUZ27owv9Q6XY\",\n" +
-                            "  \"count\": 0\n" +
-                            "}"));
+                    .withBody("{\n"
+                            + "  \"address\": \"1PaLmmeoe5Ktv613UGBCxCUZ27owv9Q6XY\",\n"
+                            + "  \"count\": 0\n"
+                            + "}"));
         }
     }
 }

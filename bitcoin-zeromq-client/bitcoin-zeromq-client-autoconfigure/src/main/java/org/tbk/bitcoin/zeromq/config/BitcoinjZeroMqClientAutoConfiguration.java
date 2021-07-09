@@ -38,8 +38,9 @@ public class BitcoinjZeroMqClientAutoConfiguration {
                 return TestNet3Params.get();
             case regtest:
                 return RegTestParams.get();
+            default:
+                throw new IllegalArgumentException();
         }
-        throw new IllegalArgumentException();
     }
 
     @Bean

@@ -50,6 +50,7 @@ public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction
         // users may made a mistake when 'timeout' is smaller than or equal to 'checkInterval'
         checkArgument(timeout.compareTo(checkInterval) > 0, "'timeout' must be greater than 'checkInterval");
     }
+
     @Override
     public void subscribe(Subscriber<? super Coin> s) {
         create().subscribe(s);

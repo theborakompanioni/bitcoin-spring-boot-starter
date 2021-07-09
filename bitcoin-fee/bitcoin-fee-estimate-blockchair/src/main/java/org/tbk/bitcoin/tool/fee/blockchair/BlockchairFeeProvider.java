@@ -32,9 +32,9 @@ public class BlockchairFeeProvider extends AbstractFeeProvider {
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty() &&
-                !request.isTargetDurationZeroOrLess() &&
-                MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
+        return request.getDesiredConfidence().isEmpty()
+                && !request.isTargetDurationZeroOrLess()
+                && MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override

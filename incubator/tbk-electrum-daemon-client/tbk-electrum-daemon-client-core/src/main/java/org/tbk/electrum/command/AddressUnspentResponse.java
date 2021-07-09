@@ -27,9 +27,9 @@ public final class AddressUnspentResponse {
         int txPos;
 
         /**
-         * Value in Satoshi
-         * <p>
-         * At the time of writing 1 BTC is 10^8 Satoshi ;-)
+         * Value in Satoshi.
+         *
+         * <p>At the time of writing 1 BTC is 10^8 Satoshi ;-)
          * 1 BTC := 100_000_000 Satoshi
          */
         @JsonProperty("value")

@@ -54,8 +54,8 @@ public class BitcoinPaymentExampleApplicationWebMvcConfig implements WebMvcConfi
 
     /**
      * This is the only way that worked making jackson pretty print json responses.
-     * <p>
-     * No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
+     *
+     * <p>No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
      * {@link Jackson2ObjectMapperBuilderCustomizer} did the job properly (which is very odd).
      * Maybe try again at a later point in time. But this is good for now (2020-10-24).
      */
@@ -82,7 +82,6 @@ public class BitcoinPaymentExampleApplicationWebMvcConfig implements WebMvcConfi
                 .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
-
 
     public static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
 

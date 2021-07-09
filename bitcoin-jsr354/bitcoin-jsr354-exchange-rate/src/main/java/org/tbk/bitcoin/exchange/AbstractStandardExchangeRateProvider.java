@@ -17,6 +17,8 @@ abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider
     }
 
     /**
+     * Returns currency the provider should use as base currency.
+     *
      * @return the standard currency the provider should use as base currency.
      */
     protected abstract CurrencyUnit getStandardCurrencyUnit();
@@ -28,8 +30,8 @@ abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider
         CurrencyUnit baseCurrencyUnit = conversionQuery.getBaseCurrency();
         CurrencyUnit targetCurrencyUnit = conversionQuery.getCurrency();
 
-        boolean isDirectStdQuery = standardCurrencyUnit.equals(baseCurrencyUnit) ||
-                standardCurrencyUnit.equals(targetCurrencyUnit);
+        boolean isDirectStdQuery = standardCurrencyUnit.equals(baseCurrencyUnit)
+                || standardCurrencyUnit.equals(targetCurrencyUnit);
 
         if (isDirectStdQuery) {
             // do not handle XXX -> STD or STD -> XXX conversions!

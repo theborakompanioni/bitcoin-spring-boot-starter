@@ -39,8 +39,8 @@ public class TorHiddenServiceAutoConfiguration {
     public HiddenServiceDefinition applicationHiddenServiceDefinition(ServerProperties serverProperties) {
         Integer port = serverProperties.getPort();
         if (port == null) {
-            throw new IllegalStateException("Cannot publish hidden service for application. " +
-                    "Please specify 'server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
+            throw new IllegalStateException("Cannot publish hidden service for application. "
+                    + "Please specify 'server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
         }
 
         String hiddenServiceDir = String.format("%s/%s", properties.getWorkingDirectory(), "spring_boot_app");
@@ -102,8 +102,8 @@ public class TorHiddenServiceAutoConfiguration {
         public HiddenServiceDefinition applicationManagementHiddenServiceDefinition(ManagementServerProperties managementServerProperties) {
             Integer managementPort = managementServerProperties.getPort();
             if (managementPort == null) {
-                throw new IllegalStateException("Cannot publish hidden service for application management. " +
-                        "Please specify 'management.server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
+                throw new IllegalStateException("Cannot publish hidden service for application management. "
+                        + "Please specify 'management.server.port' or disable auto publishing with 'org.tbk.tor.auto-publish-enabled=false'");
             }
 
             String hiddenServiceDir = String.format("%s/%s", properties.getWorkingDirectory(), "spring_boot_app_management");

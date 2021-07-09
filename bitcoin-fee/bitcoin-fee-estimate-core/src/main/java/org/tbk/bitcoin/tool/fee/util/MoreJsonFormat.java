@@ -5,7 +5,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 
 public final class MoreJsonFormat {
-    private final static JsonFormat.Parser JSON_PARSER = JsonFormat.parser().ignoringUnknownFields();
+    private static final JsonFormat.Parser jsonParser = JsonFormat.parser().ignoringUnknownFields();
 
     private MoreJsonFormat() {
         throw new UnsupportedOperationException();
@@ -13,7 +13,7 @@ public final class MoreJsonFormat {
 
     public static <T extends Message.Builder> T jsonToProto(String json, T builder) {
         try {
-            JSON_PARSER.merge(json, builder);
+            jsonParser.merge(json, builder);
             return builder;
         } catch (InvalidProtocolBufferException e) {
             throw new RuntimeException(e);

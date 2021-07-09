@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.tool.mqtt;
 
-import com.google.common.base.Strings;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.moquette.broker.Server;

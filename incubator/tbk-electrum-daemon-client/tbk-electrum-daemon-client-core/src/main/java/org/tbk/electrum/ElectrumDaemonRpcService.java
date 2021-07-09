@@ -18,12 +18,12 @@ import java.util.List;
  * Represents a raw electrum rpc interfaces.
  * Uses the same name for the method as electrum does.
  * e.g. method for command "makeseed" is named {@link #makeseed()}
- * <p>
- * This interface is tested with electrum v3.3.8.
- * <p>
- * Not every parameter is currently implemented.
- * <p>
- * Following methods are still missing to be feature complete:
+ *
+ * <p>This interface is tested with electrum v3.3.8.
+ *
+ * <p>Not every parameter is currently implemented.
+ *
+ * <p>Following methods are still missing to be feature complete:
  * [ ] "addrequest",
  * [ ] "addtransaction",
  * [ ] "clearrequests",
@@ -159,6 +159,8 @@ public interface ElectrumDaemonRpcService {
     AddressBalanceResponse getaddressbalance(@JsonRpcParam("address") String address);
 
     /**
+     * Get the address history.
+     * e.g.:
      * [
      * {
      * "height": 1297755,
@@ -242,9 +244,9 @@ public interface ElectrumDaemonRpcService {
     String broadcast(@JsonRpcParam("tx") String tx);
 
     /**
-     * password is optional (if you have an unencrypted wallet - which is highly discouraged)
+     * password is optional (if you have an unencrypted wallet - which is highly discouraged).
      *
-     * @param tx
+     * @param tx a raw transaction (hexadecimal)
      * @param password the wallet passphrase (null if unencrypted).
      * @return a signed transaction
      */
@@ -299,10 +301,10 @@ public interface ElectrumDaemonRpcService {
     /**
      * Verify a signature.
      *
-     * @param address
+     * @param address the address
      * @param signature signature in base64
-     * @param message
-     * @return
+     * @param message the message
+     * @return true if the signature is valid
      */
     @JsonRpcMethod("verifymessage")
     Boolean verifymessage(@JsonRpcParam("address") String address,

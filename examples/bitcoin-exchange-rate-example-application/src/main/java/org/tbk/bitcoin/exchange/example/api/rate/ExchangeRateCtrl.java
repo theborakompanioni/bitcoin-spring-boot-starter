@@ -18,7 +18,6 @@ import javax.money.MonetaryException;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,8 +102,8 @@ public class ExchangeRateCtrl {
             ExchangeRateProvider exchangeRateProvider = MonetaryConversions.getExchangeRateProvider(providerParam);
             return ResponseEntity.ok(exchangeRateProvider);
         } catch (MonetaryException e) {
-            boolean providerNotFound = e.getMessage().startsWith("No such rate provider:") ||
-                    e.getMessage().startsWith("Invalid ExchangeRateProvider (not found):");
+            boolean providerNotFound = e.getMessage().startsWith("No such rate provider:")
+                    || e.getMessage().startsWith("Invalid ExchangeRateProvider (not found):");
 
             if (providerNotFound) {
                 return ResponseEntity.notFound().build();

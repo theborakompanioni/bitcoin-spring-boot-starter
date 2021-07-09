@@ -17,6 +17,10 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public final class BitcoindStatusLogging {
 
+    private BitcoindStatusLogging() {
+        throw new UnsupportedOperationException();
+    }
+
     public static Disposable logBitcoinStatusOnNewBlock(MessagePublishService<Block> bitcoinjBlockPublishService,
                                                         BitcoinClient bitcoinClient) throws TimeoutException {
         Disposable subscription = Flux.from(bitcoinjBlockPublishService).subscribe(arg -> logStatus(bitcoinClient));

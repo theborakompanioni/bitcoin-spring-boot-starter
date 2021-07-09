@@ -30,8 +30,8 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         // blockchain.info fees do not support any customized request
-        return request.getDesiredConfidence().isEmpty() &&
-                Duration.ofMinutes(360).compareTo(request.getDurationTarget()) >= 0;
+        return request.getDesiredConfidence().isEmpty()
+                && Duration.ofMinutes(360).compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override

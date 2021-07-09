@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface Orders extends AssociationResolver<Order, Order.OrderId>, PagingAndSortingRepository<Order, Order.OrderId> {
 
-	/**
-	 * Returns all {@link Order}s with the given {@link Order.Status}.
-	 *
-	 * @param status must not be {@literal null}.
-	 * @return all orders in given status
-	 */
-	List<Order> findByStatus(@Param("status") Order.Status status);
+    /**
+     * Returns all {@link Order}s with the given {@link Order.Status}.
+     *
+     * @param status must not be {@literal null}.
+     * @return all orders in given status
+     */
+    List<Order> findByStatus(@Param("status") Order.Status status);
 }

@@ -52,8 +52,8 @@ public class BitcoinExchangeCoreExampleApplicationWebMvcConfigurer implements We
 
     /**
      * This is the only way that worked making jackson pretty print json responses.
-     * <p>
-     * No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
+     *
+     * <p>No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
      * {@link Jackson2ObjectMapperBuilderCustomizer} did the job properly (which is very odd).
      * Maybe try again at a later point in time. But this is good for now (2020-10-24).
      */

@@ -82,8 +82,8 @@ public class ProjectedBlocksMempoolspaceFeeProvider extends AbstractFeeProvider 
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty() &&
-                request.getDurationTarget().compareTo(MAX_DURATION) <= 0;
+        return request.getDesiredConfidence().isEmpty()
+                && request.getDurationTarget().compareTo(MAX_DURATION) <= 0;
     }
 
     @Override

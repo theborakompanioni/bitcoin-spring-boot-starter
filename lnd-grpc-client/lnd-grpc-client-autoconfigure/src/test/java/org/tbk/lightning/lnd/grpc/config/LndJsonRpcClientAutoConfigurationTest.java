@@ -1,7 +1,6 @@
 package org.tbk.lightning.lnd.grpc.config;
 
 import com.google.common.base.Throwables;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -11,6 +10,7 @@ import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LndJsonRpcClientAutoConfigurationTest {
 
@@ -42,20 +42,10 @@ public class LndJsonRpcClientAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("lndJsonRpcClientFactory"), is(false));
-                    try {
-                        context.getBean(LndJsonRpcClientFactory.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(LndJsonRpcClientFactory.class));
 
                     assertThat(context.containsBean("lndJsonRpcClient"), is(false));
-                    try {
-                        context.getBean(AsynchronousLndAPI.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(AsynchronousLndAPI.class));
                 });
     }
 
@@ -70,12 +60,7 @@ public class LndJsonRpcClientAutoConfigurationTest {
                     assertThat(context.getBean(LndJsonRpcClientFactory.class), is(notNullValue()));
 
                     assertThat(context.containsBean("lndJsonRpcClient"), is(false));
-                    try {
-                        context.getBean(AsynchronousLndAPI.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(AsynchronousLndAPI.class));
                 });
     }
 

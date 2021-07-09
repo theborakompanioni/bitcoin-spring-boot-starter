@@ -40,10 +40,10 @@ public class BitcoinAutoDcaExampleApplicationConfig {
         boolean isExplicitDryRunGivenByUserViaArguments = applicationArguments.containsOption("dry");
         boolean isExplicitDryRunGivenByUserViaProperties = properties.getDry();
 
-        boolean dryRunEnabled = !isProductionEnvironment ||
-                isExplicitTestEnvironment ||
-                isExplicitDryRunGivenByUserViaArguments ||
-                isExplicitDryRunGivenByUserViaProperties;
+        boolean dryRunEnabled = !isProductionEnvironment
+                || isExplicitTestEnvironment
+                || isExplicitDryRunGivenByUserViaArguments
+                || isExplicitDryRunGivenByUserViaProperties;
 
         return new DryRunOption(dryRunEnabled);
     }

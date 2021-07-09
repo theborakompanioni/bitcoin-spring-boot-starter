@@ -38,18 +38,18 @@ public class BitcoindContainerAutoConfiguration {
 
     /**
      * Creates a bitcoin container from the properties given.
-     * <p>
-     * NOTE: Currently only supports creating "regtest" container.
-     * <p>
-     * Mainnet
+     *
+     * <p>NOTE: Currently only supports creating "regtest" container.
+     *
+     * <p>Mainnet
      * JSON-RPC/REST: 8332
      * P2P: 8333
-     * <p>
-     * Testnet
+     *
+     * <p>Testnet
      * Testnet JSON-RPC: 18332
      * P2P: 18333
-     * <p>
-     * Regtest
+     *
+     * <p>Regtest
      * JSON-RPC/REST: 18443 (since 0.16+, otherwise 18332)
      * P2P: 18444
      */

@@ -72,6 +72,7 @@ public class BtcAbuseApiClientImpl implements BtcAbuseApiClient {
             throw new RuntimeException(errorMessage, e);
         }
     }
+
     private static URIBuilder toUriBuilder(String baseUrl, String apiToken) {
         try {
             return new URIBuilder(baseUrl)

@@ -157,17 +157,16 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
                 .build();
     }
 
-
-    private String buildEpsBitcoindConfig() {
+    private String buildLocalEpsBitcoindConfig() {
         return buildEpsBitcoindConfig(
-                this.properties.getRpchost(),
+                MoreTestcontainers.testcontainersInternalHost(),
                 this.properties.getRpcport()
         );
     }
 
-    private String buildLocalEpsBitcoindConfig() {
+    private String buildEpsBitcoindConfig() {
         return buildEpsBitcoindConfig(
-                MoreTestcontainers.testcontainersInternalHost(),
+                this.properties.getRpchost(),
                 this.properties.getRpcport()
         );
     }
@@ -180,11 +179,11 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
     }
 
     private String buildEpsBitcoindConfig(String host, int port) {
-        String template = "[bitcoin-rpc]\n" +
-                "host = %s\n" +
-                "port = %d\n" +
-                "rpc_user = %s\n" +
-                "rpc_password = %s\n";
+        String template = "[bitcoin-rpc]\n"
+                + "host = %s\n"
+                + "port = %d\n"
+                + "rpc_user = %s\n"
+                + "rpc_password = %s\n";
 
         return String.format(template, host, port, this.properties.getRpcuser(), this.properties.getRpcpass());
     }

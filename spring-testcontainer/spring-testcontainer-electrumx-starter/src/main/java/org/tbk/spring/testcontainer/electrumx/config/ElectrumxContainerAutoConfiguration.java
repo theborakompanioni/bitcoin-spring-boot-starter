@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalHostUrl;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -152,8 +153,9 @@ public class ElectrumxContainerAutoConfiguration {
         );
     }
 
-    private String buildLocalDaemonUrl() {
-        return MoreTestcontainers.buildInternalHostUrl(
+    private String buildDaemonUrl(BitcoindContainer<?> bitcoindContainer) {
+        return buildInternalContainerUrl(
+                bitcoindContainer,
                 "http",
                 this.properties.getRpcuser(),
                 this.properties.getRpcpass(),
@@ -161,9 +163,8 @@ public class ElectrumxContainerAutoConfiguration {
         );
     }
 
-    private String buildDaemonUrl(BitcoindContainer<?> bitcoindContainer) {
-        return buildInternalContainerUrl(
-                bitcoindContainer,
+    private String buildLocalDaemonUrl() {
+        return buildInternalHostUrl(
                 "http",
                 this.properties.getRpcuser(),
                 this.properties.getRpcpass(),

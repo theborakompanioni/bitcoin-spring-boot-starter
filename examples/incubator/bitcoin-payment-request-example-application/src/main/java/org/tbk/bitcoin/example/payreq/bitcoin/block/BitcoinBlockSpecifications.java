@@ -5,7 +5,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.validation.constraints.NotNull;
 
-class BitcoinBlockSpecifications {
+final class BitcoinBlockSpecifications {
+
+    private BitcoinBlockSpecifications() {
+        throw new UnsupportedOperationException();
+    }
 
     static @NotNull Specification<BitcoinBlock> byHash(@NotNull Sha256Hash hash) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("hash"), hash);

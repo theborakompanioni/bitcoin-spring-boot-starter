@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 class LoggingApplicationListener {
 
-	@EventListener
-	void on(Object event) {
-		log.trace("Received application event: {}", event);
-	}
+    @EventListener
+    void on(Object event) {
+        log.trace("Received application event: {}", event);
+    }
 }

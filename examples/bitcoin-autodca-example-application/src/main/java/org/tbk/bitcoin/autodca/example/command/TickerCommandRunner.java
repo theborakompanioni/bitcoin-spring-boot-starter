@@ -23,7 +23,7 @@ public class TickerCommandRunner extends ConditionalOnNonOptionApplicationRunner
     private final Exchange exchange;
     private final BitcoinAutoDcaExampleProperties properties;
 
-    public TickerCommandRunner( Exchange exchange,
+    public TickerCommandRunner(Exchange exchange,
                                BitcoinAutoDcaExampleProperties properties) {
         super("ticker");
         this.exchange = requireNonNull(exchange);

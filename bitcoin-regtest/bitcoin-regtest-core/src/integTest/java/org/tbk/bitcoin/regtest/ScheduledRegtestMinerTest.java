@@ -58,25 +58,28 @@ class ScheduledRegtestMinerTest {
 
         @Bean("regtestMinerScheduler")
         public AbstractScheduledService.Scheduler regtestMinerScheduler() {
-            return new AbstractScheduledService.CustomScheduler() {
-                private final SecureRandom random = new SecureRandom();
-                private final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1000);
-                private final Duration MAX_BLOCK_DURATION = Duration.ofMillis(3000);
+            return new RegtestMinerScheduler();
+        }
 
-                @Override
-                protected Schedule getNextSchedule() {
-                    long randomMillis = (long) Math.max(
-                            MIN_BLOCK_DURATION.toMillis(),
-                            MAX_BLOCK_DURATION.toMillis() * random.nextDouble()
-                    );
+        private static class RegtestMinerScheduler extends AbstractScheduledService.CustomScheduler {
+            private static final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1000);
+            private static final Duration MAX_BLOCK_DURATION = Duration.ofMillis(3000);
+            
+            private final SecureRandom random = new SecureRandom();
 
-                    Duration durationTillNewBlock = Duration.ofMillis(randomMillis);
+            @Override
+            protected Schedule getNextSchedule() {
+                long randomMillis = (long) Math.max(
+                        MIN_BLOCK_DURATION.toMillis(),
+                        MAX_BLOCK_DURATION.toMillis() * random.nextDouble()
+                );
 
-                    log.debug("Duration till next block: {}", durationTillNewBlock);
+                Duration durationTillNewBlock = Duration.ofMillis(randomMillis);
 
-                    return new Schedule(durationTillNewBlock.toSeconds(), TimeUnit.SECONDS);
-                }
-            };
+                log.debug("Duration till next block: {}", durationTillNewBlock);
+
+                return new Schedule(durationTillNewBlock.toSeconds(), TimeUnit.SECONDS);
+            }
         }
     }
 

@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 )
 public class BitcoinMqttServerAutoConfigProperties {
     /**
-     * Whether the autoconfig should be enabled
+     * Whether the autoconfig should be enabled.
      */
     private boolean enabled;
 

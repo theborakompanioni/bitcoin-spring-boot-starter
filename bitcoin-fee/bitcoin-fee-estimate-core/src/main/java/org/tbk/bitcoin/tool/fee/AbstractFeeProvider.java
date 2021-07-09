@@ -48,7 +48,7 @@ public abstract class AbstractFeeProvider implements FeeProvider {
      * A hook to transform a single {@link FeeRecommendationResponse} response.
      * Append information, filter, transform or add additional responses.
      *
-     * Default behaviour is to return the unchanged value that has been provided.
+     * <p>Default behaviour is to return the unchanged value that has been provided.
      *
      * @param response the fee recommendation response
      * @return the unchanged value that has been provided.
@@ -61,7 +61,7 @@ public abstract class AbstractFeeProvider implements FeeProvider {
      * A hook to transform a stream of {@link FeeRecommendationResponse} responses.
      * This is the place to e.g. aggregate results or derive statistical metrics.
      *
-     * Default behaviour is to return the unchanged stream that has been provided.
+     * <p>Default behaviour is to return the unchanged stream that has been provided.
      *
      * @param responses the fee recommendation responses
      * @return the unchanged stream that has been provided.

@@ -35,8 +35,8 @@ public class BlockcypherFeeProvider extends AbstractFeeProvider {
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty() &&
-                LOW_FEE_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
+        return request.getDesiredConfidence().isEmpty()
+                && LOW_FEE_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override

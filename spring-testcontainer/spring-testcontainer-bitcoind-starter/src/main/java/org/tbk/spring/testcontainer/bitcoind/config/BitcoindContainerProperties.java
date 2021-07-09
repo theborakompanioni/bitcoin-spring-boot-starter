@@ -17,15 +17,17 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Mainnet
+ * Properties for bitcoind testcontainer.
+ *
+ * <p>Mainnet
  * JSON-RPC/REST: 8332
  * P2P: 8333
- * <p>
- * Testnet
+ *
+ * <p>Testnet
  * Testnet JSON-RPC: 18332
  * P2P: 18333
- * <p>
- * Regtest
+ *
+ * <p>Regtest
  * JSON-RPC/REST: 18443 (since 0.16+, otherwise 18332)
  * P2P: 18444
  */
@@ -69,12 +71,12 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     private Chain chain;
 
     /**
-     * RPC username
+     * RPC username.
      */
     private String rpcuser;
 
     /**
-     * RPC password
+     * RPC password.
      */
     private String rpcpassword;
 
@@ -113,10 +115,9 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
 
     /**
      * Validate the container properties.
-     * <p>
-     * Keep in mind that Testcontainers splits commands on whitespaces.
+     *
+     * <p>Keep in mind that Testcontainers splits commands on whitespaces.
      * This means, every property that is part of a command, must not contain whitespaces.
-     * <p>
      * {@inheritDoc}
      */
     @Override

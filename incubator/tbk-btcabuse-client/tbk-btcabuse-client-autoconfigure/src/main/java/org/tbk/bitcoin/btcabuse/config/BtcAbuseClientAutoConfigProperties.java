@@ -24,7 +24,7 @@ public class BtcAbuseClientAutoConfigProperties implements Validator {
     private static final String DEFAULT_BASE_URL = "https://www.bitcoinabuse.com";
 
     /**
-     * Whether the client should be enabled
+     * Whether the client should be enabled.
      */
     private boolean enabled;
 

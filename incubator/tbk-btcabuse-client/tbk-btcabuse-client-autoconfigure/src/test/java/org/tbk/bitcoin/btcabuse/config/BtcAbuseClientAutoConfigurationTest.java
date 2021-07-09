@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.btcabuse.config;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -9,6 +8,7 @@ import org.tbk.bitcoin.btcabuse.client.BtcAbuseApiClient;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BtcAbuseClientAutoConfigurationTest {
 
@@ -37,12 +37,7 @@ public class BtcAbuseClientAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("btcAbuseApiClient"), is(false));
-                    try {
-                        context.getBean(BtcAbuseApiClient.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BtcAbuseApiClient.class));
                 });
     }
 }

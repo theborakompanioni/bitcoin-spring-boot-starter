@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
-import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
 import java.util.Collections;
@@ -67,10 +66,9 @@ public class BtcRpcExplorerContainerProperties extends AbstractContainerProperti
 
     /**
      * Validate the container properties.
-     * <p>
-     * Keep in mind that Testcontainers splits commands on whitespaces.
+     *
+     * <p>Keep in mind that Testcontainers splits commands on whitespaces.
      * This means, every property that is part of a command, must not contain whitespaces.
-     * <p>
      * {@inheritDoc}
      */
     @Override
@@ -120,24 +118,23 @@ public class BtcRpcExplorerContainerProperties extends AbstractContainerProperti
     @Data
     public static class BitcoindProperties {
         /**
-         * IP address or hostname (without http:// or https://)
-         * where bitcoin daemon is reachable
+         * IP address or hostname (without http:// or https://) where bitcoin daemon is reachable.
          * e.g. localhost, 192.168.0.2, etc.
          */
         private String rpchost;
 
         /**
-         * Port where bitcoin daemon is listening
+         * Port where bitcoin daemon is listening.
          */
         private int rpcport;
 
         /**
-         * RPC username
+         * RPC username.
          */
         private String rpcuser;
 
         /**
-         * RPC password
+         * RPC password.
          */
         private String rpcpass;
     }
@@ -145,14 +142,13 @@ public class BtcRpcExplorerContainerProperties extends AbstractContainerProperti
     @Data
     public static class ElectrumxProperties {
         /**
-         * IP address or hostname (without http:// or https://)
-         * where ElectrumX is reachable
+         * IP address or hostname (without http:// or https://) where ElectrumX is reachable.
          * e.g. localhost, 192.168.0.2, etc.
          */
         private String rpchost;
 
         /**
-         * Port where ElectrumX is listening
+         * Port where ElectrumX is listening.
          */
         private int tcpport;
     }

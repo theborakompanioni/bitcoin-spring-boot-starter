@@ -8,12 +8,12 @@ import java.util.Optional;
 
 interface PaymentRequests extends PagingAndSortingRepository<PaymentRequest, PaymentRequest.PaymentRequestId> {
 
-	/**
-	 * Returns the payment registered for the given {@link Order}.
-	 */
-	default Optional<PaymentRequest> findByOrder(Order.OrderId id) {
-		return findByOrder(Association.forId(id));
-	}
+    /**
+     * Returns the payment registered for the given {@link Order}.
+     */
+    default Optional<PaymentRequest> findByOrder(Order.OrderId id) {
+        return findByOrder(Association.forId(id));
+    }
 
-	Optional<PaymentRequest> findByOrder(Association<Order, Order.OrderId> order);
+    Optional<PaymentRequest> findByOrder(Association<Order, Order.OrderId> order);
 }

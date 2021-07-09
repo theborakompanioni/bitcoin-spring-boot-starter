@@ -1,7 +1,6 @@
 package org.tbk.xchange.jsr354;
 
 import org.javamoney.moneta.Money;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
@@ -12,6 +11,7 @@ import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XChangeExchangeRateProviderTest {
 
@@ -36,13 +36,7 @@ public class XChangeExchangeRateProviderTest {
 
     @Test
     public void itShouldNotFetchUnsupportedExchangeRate() {
-        try {
-            ExchangeRate ignoredOnPurpose = this.sut.getExchangeRate("BTC", "BTC");
-
-            Assertions.fail("Should have thrown exception");
-        } catch (CurrencyConversionException e) {
-            assertThat(e, is(notNullValue()));
-        }
+        assertThrows(CurrencyConversionException.class, () -> this.sut.getExchangeRate("BTC", "BTC"));
     }
 
     @Test
@@ -82,12 +76,7 @@ public class XChangeExchangeRateProviderTest {
         assertThat(exchangeRateProvider.isAvailable("BTC", "BTC"), is(false));
         assertThat(exchangeRateProvider.isAvailable(conversionQuery), is(false));
 
-        try {
-            ExchangeRate exchangeRate = currencyConversion.getExchangeRate(Money.of(BigDecimal.ONE, "BTC"));
-
-            Assertions.fail("Should have thrown exception");
-        } catch (CurrencyConversionException e) {
-            assertThat(e, is(notNullValue()));
-        }
+        assertThrows(CurrencyConversionException.class,
+                () -> currencyConversion.getExchangeRate(Money.of(BigDecimal.ONE, "BTC")));
     }
 }

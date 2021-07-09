@@ -99,8 +99,8 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     /**
      * Sign an unsigned transaction.
-     * <p>
-     * This method will throw an exception if the returned transaction from
+     *
+     * <p>This method will throw an exception if the returned transaction from
      * electrum looks the same as the incoming unsigned transaction.
      * Electrum does not raise an error if the address is "watchonly",
      * but silently returns the unsigned transaction again.
@@ -117,8 +117,8 @@ public class ElectrumClientImpl implements ElectrumClient {
 
         boolean rawTxHasNotChanged = rawTx.getHex().equals(signtransaction.getHex());
         if (rawTxHasNotChanged) {
-            throw new IllegalStateException("Transaction has not been signed by electrum - " +
-                    "maybe you have loaded a watchonly wallet?");
+            throw new IllegalStateException("Transaction has not been signed by electrum - "
+                    + "maybe you have loaded a watchonly wallet?");
         }
 
         return SimpleRawTx.builder()
@@ -368,8 +368,8 @@ public class ElectrumClientImpl implements ElectrumClient {
 
         boolean seedIsAbsent = getseed == null || getseed.isEmpty();
         if (seedIsAbsent) {
-            throw new IllegalStateException("Seed has not been returned by electrum - " +
-                    "maybe you have loaded a watchonly wallet?");
+            throw new IllegalStateException("Seed has not been returned by electrum - "
+                    + "maybe you have loaded a watchonly wallet?");
         }
 
         return splitMnemonicSeed(getseed);

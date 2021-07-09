@@ -42,9 +42,9 @@ public class BitcoinExchangeRateExampleApplication {
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner exchangeRateDemoRunner(List<ExchangeRateProvider> XChangeExchangeRateProviders) {
+    public CommandLineRunner exchangeRateDemoRunner(List<ExchangeRateProvider> xChangeExchangeRateProviders) {
         return args -> {
-            if (XChangeExchangeRateProviders.isEmpty()) {
+            if (xChangeExchangeRateProviders.isEmpty()) {
                 log.warn("No XChangeExchangeRateProviders found.");
                 return;
             }
@@ -57,9 +57,9 @@ public class BitcoinExchangeRateExampleApplication {
 
             log.info("======================================================");
             log.info("ConversionQuery: {}", conversionQuery);
-            log.info("Available provider count: {}", XChangeExchangeRateProviders.size());
+            log.info("Available provider count: {}", xChangeExchangeRateProviders.size());
 
-            List<ExchangeRateProvider> eligibleProvider = XChangeExchangeRateProviders.stream()
+            List<ExchangeRateProvider> eligibleProvider = xChangeExchangeRateProviders.stream()
                     .filter(it -> it.isAvailable(conversionQuery))
                     .collect(Collectors.toList());
 

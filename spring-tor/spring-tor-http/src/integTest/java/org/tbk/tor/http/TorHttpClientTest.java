@@ -10,7 +10,6 @@ import org.apache.http.util.EntityUtils;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.TorCtlException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.tbk.tor.NativeTorFactory;
@@ -25,6 +24,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
@@ -97,7 +97,7 @@ class TorHttpClientTest {
     void testOnionWithoutTor() {
         HttpGet req = new HttpGet(ONION_URL);
 
-        UnknownHostException expectedException = Assertions.assertThrows(UnknownHostException.class, () -> {
+        UnknownHostException expectedException = assertThrows(UnknownHostException.class, () -> {
             try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
                 try (CloseableHttpResponse ignoredOnPurpose = client.execute(req)) {
                     fail("Should have thrown exception");

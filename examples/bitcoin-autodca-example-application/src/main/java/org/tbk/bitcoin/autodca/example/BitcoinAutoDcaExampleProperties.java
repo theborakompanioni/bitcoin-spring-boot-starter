@@ -20,27 +20,27 @@ public class BitcoinAutoDcaExampleProperties implements Validator {
     private static final BigDecimal MAXIMUM_MAX_FEE_VALUE = new BigDecimal("5");
 
     /**
-     * the governmental shitcoin you are selling
+     * the governmental shitcoin you are selling.
      */
     private String fiatCurrency;
 
     /**
-     * fiat amount you trade for the future of money
+     * fiat amount you trade for the future of money.
      */
     private BigDecimal fiatAmount;
 
     /**
-     * maximum fee in % that you are willing to pay
+     * maximum fee in % that you are willing to pay.
      */
     private BigDecimal maxRelativeFee;
 
     /**
-     * description of withdrawal address
+     * description of withdrawal address.
      */
     private String withdrawAddress;
 
     /**
-     * description of withdrawal address
+     * description of withdrawal address.
      */
     private Boolean dry;
 

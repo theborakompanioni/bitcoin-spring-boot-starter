@@ -38,8 +38,8 @@ public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty() &&
-                request.getDurationTarget().compareTo(HOUR) <= 0;
+        return request.getDesiredConfidence().isEmpty()
+                && request.getDurationTarget().compareTo(HOUR) <= 0;
     }
 
     @Override

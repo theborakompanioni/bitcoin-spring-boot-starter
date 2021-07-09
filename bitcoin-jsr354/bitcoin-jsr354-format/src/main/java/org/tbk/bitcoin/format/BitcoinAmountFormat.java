@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public final class BitcoinAmountFormat implements MonetaryAmountFormat {
-    private final static String SEPARATOR = " ";
+    private static final String SEPARATOR = " ";
     private final AmountFormatContext context;
 
     BitcoinAmountFormat(AmountFormatContext context) {
@@ -33,8 +33,8 @@ public final class BitcoinAmountFormat implements MonetaryAmountFormat {
     public MonetaryAmount parse(CharSequence text) throws MonetaryParseException {
         String[] array = text.toString().split(SEPARATOR);
         if (array.length != 2) {
-            String errorMessage = String.format("An error happened when try to parse the Monetary Amount. " +
-                    "Expected length of 2 after split, but got: %d", array.length);
+            String errorMessage = String.format("An error happened when try to parse the Monetary Amount. "
+                    + "Expected length of 2 after split, but got: %d", array.length);
             throw new MonetaryParseException(errorMessage, text, 0);
         }
 

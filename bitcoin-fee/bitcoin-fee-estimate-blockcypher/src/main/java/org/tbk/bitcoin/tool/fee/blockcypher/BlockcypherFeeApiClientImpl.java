@@ -1,28 +1,24 @@
 package org.tbk.bitcoin.tool.fee.blockcypher;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.SneakyThrows;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 public class BlockcypherFeeApiClientImpl implements BlockcypherFeeApiClient {
-    private final static String TOKEN_PARAM_NAME = "token";
+    private static final String TOKEN_PARAM_NAME = "token";
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final String baseUrl;

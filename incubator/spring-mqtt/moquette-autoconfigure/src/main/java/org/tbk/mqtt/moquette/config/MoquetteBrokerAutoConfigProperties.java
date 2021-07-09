@@ -22,7 +22,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 )
 public class MoquetteBrokerAutoConfigProperties implements Validator {
     /**
-     * Whether the autoconfig should be enabled
+     * Whether the autoconfig should be enabled.
      */
     private boolean enabled;
 

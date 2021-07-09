@@ -59,19 +59,7 @@ class PaymentRequestApiTest {
     }
 
     /**
-     * Test for response of a html message, similar to:
-     * <p>
-     * ```html
-     * <html lang="en">
-     * <head>
-     * <meta charset="UTF-8" />
-     * <title></title>
-     * </head>
-     * <body>
-     * <img src="/api/v1/payment/request/qrcode?network=regtest&address=bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j" alt="bitcoin:bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j" />
-     * </body>
-     * </html>
-     * ```
+     * Test for response of a html message.
      */
     @Test
     void paymentRequestHtmlSuccess() throws Exception {

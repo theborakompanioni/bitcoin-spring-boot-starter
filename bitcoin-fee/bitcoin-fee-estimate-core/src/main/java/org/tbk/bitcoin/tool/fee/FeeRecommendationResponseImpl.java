@@ -27,9 +27,8 @@ public class FeeRecommendationResponseImpl implements FeeRecommendationResponse 
         FeeRecommendationResponse.FeeUnit feeUnit;
     }
 
-    @Value
     @Builder
-    public static class SatPerVbyteImpl implements FeeUnit {
+    public static final class SatPerVbyteImpl implements FeeUnit {
         @NonNull
         BigDecimal satPerVbyteValue;
 

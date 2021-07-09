@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Slf4j
-public class ConversionQueryCache<T> extends SimpleForwardingLoadingCache<ConversionQuery, T> {
+public final class ConversionQueryCache<T> extends SimpleForwardingLoadingCache<ConversionQuery, T> {
 
     public interface Builder<T> {
         ConversionQueryCache<T> build(BiFunction<ExchangeRateProvider, ConversionQuery, T> mapper);
@@ -23,10 +23,10 @@ public class ConversionQueryCache<T> extends SimpleForwardingLoadingCache<Conver
     private static boolean hasExpireOrRefreshSpecified(CacheBuilderSpec cacheBuilderSpec) {
         String cacheSpec = cacheBuilderSpec.toParsableString();
 
-        return cacheSpec.contains("expireAfterAccess") ||
-                cacheSpec.contains("expireAfterWrite") ||
-                cacheSpec.contains("refreshAfterWrite") ||
-                cacheSpec.contains("refreshInterval");
+        return cacheSpec.contains("expireAfterAccess")
+                || cacheSpec.contains("expireAfterWrite")
+                || cacheSpec.contains("refreshAfterWrite")
+                || cacheSpec.contains("refreshInterval");
     }
 
     public static <T> Builder<T> builder(CacheBuilderSpec cacheBuilderSpec,

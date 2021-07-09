@@ -11,15 +11,14 @@ import org.lightningj.lnd.wrapper.MacaroonContext;
 public class LndRpcConfigImpl implements LndRpcConfig {
 
     /**
-     * IP address or hostname including http:// or https://
-     * where lnd daemon is reachable
+     * IP address or hostname including http:// or https:// where lnd daemon is reachable.
      * e.g. https://localhost:10001
      */
     @NonNull
     String rpchost;
 
     /**
-     * Port where lnd daemon is listening
+     * Port where lnd daemon is listening.
      */
     @NonNull
     Integer rpcport;

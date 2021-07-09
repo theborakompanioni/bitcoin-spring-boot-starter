@@ -46,7 +46,7 @@ public class DaemonStatusResponse {
     int feePerKb;
 
     /**
-     * Path to currently loaded wallet
+     * Path to currently loaded wallet.
      */
     @JsonProperty("current_wallet")
     String currentWallet;

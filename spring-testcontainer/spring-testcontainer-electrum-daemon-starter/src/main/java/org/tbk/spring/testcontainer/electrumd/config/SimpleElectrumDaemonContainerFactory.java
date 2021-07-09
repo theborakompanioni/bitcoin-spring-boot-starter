@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
-import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
-import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;

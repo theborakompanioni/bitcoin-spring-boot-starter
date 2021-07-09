@@ -1,7 +1,6 @@
 package org.tbk.spring.testcontainer.btcrpcexplorer.config;
 
 import com.google.common.base.Throwables;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
@@ -10,6 +9,7 @@ import org.tbk.spring.testcontainer.btcrpcexplorer.BtcRpcExplorerContainer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BtcRpcExplorerContainerAutoConfigurationTest {
 
@@ -23,13 +23,7 @@ public class BtcRpcExplorerContainerAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("btcRpcExplorerContainer"), is(false));
-
-                    try {
-                        context.getBean(BtcRpcExplorerContainer.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BtcRpcExplorerContainer.class));
                 });
     }
 
@@ -63,18 +57,13 @@ public class BtcRpcExplorerContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.btcrpcexplorer.electrumx.tcpport=0"
                 )
                 .run(context -> {
-                    try {
-                        BtcRpcExplorerContainer<?> ignoredOnPurpose = context.getBean(BtcRpcExplorerContainer.class);
+                    Exception exception = assertThrows(Exception.class, () -> context.getBean(BtcRpcExplorerContainer.class));
 
-                        Assertions.fail("Should have failed to start application context");
-                    } catch (Exception e) {
+                    Throwable rootCause = Throwables.getRootCause(exception);
+                    assertThat(rootCause, is(instanceOf(BindValidationException.class)));
 
-                        Throwable rootCause = Throwables.getRootCause(e);
-                        assertThat(rootCause, is(instanceOf(BindValidationException.class)));
-
-                        BindValidationException validationException = (BindValidationException) rootCause;
-                        assertThat(validationException.getValidationErrors().hasErrors(), is(true));
-                    }
+                    BindValidationException validationException = (BindValidationException) rootCause;
+                    assertThat(validationException.getValidationErrors().hasErrors(), is(true));
                 });
     }
 

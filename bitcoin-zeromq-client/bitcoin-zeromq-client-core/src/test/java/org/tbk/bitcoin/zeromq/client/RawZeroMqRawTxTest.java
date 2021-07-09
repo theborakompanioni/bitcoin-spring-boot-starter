@@ -24,9 +24,8 @@ public class RawZeroMqRawTxTest {
      * # Enable publishing of raw transaction hex to <address>.
      * zmqpubrawtx=tcp://127.0.0.1:28333
      *
-     * @param args
+     * @param args application arguments
      */
-
     public static void main(String[] args) {
         Flux<byte[]> objectFlux = Flux.<byte[]>create(emitter -> {
             try (ZContext context = new ZContext()) {

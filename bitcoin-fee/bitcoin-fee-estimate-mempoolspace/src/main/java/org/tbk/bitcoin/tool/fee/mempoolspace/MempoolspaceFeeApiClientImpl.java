@@ -31,7 +31,7 @@ public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
 
     private static final String DEFAULT_USERAGENT = "tbk-mempoolspace-client/" + DEFAULT_VERSION;
 
-    private final static String TOKEN_PARAM_NAME = "token";
+    private static final String TOKEN_PARAM_NAME = "token";
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final String baseUrl;

@@ -79,9 +79,9 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      * @return will never be {@literal null}.
      */
     public MonetaryAmount getPrice() {
-        return lineItems.stream().
-                map(LineItem::getPrice).
-                reduce(MonetaryAmount::add)
+        return lineItems.stream()
+                .map(LineItem::getPrice)
+                .reduce(MonetaryAmount::add)
                 .orElse(Money.of(BigDecimal.ZERO, Currencies.BTC));
     }
 
@@ -153,7 +153,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     /**
      * Returns whether the {@link Order} has been paid already.
      *
-     * @return
+     * @return true if order is paid.
      */
     public boolean isPaid() {
         return !this.status.equals(Status.PAYMENT_EXPECTED);
@@ -162,7 +162,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     /**
      * Returns if the {@link Order} is ready to be taken.
      *
-     * @return
+     * @return true if order is ready.
      */
     public boolean isReady() {
         return this.status.equals(Status.READY);

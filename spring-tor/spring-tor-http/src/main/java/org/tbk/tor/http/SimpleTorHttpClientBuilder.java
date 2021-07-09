@@ -29,6 +29,11 @@ import static java.util.Objects.requireNonNull;
 
 
 public final class SimpleTorHttpClientBuilder {
+
+    private SimpleTorHttpClientBuilder() {
+        throw new UnsupportedOperationException();
+    }
+
     public static HttpClientBuilder tor(Tor tor) throws TorCtlException {
         Socks5Proxy proxy = tor.getProxy();
         InetAddress inetAddress = proxy.getInetAddress();
@@ -41,7 +46,7 @@ public final class SimpleTorHttpClientBuilder {
     public static HttpClientBuilder custom(Proxy proxy) {
         DefaultHostnameVerifier defaultHostnameVerifier = new DefaultHostnameVerifier();
         SSLContext sslContext = SSLContexts.createSystemDefault();
-        ProxySelectorSSLConnectionSocketFactory sslSocketFactory = new ProxySelectorSSLConnectionSocketFactory(proxy, sslContext, defaultHostnameVerifier);
+        ProxySelectorSslConnectionSocketFactory sslSocketFactory = new ProxySelectorSslConnectionSocketFactory(proxy, sslContext, defaultHostnameVerifier);
         ProxySelectorPlainConnectionSocketFactory plainSocketFactory = new ProxySelectorPlainConnectionSocketFactory(proxy);
 
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
@@ -93,10 +98,10 @@ public final class SimpleTorHttpClientBuilder {
         }
     }
 
-    private static final class ProxySelectorSSLConnectionSocketFactory extends SSLConnectionSocketFactory {
+    private static final class ProxySelectorSslConnectionSocketFactory extends SSLConnectionSocketFactory {
         private final Proxy proxy;
 
-        ProxySelectorSSLConnectionSocketFactory(Proxy proxy,
+        ProxySelectorSslConnectionSocketFactory(Proxy proxy,
                                                 SSLContext sslContext,
                                                 HostnameVerifier hostnameVerifier) {
             super(sslContext, hostnameVerifier);

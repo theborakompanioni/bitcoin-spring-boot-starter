@@ -40,7 +40,7 @@ public class TorHttpClientAutoConfiguration {
     public interface TorHttpClientBuilderCustomizer {
 
         /**
-         * Customize the tor http client config.
+         * Customize the tor Tor Http Client config.
          *
          * @param config the {@link HttpClientBuilder} to customize
          */

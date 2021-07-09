@@ -32,12 +32,12 @@ public final class MoreTestcontainers {
         return String.format("%s://%s", protocol, buildInternalContainerUrlWithoutProtocol(containerState, port));
     }
 
-    public static String buildInternalHostUrl(String protocol, String user, String password, int port) {
-        return String.format("%s://%s:%s@%s", protocol, user, password, buildHostUrlWithoutProtocol(port));
-    }
-
     public static String buildInternalContainerUrl(ContainerState containerState, String protocol, String user, String password, int port) {
         return String.format("%s://%s:%s@%s", protocol, user, password, buildInternalContainerUrlWithoutProtocol(containerState, port));
+    }
+
+    public static String buildInternalHostUrl(String protocol, String user, String password, int port) {
+        return String.format("%s://%s:%s@%s", protocol, user, password, buildHostUrlWithoutProtocol(port));
     }
 
     public static String buildInternalContainerUrlWithoutProtocol(ContainerState containerState, int port) {
@@ -69,7 +69,7 @@ public final class MoreTestcontainers {
     }
 
     @RequiredArgsConstructor
-    public final static class TbkContainerCmdModifiers {
+    public static final class TbkContainerCmdModifiers {
         private static final String digits1234567890 = "123456789";
         private static final String abcdefghijklmnopqrstuvwxyz = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

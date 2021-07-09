@@ -18,6 +18,10 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public final class ElectrumdStatusLogging {
 
+    private ElectrumdStatusLogging() {
+        throw new UnsupportedOperationException();
+    }
+
     public static Disposable logElectrumStatusOnNewBlock(MessagePublishService<Block> bitcoinjBlockPublishService,
                                                          ElectrumClient electrumClient) throws TimeoutException {
         Disposable subscription = Flux.from(bitcoinjBlockPublishService).subscribe(arg -> logStatus(electrumClient));

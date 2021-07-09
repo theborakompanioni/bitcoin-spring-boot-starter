@@ -27,11 +27,11 @@ public class BitcoreFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         // 'blocks' must be between 2 and 100 for the api to answer
-        boolean isBlockTargetSupported = request.getBlockTarget() >= 2 &&
-                request.getBlockTarget() <= 100;
+        boolean isBlockTargetSupported = request.getBlockTarget() >= 2
+                && request.getBlockTarget() <= 100;
 
-        return isBlockTargetSupported &&
-                request.getDesiredConfidence().isEmpty();
+        return isBlockTargetSupported
+                && request.getDesiredConfidence().isEmpty();
     }
 
     @Override

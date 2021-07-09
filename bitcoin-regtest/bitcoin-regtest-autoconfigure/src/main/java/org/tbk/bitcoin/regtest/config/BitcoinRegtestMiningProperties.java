@@ -10,7 +10,7 @@ import java.util.Optional;
 @Data
 public class BitcoinRegtestMiningProperties implements Validator {
     /**
-     * Whether mining should be enabled
+     * Whether mining should be enabled.
      */
     private boolean enabled;
 
@@ -20,7 +20,7 @@ public class BitcoinRegtestMiningProperties implements Validator {
      */
     private String coinbaseRewardAddress;
 
-    private int mineInitialAmountOfBlocks = 0;
+    private int mineInitialAmountOfBlocks;
 
     private Boolean scheduledMiningEnabled;
 

@@ -36,8 +36,8 @@ public final class BitcoinAmountFormatProvider implements MonetaryAmountFormatPr
     public Collection<MonetaryAmountFormat> getAmountFormats(AmountFormatQuery amountFormatQuery) {
         requireNonNull(amountFormatQuery, "AmountFormatContext required");
 
-        if (!amountFormatQuery.getProviderNames().isEmpty() &&
-                !amountFormatQuery.getProviderNames().contains(getProviderName())) {
+        if (!amountFormatQuery.getProviderNames().isEmpty()
+                && !amountFormatQuery.getProviderNames().contains(getProviderName())) {
             return Collections.emptySet();
         }
         if (!(amountFormatQuery.getFormatName() == null

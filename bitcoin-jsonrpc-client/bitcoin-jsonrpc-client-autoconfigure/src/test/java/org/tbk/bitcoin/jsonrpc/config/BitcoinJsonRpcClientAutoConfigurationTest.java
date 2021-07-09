@@ -1,7 +1,6 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinClient;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -10,6 +9,7 @@ import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactory;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BitcoinJsonRpcClientAutoConfigurationTest {
 
@@ -43,20 +43,10 @@ public class BitcoinJsonRpcClientAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinJsonRpcClientFactory"), is(false));
-                    try {
-                        context.getBean(BitcoinJsonRpcClientFactory.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoinJsonRpcClientFactory.class));
 
                     assertThat(context.containsBean("bitcoinJsonRpcClient"), is(false));
-                    try {
-                        context.getBean(BitcoinClient.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoinClient.class));
                 });
     }
 
@@ -72,12 +62,7 @@ public class BitcoinJsonRpcClientAutoConfigurationTest {
                     assertThat(context.getBean(BitcoinJsonRpcClientFactory.class), is(notNullValue()));
 
                     assertThat(context.containsBean("bitcoinJsonRpcClient"), is(false));
-                    try {
-                        context.getBean(BitcoinClient.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoinClient.class));
                 });
     }
 }

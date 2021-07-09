@@ -26,9 +26,9 @@ public class BtcdotcomFeeProvider extends AbstractFeeProvider {
 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
-        return request.getDesiredConfidence().isEmpty() &&
-                !request.isTargetDurationZeroOrLess() &&
-                request.isNextBlockTarget();
+        return request.getDesiredConfidence().isEmpty()
+                && !request.isTargetDurationZeroOrLess()
+                && request.isNextBlockTarget();
     }
 
     @Override

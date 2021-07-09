@@ -11,7 +11,7 @@ import java.util.Optional;
 @Value
 @Builder
 public class SimpleBalance implements Balance {
-    private static SimpleBalance ZERO = SimpleBalance.builder()
+    private static final SimpleBalance ZERO = SimpleBalance.builder()
             .confirmed(SimpleTxoValue.zero())
             .unconfirmed(SimpleTxoValue.zero())
             .unmatured(SimpleTxoValue.zero())
@@ -32,9 +32,9 @@ public class SimpleBalance implements Balance {
 
     @Override
     public TxoValue getTotal() {
-        return SimpleTxoValue.of(confirmed.getValue() +
-                unconfirmed.getValue() +
-                getUnmatured().getValue());
+        return SimpleTxoValue.of(confirmed.getValue()
+                + unconfirmed.getValue()
+                + getUnmatured().getValue());
     }
 
     @Override

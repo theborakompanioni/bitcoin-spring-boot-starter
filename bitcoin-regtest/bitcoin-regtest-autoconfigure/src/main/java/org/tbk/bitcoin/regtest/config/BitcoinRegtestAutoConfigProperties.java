@@ -14,7 +14,7 @@ import org.springframework.validation.Validator;
 public class BitcoinRegtestAutoConfigProperties implements Validator {
 
     /**
-     * Whether the autoconfig should be enabled
+     * Whether the autoconfig should be enabled.
      */
     private boolean enabled;
 

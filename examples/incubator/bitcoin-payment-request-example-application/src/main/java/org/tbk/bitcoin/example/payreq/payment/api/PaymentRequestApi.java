@@ -48,16 +48,16 @@ public class PaymentRequestApi {
                 .pathSegment("qrcode")
                 .build();
 
-        String template = "<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\" />\n" +
-                "    <title></title>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "<img src=\"%s\" alt=\"%s\" />\n" +
-                "</body>\n" +
-                "</html>";
+        String template = "<!DOCTYPE html>\n"
+                + "<html lang=\"en\">\n"
+                + "<head>\n"
+                + "    <meta charset=\"UTF-8\" />\n"
+                + "    <title></title>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "<img src=\"%s\" alt=\"%s\" />\n"
+                + "</body>\n"
+                + "</html>";
 
         String html = String.format(template, qrCodeImageUri.toUriString(), paymentUrl);
 

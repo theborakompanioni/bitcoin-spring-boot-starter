@@ -21,26 +21,25 @@ public class LndJsonRpcClientAutoConfigProperties implements Validator {
     }
 
     /**
-     * Whether the client should be enabled
+     * Whether the client should be enabled.
      */
     private boolean enabled;
 
     private Network network;
 
     /**
-     * IP address or hostname including http:// or https://
-     * where lnd daemon is reachable
+     * IP address or hostname including http:// or https:// where lnd daemon is reachable.
      * e.g. http://localhost, https://192.168.0.2, etc.
      */
     private String rpchost;
 
     /**
-     * Port where lnd daemon is listening
+     * Port where lnd daemon is listening.
      */
     private int rpcport;
 
     /**
-     * Path to the cert file (e.g. /home/lnd/.lnd/tls.cert)
+     * Path to the cert file (e.g. /home/lnd/.lnd/tls.cert).
      */
     private String certFilePath;
 

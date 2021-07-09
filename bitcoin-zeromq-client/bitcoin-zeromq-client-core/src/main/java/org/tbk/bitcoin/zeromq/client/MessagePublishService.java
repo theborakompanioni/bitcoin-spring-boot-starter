@@ -49,12 +49,12 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
     }
 
     @Override
-    protected final String serviceName() {
+    protected String serviceName() {
         return String.format("%s-%s-%s", super.serviceName(), bitcoinMessagePublisher.getTopicName(), serviceId);
     }
 
     @Override
-    protected final void startUp() {
+    protected void startUp() {
         log.info("starting..");
 
         this.subscription = bitcoinMessagePublisher.create()
@@ -65,7 +65,7 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
     }
 
     @Override
-    protected final void shutDown() {
+    protected void shutDown() {
         log.info("terminating..");
 
         this.subscription.dispose();

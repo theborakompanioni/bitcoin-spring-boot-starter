@@ -1,7 +1,6 @@
 package org.tbk.bitcoin.regtest.config;
 
 import com.msgilligan.bitcoinj.rpc.BitcoinExtendedClient;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -10,6 +9,7 @@ import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfiguration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BitcoinRegtestAutoConfigurationTest {
 
@@ -48,12 +48,7 @@ public class BitcoinRegtestAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinRegtestClient"), is(false));
-                    try {
-                        context.getBean(BitcoinExtendedClient.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoinExtendedClient.class));
                 });
     }
 }

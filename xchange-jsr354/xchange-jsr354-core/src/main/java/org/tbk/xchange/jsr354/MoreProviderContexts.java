@@ -15,8 +15,8 @@ public final class MoreProviderContexts {
 
     /**
      * A factory method creating a simple provider context.
-     * <p>
-     * This method is primarily intended for internal usage.
+     *
+     * <p>This method is primarily intended for internal usage.
      * Consider building your own context with {@link ProviderContextBuilder}.
      *
      * @param exchange the exchange to build the context from

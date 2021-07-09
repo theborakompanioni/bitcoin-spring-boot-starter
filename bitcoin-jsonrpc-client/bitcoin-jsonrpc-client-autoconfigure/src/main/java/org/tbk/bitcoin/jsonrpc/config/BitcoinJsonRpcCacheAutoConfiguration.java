@@ -116,12 +116,12 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     })
     @ConditionalOnMissingBean(CacheFacade.class)
     public CacheFacade bitcoinJsonRpcCacheFacade(TransactionCache transactionCache,
-                                                 RawTransactionInfoCache RawTransactionInfoCache,
+                                                 RawTransactionInfoCache rawTransactionInfoCache,
                                                  BlockCache blockCache,
                                                  BlockInfoCache blockInfoCache) {
         return SimpleCacheFacade.builder()
                 .transactionCache(transactionCache)
-                .rawTransactionInfoCache(RawTransactionInfoCache)
+                .rawTransactionInfoCache(rawTransactionInfoCache)
                 .blockCache(blockCache)
                 .blockInfoCache(blockInfoCache)
                 .build();

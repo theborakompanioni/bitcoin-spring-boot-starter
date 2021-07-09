@@ -10,7 +10,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;
 
 public final class CachingBitgoFeeApiClient implements BitgoFeeApiClient {
-    private final static CacheBuilderSpec defaultResponseCacheBuilderSpec = CacheBuilderSpec.parse("");
+    private static final CacheBuilderSpec defaultResponseCacheBuilderSpec = CacheBuilderSpec.parse("");
 
     private final BitgoFeeApiClient client;
 

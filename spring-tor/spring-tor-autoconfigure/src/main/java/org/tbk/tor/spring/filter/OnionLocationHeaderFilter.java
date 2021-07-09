@@ -16,7 +16,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class OnionLocationHeaderFilter extends OncePerRequestFilter {
+public final class OnionLocationHeaderFilter extends OncePerRequestFilter {
     private static final String HEADER_NAME = "Onion-Location";
 
     public static OnionLocationHeaderFilter noop() {
@@ -30,7 +30,7 @@ public class OnionLocationHeaderFilter extends OncePerRequestFilter {
     private final HiddenServiceDefinition hiddenService;
 
     private final boolean enabled;
-    private boolean allowOnLocalhostWithHttp = false;
+    private boolean allowOnLocalhostWithHttp;
 
     private OnionLocationHeaderFilter(HiddenServiceDefinition hiddenService) {
         this.hiddenService = requireNonNull(hiddenService);
@@ -44,23 +44,17 @@ public class OnionLocationHeaderFilter extends OncePerRequestFilter {
 
     /**
      * For the header to be valid the following conditions need to be fulfilled:
-     * - The Onion-Location value must be a valid URL with http: or https: protocol and a .onion hostname.
+     * - The Onion-Location value must be a valid URL with "http:" or "https:" protocol and a .onion hostname.
      * - The webpage defining the Onion-Location header must be served over HTTPS.
      * - The webpage defining the Onion-Location header must not be an onion site.
-     * <p>
-     * See specification on https://gitweb.torproject.org/tor-browser-spec.git/tree/proposals/100-onion-location-header.txt
+     *
+     * <p>See <a href="https://gitweb.torproject.org/tor-browser-spec.git/tree/proposals/100-onion-location-header.txt">specification on torproject.org</a>
      *
      * <p><strong>Note:</strong> This filter do not extract {@code "Forwarded"} and
      * {@code "X-Forwarded-*"} headers that specify the client-originated address.
      * Please, use {@link org.springframework.web.filter.ForwardedHeaderFilter},
      * or similar from the underlying server, to extract and use such headers,
      * or to discard them.
-     *
-     * @param request
-     * @param response
-     * @param filterChain
-     * @throws ServletException
-     * @throws IOException
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -91,8 +85,8 @@ public class OnionLocationHeaderFilter extends OncePerRequestFilter {
         int virtualPort = hiddenService.getVirtualPort();
 
         String scheme = request.getScheme();
-        boolean addPort = ("http".equals(scheme) && virtualPort != 80) ||
-                ("https".equals(scheme) && virtualPort != 443);
+        boolean addPort = ("http".equals(scheme) && virtualPort != 80)
+                || ("https".equals(scheme) && virtualPort != 443);
 
         String onionUrl = ServletUriComponentsBuilder.fromRequestUri(request)
                 .host(virtualHost)
@@ -107,13 +101,13 @@ public class OnionLocationHeaderFilter extends OncePerRequestFilter {
     private boolean supportsAddingOnionLocationHeader(HttpServletRequest request, HttpServletResponse response) {
         boolean hasOnionLocationHeader = !response.getHeaders(HEADER_NAME).isEmpty();
         boolean isVirtualHostnameAvailable = hiddenService.getVirtualHost().isPresent();
-        boolean isAllowedOnLocalhostWithHttp = this.allowOnLocalhostWithHttp &&
-                ("localhost".equals(request.getServerName()) ||
-                        "127.0.0.1".equals(request.getServerName()));
+        boolean isAllowedOnLocalhostWithHttp = this.allowOnLocalhostWithHttp
+                && ("localhost".equals(request.getServerName())
+                || "127.0.0.1".equals(request.getServerName()));
         boolean isSecureRequest = request.isSecure() || isAllowedOnLocalhostWithHttp;
-        boolean isSupportedMethod = HttpMethod.GET.matches(request.getMethod()) ||
-                HttpMethod.HEAD.matches(request.getMethod()) ||
-                HttpMethod.OPTIONS.matches(request.getMethod());
+        boolean isSupportedMethod = HttpMethod.GET.matches(request.getMethod())
+                || HttpMethod.HEAD.matches(request.getMethod())
+                || HttpMethod.OPTIONS.matches(request.getMethod());
 
         boolean isServedByNonOnionSite = Optional.of(request.getServerName())
                 .map(it -> !it.endsWith(".onion"))
@@ -122,11 +116,11 @@ public class OnionLocationHeaderFilter extends OncePerRequestFilter {
                     return false;
                 });
 
-        return !hasOnionLocationHeader &&
-                isSupportedMethod &&
-                isVirtualHostnameAvailable &&
-                isSecureRequest &&
-                isServedByNonOnionSite;
+        return !hasOnionLocationHeader
+                && isSupportedMethod
+                && isVirtualHostnameAvailable
+                && isSecureRequest
+                && isServedByNonOnionSite;
     }
 
     public boolean isAllowOnLocalhostWithHttp() {

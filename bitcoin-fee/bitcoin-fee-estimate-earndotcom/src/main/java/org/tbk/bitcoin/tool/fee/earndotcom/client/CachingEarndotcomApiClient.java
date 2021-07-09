@@ -10,10 +10,10 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;
 
 public final class CachingEarndotcomApiClient implements EarndotcomApiClient {
-    private final static String SINGLE_CACHE_KEY_VALUE = "*";
+    private static final String SINGLE_CACHE_KEY_VALUE = "*";
 
-    private final static CacheBuilderSpec defaultFeesListCacheBuilderSpec = CacheBuilderSpec.parse("");
-    private final static CacheBuilderSpec defaultFeesRecommendedCacheBuilderSpec = CacheBuilderSpec.parse("");
+    private static final CacheBuilderSpec defaultFeesListCacheBuilderSpec = CacheBuilderSpec.parse("");
+    private static final CacheBuilderSpec defaultFeesRecommendedCacheBuilderSpec = CacheBuilderSpec.parse("");
 
     private final EarndotcomApiClient client;
 

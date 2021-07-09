@@ -7,7 +7,6 @@ import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
-import org.springframework.util.Assert;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
 import javax.money.CurrencyUnit;
@@ -19,6 +18,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
+
+import static com.google.gdata.util.common.base.Preconditions.checkArgument;
 
 /**
  * Baseclass for payment implementations.
@@ -52,7 +53,7 @@ public abstract class PaymentRequest
      * @param order must not be {@literal null}.
      */
     protected PaymentRequest(Order order) {
-        Assert.notNull(order, "Order must not be null");
+        checkArgument(order != null, "Order must not be null");
 
         this.id = PaymentRequestId.create();
 

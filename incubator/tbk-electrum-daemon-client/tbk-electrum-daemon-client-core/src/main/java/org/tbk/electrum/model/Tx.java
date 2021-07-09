@@ -16,7 +16,7 @@ public interface Tx {
         int getOutputIndex();
 
         /**
-         * Some electrum rpc responses can contain an address of an input
+         * Some electrum rpc responses can contain an address of an input.
          */
         Optional<String> getAddress();
 
@@ -35,7 +35,7 @@ public interface Tx {
         String getLockingScript();
 
         /**
-         * Some electrum rpc responses can contain an address of an output
+         * Some electrum rpc responses can contain an address of an output.
          */
         Optional<String> getAddress();
     }

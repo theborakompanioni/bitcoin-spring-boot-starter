@@ -11,12 +11,12 @@ public interface ContainerProperties {
 
     /**
      * a list of reserved commands
-     * <p>
-     * some commands must have predefined values during the bootstrapping of the container.
-     * <p>
-     * these commands should be disallowed to be specified by a user.
-     * <p>
-     * this behaviour is subject to change. i do not like it.
+     *
+     * <p>some commands must have predefined values during the bootstrapping of the container.
+     *
+     * <p>these commands should be disallowed to be specified by a user.
+     *
+     * <p>this behaviour is subject to change. i do not like it.
      */
     @Beta
     default List<String> getReservedCommands() {
@@ -29,7 +29,7 @@ public interface ContainerProperties {
     }
 
     /**
-     * Whether the autoconfiguration should be enabled
+     * Whether the autoconfiguration should be enabled.
      */
     boolean isEnabled();
 

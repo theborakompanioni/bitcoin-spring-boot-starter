@@ -1,5 +1,6 @@
 package org.tbk.electrum.config;
 
+import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
@@ -7,8 +8,8 @@ import org.springframework.validation.Validator;
 
 /**
  * Properties are named according to electrum config file.
- * <p>
- * e.g.
+ *
+ * <p>e.g.
  * {
  * "enabled": true,
  * "rpchost": "0.0.0.0",
@@ -22,29 +23,29 @@ import org.springframework.validation.Validator;
 public class ElectrumDaemonJsonrpcClientProperties implements Validator {
 
     /**
-     * Whether a client should be enabled
+     * Whether a client should be enabled.
      */
     private boolean enabled;
 
     /**
      * IP address or hostname including http:// or https://
      * where electrum daemon is reachable
-     * e.g. http://localhost, https://192.168.0.2, etc.
+     * e.g. "http://localhost", "https://192.168.0.2", etc.
      */
     private String rpchost;
 
     /**
-     * Port where electrum daemon is listening
+     * Port where electrum daemon is listening.
      */
     private int rpcport;
 
     /**
-     * RPC username
+     * RPC username.
      */
     private String rpcuser;
 
     /**
-     * RPC password
+     * RPC password.
      */
     private String rpcpassword;
 
@@ -55,6 +56,18 @@ public class ElectrumDaemonJsonrpcClientProperties implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        ElectrumDaemonJsonrpcClientProperties properties = (ElectrumDaemonJsonrpcClientProperties) target;
 
+        String host = properties.getRpchost();
+        if (!Strings.isNullOrEmpty(host)) {
+            boolean isHttp = host.startsWith("http://");
+            boolean isHttps = host.startsWith("https://");
+
+            boolean validProtocol = isHttp || isHttps;
+            if (!validProtocol) {
+                String errorMessage = String.format("'rpchost' must either start with 'http://' or 'https://' - invalid value: %s", host);
+                errors.rejectValue("rpchost", "rpchost.invalid", errorMessage);
+            }
+        }
     }
 }

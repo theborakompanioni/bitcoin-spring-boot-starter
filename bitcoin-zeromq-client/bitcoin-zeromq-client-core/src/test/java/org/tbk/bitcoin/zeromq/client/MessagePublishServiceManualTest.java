@@ -10,11 +10,11 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * e.g. connect to your node:
  * ssh my_node.local -vvv -N -L 28332:localhost:28332 -L 28333:localhost:28333
- * <p>
- * Example Bitcoin Core settings:
- * # Enable publishing of raw block hex to <address>.
+ *
+ * <p>Example Bitcoin Core settings:
+ * # Enable publishing of raw block hex on address.
  * zmqpubrawblock=tcp://127.0.0.1:28332
- * # Enable publishing of raw transaction hex to <address>.
+ * # Enable publishing of raw transaction hex on address.
  * zmqpubrawtx=tcp://127.0.0.1:28333
  */
 @Slf4j

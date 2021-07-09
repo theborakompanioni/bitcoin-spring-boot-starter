@@ -52,8 +52,8 @@ public class CachingExchangeRateProvider extends AbstractRateProvider {
     }
 
     private boolean isRealtimeExplicitlyDemanded(ConversionQuery conversionQuery) {
-        return conversionQuery.getRateTypes().size() == 1 &&
-                conversionQuery.getRateTypes().contains(RateType.REALTIME);
+        return conversionQuery.getRateTypes().size() == 1
+                && conversionQuery.getRateTypes().contains(RateType.REALTIME);
     }
 
     @Override

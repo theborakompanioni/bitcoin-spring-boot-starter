@@ -87,7 +87,7 @@ public class LndContainerAutoConfiguration {
      * Build command list.
      * e.g. see https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
      *
-     * @return
+     * @return a list fo commands for the container.
      */
     private List<String> buildCommandList() {
 

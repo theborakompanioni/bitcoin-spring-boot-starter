@@ -10,19 +10,18 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Represents a history call which includes a short summary
- * and transactions.
- * <p>
- * Can also have empty fields:
+ * Represents a history call which includes a short summary and transactions.
+ *
+ * <p>Can also have empty fields:
  * e.g.
  * {
  * "summary": {},
  * "transactions": []
  * }
- * <p>
- * Example response with data from electrum:
- * <p>
- * {
+ *
+ * <p>Example response with data from electrum:
+ *
+ * <p>{
  * "summary": {
  * "end_balance": "0.",
  * "end_date": null,

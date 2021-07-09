@@ -45,8 +45,8 @@ public class MoquetteBrokerAutoConfiguration {
 
         typesafeMoquettePropertyNames.stream()
                 .filter(moquetteProperties::containsKey)
-                .forEach(it -> log.warn("Moqette config key '{}' will be overwritten with its type-safe alternative. " +
-                        "To get rid of this message remove this key from your config.", it));
+                .forEach(it -> log.warn("Moquette config key '{}' will be overwritten with its type-safe alternative. "
+                        + "To get rid of this message remove this key from your config.", it));
 
         MemoryConfig config = new MemoryConfig(moquetteProperties);
         config.setProperty(BrokerConstants.HOST_PROPERTY_NAME, this.properties.getHost());

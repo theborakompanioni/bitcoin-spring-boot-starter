@@ -108,8 +108,8 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
      * Extracts the confidence value from the request and maps it to
      * a value the api understands. If it is higher than the highest supported value,
      * then this implementation wont simply fail, but use the highest default value.
-     * <p>
-     * This may or may not what the user wants or expect and is subject to change.
+     *
+     * <p>This may or may not what the user wants or expect and is subject to change.
      * As this api provides values with up to 90% confidence, it might be safe to do so.
      */
     private Optional<Confidence> toConfidenceType(FeeRecommendationRequest request) {

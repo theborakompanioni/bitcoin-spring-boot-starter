@@ -20,8 +20,9 @@ public enum Network {
                 return TestNet3Params.get();
             case regtest:
                 return RegTestParams.get();
+            default:
+                throw new IllegalArgumentException();
         }
-        throw new IllegalArgumentException();
     }
 
     public static Network fromNetworkParameters(NetworkParameters params) {

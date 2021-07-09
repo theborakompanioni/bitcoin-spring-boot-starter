@@ -1,7 +1,6 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.base.Throwables;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
@@ -10,6 +9,8 @@ import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class BitcoindContainerAutoConfigurationTest {
 
@@ -23,12 +24,7 @@ public class BitcoindContainerAutoConfigurationTest {
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoindContainer"), is(false));
-                    try {
-                        context.getBean(BitcoindContainer.class);
-                        Assertions.fail("Should have thrown exception");
-                    } catch (NoSuchBeanDefinitionException e) {
-                        // continue
-                    }
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoindContainer.class));
                 });
     }
 
@@ -83,9 +79,8 @@ public class BitcoindContainerAutoConfigurationTest {
                         context.start();
                         // triggers creation of container
                         BitcoindContainer<?> ignoredOnPurpose = context.getBean(BitcoindContainer.class);
-                        Assertions.fail("Should have failed to start application context");
+                        fail("Should have failed to start application context");
                     } catch (Exception e) {
-
                         Throwable rootCause = Throwables.getRootCause(e);
                         assertThat(rootCause, is(instanceOf(BindValidationException.class)));
 

@@ -1,6 +1,5 @@
 package org.tbk.spring.testcontainer.tor.config;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -10,6 +9,7 @@ import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TorContainerAutoConfigurationTest {
 
@@ -23,12 +23,7 @@ public class TorContainerAutoConfigurationTest {
                 "org.tbk.spring.testcontainer.tor.enabled=false"
         ).run(context -> {
             assertThat(context.containsBean("torContainer"), is(false));
-            try {
-                context.getBean(TorContainer.class);
-                Assertions.fail("Should have thrown exception");
-            } catch (NoSuchBeanDefinitionException e) {
-                // continue
-            }
+            assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(TorContainer.class));
         });
     }
 

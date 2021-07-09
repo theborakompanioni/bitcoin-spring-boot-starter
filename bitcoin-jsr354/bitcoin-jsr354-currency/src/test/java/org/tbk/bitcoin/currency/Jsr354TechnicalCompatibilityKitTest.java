@@ -37,11 +37,11 @@ public class Jsr354TechnicalCompatibilityKitTest {
     }
 
     @Test
-    void runTCK() {
+    void runTck() {
         TCKRunner.main();
     }
 
-    public static class BitcoinJSR354TestConfiguration implements JSR354TestConfiguration {
+    public static class BitcoinJsr354TestConfiguration implements JSR354TestConfiguration {
         @Override
         public Collection<Class> getAmountClasses() {
             return ImmutableList.of(Money.class);

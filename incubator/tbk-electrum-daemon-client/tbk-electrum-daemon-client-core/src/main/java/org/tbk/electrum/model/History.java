@@ -32,13 +32,13 @@ public interface History {
 
         /**
          * The wallet balance after the transaction takes effect.
-         * <p>
-         * This can also be negative!
+         *
+         * <p>This can also be negative!
          * If a utxo is spent in the same block and electrum sees the outgoing before
          * the incoming transaction first, then the returned `balance` of the wallet
          * might - for a very short time - be below zero!
-         * <p>
-         * e.g.:
+         *
+         * <p>e.g.:
          * 1. "SimpleHistory.SimpleTransaction(
          * balance=SimpleTxoValue(value=-100000),
          * value=SimpleTxoValue(value=-100000),
@@ -54,8 +54,8 @@ public interface History {
          * height=Optional[583138],
          * incoming=true, ...
          * )"
-         * <p>
-         * NOTE: This seems to be reordered once electrum has fetched all timestamps.
+         *
+         * <p>NOTE: This seems to be reordered once electrum has fetched all timestamps.
          * So, this should only happen, when electrum needs to do some syncing.
          * After all transactions have timestamps this effect seems to go away.
          *
@@ -73,11 +73,11 @@ public interface History {
 
         /**
          * Returns the timestamp when this transaction has been first seen on the network.
-         * <p>
-         * TODO: investigate why this returns null sometimes..
+         *
+         * <p>TODO: investigate why this returns null sometimes..
          * (same with {@link #getTxPosInBlock()}
-         * <p>
-         * Electrum seems to return transactions even when it does not
+         *
+         * <p>Electrum seems to return transactions even when it does not
          * have the timestamp available - it will just return null.
          * So the timestamp may be missing if the daemon is not fully up-to-date:
          * Once electrum ran for a certain amount of time, timestamp
@@ -112,7 +112,7 @@ public interface History {
         TxoValue getValue();
 
         /**
-         * Some electrum rpc responses can contain an address of an output
+         * Some electrum rpc responses can contain an address of an output.
          */
         Optional<String> getAddress();
     }

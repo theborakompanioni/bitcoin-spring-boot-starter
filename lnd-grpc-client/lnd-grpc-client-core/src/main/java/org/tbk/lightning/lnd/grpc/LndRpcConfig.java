@@ -6,14 +6,13 @@ import org.lightningj.lnd.wrapper.MacaroonContext;
 public interface LndRpcConfig {
 
     /**
-     * IP address or hostname including http:// or https://
-     * where lnd daemon is reachable
+     * IP address or hostname including http:// or https:// where lnd daemon is reachable.
      * e.g. https://localhost:10001
      */
     String getRpchost();
 
     /**
-     * Port where lnd daemon is listening
+     * Port where lnd daemon is listening.
      */
     Integer getRpcport();
 

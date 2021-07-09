@@ -2,7 +2,6 @@ package org.tbk.spring.testcontainer.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lombok.Data;
 
 import java.util.Collections;
 import java.util.List;

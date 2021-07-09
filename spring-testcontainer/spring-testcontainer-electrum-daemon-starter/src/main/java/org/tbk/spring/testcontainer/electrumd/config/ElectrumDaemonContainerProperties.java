@@ -66,10 +66,9 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
 
     /**
      * Validate the container properties.
-     * <p>
-     * Keep in mind that Testcontainers splits commands on whitespaces.
+     *
+     * <p>Keep in mind that Testcontainers splits commands on whitespaces.
      * This means, every property that is part of a command, must not contain whitespaces.
-     * <p>
      * {@inheritDoc}
      */
     @Override

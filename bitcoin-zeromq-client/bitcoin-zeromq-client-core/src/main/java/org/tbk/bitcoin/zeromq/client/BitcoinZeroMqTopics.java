@@ -5,7 +5,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * zmqpubhashtx : Publishes transaction hashes
+ * Bitcoin ZeroMQ topic names.
+ *
+ * <p>zmqpubhashtx : Publishes transaction hashes
  * zmqpubhashblock : Publishes block hashes
  * zmqpubrawblock : Publishes raw block information
  * zmqpubrawtx : Publishes raw transaction information

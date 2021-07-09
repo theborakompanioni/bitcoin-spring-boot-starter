@@ -18,16 +18,45 @@
     <property name="severity" value="warning"/>
 
     <property name="fileExtensions" value="java, properties, xml"/>
+
     <!-- Excludes all 'module-info.java' files              -->
     <!-- See https://checkstyle.org/config_filefilters.html -->
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value="module\-info\.java$"/>
     </module>
+
     <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
     <module name="SuppressionFilter">
         <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
                   default="checkstyle-suppressions.xml"/>
         <property name="optional" value="true"/>
+    </module>
+
+    <!-- Suppress all checks in generated proto sources -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value="generated[\\/]source[\\/]proto[\\/]"/>
+        <property name="checks" value=".*"/>
+    </module>
+
+    <!-- Suppress false positives for spring autoconfig classes -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value="^.*AutoConfiguration\.java$"/>
+        <property name="checks" value="HideUtilityClassConstructor"/>
+    </module>
+
+    <!-- Suppress false positives for example application main classes -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value="^.*(Example|Test)Application\.java$"/>
+        <property name="checks" value="HideUtilityClassConstructor"/>
+    </module>
+
+    <!--
+        Suppress false positives for *CommandRunner classes in example apps.
+        These sometimes deliberately contain "System.out.println" statements.
+    -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value="^.*[\\/]example[\\/].*CommandRunner\.java$"/>
+        <property name="checks" value=".*"/>
     </module>
 
     <!-- Checks for whitespace                               -->
@@ -57,7 +86,7 @@
             <property name="allowByTailComment" value="true"/>
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
-        <module name="AvoidStarImport"/>
+        <!--module name="AvoidStarImport"/-->
         <module name="OneTopLevelClass"/>
         <module name="NoLineWrap">
             <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
@@ -169,6 +198,8 @@
         </module>
         <module name="TypeName">
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF"/>
+            <!-- allow programmatic flyway migration class names, e.g. 'V1__init_system' -->
+            <property name="format" value="^V\d+__[a-z0-9_]+$|^[A-Z][a-zA-Z0-9]*$"/>
             <message key="name.invalidPattern"
                      value="Type name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -242,12 +273,12 @@
         <module name="OverloadMethodsDeclarationOrder"/>
         <!-- Personally disagree with this one -->
         <!--        <module name="VariableDeclarationUsageDistance"/>-->
-        <module name="CustomImportOrder">
+        <!--module name="CustomImportOrder">
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="separateLineBetweenGroups" value="true"/>
             <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
             <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
-        </module>
+        </module-->
         <module name="MethodParamPad">
             <property name="tokens"
                       value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
@@ -268,9 +299,10 @@
         </module>
         <module name="OperatorWrap">
             <property name="option" value="NL"/>
+            <!-- no new lines forced on QUESTION token -->
             <property name="tokens"
                       value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
-                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, SL, SR, STAR, METHOD_REF "/>
         </module>
         <module name="AnnotationLocation">
             <property name="id" value="AnnotationLocationMostCases"/>
@@ -302,12 +334,12 @@
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF"/>
         </module>
-        <module name="MissingJavadocMethod">
+        <!--module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
             <property name="minLineCount" value="2"/>
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF"/>
-        </module>
+        </module-->
         <module name="MethodName">
             <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <message key="name.invalidPattern"
@@ -332,20 +364,21 @@
         <module name="RedundantModifier"/>
         <module name="MissingDeprecated"/>
         <module name="InnerAssignment"/>
-        <module name="ConstantName">
+        <!-- allow lowercase constant names
+        module name="ConstantName">
             <property name="format"
                       value="^log?$|^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
-        </module>
+        </module-->
         <module name="EqualsHashCode"/>
         <module name="ExplicitInitialization"/>
         <module name="AvoidNestedBlocks"/>
         <module name="StaticVariableName"/>
-        <module name="MissingJavadocType">
+        <!--module name="MissingJavadocType">
             <property name="scope" value="package"/>
         </module>
         <module name="JavadocType">
             <property name="authorFormat" value=".+"/>
-        </module>
+        </module-->
 
         <!-- Regexp for test files (note assumes checkstyle runs on test files!) -->
         <!-- Ensure only JUnit 5 is used -->
@@ -357,7 +390,8 @@
         <!-- Ensure only Google Truth is used. Exception made for JUnit 5 assertThrows, assertAll, and fail.
         TODO remove assertThrows exclusion when Truth supports it
         -->
-        <module name="RegexpSinglelineJava">
+        <!-- We do not want to be forced to use com.google.truth.Truth -->
+        <!--module name="RegexpSinglelineJava">
             <property name="format"
                       value="import.*(?&lt;!com\.google\.common\.truth\.Truth8?\.)(A|a)ssert(?!.*(Throws|DoesNotThrow|All|fail))"/>
             <property name="ignoreComments" value="true"/>
@@ -368,14 +402,15 @@
                       value="(?&lt;!import static.*)(Truth|Assertions|Mockito|ArgumentMatchers)"/>
             <property name="ignoreComments" value="true"/>
             <property name="message" value="Use a static import."/>
-        </module>
+        </module-->
 
         <!-- Regexp for JavaDoc -->
         <!-- Ensure links in Javadocs are tagged correctly -->
-        <module name="RegexpSinglelineJava">
+        <!-- disabled because of too many false positives -->
+        <!--module name="RegexpSinglelineJava">
             <property name="format" value="^.*\*(?!.*(href|src)=).*?http.*$"/>
             <property name="message" value="Link in Javadoc must be tagged '&lt;a href=...'."/>
-        </module>
+        </module -->
 
         <!-- General Regexp -->
         <!-- Ensure no printing to console

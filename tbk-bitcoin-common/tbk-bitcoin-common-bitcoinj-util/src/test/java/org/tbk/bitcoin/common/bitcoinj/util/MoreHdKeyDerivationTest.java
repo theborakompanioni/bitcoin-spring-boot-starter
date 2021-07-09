@@ -7,8 +7,6 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -16,6 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MoreHdKeyDerivationTest {
 
@@ -26,10 +25,6 @@ public class MoreHdKeyDerivationTest {
 
     private static final String xpriv = "xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu";
     private static final String xpub = "xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8";
-
-    @BeforeEach
-    public void setup() {
-    }
 
     @Test
     public void itShouldCreateMainnetBech32AddressFromMnemonic() {
@@ -108,12 +103,10 @@ public class MoreHdKeyDerivationTest {
         String zpubBip84 = "zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs";
 
         DeterministicKey zpubBip84Key = DeterministicKey.deserializeB58(zpubBip84, network);
-        try {
-            DeterministicKey ignoredOnPurpose = MoreHdKeyDerivation.deriveChildKey(zpubBip84Key, "0H");
 
-            Assertions.fail("Should have thrown exception");
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("Hardened derivation is unsupported (0H)."));
-        }
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> MoreHdKeyDerivation.deriveChildKey(zpubBip84Key, "0H"));
+
+        assertThat(exception.getMessage(), is("Hardened derivation is unsupported (0H)."));
     }
 }

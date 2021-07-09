@@ -65,12 +65,12 @@ public class BitcoinJsonRpcMetricsConfiguration {
     @NonNullApi
     @NonNullFields
     public static class BitcoinJsonRpcClientMetrics implements MeterBinder {
-        private final static Function<Object, Optional<String>> tryParseString = (obj) -> Optional.ofNullable(obj)
+        private static final Function<Object, Optional<String>> tryParseString = (obj) -> Optional.ofNullable(obj)
                 .map(Object::toString);
-        private final static Function<Object, Optional<Double>> tryParseDouble = (obj) -> tryParseString.andThen(it -> it
+        private static final Function<Object, Optional<Double>> tryParseDouble = (obj) -> tryParseString.andThen(it -> it
                 .map(Doubles::tryParse))
                 .apply(obj);
-        private final static Function<Object, Optional<Long>> tryParseLong = (obj) -> tryParseString.andThen(it -> it
+        private static final Function<Object, Optional<Long>> tryParseLong = (obj) -> tryParseString.andThen(it -> it
                 .map(Longs::tryParse))
                 .apply(obj);
 
@@ -131,7 +131,7 @@ public class BitcoinJsonRpcMetricsConfiguration {
 
         /**
          * Returns a map containing mempool info. e.g.
-         *  {
+         * {
          *   "size": xxxxx,               (numeric) Current tx count
          *   "bytes": xxxxx,              (numeric) Sum of all virtual transaction sizes as defined in BIP 141. Differs from actual serialized size because witness data is discounted
          *   "usage": xxxxx,              (numeric) Total memory usage for the mempool

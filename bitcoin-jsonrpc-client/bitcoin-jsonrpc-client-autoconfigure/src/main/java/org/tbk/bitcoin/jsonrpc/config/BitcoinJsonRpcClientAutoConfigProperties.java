@@ -31,7 +31,7 @@ public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
     }
 
     /**
-     * Whether the client should be enabled
+     * Whether the client should be enabled.
      */
     private boolean enabled;
 
@@ -45,17 +45,17 @@ public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
     private String rpchost;
 
     /**
-     * Port where bitcoin daemon is listening
+     * Port where bitcoin daemon is listening.
      */
     private int rpcport;
 
     /**
-     * RPC username
+     * RPC username.
      */
     private String rpcuser;
 
     /**
-     * RPC password
+     * RPC password.
      */
     private String rpcpassword;
 

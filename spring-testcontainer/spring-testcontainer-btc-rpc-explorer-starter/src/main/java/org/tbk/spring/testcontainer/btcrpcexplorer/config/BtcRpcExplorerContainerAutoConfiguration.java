@@ -58,7 +58,6 @@ public class BtcRpcExplorerContainerAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
-
     @Bean("btcRpcExplorerContainerWaitStrategy")
     @ConditionalOnMissingBean(name = "btcRpcExplorerContainerWaitStrategy")
     public WaitStrategy btcRpcExplorerContainerWaitStrategy() {
@@ -116,7 +115,6 @@ public class BtcRpcExplorerContainerAutoConfiguration {
         return createStartedRtcRpcExplorerContainer(waitStrategy, environment);
     }
 
-
     @Bean(name = "btcRpcExplorerContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(BtcRpcExplorerContainer.class)
     public BtcRpcExplorerContainer<?> btcRpcExplorerContainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy) {
@@ -145,7 +143,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
         return createStartedRtcRpcExplorerContainer(waitStrategy, environment);
     }
 
-    public BtcRpcExplorerContainer<?> createStartedRtcRpcExplorerContainer(
+    private BtcRpcExplorerContainer<?> createStartedRtcRpcExplorerContainer(
             WaitStrategy waitStrategy, Map<String, String> environment
     ) {
         List<String> commands = Collections.emptyList();
