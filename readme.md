@@ -1,4 +1,4 @@
-[![Build](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/main.yml/badge.svg)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/main.yml)
+[![Build](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/build.yml/badge.svg)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/build.yml)
 [![Download](https://jitpack.io/v/theborakompanioni/bitcoin-spring-boot-starter.svg)](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter)
 [![License](https://img.shields.io/github/license/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE)
 
@@ -288,6 +288,26 @@ Gradle is used for checksum and signature verification of dependencies.
 
 See [Gradle Userguide: Verifying dependencies](https://docs.gradle.org/current/userguide/dependency_verification.html)
 for more information.
+
+
+### Checkstyle
+[Checkstyle](https://github.com/checkstyle/checkstyle) with adapted [google_checks](https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml)
+is used for checking Java source code for adherence to a Code Standard.
+
+```shell script
+# check for code standard violations with checkstyle
+./gradlew checkstyleMain
+```
+
+
+### SpotBugs
+[SpotBugs](https://spotbugs.github.io/) is used for static code analysis.
+
+```shell script
+# invoke static code analysis with spotbugs
+./gradlew spotbugsMain
+```
+
 
 ## Contributing
 All contributions and ideas are always welcome. For any question, bug or feature request, 
