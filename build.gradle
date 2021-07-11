@@ -1,7 +1,7 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
+import io.franzbecker.gradle.lombok.task.DelombokTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import io.franzbecker.gradle.lombok.task.DelombokTask
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
     ext {
@@ -316,9 +316,16 @@ subprojects {
         toolVersion = '8.44'
         configFile = rootProject.file('./checkstyle.xml')
         maxErrors = 0
-        maxWarnings = 0
-        ignoreFailures = true // TODO: change to false if all issues are solved
+        ignoreFailures = false
+        reportsDir = rootProject.file("$rootProject.buildDir/reports/checkstyle/$project.name")
     }
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+
 
     tasks.withType(AbstractArchiveTask) {
         // activate reproducible archives
