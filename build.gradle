@@ -149,7 +149,7 @@ subprojects {
     dependencies {
         compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
         testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
-        spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
+        spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:${findsecbugsPluginVersion}"
 
         implementation 'org.slf4j:slf4j-api'
         implementation "com.google.guava:guava:${guavaVersion}"
@@ -313,7 +313,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = '8.44'
+        toolVersion = "${checkstyleVersion}"
         configFile = rootProject.file('./checkstyle.xml')
         maxErrors = 0
         ignoreFailures = false
@@ -325,7 +325,6 @@ subprojects {
             html.enabled = true
         }
     }
-
 
     tasks.withType(AbstractArchiveTask) {
         // activate reproducible archives
