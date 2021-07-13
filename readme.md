@@ -333,6 +333,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
+- jMolecules (GitHub): https://github.com/xmolecules/jmolecules
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
 - Tor: https://www.torproject.org/
 - Protocol Buffers: https://developers.google.com/protocol-buffers
