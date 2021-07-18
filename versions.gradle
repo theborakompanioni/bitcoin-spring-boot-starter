@@ -19,7 +19,7 @@ ext {
     moquetteVersion = '0.12.1'
     pahoMqttClientVersion = '1.2.5'
     sqliteVersion = '3.34.0'
-    lombokVersion = '1.18.16'
+    lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'
     mockserverVersion = '5.11.2'
     jUnitVersion = '5.7.1'
