@@ -1,0 +1,7 @@
+# see https://jitpack.io/docs/BUILDING/#guide-to-publishing-libraries
+jdk:
+  - openjdk11
+install:
+  - echo "Running a custom install command"
+  # exclude spotbugs and checkstyle tasks for faster builds
+  - ./gradlew clean build publishToMavenLocal -x test -x checkstyleMain -x checkstyleTest -x checkstyleIntegTest -x spotbugsMain -x spotbugsTest -x spotbugsIntegTest
