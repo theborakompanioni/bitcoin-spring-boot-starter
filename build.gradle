@@ -5,7 +5,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
     ext {
-        springBootGradlePluginVersion = '2.5.2'
+        springBootGradlePluginVersion = '2.5.3'
         protobufGradleVersion = '0.8.16'
         jmoleculesBomVersion = '2021.0.2'
         // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
