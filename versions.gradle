@@ -18,6 +18,8 @@ ext {
     jacksonDatatypeMoneyVersion = '1.2.2'
     moquetteVersion = '0.12.1'
     pahoMqttClientVersion = '1.2.5'
+    zxingVersion = '3.4.1'
+    acinqBitcoinLibVerson = '0.19'
     sqliteVersion = '3.34.0'
     lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'

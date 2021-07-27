@@ -5,9 +5,9 @@ description = 'lnurl-auth example application package'
 dependencies {
     implementation project(':incubator:lnurl-lib:lnurl-simple')
 
-    implementation 'fr.acinq:bitcoin-lib_2.13:0.19'
-    implementation 'com.google.zxing:core:3.4.1'
-    implementation 'com.google.zxing:javase:3.4.1'
+    implementation "fr.acinq:bitcoin-lib_2.13:${acinqBitcoinLibVerson}"
+    implementation "com.google.zxing:core:${zxingVersion}"
+    implementation "com.google.zxing:javase:${zxingVersion}"
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
 
     implementation project(':spring-tor:spring-tor-starter')

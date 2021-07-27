@@ -10,8 +10,8 @@ byteBuddy {
 }
 
 dependencies {
-    implementation 'com.google.zxing:core:3.4.1'
-    implementation 'com.google.zxing:javase:3.4.1'
+    implementation "com.google.zxing:core:${zxingVersion}"
+    implementation "com.google.zxing:javase:${zxingVersion}"
 
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
