@@ -19,8 +19,8 @@ public interface LnUrlAuth {
         REGISTER("register"), // service will create a new account linked to user's linkingKey.
         LOGIN("login"), // service will login user to an existing account linked to user's linkingKey.
         LINK("link"), // service will link a user provided linkingKey to user's existing account (if account was not originally created using lnurl-auth).
-        AUTH("auth"),
-        ; // some stateless action which does not require logging in (or possibly even prior registration) will be granted.
+        AUTH("auth"), // some stateless action which does not require logging in (or possibly even prior registration) will be granted.
+        ;
 
         private final String value;
 
