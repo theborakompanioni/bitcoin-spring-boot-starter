@@ -9,10 +9,10 @@ import java.io.File;
 
 import static java.util.Objects.requireNonNull;
 
-public class NativeTorFactory implements TorFactory<NativeTor> {
+public final class NativeTorFactory implements TorFactory<NativeTor> {
 
     private final File workingDirectory;
-    private Torrc torrc;
+    private final Torrc torrc;
 
     public NativeTorFactory(File workingDirectory) {
         this(workingDirectory, null);
