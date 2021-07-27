@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+description = 'lnurl simple implementation package'
+
+dependencies {
+    api project(':incubator:lnurl-lib:lnurl-core')
+
+    implementation 'fr.acinq:bitcoin-lib_2.13:0.19'
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:javase:3.4.1'
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+}

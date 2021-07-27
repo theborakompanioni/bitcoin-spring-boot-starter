@@ -90,6 +90,9 @@ include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoin
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter'
 
+include 'incubator:lnurl-lib:lnurl-core'
+include 'incubator:lnurl-lib:lnurl-simple'
+
 include 'spring-tor:spring-tor-core'
 include 'spring-tor:spring-tor-hidden-service'
 include 'spring-tor:spring-tor-http'
@@ -104,3 +107,4 @@ include 'examples:incubator:bitcoin-duckdca-example-application'
 include 'examples:incubator:bitcoin-mzheravin-exchange-example-application'
 include 'examples:incubator:bitcoin-electrum-gateway-example-application'
 include 'examples:incubator:bitcoin-payment-request-example-application'
+include 'examples:incubator:lnurl-auth-example-application'

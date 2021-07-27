@@ -1,0 +1,21 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'lnurl-auth example application package'
+
+dependencies {
+    implementation project(':incubator:lnurl-lib:lnurl-simple')
+
+    implementation 'fr.acinq:bitcoin-lib_2.13:0.19'
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:javase:3.4.1'
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+
+    implementation project(':spring-tor:spring-tor-starter')
+
+    implementation 'io.projectreactor:reactor-core'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+}
