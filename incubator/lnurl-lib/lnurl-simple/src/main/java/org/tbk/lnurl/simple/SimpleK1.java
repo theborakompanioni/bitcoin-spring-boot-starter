@@ -1,6 +1,7 @@
 package org.tbk.lnurl.simple;
 
 import fr.acinq.secp256k1.Hex;
+import lombok.EqualsAndHashCode;
 import org.tbk.lnurl.K1;
 
 import java.security.SecureRandom;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class SimpleK1 implements K1 {
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -23,6 +25,7 @@ public final class SimpleK1 implements K1 {
         return new SimpleK1(Hex.decode(hex));
     }
 
+    @EqualsAndHashCode.Include
     private final byte[] data;
 
     SimpleK1(byte[] data) {

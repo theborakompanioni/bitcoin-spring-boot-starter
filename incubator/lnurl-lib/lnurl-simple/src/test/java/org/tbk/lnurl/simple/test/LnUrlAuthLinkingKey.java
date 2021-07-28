@@ -22,7 +22,7 @@ import static fr.acinq.bitcoin.DeterministicWallet.hardened;
 import static scala.collection.JavaConverters.asJava;
 import static scala.collection.JavaConverters.asScala;
 
-public class LnUrlAuthLinkingKey {
+class LnUrlAuthLinkingKey {
     // lnurl-auth base path: m/138'
     private static final KeyPath lnurlAuthKeyPathBase = new KeyPath(asScala(Lists.emptyList()).toSeq()).derive(hardened(138L));
 

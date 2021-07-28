@@ -28,10 +28,6 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
     K1 k1;
     Action action;
 
-    private SimpleLnUrlAuth(String baseUrl) {
-        this(baseUrl, SimpleK1.random());
-    }
-
     private SimpleLnUrlAuth(String baseUrl, K1 k1) {
         this(baseUrl, k1, null);
     }
@@ -45,6 +41,10 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
     // https://example.com?tag=login&k1=hex(32 bytes of random data)&action=login
     public static SimpleLnUrlAuth create(String url) {
         return new SimpleLnUrlAuth(url, SimpleK1.random());
+    }
+
+    public static SimpleLnUrlAuth create(String url, K1 k1) {
+        return new SimpleLnUrlAuth(url, k1);
     }
 
     public static SimpleLnUrlAuth from(LnUrl lnurl) {

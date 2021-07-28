@@ -1,7 +1,5 @@
 package org.tbk.lnurl.simple.test;
 
-import fr.acinq.bitcoin.ByteVector32;
-import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.DeterministicWallet;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
 import fr.acinq.bitcoin.DeterministicWallet.KeyPath;
