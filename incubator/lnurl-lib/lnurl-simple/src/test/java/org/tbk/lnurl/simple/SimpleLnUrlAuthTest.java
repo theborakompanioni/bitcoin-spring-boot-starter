@@ -15,11 +15,13 @@ class SimpleLnUrlAuthTest {
 
     @Test
     void create() {
-        String url = "http://example.onion";
+        URI url = URI.create("http://example.onion");
 
         SimpleLnUrlAuth lnUrlAuth = SimpleLnUrlAuth.create(url);
         LnUrl lnurlCreated = lnUrlAuth.toLnUrl();
 
+        assertThat(lnurlCreated.toUri().getScheme(), is(url.getScheme()));
+        assertThat(lnurlCreated.toUri().getHost(), is(url.getHost()));
         assertThat(lnurlCreated.toLnUrlString(), is(notNullValue()));
     }
 

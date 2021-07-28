@@ -24,26 +24,26 @@ import static java.util.Objects.requireNonNull;
 public class SimpleLnUrlAuth implements LnUrlAuth {
     public static final String TAG_PARAM_VALUE = "login";
 
-    String baseUrl;
+    URI baseUrl;
     K1 k1;
     Action action;
 
-    private SimpleLnUrlAuth(String baseUrl, K1 k1) {
+    private SimpleLnUrlAuth(URI baseUrl, K1 k1) {
         this(baseUrl, k1, null);
     }
 
-    private SimpleLnUrlAuth(String baseUrl, K1 k1, Action action) {
+    private SimpleLnUrlAuth(URI baseUrl, K1 k1, Action action) {
         this.baseUrl = requireNonNull(baseUrl);
         this.k1 = requireNonNull(k1);
         this.action = action;
     }
 
     // https://example.com?tag=login&k1=hex(32 bytes of random data)&action=login
-    public static SimpleLnUrlAuth create(String url) {
+    public static SimpleLnUrlAuth create(URI url) {
         return new SimpleLnUrlAuth(url, SimpleK1.random());
     }
 
-    public static SimpleLnUrlAuth create(String url, K1 k1) {
+    public static SimpleLnUrlAuth create(URI url, K1 k1) {
         return new SimpleLnUrlAuth(url, k1);
     }
 
@@ -83,7 +83,7 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
                 .map(Action::parse)
                 .findFirst();
 
-        return new SimpleLnUrlAuth(uri.toString(), SimpleK1.fromHexString(k1), action.orElse(null));
+        return new SimpleLnUrlAuth(uri, SimpleK1.fromHexString(k1), action.orElse(null));
     }
 
     @Override

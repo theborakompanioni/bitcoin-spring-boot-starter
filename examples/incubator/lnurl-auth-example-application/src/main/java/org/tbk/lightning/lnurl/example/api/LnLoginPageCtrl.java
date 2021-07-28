@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponents;
 import org.tbk.lnurl.simple.SimpleLnUrlAuth;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 @Slf4j
@@ -39,12 +40,9 @@ public class LnLoginPageCtrl {
                     return "http://" + val + ":" + hiddenServiceDefinition.getVirtualPort();
                 }).orElseThrow();
 
-        String callbackUrl = new URIBuilder(onionUrl)
+        URI callbackUrl = new URIBuilder(onionUrl)
                 .setPath("/api/v1/lnauth/login")
-                .build()
-                .toString();
-
-        log.info(callbackUrl);
+                .build();
 
         return SimpleLnUrlAuth.create(callbackUrl);
     }

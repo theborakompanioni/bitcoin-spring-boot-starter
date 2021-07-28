@@ -39,20 +39,13 @@ class SimpleLnService {
 
     @SneakyThrows
     private SimpleLnService(URI domain) {
-        requireNonNull(domain);
-
-        this.base = new URIBuilder(domain)
-                .setPath(null)
-                .setFragment(null)
-                .clearParameters()
-                .removeQuery()
-                .build();
+        this.base = requireNonNull(domain);
     }
 
     public LnUrlAuth createLnUrlAuth() {
         K1 k1 = SimpleK1.random();
         k1Cache.put(k1, "");
-        return SimpleLnUrlAuth.create(base.toString(), k1);
+        return SimpleLnUrlAuth.create(base, k1);
     }
 
     public boolean verifyLogin(URI loginUri) {

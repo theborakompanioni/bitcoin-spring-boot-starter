@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.tbk.lnurl.simple.SimpleLnUrlAuth;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
+import java.net.URI;
+
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 public class LnurlAuthExampleApplicationConfig {
@@ -27,7 +29,7 @@ public class LnurlAuthExampleApplicationConfig {
                         return "http://" + val + ":" + applicationHiddenServiceDefinition.getVirtualPort();
                     }).orElseThrow();
 
-            SimpleLnUrlAuth lnUrlAuth = SimpleLnUrlAuth.create(onionUrl);
+            SimpleLnUrlAuth lnUrlAuth = SimpleLnUrlAuth.create(URI.create(onionUrl));
 
             log.info("=================================================");
             log.info("===== LNURL_AUTH ================================");
