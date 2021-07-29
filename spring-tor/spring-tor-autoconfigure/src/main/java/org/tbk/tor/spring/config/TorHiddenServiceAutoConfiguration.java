@@ -47,7 +47,7 @@ public class TorHiddenServiceAutoConfiguration {
 
         return HiddenServiceDefinition.builder()
                 .directory(new File(hiddenServiceDir))
-                .virtualPort(80)
+                .virtualPort(properties.getVirtualPort())
                 .port(port)
                 .host(Optional.ofNullable(serverProperties.getAddress())
                         .map(InetAddress::getHostAddress)

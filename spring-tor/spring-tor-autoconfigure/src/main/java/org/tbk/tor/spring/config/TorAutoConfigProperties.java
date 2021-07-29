@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 public class TorAutoConfigProperties implements Validator {
     private static final boolean DEFAULT_AUTO_PUBLISH_ENABLED = true;
     private static final String DEFAULT_WORKING_DIRECTORY = "tor-working-dir";
+    private static final int DEFAULT_VIRTUAL_PORT = 80; // http: 80; https: 443
     private static final Duration DEFAULT_START_TIMEOUT = Duration.ofSeconds(60);
     private static final OnionLocationHeaderProperties DEFAULT_ONION_LOCATION_HEADER = new OnionLocationHeaderProperties();
 
@@ -27,6 +28,9 @@ public class TorAutoConfigProperties implements Validator {
     private String workingDirectory;
 
     private Boolean autoPublishEnabled = DEFAULT_AUTO_PUBLISH_ENABLED;
+
+    // currently only one service possible and therefore one virtual port is supported by embedded tor : /
+    private Integer virtualPort;
 
     @DurationUnit(ChronoUnit.SECONDS)
     private Duration startupTimeout;
@@ -39,6 +43,10 @@ public class TorAutoConfigProperties implements Validator {
 
     public boolean getAutoPublishEnabled() {
         return autoPublishEnabled != null ? autoPublishEnabled : DEFAULT_AUTO_PUBLISH_ENABLED;
+    }
+
+    public int getVirtualPort() {
+        return virtualPort != null ? virtualPort : DEFAULT_VIRTUAL_PORT;
     }
 
     public Duration getStartupTimeout() {
@@ -65,6 +73,11 @@ public class TorAutoConfigProperties implements Validator {
         } else if (containsWhitespaces(workingDirectory)) {
             String errorMessage = "'workingDirectory' must not contain whitespaces - unsupported value";
             errors.rejectValue("workingDirectory", "workingDirectory.unsupported", errorMessage);
+        }
+
+        if (properties.getVirtualPort() <= 0) {
+            String errorMessage = "'virtualPort' must be greater than zero";
+            errors.rejectValue("virtualPort", "virtualPort.invalid", errorMessage);
         }
     }
 
