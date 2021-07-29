@@ -40,8 +40,11 @@ app:
   # use your own url here (e.g. https://myapp.ngrok.io)
   lnurl-auth-base-url: http://localhost
 
+spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+spring.jpa.properties.hibernate.jdbc.time_zone: UTC
+
 org.tbk.tor:
-  enabled: true  # default is `true`
+  enabled: false  # default is `true`
   autoPublishEnabled: true # default is `true`
   working-directory: 'tor-working-dir' # default is `tor-working-dir`
   startup-timeout: 30s # default is `60s`
