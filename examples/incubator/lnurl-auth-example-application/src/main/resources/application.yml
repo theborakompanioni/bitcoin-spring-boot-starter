@@ -36,6 +36,10 @@ management.info.lndJsonRpc.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
 management.health.lndJsonRpc.enabled: true
 
+app:
+  # use your own url here (e.g. https://myapp.ngrok.io)
+  lnurl-auth-base-url: http://localhost
+
 org.tbk.tor:
   enabled: true  # default is `true`
   autoPublishEnabled: true # default is `true`
