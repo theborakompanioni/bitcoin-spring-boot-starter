@@ -21,7 +21,7 @@ public final class SimpleK1 implements K1 {
         return new SimpleK1(bytes);
     }
 
-    public static SimpleK1 fromHexString(String hex) {
+    public static SimpleK1 fromHex(String hex) {
         return new SimpleK1(Hex.decode(hex));
     }
 

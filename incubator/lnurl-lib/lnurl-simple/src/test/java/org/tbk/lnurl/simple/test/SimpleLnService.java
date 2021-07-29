@@ -8,7 +8,6 @@ import fr.acinq.secp256k1.Hex;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.tbk.lnurl.K1;
 import org.tbk.lnurl.LnUrlAuth;
@@ -55,7 +54,7 @@ class SimpleLnService {
         NameValuePair keyParam = findFirstQueryParamOrThrow(params, "key");
         NameValuePair sigParam = findFirstQueryParamOrThrow(params, "sig");
 
-        K1 k1 = SimpleK1.fromHexString(k1Param.getValue());
+        K1 k1 = SimpleK1.fromHex(k1Param.getValue());
         invalidateK1ValueOrThrow(k1);
 
         ByteVector rawK1 = ByteVector.view(k1.data());

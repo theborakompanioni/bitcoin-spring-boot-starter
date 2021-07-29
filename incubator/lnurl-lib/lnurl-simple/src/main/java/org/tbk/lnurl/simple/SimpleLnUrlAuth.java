@@ -83,7 +83,7 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
                 .map(Action::parse)
                 .findFirst();
 
-        return new SimpleLnUrlAuth(uri, SimpleK1.fromHexString(k1), action.orElse(null));
+        return new SimpleLnUrlAuth(uri, SimpleK1.fromHex(k1), action.orElse(null));
     }
 
     @Override
