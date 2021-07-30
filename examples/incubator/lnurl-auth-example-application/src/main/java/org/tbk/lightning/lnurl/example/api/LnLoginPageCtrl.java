@@ -13,6 +13,8 @@ import org.springframework.web.util.UriComponents;
 import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
 import org.tbk.lnurl.LnUrlAuth;
 
+import javax.servlet.http.HttpSession;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/login")
@@ -23,8 +25,10 @@ public class LnLoginPageCtrl {
     private final LnurlAuthFactory lnurlAuthFactory;
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
-    public ResponseEntity<String> loginHtml() {
+    public ResponseEntity<String> loginHtml(HttpSession session) {
         LnUrlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+
+        session.setAttribute("k1", lnUrlAuth.getK1());
         String lnurl = lnUrlAuth.toLnUrl().toLnUrlString();
 
         UriComponents qrCodeImageUri = ServletUriComponentsBuilder.fromCurrentRequest()

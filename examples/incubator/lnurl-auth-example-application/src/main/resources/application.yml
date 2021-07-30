@@ -9,6 +9,15 @@ server.port: 8080
 server.use-forward-headers: true
 server.compression.enabled: true
 
+server.servlet.session.timeout: 24h # Session timeout. If a duration suffix is not specified, seconds are used.
+
+spring.session.store-type: jdbc # Session store type.
+spring.session.jdbc.initialize-schema: never # never: do not initialize the schema - we will do that ourselves.
+spring.session.jdbc.table-name: SPRING_SESSION # Name of the database table used to store sessions.
+
+spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+spring.jpa.properties.hibernate.jdbc.time_zone: UTC
+
 management.server.port: 9001
 
 # LOGGING
@@ -39,9 +48,6 @@ management.health.lndJsonRpc.enabled: true
 app:
   # use your own url here (e.g. https://myapp.ngrok.io)
   lnurl-auth-base-url: http://localhost
-
-spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
-spring.jpa.properties.hibernate.jdbc.time_zone: UTC
 
 org.tbk.tor:
   enabled: false  # default is `true`
