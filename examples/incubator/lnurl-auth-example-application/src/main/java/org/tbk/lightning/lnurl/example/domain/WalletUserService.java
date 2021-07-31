@@ -1,11 +1,18 @@
 package org.tbk.lightning.lnurl.example.domain;
 
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationToken;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthSessionToken;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthWalletToken;
 import org.tbk.lnurl.K1;
 
-public interface WalletUserService {
-    WalletUser login(byte[] linkingKey, byte[] signature, K1 k1);
-    WalletUser getOrCreateUser(byte[] linkingKey);
+import java.util.Optional;
 
-    WalletUser login(LnurlAuthenticationToken auth);
+public interface WalletUserService {
+
+    Optional<WalletUser> findUser(byte[] linkingKey);
+    WalletUser findUserCreateIfMissing(byte[] linkingKey);
+
+    // todo: move away so user can extend class for spring-security
+    void login(LnurlAuthWalletToken auth);
+
+    Optional<WalletUser> login(LnurlAuthSessionToken auth);
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
-class LnurlAuthenticationFailureHandler implements AuthenticationFailureHandler {
+class LnurlAuthWalletAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

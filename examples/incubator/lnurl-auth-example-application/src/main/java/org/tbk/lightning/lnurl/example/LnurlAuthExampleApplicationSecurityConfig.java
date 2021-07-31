@@ -10,26 +10,24 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.authentication.session.SessionAuthenticationException;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
-import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationFilter;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationProvider;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.tbk.lightning.lnurl.example.lnurl.security.*;
+import org.tbk.lightning.lnurl.example.security.MyUserDetailsService;
 
 @EnableWebSecurity
 @Configuration
 public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
-    static final String LNURL_AUTH_PATH = "/api/v1/lnauth/login";
+    static final String LNURL_AUTH_WALLET_LOGIN_PATH = "/api/v1/lnauth/login/wallet";
+    static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnauth/login/session";
 
-    public static String lnurlAuthLoginPath() {
-        return LNURL_AUTH_PATH;
+    public static String lnurlAuthWalletLoginPath() {
+        return LNURL_AUTH_WALLET_LOGIN_PATH;
+    }
+
+    public static String lnurlAuthSessionLoginPath() {
+        return LNURL_AUTH_SESSION_LOGIN_PATH;
     }
 
     @Autowired
@@ -37,6 +35,11 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
 
     @Autowired
     private WalletUserService walletUserService;
+
+    @Bean
+    public MyUserDetailsService userDetailsService() {
+        return new MyUserDetailsService(walletUserService);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -76,22 +79,33 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                         .and()
                         .contentSecurityPolicy("script-src 'self'")
                 )
-                .addFilterBefore(lnurlAuthAuthenticationFilter(), AnonymousAuthenticationFilter.class);
+                .addFilterBefore(lnurlAuthWalletAuthenticationFilter(), AnonymousAuthenticationFilter.class)
+                .addFilterAfter(lnurlAuthSessionAuthenticationFilter(), LnurlAuthWalletAuthenticationFilter.class);
     }
 
     @Bean
-    public LnurlAuthenticationFilter lnurlAuthAuthenticationFilter() {
-        return new LnurlAuthenticationFilter(lnurlAuthLoginPath(), authenticationManager());
+    public LnurlAuthWalletAuthenticationFilter lnurlAuthWalletAuthenticationFilter() {
+        return new LnurlAuthWalletAuthenticationFilter(lnurlAuthWalletLoginPath(), authenticationManager());
     }
 
     @Bean
-    public LnurlAuthenticationProvider lnurlAuthAuthenticationProvider() {
-        return new LnurlAuthenticationProvider(k1Manager, walletUserService);
+    public LnurlAuthWalletAuthenticationProvider lnurlAuthWalletAuthenticationProvider() {
+        return new LnurlAuthWalletAuthenticationProvider(k1Manager, walletUserService, userDetailsService());
+    }
+
+    @Bean
+    public LnurlAuthSessionMigrateAuthenticationFilter lnurlAuthSessionAuthenticationFilter() {
+        return new LnurlAuthSessionMigrateAuthenticationFilter(lnurlAuthSessionLoginPath(), authenticationManager());
+    }
+
+    @Bean
+    public LnurlAuthSessionAuthenticationProvider lnurlAuthSessionAuthenticationProvider() {
+        return new LnurlAuthSessionAuthenticationProvider(walletUserService, userDetailsService());
     }
 
     @Override
     @Bean
     public AuthenticationManager authenticationManager() {
-        return new ProviderManager(lnurlAuthAuthenticationProvider());
+        return new ProviderManager(lnurlAuthWalletAuthenticationProvider(), lnurlAuthSessionAuthenticationProvider());
     }
 }

@@ -34,7 +34,7 @@ class SimpleLnWallet {
     public URI createLoginUri(LnUrlAuth lnUrlAuth) {
         ExtendedPrivateKey linkingKey = deriveLinkingKey(lnUrlAuth.toUri());
 
-        ByteVector64 signedK1 = Crypto.sign(lnUrlAuth.getK1().data(), linkingKey.privateKey());
+        ByteVector64 signedK1 = Crypto.sign(lnUrlAuth.getK1().getBytes(), linkingKey.privateKey());
         ByteVector signedK1DerEncoded = Crypto.compact2der(signedK1);
 
         // <LNURL_hostname_and_path>?<LNURL_existing_query_parameters>&sig=<hex(sign(utf8ToBytes(k1), linkingPrivKey))>&key=<hex(linkingKey)>

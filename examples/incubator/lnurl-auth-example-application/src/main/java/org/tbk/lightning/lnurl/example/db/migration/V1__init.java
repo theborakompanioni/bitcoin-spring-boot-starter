@@ -12,11 +12,21 @@ public class V1__init extends BaseJavaMigration {
 
     @Override
     public void migrate(Context context) throws Exception {
-        String sql1 = "create table if not exists lnurl_auth_wallet_user "
-                + "(id string PRIMARY KEY, version integer, created_at integer, last_successful_auth_at integer, name string)";
+        String sql1 = "create table if not exists lnurl_auth_wallet_user ("
+                + "id string PRIMARY KEY, "
+                + "version integer, "
+                + "created_at integer, "
+                + "last_successful_auth_at integer, "
+                + "name string"
+                + ")";
 
         String sql2 = "create table if not exists lnurl_auth_linking_key "
-                + "(id string PRIMARY KEY, version integer, created_at integer, lnurl_auth_wallet_user_id string, linking_key string,"
+                + "(id string PRIMARY KEY, "
+                + "version integer, "
+                + "created_at integer, "
+                + "lnurl_auth_wallet_user_id string, "
+                + "linking_key string, "
+                + "least_recently_used_k1 string, "
                 + "FOREIGN KEY(lnurl_auth_wallet_user_id) REFERENCES lnurl_auth_wallet_user(id) ON DELETE CASCADE ON UPDATE CASCADE, "
                 + "UNIQUE(linking_key)"
                 + ")";

@@ -1,20 +1,21 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.acinq.secp256k1.Hex;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.AggregateRoot;
-import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationToken;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthWalletToken;
+import org.tbk.lnurl.K1;
 
-import javax.persistence.*;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -55,12 +56,25 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
         log.trace("AfterDomainEventPublication");
     }
 
-    WalletUser login(LnurlAuthenticationToken auth) {
+    WalletUser login(LnurlAuthWalletToken auth) {
         this.lastSuccessfulAuthAt = Instant.now().toEpochMilli();
+
+        linkingKeys.stream()
+                .filter(it -> Arrays.equals(auth.getLinkingKey(), Hex.decode(it.getLinkingKey())))
+                .findFirst().ifPresent(it -> it.markUsedK1(auth.getK1()));
 
         registerEvent(new WalletUserLoginSuccessfulEvent(this.id));
 
         return this;
+    }
+
+    public Optional<byte[]> getLinkingKeyForLeastRecentlyUsedK1(K1 k1) {
+        String k1hex = k1.getHex();
+        return linkingKeys.stream()
+                .filter(it -> k1hex.equals(it.getLeastRecentlyUsedK1()))
+                .map(LinkingKey::getLinkingKey)
+                .map(Hex::decode)
+                .findFirst();
     }
 
     @Value(staticConstructor = "of")

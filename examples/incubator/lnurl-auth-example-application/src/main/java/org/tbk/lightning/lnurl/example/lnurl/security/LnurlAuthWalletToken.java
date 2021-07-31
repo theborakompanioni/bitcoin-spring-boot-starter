@@ -6,13 +6,12 @@ import java.util.Collection;
 import fr.acinq.secp256k1.Hex;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.util.Assert;
 import org.tbk.lnurl.K1;
 
 import static java.util.Objects.requireNonNull;
 
-public class LnurlAuthenticationToken extends AbstractAuthenticationToken {
+public class LnurlAuthWalletToken extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +21,7 @@ public class LnurlAuthenticationToken extends AbstractAuthenticationToken {
 
 	private final byte[] linkingKey;
 
-	public LnurlAuthenticationToken(K1 k1, byte[] signature, byte[] linkingKey) {
+	public LnurlAuthWalletToken(K1 k1, byte[] signature, byte[] linkingKey) {
 		super(null);
 		this.k1 = requireNonNull(k1);
 		this.signature = Arrays.copyOf(signature, signature.length);
@@ -30,8 +29,8 @@ public class LnurlAuthenticationToken extends AbstractAuthenticationToken {
 		setAuthenticated(false);
 	}
 
-	public LnurlAuthenticationToken(K1 k1, byte[] signature, byte[] linkingKey,
-									Collection<? extends GrantedAuthority> authorities) {
+	public LnurlAuthWalletToken(K1 k1, byte[] signature, byte[] linkingKey,
+								Collection<? extends GrantedAuthority> authorities) {
 		super(authorities);
 		this.k1 = requireNonNull(k1);
 		this.signature = Arrays.copyOf(signature, signature.length);
@@ -41,7 +40,7 @@ public class LnurlAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public Object getCredentials() {
-		return this.k1.hex() + ":" + Hex.encode(this.signature);
+		return this.k1.getHex() + ":" + Hex.encode(this.signature);
 	}
 
 	@Override
@@ -51,8 +50,7 @@ public class LnurlAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-		Assert.isTrue(!isAuthenticated,
-				"Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
+		Assert.isTrue(!isAuthenticated, "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
 		super.setAuthenticated(false);
 	}
 

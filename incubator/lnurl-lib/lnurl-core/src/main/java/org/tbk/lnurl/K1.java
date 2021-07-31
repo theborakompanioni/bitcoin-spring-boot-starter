@@ -1,8 +1,10 @@
 package org.tbk.lnurl;
 
-public interface K1 {
+import java.io.Serializable;
 
-    byte[] data();
+public interface K1 extends Serializable {
 
-    String hex();
+    byte[] getBytes();
+
+    String getHex();
 }

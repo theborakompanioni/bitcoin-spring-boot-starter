@@ -91,7 +91,7 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
     public URI toUri() {
         URIBuilder uriBuilder = new URIBuilder(baseUrl)
                 .setParameter("tag", TAG_PARAM_VALUE)
-                .setParameter("k1", k1.hex());
+                .setParameter("k1", k1.getHex());
 
         this.getAction().ifPresent(it -> uriBuilder.setParameter("action", it.getValue()));
 

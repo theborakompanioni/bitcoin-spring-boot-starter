@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
+import org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig;
 import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
 import org.tbk.lnurl.LnUrlAuth;
 
@@ -28,7 +31,7 @@ public class LnLoginPageCtrl {
     public ResponseEntity<String> loginHtml(HttpSession session) {
         LnUrlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
 
-        session.setAttribute("k1", lnUrlAuth.getK1().hex());
+        session.setAttribute("k1", lnUrlAuth.getK1().getHex());
 
         UriComponents qrCodeImageUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .scheme(null)
@@ -57,9 +60,21 @@ public class LnLoginPageCtrl {
                 + "<p>\n"
                 + "k1: %s\n"
                 + "</p>\n"
+                + "<p>\n"
+                + "logged in: %s\n"
+                + "</p>\n"
+                + "<p>\n"
+                + "if ready click: <a href=\"%s\">%s</a>\n"
+                + "</p>\n"
                 + "</body>\n"
                 + "</html>";
 
-        return String.format(template, qrCodeImageUri.toUriString(), lnurl, lnurl, lnUrlAuth.getK1().hex());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        return String.format(template, qrCodeImageUri.toUriString(),
+                lnurl, lnurl, lnUrlAuth.getK1().getHex(), principal,
+                LnurlAuthExampleApplicationSecurityConfig.lnurlAuthSessionLoginPath(),
+                LnurlAuthExampleApplicationSecurityConfig.lnurlAuthSessionLoginPath());
     }
 }

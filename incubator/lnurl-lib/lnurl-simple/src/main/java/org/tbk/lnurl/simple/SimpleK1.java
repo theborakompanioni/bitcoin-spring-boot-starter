@@ -2,6 +2,7 @@ package org.tbk.lnurl.simple;
 
 import fr.acinq.secp256k1.Hex;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.tbk.lnurl.K1;
 
 import java.security.SecureRandom;
@@ -28,18 +29,20 @@ public final class SimpleK1 implements K1 {
     @EqualsAndHashCode.Include
     private final byte[] data;
 
+    @Getter(lazy = true, onMethod_ = {@Override})
+    private final String hex = asHex();
+
     SimpleK1(byte[] data) {
         checkArgument(data.length == 32, "data must be an array of size 32");
         this.data = Arrays.copyOf(data, 32);
     }
 
     @Override
-    public byte[] data() {
+    public byte[] getBytes() {
         return Arrays.copyOf(data, 32);
     }
 
-    @Override
-    public String hex() {
+    private String asHex() {
         return Hex.encode(data);
     }
 }

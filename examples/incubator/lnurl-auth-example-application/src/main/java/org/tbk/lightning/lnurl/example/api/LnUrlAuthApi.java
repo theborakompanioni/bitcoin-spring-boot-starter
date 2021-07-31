@@ -70,7 +70,7 @@ public class LnUrlAuthApi {
     private ResponseEntity<Map<String, Object>> toJsonResponse(LnUrlAuth lnUrlAuth) {
         LnUrl lnUrl = lnUrlAuth.toLnUrl();
         return ResponseEntity.ok(ImmutableMap.<String, Object>builder()
-                .put("k1", lnUrlAuth.getK1().hex())
+                .put("k1", lnUrlAuth.getK1().getHex())
                 .put("encoded", lnUrl.toLnUrlString())
                 .put("url", lnUrl.toUri().toString())
                 .build());

@@ -7,8 +7,10 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
+import org.tbk.lnurl.K1;
 import scodec.bits.ByteVector;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.Instant;
@@ -32,6 +34,9 @@ class LinkingKey implements Entity<WalletUser, LinkingKey.LinkingKeyId> {
 
     private final String linkingKey;
 
+    @Column(name = "least_recently_used_k1")
+    private String leastRecentlyUsedK1;
+
     LinkingKey(byte[] linkingKey) {
         this.id = LinkingKeyId.create();
         this.createdAt = Instant.now().toEpochMilli();
@@ -42,6 +47,10 @@ class LinkingKey implements Entity<WalletUser, LinkingKey.LinkingKeyId> {
 
     public Crypto.PublicKey toPublicKey() {
         return new Crypto.PublicKey(ByteVector.view(Hex.decode(linkingKey)));
+    }
+
+    public void markUsedK1(K1 k1) {
+        this.leastRecentlyUsedK1 = k1.getHex();
     }
 
     @Value(staticConstructor = "of")

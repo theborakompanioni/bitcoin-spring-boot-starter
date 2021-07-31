@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.tbk.lightning.lnurl.example.api.LnUrlAuthLoginApi;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
 import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
 import org.tbk.lightning.lnurl.example.lnurl.SimpleLnAuthFactory;
@@ -38,7 +37,7 @@ public class LnurlAuthExampleApplicationConfig {
     @SneakyThrows(URISyntaxException.class)
     public LnurlAuthFactory lnurlAuthFactory(K1Manager k1Manager) {
         URI callbackUrl = new URIBuilder(properties.getLnurlAuthBaseUrl())
-                .setPath(LnurlAuthExampleApplicationSecurityConfig.lnurlAuthLoginPath())
+                .setPath(LnurlAuthExampleApplicationSecurityConfig.lnurlAuthWalletLoginPath())
                 .build();
 
         return new SimpleLnAuthFactory(callbackUrl, k1Manager);

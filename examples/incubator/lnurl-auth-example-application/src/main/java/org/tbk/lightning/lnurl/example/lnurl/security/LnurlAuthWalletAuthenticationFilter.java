@@ -17,15 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Slf4j
-public class LnurlAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private static final LnurlAuthenticationFailureHandler failureHandler = new LnurlAuthenticationFailureHandler();
-    private static final LnurlAuthenticationSuccessHandler successHandler = new LnurlAuthenticationSuccessHandler();
+public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private static final LnurlAuthWalletAuthenticationFailureHandler failureHandler = new LnurlAuthWalletAuthenticationFailureHandler();
+    private static final LnurlAuthWalletAuthenticationSuccessHandler successHandler = new LnurlAuthWalletAuthenticationSuccessHandler();
 
     public static final String LNURL_AUTH_K1_KEY = "k1";
     public static final String LNURL_AUTH_SIG_KEY = "sig";
     public static final String LNURL_AUTH_KEY_KEY = "key";
 
-    public LnurlAuthenticationFilter(String pathRequestPattern, AuthenticationManager authenticationManager) {
+    public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern, AuthenticationManager authenticationManager) {
         super(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()), authenticationManager);
 
         this.setAuthenticationFailureHandler(failureHandler);
@@ -39,9 +39,9 @@ public class LnurlAuthenticationFilter extends AbstractAuthenticationProcessingF
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
 
-        log.debug("got lnurl-auth request: {}", request.getRequestURI());
+        log.debug("got lnurl-auth wallet authentication request: {}", request.getRequestURI());
 
-        LnurlAuthenticationToken authRequest = buildToken(request);
+        LnurlAuthWalletToken authRequest = buildToken(request);
 
         // Allow subclasses to set the "details" property
         setDetails(request, authRequest);
@@ -49,13 +49,13 @@ public class LnurlAuthenticationFilter extends AbstractAuthenticationProcessingF
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
-    private LnurlAuthenticationToken buildToken(HttpServletRequest request) {
+    private LnurlAuthWalletToken buildToken(HttpServletRequest request) {
         try {
             K1 k1 = obtainK1(request).orElseThrow(() -> new LnurlAuthenticationException("'k1' is missing or invalid."));
             byte[] sig = obtainSig(request).orElseThrow(() -> new LnurlAuthenticationException("'sig' is missing or invalid."));
             byte[] key = obtainKey(request).orElseThrow(() -> new LnurlAuthenticationException("'key' is missing or invalid."));
 
-            return new LnurlAuthenticationToken(k1, sig, key);
+            return new LnurlAuthWalletToken(k1, sig, key);
         } catch (IllegalArgumentException e) {
             throw new LnurlAuthenticationException("Authentication error: " + e.getMessage());
         }
@@ -84,7 +84,7 @@ public class LnurlAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @param authRequest the authentication request object that should have its details
      *                    set
      */
-    protected void setDetails(HttpServletRequest request, LnurlAuthenticationToken authRequest) {
+    protected void setDetails(HttpServletRequest request, LnurlAuthWalletToken authRequest) {
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
 }

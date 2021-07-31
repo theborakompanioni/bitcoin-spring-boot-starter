@@ -2,6 +2,7 @@ package org.tbk.lightning.lnurl.example.lnurl.security;
 
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
+import fr.acinq.secp256k1.Hex;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,10 +10,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.tbk.lightning.lnurl.example.domain.WalletUser;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
 import org.tbk.lnurl.K1;
@@ -21,7 +22,7 @@ import scodec.bits.ByteVector;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class LnurlAuthenticationProvider implements AuthenticationProvider {
+public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProvider {
 
     @NonNull
     private final K1Manager k1Manager;
@@ -29,16 +30,20 @@ public class LnurlAuthenticationProvider implements AuthenticationProvider {
     @NonNull
     private final WalletUserService walletUserService;
 
+    @NonNull
+    private final UserDetailsService userDetailsService;
+
     @Override
     public boolean supports(Class<?> authentication) {
-        return LnurlAuthenticationToken.class.isAssignableFrom(authentication);
+        return LnurlAuthWalletToken.class.isAssignableFrom(authentication);
     }
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Assert.isTrue(supports(authentication.getClass()), "Unsupported authentication class");
 
-        LnurlAuthenticationToken auth = (LnurlAuthenticationToken) authentication;
+        LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
         if (auth.isAuthenticated()) {
             throw new LnurlAuthenticationException("Already authenticated.");
         }
@@ -57,15 +62,12 @@ public class LnurlAuthenticationProvider implements AuthenticationProvider {
 
         k1Manager.invalidate(k1);
 
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("wallet_user"));
-        LnurlAuthenticationToken newAuth = new LnurlAuthenticationToken(auth.getK1(), auth.getSignature(), auth.getLinkingKey(), authorities);
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("WALLET_USER"));
+        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getK1(), auth.getSignature(), auth.getLinkingKey(), authorities);
 
-        WalletUser walletUser = walletUserService.login(newAuth);
-        UserDetails user = User.builder()
-                .username(walletUser.getName())
-                .password("") // there is no "password" with lnurl-auth - set to arbitrary value
-                .authorities(authorities)
-                .build();
+        walletUserService.login(newAuth);
+
+        UserDetails user = userDetailsService.loadUserByUsername(Hex.encode(auth.getLinkingKey()));
 
         newAuth.setDetails(user);
 
@@ -73,7 +75,7 @@ public class LnurlAuthenticationProvider implements AuthenticationProvider {
     }
 
     private boolean verifyLogin(K1 k1, byte[] signature, byte[] linkingKey) {
-        ByteVector rawK1 = ByteVector.view(k1.data());
+        ByteVector rawK1 = ByteVector.view(k1.getBytes());
         ByteVector64 rawSig = Crypto.der2compact(ByteVector.view(signature));
         Crypto.PublicKey rawKey = new Crypto.PublicKey(ByteVector.view(linkingKey));
 

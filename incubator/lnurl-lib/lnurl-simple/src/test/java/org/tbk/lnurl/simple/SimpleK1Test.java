@@ -11,8 +11,8 @@ class SimpleK1Test {
     @Test
     void fromHexSuccessful() {
         SimpleK1 k1 = SimpleK1.fromHex("00".repeat(32));
-        assertThat(k1.hex(), is("0000000000000000000000000000000000000000000000000000000000000000"));
-        assertThat(k1.data().length, is(32));
+        assertThat(k1.getHex(), is("0000000000000000000000000000000000000000000000000000000000000000"));
+        assertThat(k1.getBytes().length, is(32));
     }
 
     @Test

@@ -14,11 +14,11 @@ public class LnurlAuthSuccessEventListener implements ApplicationListener<Intera
     public void onApplicationEvent(InteractiveAuthenticationSuccessEvent event) {
         Authentication authentication = event.getAuthentication();
 
-        if (authentication instanceof LnurlAuthenticationToken) {
-            onSuccessfulLnurlAuthentication((LnurlAuthenticationToken) authentication);
+        if (authentication instanceof LnurlAuthWalletToken) {
+            onSuccessfulLnurlAuthentication((LnurlAuthWalletToken) authentication);
         }
     }
-    public void onSuccessfulLnurlAuthentication(LnurlAuthenticationToken authentication) {
+    public void onSuccessfulLnurlAuthentication(LnurlAuthWalletToken authentication) {
         log.info("Successful authenticated user: {}", authentication.getPrincipal());
 
 

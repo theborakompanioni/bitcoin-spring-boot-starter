@@ -57,7 +57,7 @@ class SimpleLnService {
         K1 k1 = SimpleK1.fromHex(k1Param.getValue());
         invalidateK1ValueOrThrow(k1);
 
-        ByteVector rawK1 = ByteVector.view(k1.data());
+        ByteVector rawK1 = ByteVector.view(k1.getBytes());
         ByteVector64 rawSig = Crypto.der2compact(ByteVector.view(Hex.decode(sigParam.getValue())));
         Crypto.PublicKey rawKey = new Crypto.PublicKey(ByteVector.view(Hex.decode(keyParam.getValue())));
 
