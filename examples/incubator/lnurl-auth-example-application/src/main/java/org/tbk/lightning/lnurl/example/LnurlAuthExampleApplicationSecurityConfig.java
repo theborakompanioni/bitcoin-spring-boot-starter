@@ -1,21 +1,21 @@
 package org.tbk.lightning.lnurl.example;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
-import org.tbk.lightning.lnurl.example.lnurl.security.*;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthConfigurer;
+import org.tbk.lightning.lnurl.example.security.MyLnurlAuthSecurityService;
 import org.tbk.lightning.lnurl.example.security.MyUserDetailsService;
 
+@Slf4j
 @EnableWebSecurity
 @Configuration
 public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,76 +36,59 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
     @Autowired
     private WalletUserService walletUserService;
 
-    @Bean
-    public MyUserDetailsService userDetailsService() {
-        return new MyUserDetailsService(walletUserService);
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .userDetailsService(userDetailsService())
                 .csrf().disable()
                 .cors().disable()
+                .apply(lnurlAuthConfigurer())
+                .walletLoginUrl(lnurlAuthWalletLoginPath())
+                .sessionLoginUrl(lnurlAuthSessionLoginPath())
+                .and()
                 .sessionManagement(session -> session
-                        //.sessionAuthenticationStrategy()
-                        //.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                        .sessionFixation().none()
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                )
-                .authorizeRequests(authorize -> authorize
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .antMatchers("/").permitAll()
-                        .antMatchers("/index.html").permitAll()
-                        .antMatchers("/authenticated.html").authenticated()
-                        //.antMatchers("/login").anonymous()
-                        //.antMatchers("/api/v1/lnauth/**").anonymous()
-                        .antMatchers("/login").permitAll()
-                        .antMatchers("/api/v1/lnauth/**").permitAll()
-                        .anyRequest().authenticated()
+                        .sessionFixation().migrateSession()
                 )
                 .logout(logout -> logout
-                                .invalidateHttpSession(true)
-                                //.deleteCookies("SESSION").permitAll()
-                                .clearAuthentication(true)
-                        //.logoutUrl("/logout")
-                        //.logoutSuccessHandler(getLogoutSuccessHandler())
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                 )
                 .headers(headers -> headers
                         .xssProtection()
                         .xssProtectionEnabled(true)
                         .block(true)
                         .and()
-                        .contentSecurityPolicy("script-src 'self'")
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("script-src 'self'"))
                 )
-                .addFilterBefore(lnurlAuthWalletAuthenticationFilter(), AnonymousAuthenticationFilter.class)
-                .addFilterAfter(lnurlAuthSessionAuthenticationFilter(), LnurlAuthWalletAuthenticationFilter.class);
+                .authorizeRequests(authorize -> authorize
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .antMatchers("/").permitAll()
+                        .antMatchers("/index.html").permitAll()
+                        .antMatchers("/authenticated.html").authenticated()
+                        // login page should be readable by all - session will be initialized
+                        .antMatchers("/login").permitAll()
+                        .antMatchers(lnurlAuthWalletLoginPath()).permitAll()
+                        .antMatchers(lnurlAuthSessionLoginPath()).permitAll()
+                        .antMatchers("/api/v1/lnauth/**").permitAll()
+                        .anyRequest().authenticated()
+                );
     }
 
     @Bean
-    public LnurlAuthWalletAuthenticationFilter lnurlAuthWalletAuthenticationFilter() {
-        return new LnurlAuthWalletAuthenticationFilter(lnurlAuthWalletLoginPath(), authenticationManager());
+    public LnurlAuthConfigurer lnurlAuthConfigurer() {
+        return new LnurlAuthConfigurer(k1Manager, lnurlAuthSecurityService());
     }
 
     @Bean
-    public LnurlAuthWalletAuthenticationProvider lnurlAuthWalletAuthenticationProvider() {
-        return new LnurlAuthWalletAuthenticationProvider(k1Manager, walletUserService, userDetailsService());
+    public MyUserDetailsService userDetailsService() {
+        return new MyUserDetailsService(walletUserService);
     }
 
     @Bean
-    public LnurlAuthSessionMigrateAuthenticationFilter lnurlAuthSessionAuthenticationFilter() {
-        return new LnurlAuthSessionMigrateAuthenticationFilter(lnurlAuthSessionLoginPath(), authenticationManager());
+    public MyLnurlAuthSecurityService lnurlAuthSecurityService() {
+        return new MyLnurlAuthSecurityService(walletUserService);
     }
 
-    @Bean
-    public LnurlAuthSessionAuthenticationProvider lnurlAuthSessionAuthenticationProvider() {
-        return new LnurlAuthSessionAuthenticationProvider(walletUserService, userDetailsService());
-    }
-
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(lnurlAuthWalletAuthenticationProvider(), lnurlAuthSessionAuthenticationProvider());
-    }
 }

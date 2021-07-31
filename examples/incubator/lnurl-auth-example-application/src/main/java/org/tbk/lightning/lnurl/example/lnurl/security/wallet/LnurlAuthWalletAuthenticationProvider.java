@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnurl.example.lnurl.security;
+package org.tbk.lightning.lnurl.example.lnurl.security.wallet;
 
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
@@ -12,10 +12,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthSecurityService;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationException;
 import org.tbk.lnurl.K1;
 import scodec.bits.ByteVector;
 
@@ -28,7 +28,7 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
     private final K1Manager k1Manager;
 
     @NonNull
-    private final WalletUserService walletUserService;
+    private final LnurlAuthSecurityService lnurlAuthSecurityService;
 
     @NonNull
     private final UserDetailsService userDetailsService;
@@ -39,7 +39,6 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
     }
 
     @Override
-    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Assert.isTrue(supports(authentication.getClass()), "Unsupported authentication class");
 
@@ -65,7 +64,7 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("WALLET_USER"));
         LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getK1(), auth.getSignature(), auth.getLinkingKey(), authorities);
 
-        walletUserService.login(newAuth);
+        lnurlAuthSecurityService.pairLinkingKeyWithK1(auth.getLinkingKey(), auth.getK1());
 
         UserDetails user = userDetailsService.loadUserByUsername(Hex.encode(auth.getLinkingKey()));
 

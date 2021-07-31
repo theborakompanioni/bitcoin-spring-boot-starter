@@ -8,8 +8,7 @@ import org.jmolecules.ddd.annotation.Service;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthSessionToken;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthWalletToken;
+import org.tbk.lnurl.K1;
 
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ class WalletUserServiceImpl implements WalletUserService {
 
     @Override
     @Transactional
-    public WalletUser findUserCreateIfMissing(byte[] linkingKey) {
+    public WalletUser findUserOrCreateIfMissing(byte[] linkingKey) {
         Optional<LinkingKey> linkingKeyOrEmpty = linkingKeys.findByLinkingKey(linkingKey);
         if (linkingKeyOrEmpty.isEmpty()) {
             return new WalletUser(new LinkingKey(linkingKey));
@@ -52,23 +51,15 @@ class WalletUserServiceImpl implements WalletUserService {
 
     @Override
     @Transactional
-    public void login(LnurlAuthWalletToken auth) {
-        if (!auth.isAuthenticated()) {
-            throw new IllegalStateException("LnurlAuthWalletToken must be authenticated.");
-        }
+    public void pairLinkingKeyWithK1(byte[] linkingKey, K1 k1) {
+        WalletUser user = findUserOrCreateIfMissing(linkingKey);
 
-        WalletUser user = findUserCreateIfMissing(auth.getLinkingKey());
-
-        users.save(user.login(auth));
+        users.save(user.pair(linkingKey, k1));
     }
 
     @Override
     @Transactional
-    public Optional<WalletUser> login(LnurlAuthSessionToken auth) {
-        if (auth.isAuthenticated()) {
-            throw new IllegalStateException("LnurlAuthSessionToken must not be authenticated.");
-        }
-
-        return users.findByLeastRecentlyUsedK1(auth.getK1());
+    public Optional<WalletUser> findByLeastRecentlyUsedK1(K1 k1) {
+        return users.findByLeastRecentlyUsedK1(k1);
     }
 }

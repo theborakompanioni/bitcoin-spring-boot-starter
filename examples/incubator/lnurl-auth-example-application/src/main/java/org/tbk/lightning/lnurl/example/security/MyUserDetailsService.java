@@ -1,5 +1,6 @@
 package org.tbk.lightning.lnurl.example.security;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import fr.acinq.secp256k1.Hex;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional
+    @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay in this case
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         WalletUser walletUser = walletUserService.findUser(Hex.decode(username))

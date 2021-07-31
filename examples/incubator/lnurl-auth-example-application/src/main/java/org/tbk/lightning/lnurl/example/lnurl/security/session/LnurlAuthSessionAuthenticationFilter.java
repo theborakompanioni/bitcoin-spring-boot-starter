@@ -1,6 +1,7 @@
-package org.tbk.lightning.lnurl.example.lnurl.security;
+package org.tbk.lightning.lnurl.example.lnurl.security.session;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Slf4j
-public class LnurlAuthSessionMigrateAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public LnurlAuthSessionMigrateAuthenticationFilter(String pathRequestPattern, AuthenticationManager authenticationManager) {
-        super(new AntPathRequestMatcher(pathRequestPattern), authenticationManager);
+    public LnurlAuthSessionAuthenticationFilter(String pathRequestPattern) {
+        super(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()));
         this.setAllowSessionCreation(false); // session will only be created on login page
     }
 

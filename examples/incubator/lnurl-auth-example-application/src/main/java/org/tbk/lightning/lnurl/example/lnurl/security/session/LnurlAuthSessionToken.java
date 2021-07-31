@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnurl.example.lnurl.security;
+package org.tbk.lightning.lnurl.example.lnurl.security.session;
 
 import fr.acinq.secp256k1.Hex;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnurl.example.lnurl.security;
+package org.tbk.lightning.lnurl.example.lnurl.security.wallet;
 
 import java.util.Arrays;
 import java.util.Collection;

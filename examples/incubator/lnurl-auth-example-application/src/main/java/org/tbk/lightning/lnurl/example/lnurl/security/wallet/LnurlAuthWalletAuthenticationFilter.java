@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnurl.example.lnurl.security;
+package org.tbk.lightning.lnurl.example.lnurl.security.wallet;
 
 import fr.acinq.secp256k1.Hex;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationException;
 import org.tbk.lnurl.K1;
 import org.tbk.lnurl.simple.SimpleK1;
 
@@ -25,12 +26,12 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
     public static final String LNURL_AUTH_SIG_KEY = "sig";
     public static final String LNURL_AUTH_KEY_KEY = "key";
 
-    public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern, AuthenticationManager authenticationManager) {
-        super(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()), authenticationManager);
+    public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern) {
+        super(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()));
 
         this.setAuthenticationFailureHandler(failureHandler);
         this.setAuthenticationSuccessHandler(successHandler);
-        this.setAllowSessionCreation(false); // session will only be created on login page
+        this.setAllowSessionCreation(false);
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthWalletToken;
+import org.tbk.lightning.lnurl.example.lnurl.security.wallet.LnurlAuthWalletToken;
 import org.tbk.lnurl.K1;
 
 import javax.persistence.JoinColumn;
@@ -56,12 +56,14 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
         log.trace("AfterDomainEventPublication");
     }
 
-    WalletUser login(LnurlAuthWalletToken auth) {
+    WalletUser pair(byte[] linkingKey, K1 k1) {
         this.lastSuccessfulAuthAt = Instant.now().toEpochMilli();
 
         linkingKeys.stream()
-                .filter(it -> Arrays.equals(auth.getLinkingKey(), Hex.decode(it.getLinkingKey())))
-                .findFirst().ifPresent(it -> it.markUsedK1(auth.getK1()));
+                .filter(it -> Arrays.equals(linkingKey, Hex.decode(it.getLinkingKey())))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Given 'linkingKey' not found."))
+                .markUsedK1(k1);
 
         registerEvent(new WalletUserLoginSuccessfulEvent(this.id));
 
