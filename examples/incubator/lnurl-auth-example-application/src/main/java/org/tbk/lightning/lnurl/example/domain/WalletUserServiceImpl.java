@@ -6,10 +6,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.annotation.Service;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationToken;
 import org.tbk.lnurl.K1;
 import scodec.bits.ByteVector;
 
@@ -52,11 +54,13 @@ class WalletUserServiceImpl implements WalletUserService {
 
         k1Manager.invalidate(k1);
 
-        WalletUser user = getOrCreateWalletUser(linkingKey);
-        return users.save(user.login());
+        WalletUser user = getOrCreateUser(linkingKey);
+        return users.save(user);
     }
 
-    private WalletUser getOrCreateWalletUser(byte[] linkingKey) {
+    @Override
+    @Transactional
+    public WalletUser getOrCreateUser(byte[] linkingKey) {
         Optional<LinkingKey> linkingKeyOrEmpty = linkingKeys.findByLinkingKey(linkingKey);
         if (linkingKeyOrEmpty.isEmpty()) {
             return new WalletUser(new LinkingKey(linkingKey));
@@ -64,6 +68,17 @@ class WalletUserServiceImpl implements WalletUserService {
 
         return users.findByLinkingKey(linkingKeyOrEmpty.get())
                 .orElseThrow(() -> new EmptyResultDataAccessException("WalletUser key not found", 1));
+    }
+
+    @Override
+    public WalletUser login(LnurlAuthenticationToken auth) {
+        if (!auth.isAuthenticated()) {
+           throw new IllegalStateException("AuthenticationToken must be authenticated.");
+        }
+
+        WalletUser user = getOrCreateUser(auth.getLinkingKey());
+
+        return users.save(user.login(auth));
     }
 
     private boolean verifyLogin(byte[] linkingKey, byte[] signature, K1 k1) {

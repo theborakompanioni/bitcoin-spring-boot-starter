@@ -2,5 +2,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="org.tbk.example.lnurl" level="DEBUG"/>
+    <logger name="org.tbk.lightning.lnurl.example" level="DEBUG"/>
 </configuration>

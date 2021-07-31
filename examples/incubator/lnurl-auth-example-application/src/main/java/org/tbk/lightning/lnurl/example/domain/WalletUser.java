@@ -8,6 +8,7 @@ import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
+import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthenticationToken;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -54,7 +55,7 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
         log.trace("AfterDomainEventPublication");
     }
 
-    WalletUser login() {
+    WalletUser login(LnurlAuthenticationToken auth) {
         this.lastSuccessfulAuthAt = Instant.now().toEpochMilli();
 
         registerEvent(new WalletUserLoginSuccessfulEvent(this.id));

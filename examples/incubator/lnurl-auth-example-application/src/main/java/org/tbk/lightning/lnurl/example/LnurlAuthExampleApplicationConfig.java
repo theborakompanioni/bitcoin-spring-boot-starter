@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.tbk.lightning.lnurl.example.api.LnUrlAuthLoginApi;
 import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
 import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
@@ -23,6 +24,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
+@EnableScheduling
 @EnableConfigurationProperties(LnurlAuthExampleApplicationProperties.class)
 public class LnurlAuthExampleApplicationConfig {
 
@@ -36,7 +38,7 @@ public class LnurlAuthExampleApplicationConfig {
     @SneakyThrows(URISyntaxException.class)
     public LnurlAuthFactory lnurlAuthFactory(K1Manager k1Manager) {
         URI callbackUrl = new URIBuilder(properties.getLnurlAuthBaseUrl())
-                .setPath(LnUrlAuthLoginApi.lnurlAuthLoginPath())
+                .setPath(LnurlAuthExampleApplicationSecurityConfig.lnurlAuthLoginPath())
                 .build();
 
         return new SimpleLnAuthFactory(callbackUrl, k1Manager);
