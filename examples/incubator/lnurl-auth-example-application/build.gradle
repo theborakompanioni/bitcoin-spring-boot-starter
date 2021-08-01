@@ -12,12 +12,13 @@ byteBuddy {
 dependencies {
     implementation project(':incubator:lnurl-lib:lnurl-simple')
 
+    implementation project(':incubator:spring-lnurl:spring-lnurl-auth-starter')
+    implementation project(':spring-tor:spring-tor-starter')
+
     implementation "fr.acinq:bitcoin-lib_2.13:${acinqBitcoinLibVerson}"
     implementation "com.google.zxing:core:${zxingVersion}"
     implementation "com.google.zxing:javase:${zxingVersion}"
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
-
-    implementation project(':spring-tor:spring-tor-starter')
 
     implementation 'io.projectreactor:reactor-core'
 

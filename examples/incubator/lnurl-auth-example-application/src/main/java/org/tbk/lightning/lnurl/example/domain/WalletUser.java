@@ -8,7 +8,6 @@ import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
-import org.tbk.lightning.lnurl.example.lnurl.security.wallet.LnurlAuthWalletToken;
 import org.tbk.lnurl.K1;
 
 import javax.persistence.JoinColumn;

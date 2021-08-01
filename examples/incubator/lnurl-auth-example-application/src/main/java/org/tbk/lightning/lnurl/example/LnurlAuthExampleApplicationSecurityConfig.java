@@ -1,7 +1,6 @@
 package org.tbk.lightning.lnurl.example;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +8,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.tbk.lightning.lnurl.example.domain.WalletUserService;
-import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
-import org.tbk.lightning.lnurl.example.lnurl.security.LnurlAuthConfigurer;
-import org.tbk.lightning.lnurl.example.security.MyLnurlAuthSecurityService;
-import org.tbk.lightning.lnurl.example.security.MyUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.tbk.lnurl.auth.InMemoryK1Cache;
+import org.tbk.lnurl.auth.LnurlAuthPairingService;
+import org.tbk.lnurl.auth.SimpleK1Factory;
+import org.tbk.lnurl.auth.SimpleK1Manager;
+import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
 @Slf4j
 @EnableWebSecurity
@@ -30,11 +30,20 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
         return LNURL_AUTH_SESSION_LOGIN_PATH;
     }
 
-    @Autowired
-    private K1Manager k1Manager;
+    private final LnurlAuthPairingService lnurlAuthPairingService;
 
-    @Autowired
-    private WalletUserService walletUserService;
+    private final UserDetailsService userDetailsService;
+
+    public LnurlAuthExampleApplicationSecurityConfig(LnurlAuthPairingService lnurlAuthPairingService,
+                                                     UserDetailsService userDetailsService) {
+        this.lnurlAuthPairingService = lnurlAuthPairingService;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected UserDetailsService userDetailsService() {
+        return userDetailsService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -78,17 +87,21 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
 
     @Bean
     public LnurlAuthConfigurer lnurlAuthConfigurer() {
-        return new LnurlAuthConfigurer(k1Manager, lnurlAuthSecurityService());
+        return new LnurlAuthConfigurer(k1Manager(), lnurlAuthPairingService);
     }
 
     @Bean
-    public MyUserDetailsService userDetailsService() {
-        return new MyUserDetailsService(walletUserService);
+    public SimpleK1Manager k1Manager() {
+        return new SimpleK1Manager(k1Factory(), k1Cache());
     }
 
     @Bean
-    public MyLnurlAuthSecurityService lnurlAuthSecurityService() {
-        return new MyLnurlAuthSecurityService(walletUserService);
+    public SimpleK1Factory k1Factory() {
+        return new SimpleK1Factory();
     }
 
+    @Bean
+    public InMemoryK1Cache k1Cache() {
+        return new InMemoryK1Cache();
+    }
 }

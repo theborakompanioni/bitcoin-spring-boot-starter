@@ -1,0 +1,9 @@
+plugins {
+    id 'java'
+}
+
+description = 'spring lnurl-auth core package'
+
+dependencies {
+    api project(':incubator:lnurl-lib:lnurl-core')
+}

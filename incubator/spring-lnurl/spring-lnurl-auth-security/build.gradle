@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+description = 'spring lnurl-auth security package'
+
+dependencies {
+    api project(':incubator:spring-lnurl:spring-lnurl-auth-core')
+
+    implementation project(':incubator:lnurl-lib:lnurl-simple')
+    implementation "fr.acinq:bitcoin-lib_2.13:${acinqBitcoinLibVerson}"
+
+    compileOnly('javax.servlet:javax.servlet-api')
+    compileOnly 'org.springframework:spring-web'
+    compileOnly 'org.springframework.security:spring-security-core'
+    compileOnly 'org.springframework.security:spring-security-web'
+    compileOnly 'org.springframework.security:spring-security-config'
+}

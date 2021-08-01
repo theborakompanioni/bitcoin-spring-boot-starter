@@ -10,10 +10,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.tbk.lightning.lnurl.example.lnurl.K1Manager;
-import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
-import org.tbk.lightning.lnurl.example.lnurl.SimpleLnAuthFactory;
+import org.tbk.lightning.lnurl.example.domain.WalletUserService;
+import org.tbk.lightning.lnurl.example.security.MyLnurlAuthPairingService;
+import org.tbk.lightning.lnurl.example.security.MyUserDetailsService;
 import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.auth.K1Manager;
+import org.tbk.lnurl.auth.LnurlAuthFactory;
+import org.tbk.lnurl.auth.SimpleLnurlAuthFactory;
+import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
+import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
 import java.net.URI;
@@ -40,7 +45,17 @@ public class LnurlAuthExampleApplicationConfig {
                 .setPath(LnurlAuthExampleApplicationSecurityConfig.lnurlAuthWalletLoginPath())
                 .build();
 
-        return new SimpleLnAuthFactory(callbackUrl, k1Manager);
+        return new SimpleLnurlAuthFactory(callbackUrl, k1Manager);
+    }
+
+    @Bean
+    public MyUserDetailsService userDetailsService(WalletUserService walletUserService) {
+        return new MyUserDetailsService(walletUserService);
+    }
+
+    @Bean
+    public MyLnurlAuthPairingService lnurlAuthSecurityService(WalletUserService walletUserService) {
+        return new MyLnurlAuthPairingService(walletUserService);
     }
 
     @Bean

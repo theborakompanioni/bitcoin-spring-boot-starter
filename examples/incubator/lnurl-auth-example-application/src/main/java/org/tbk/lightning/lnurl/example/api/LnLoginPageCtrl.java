@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 import org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig;
-import org.tbk.lightning.lnurl.example.lnurl.LnurlAuthFactory;
 import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.auth.LnurlAuthFactory;
 
 import javax.servlet.http.HttpSession;
 

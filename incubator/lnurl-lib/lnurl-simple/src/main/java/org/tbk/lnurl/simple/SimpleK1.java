@@ -1,5 +1,6 @@
 package org.tbk.lnurl.simple;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import fr.acinq.secp256k1.Hex;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public final class SimpleK1 implements K1 {
     @EqualsAndHashCode.Include
     private final byte[] data;
 
-    @Getter(lazy = true, onMethod_ = {@Override})
+    @Getter(lazy = true, onMethod_ = {@Override, @SuppressFBWarnings("JLM")})
     private final String hex = asHex();
 
     SimpleK1(byte[] data) {
