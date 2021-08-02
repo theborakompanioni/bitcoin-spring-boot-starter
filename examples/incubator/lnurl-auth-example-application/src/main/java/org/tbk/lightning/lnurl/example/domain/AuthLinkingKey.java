@@ -7,7 +7,8 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
-import org.tbk.lnurl.K1;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.auth.LinkingKey;
 import scodec.bits.ByteVector;
 
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Getter
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "lnurl_auth_linking_key")
-class LinkingKey implements Entity<WalletUser, LinkingKey.LinkingKeyId> {
+class AuthLinkingKey implements Entity<WalletUser, AuthLinkingKey.LinkingKeyId> {
 
     private final LinkingKeyId id;
 
@@ -37,10 +38,10 @@ class LinkingKey implements Entity<WalletUser, LinkingKey.LinkingKeyId> {
     @Column(name = "least_recently_used_k1")
     private String leastRecentlyUsedK1;
 
-    LinkingKey(byte[] linkingKey) {
+    AuthLinkingKey(LinkingKey linkingKey) {
         this.id = LinkingKeyId.create();
         this.createdAt = Instant.now().toEpochMilli();
-        this.linkingKey = Hex.encode(linkingKey);
+        this.linkingKey = linkingKey.toHex();
 
         checkArgument(this.toPublicKey().isValid(), "Linking key must be a valid public key");
     }
@@ -50,7 +51,7 @@ class LinkingKey implements Entity<WalletUser, LinkingKey.LinkingKeyId> {
     }
 
     public void markUsedK1(K1 k1) {
-        this.leastRecentlyUsedK1 = k1.getHex();
+        this.leastRecentlyUsedK1 = k1.toHex();
     }
 
     @Value(staticConstructor = "of")

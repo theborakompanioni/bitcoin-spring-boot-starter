@@ -1,6 +1,5 @@
 package org.tbk.spring.lnurl.security.session;
 
-import fr.acinq.secp256k1.Hex;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.Assert;
+import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
@@ -35,10 +35,10 @@ public class LnurlAuthSessionAuthenticationProvider implements AuthenticationPro
             throw new LnurlAuthenticationException("Already authenticated.");
         }
 
-        byte[] linkingKey = lnurlAuthSecurityService.findPairedLinkingKeyByK1(auth.getK1())
+        LinkingKey linkingKey = lnurlAuthSecurityService.findPairedLinkingKeyByK1(auth.getK1())
                 .orElseThrow(() -> new LnurlAuthenticationException("Cannot migrate session."));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(Hex.encode(linkingKey));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(linkingKey.toHex());
         LnurlAuthSessionToken newAuth = new LnurlAuthSessionToken(auth.getK1(), linkingKey, userDetails.getAuthorities());
 
         newAuth.setDetails(userDetails);

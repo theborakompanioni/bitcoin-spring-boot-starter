@@ -1,14 +1,15 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fr.acinq.secp256k1.Hex;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
-import org.tbk.lnurl.K1;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.auth.LinkingKey;
+import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
@@ -37,14 +38,13 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
     private Long lastSuccessfulAuthAt;
 
     @JoinColumn(name = "lnurl_auth_wallet_user_id")
-    private final List<LinkingKey> linkingKeys = new ArrayList<>();
+    private final List<AuthLinkingKey> linkingKeys = new ArrayList<>();
 
-    WalletUser(LinkingKey linkingKey) {
+    WalletUser(AuthLinkingKey linkingKey) {
         this.id = WalletUserId.create();
         this.createdAt = Instant.now().toEpochMilli();
         this.name = "anon";
 
-        //this.linkingKey = requireNonNull(linkingKey);
         linkingKeys.add(requireNonNull(linkingKey));
 
         registerEvent(new WalletUserCreatedEvent(this.id));
@@ -55,11 +55,11 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
         log.trace("AfterDomainEventPublication");
     }
 
-    WalletUser pair(byte[] linkingKey, K1 k1) {
+    WalletUser pair(LinkingKey linkingKey, K1 k1) {
         this.lastSuccessfulAuthAt = Instant.now().toEpochMilli();
 
         linkingKeys.stream()
-                .filter(it -> Arrays.equals(linkingKey, Hex.decode(it.getLinkingKey())))
+                .filter(it -> it.getLinkingKey().equals(linkingKey.toHex()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Given 'linkingKey' not found."))
                 .markUsedK1(k1);
@@ -69,13 +69,13 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
         return this;
     }
 
-    public Optional<byte[]> getLinkingKeyForLeastRecentlyUsedK1(K1 k1) {
-        String k1hex = k1.getHex();
+    public Optional<LinkingKey> getLinkingKeyForLeastRecentlyUsedK1(K1 k1) {
+        String k1hex = k1.toHex();
         return linkingKeys.stream()
                 .filter(it -> k1hex.equals(it.getLeastRecentlyUsedK1()))
-                .map(LinkingKey::getLinkingKey)
-                .map(Hex::decode)
-                .findFirst();
+                .map(AuthLinkingKey::getLinkingKey)
+                .findFirst()
+                .map(SimpleLinkingKey::fromHex);
     }
 
     @Value(staticConstructor = "of")

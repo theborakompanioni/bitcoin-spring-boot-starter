@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 import org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig;
-import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.auth.LnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 
 import javax.servlet.http.HttpSession;
@@ -29,9 +29,9 @@ public class LnLoginPageCtrl {
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> loginHtml(HttpSession session) {
-        LnUrlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+        LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
 
-        session.setAttribute("k1", lnUrlAuth.getK1().getHex());
+        session.setAttribute("k1", lnUrlAuth.getK1().toHex());
 
         UriComponents qrCodeImageUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .scheme(null)
@@ -43,7 +43,7 @@ public class LnLoginPageCtrl {
         return ResponseEntity.ok(createLoginPageHtml(qrCodeImageUri, lnUrlAuth));
     }
 
-    private String createLoginPageHtml(UriComponents qrCodeImageUri, LnUrlAuth lnUrlAuth) {
+    private String createLoginPageHtml(UriComponents qrCodeImageUri, LnurlAuth lnUrlAuth) {
         String lnurl = lnUrlAuth.toLnUrl().toLnUrlString();
 
         String template = "<!DOCTYPE html>\n"
@@ -73,7 +73,7 @@ public class LnLoginPageCtrl {
         Object principal = authentication.getPrincipal();
 
         return String.format(template, qrCodeImageUri.toUriString(),
-                lnurl, lnurl, lnUrlAuth.getK1().getHex(), principal,
+                lnurl, lnurl, lnUrlAuth.getK1().toHex(), principal,
                 LnurlAuthExampleApplicationSecurityConfig.lnurlAuthSessionLoginPath(),
                 LnurlAuthExampleApplicationSecurityConfig.lnurlAuthSessionLoginPath());
     }

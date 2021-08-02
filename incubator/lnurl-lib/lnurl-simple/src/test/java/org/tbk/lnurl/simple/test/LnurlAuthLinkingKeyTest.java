@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static scala.collection.JavaConverters.asScala;
 
-class LnUrlAuthLinkingKeyTest {
+class LnurlAuthLinkingKeyTest {
 
     @Test
     void itShouldCreateLinkingKeyForSiteWithRandomWallet() {

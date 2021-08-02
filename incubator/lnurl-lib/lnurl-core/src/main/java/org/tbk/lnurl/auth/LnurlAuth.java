@@ -1,4 +1,6 @@
-package org.tbk.lnurl;
+package org.tbk.lnurl.auth;
+
+import org.tbk.lnurl.Lnurl;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -6,10 +8,10 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public interface LnUrlAuth {
+public interface LnurlAuth {
     URI toUri();
 
-    LnUrl toLnUrl();
+    Lnurl toLnUrl();
 
     K1 getK1();
 

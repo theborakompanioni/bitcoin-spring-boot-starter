@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.tbk.lightning.lnurl.example.domain.WalletUser.WalletUserId;
-import org.tbk.lnurl.K1;
+import org.tbk.lnurl.auth.K1;
 
 import java.util.Optional;
 
 interface WalletUsers extends PagingAndSortingRepository<WalletUser, WalletUserId>, AssociationResolver<WalletUser, WalletUserId> {
 
-    default Optional<WalletUser> findByLinkingKey(LinkingKey linkingKey) {
+    default Optional<WalletUser> findByLinkingKey(AuthLinkingKey linkingKey) {
         return this.findByLinkingKey(linkingKey.getLinkingKey());
     }
 
@@ -21,7 +21,7 @@ interface WalletUsers extends PagingAndSortingRepository<WalletUser, WalletUserI
     Optional<WalletUser> findByLinkingKey(@Param("linkingKey") String linkingKey);
 
     default Optional<WalletUser> findByLeastRecentlyUsedK1(K1 k1) {
-        return this.findByLeastRecentlyUsedK1(k1.getHex());
+        return this.findByLeastRecentlyUsedK1(k1.toHex());
     }
 
     @Query(value = "SELECT wu.* FROM lnurl_auth_wallet_user wu "

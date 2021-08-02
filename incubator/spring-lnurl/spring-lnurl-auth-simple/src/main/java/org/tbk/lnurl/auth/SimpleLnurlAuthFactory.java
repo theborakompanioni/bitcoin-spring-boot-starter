@@ -1,9 +1,7 @@
 package org.tbk.lnurl.auth;
 
 import lombok.extern.slf4j.Slf4j;
-import org.tbk.lnurl.K1;
-import org.tbk.lnurl.LnUrlAuth;
-import org.tbk.lnurl.simple.SimpleLnUrlAuth;
+import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 
 import java.net.URI;
 
@@ -22,8 +20,8 @@ public final class SimpleLnurlAuthFactory implements LnurlAuthFactory {
     }
 
     @Override
-    public LnUrlAuth createLnUrlAuth() {
+    public LnurlAuth createLnUrlAuth() {
         K1 k1 = k1Manager.create();
-        return SimpleLnUrlAuth.create(base, k1);
+        return SimpleLnurlAuth.create(base, k1);
     }
 }

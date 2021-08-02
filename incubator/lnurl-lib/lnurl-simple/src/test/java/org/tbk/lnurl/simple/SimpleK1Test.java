@@ -1,6 +1,7 @@
 package org.tbk.lnurl.simple;
 
 import org.junit.jupiter.api.Test;
+import org.tbk.lnurl.simple.auth.SimpleK1;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -11,8 +12,8 @@ class SimpleK1Test {
     @Test
     void fromHexSuccessful() {
         SimpleK1 k1 = SimpleK1.fromHex("00".repeat(32));
-        assertThat(k1.getHex(), is("0000000000000000000000000000000000000000000000000000000000000000"));
-        assertThat(k1.getBytes().length, is(32));
+        assertThat(k1.toHex(), is("0000000000000000000000000000000000000000000000000000000000000000"));
+        assertThat(k1.toArray().length, is(32));
     }
 
     @Test

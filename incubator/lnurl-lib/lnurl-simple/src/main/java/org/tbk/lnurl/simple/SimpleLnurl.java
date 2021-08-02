@@ -2,9 +2,8 @@ package org.tbk.lnurl.simple;
 
 import com.google.common.primitives.Bytes;
 import fr.acinq.bitcoin.Bech32;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.tbk.lnurl.LnUrl;
+import org.tbk.lnurl.Lnurl;
 import scala.Tuple2;
 
 import java.net.URI;
@@ -14,49 +13,53 @@ import java.util.ArrayList;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Value
-public class SimpleLnUrl implements LnUrl {
+public class SimpleLnurl implements Lnurl {
     private static final String HUMAN_READABLE_PART = "lnurl";
 
-    public static SimpleLnUrl decode(String lnurl) {
-        return new SimpleLnUrl(lnurl);
+    public static SimpleLnurl fromBech32(String lnurl) {
+        Tuple2<String, byte[]> decode = Bech32.decode(lnurl);
+        String decodedLnUrl = new String(Bech32.five2eight(decode._2), StandardCharsets.UTF_8);
+
+        return fromUri(URI.create(decodedLnUrl));
     }
 
-    public static SimpleLnUrl encode(URI uri) {
-        byte[] data = uri.toString().getBytes(StandardCharsets.UTF_8);
-        String lnurl = Bech32.encode(hrp(), eight2five(data));
-        return decode(lnurl);
+    public static SimpleLnurl fromUri(URI uri) {
+        return new SimpleLnurl(uri);
     }
 
     public static String hrp() {
         return HUMAN_READABLE_PART;
     }
 
-    String encoded;
+    private final URI decoded;
 
-    URI decoded;
+    transient String encoded;
 
-    private SimpleLnUrl(String lnurl) {
-        this.encoded = requireNonNull(lnurl).toLowerCase();
-
-        Tuple2<String, byte[]> decode = Bech32.decode(this.encoded);
-        String decodedLnUrl = new String(Bech32.five2eight(decode._2), StandardCharsets.UTF_8);
-        this.decoded = URI.create(decodedLnUrl);
+    private SimpleLnurl(URI decoded) {
+        this.decoded = requireNonNull(decoded);
     }
 
     @Override
     public URI toUri() {
-        return decoded;
+        return this.decoded;
     }
 
     @Override
     public String toLnUrlString() {
+        if (this.encoded == null) {
+            this.encoded = toBech32(this.decoded);
+        }
         return this.encoded;
     }
 
     @Override
     public String toString() {
         return this.toLnUrlString();
+    }
+
+    private static String toBech32(URI uri) {
+        byte[] data = uri.toString().getBytes(StandardCharsets.UTF_8);
+        return Bech32.encode(hrp(), eight2five(data));
     }
 
     /**

@@ -1,19 +1,19 @@
-package org.tbk.spring.lnurl.security;
+package org.tbk.lightning.lnurl.example.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionToken;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletToken;
 
 @Slf4j
-@Component // todo: move bean creation to own auto config
-public class LnurlAuthSuccessEventListener implements ApplicationListener<InteractiveAuthenticationSuccessEvent> {
+@Component
+class LnurlAuthSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
     @Override
-    public void onApplicationEvent(InteractiveAuthenticationSuccessEvent event) {
+    public void onApplicationEvent(AuthenticationSuccessEvent event) {
         Authentication authentication = event.getAuthentication();
 
         if (authentication instanceof LnurlAuthWalletToken) {
@@ -24,10 +24,10 @@ public class LnurlAuthSuccessEventListener implements ApplicationListener<Intera
     }
 
     private void onSuccessfulAuthentication(LnurlAuthWalletToken authentication) {
-        log.debug("Successful authenticated user: {}", authentication.getPrincipal());
+        log.debug("Successful lnurl-auth authenticated wallet user: {}", authentication.getPrincipal());
     }
 
     private void onSuccessfulAuthentication(LnurlAuthSessionToken authentication) {
-        log.debug("Successful authenticated user: {}", authentication.getPrincipal());
+        log.debug("Successful lnurl-auth authenticated session user: {}", authentication.getPrincipal());
     }
 }

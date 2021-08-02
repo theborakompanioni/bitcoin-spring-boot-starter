@@ -1,7 +1,7 @@
 package org.tbk.lnurl.simple.test;
 
 import org.junit.jupiter.api.Test;
-import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.auth.LnurlAuth;
 
 import java.net.URI;
 import java.security.SecureRandom;
@@ -18,7 +18,7 @@ class SimpleLnWalletTest {
         byte[] seed = new SecureRandom().generateSeed(256);
         SimpleLnWallet lnWallet = SimpleLnWallet.fromSeed(seed);
 
-        LnUrlAuth lnUrlAuth = lnService.createLnUrlAuth();
+        LnurlAuth lnUrlAuth = lnService.createLnUrlAuth();
         URI loginUri = lnWallet.createLoginUri(lnUrlAuth);
 
         boolean loginVerified = lnService.verifyLogin(loginUri);

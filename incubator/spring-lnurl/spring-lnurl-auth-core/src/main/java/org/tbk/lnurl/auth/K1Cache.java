@@ -1,9 +1,5 @@
 package org.tbk.lnurl.auth;
 
-import org.tbk.lnurl.K1;
-
-import java.time.Duration;
-
 public interface K1Cache {
 
     void put(K1 k1);

@@ -14,14 +14,16 @@ import java.io.IOException;
 final class LnurlAuthWalletAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     private static final String body = "{\n"
-            + "\"status\": \"ERROR\",\n"
-            + "\"status\": \"Request could not be authenticated.\"\n"
+            + "  \"status\": \"ERROR\",\n"
+            + "  \"reason\": \"Request could not be authenticated.\"\n"
             + "}";
 
     @Override
     @SuppressFBWarnings("XSS_SERVLET") // false positive - a hardcoded value is written
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
-        log.debug("Received invalid lnurl-auth request: {}", e.getMessage());
+        if (log.isDebugEnabled()) {
+            log.debug("Received invalid lnurl-auth request: {}", e.getMessage());
+        }
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 

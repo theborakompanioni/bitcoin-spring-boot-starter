@@ -1,7 +1,5 @@
 package org.tbk.lnurl.auth;
 
-import org.tbk.lnurl.K1;
-
 import static java.util.Objects.requireNonNull;
 
 public final class SimpleK1Manager implements K1Manager {

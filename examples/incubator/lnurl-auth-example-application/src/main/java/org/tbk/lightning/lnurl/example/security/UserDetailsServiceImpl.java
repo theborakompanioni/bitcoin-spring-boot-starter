@@ -12,11 +12,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.tbk.lightning.lnurl.example.domain.WalletUser;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
+import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public class MyUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @NonNull
     private final WalletUserService walletUserService;
@@ -25,8 +26,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Transactional
     @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay in this case
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        WalletUser walletUser = walletUserService.findUser(Hex.decode(username))
+        WalletUser walletUser = walletUserService.findUser(SimpleLinkingKey.fromHex(username))
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("WALLET_USER"));

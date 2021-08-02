@@ -1,4 +1,4 @@
-package org.tbk.lnurl.simple;
+package org.tbk.lnurl.simple.auth;
 
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -6,9 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.tbk.lnurl.K1;
-import org.tbk.lnurl.LnUrl;
-import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.Lnurl;
+import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.simple.SimpleLnurl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,44 +22,44 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Value
-public class SimpleLnUrlAuth implements LnUrlAuth {
+public class SimpleLnurlAuth implements LnurlAuth {
     public static final String TAG_PARAM_VALUE = "login";
 
     URI baseUrl;
     K1 k1;
     Action action;
 
-    private SimpleLnUrlAuth(URI baseUrl, K1 k1) {
+    private SimpleLnurlAuth(URI baseUrl, K1 k1) {
         this(baseUrl, k1, null);
     }
 
-    private SimpleLnUrlAuth(URI baseUrl, K1 k1, Action action) {
+    private SimpleLnurlAuth(URI baseUrl, K1 k1, Action action) {
         this.baseUrl = requireNonNull(baseUrl);
         this.k1 = requireNonNull(k1);
         this.action = action;
     }
 
     // https://example.com?tag=login&k1=hex(32 bytes of random data)&action=login
-    public static SimpleLnUrlAuth create(URI url) {
-        return new SimpleLnUrlAuth(url, SimpleK1.random());
+    public static SimpleLnurlAuth create(URI url) {
+        return new SimpleLnurlAuth(url, SimpleK1.random());
     }
 
-    public static SimpleLnUrlAuth create(URI url, K1 k1) {
-        return new SimpleLnUrlAuth(url, k1);
+    public static SimpleLnurlAuth create(URI url, K1 k1) {
+        return new SimpleLnurlAuth(url, k1);
     }
 
-    public static SimpleLnUrlAuth from(LnUrl lnurl) {
+    public static SimpleLnurlAuth from(Lnurl lnurl) {
         return from(lnurl.toUri());
     }
 
-    public static SimpleLnUrlAuth parse(String uri) {
+    public static SimpleLnurlAuth parse(String uri) {
         return from(URI.create(uri));
     }
 
-    public static SimpleLnUrlAuth from(URI uri) {
+    public static SimpleLnurlAuth from(URI uri) {
         requireNonNull(uri, "'uri' must not be null");
 
-        if (!LnUrl.isSupported(uri)) {
+        if (!Lnurl.isSupported(uri)) {
             throw new IllegalArgumentException("Unsupported url: Only 'https' or 'onion' urls allowed");
         }
 
@@ -83,7 +84,7 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
                 .map(Action::parse)
                 .findFirst();
 
-        return new SimpleLnUrlAuth(uri, SimpleK1.fromHex(k1), action.orElse(null));
+        return new SimpleLnurlAuth(uri, SimpleK1.fromHex(k1), action.orElse(null));
     }
 
     @Override
@@ -91,7 +92,7 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
     public URI toUri() {
         URIBuilder uriBuilder = new URIBuilder(baseUrl)
                 .setParameter("tag", TAG_PARAM_VALUE)
-                .setParameter("k1", k1.getHex());
+                .setParameter("k1", k1.toHex());
 
         this.getAction().ifPresent(it -> uriBuilder.setParameter("action", it.getValue()));
 
@@ -99,8 +100,8 @@ public class SimpleLnUrlAuth implements LnUrlAuth {
     }
 
     @Override
-    public LnUrl toLnUrl() {
-        return SimpleLnUrl.encode(toUri());
+    public Lnurl toLnUrl() {
+        return SimpleLnurl.fromUri(toUri());
     }
 
     @Override

@@ -8,7 +8,7 @@ import fr.acinq.secp256k1.Hex;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
-import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.auth.LnurlAuth;
 import scodec.bits.ByteVector;
 
 import java.net.URI;
@@ -31,10 +31,10 @@ class SimpleLnWallet {
     }
 
     @SneakyThrows
-    public URI createLoginUri(LnUrlAuth lnUrlAuth) {
+    public URI createLoginUri(LnurlAuth lnUrlAuth) {
         ExtendedPrivateKey linkingKey = deriveLinkingKey(lnUrlAuth.toUri());
 
-        ByteVector64 signedK1 = Crypto.sign(lnUrlAuth.getK1().getBytes(), linkingKey.privateKey());
+        ByteVector64 signedK1 = Crypto.sign(lnUrlAuth.getK1().toArray(), linkingKey.privateKey());
         ByteVector signedK1DerEncoded = Crypto.compact2der(signedK1);
 
         // <LNURL_hostname_and_path>?<LNURL_existing_query_parameters>&sig=<hex(sign(utf8ToBytes(k1), linkingPrivKey))>&key=<hex(linkingKey)>

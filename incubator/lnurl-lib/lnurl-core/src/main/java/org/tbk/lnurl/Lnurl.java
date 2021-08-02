@@ -4,7 +4,7 @@ import java.net.URI;
 
 import static java.util.Objects.requireNonNull;
 
-public interface LnUrl {
+public interface Lnurl {
 
     static boolean isSupported(URI uri) {
         requireNonNull(uri, "'uri' must not be null");

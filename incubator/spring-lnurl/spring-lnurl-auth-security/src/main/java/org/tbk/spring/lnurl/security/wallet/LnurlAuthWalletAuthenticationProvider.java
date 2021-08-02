@@ -2,24 +2,18 @@ package org.tbk.spring.lnurl.security.wallet;
 
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
-import fr.acinq.secp256k1.Hex;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.Assert;
-import org.tbk.lnurl.K1;
-import org.tbk.lnurl.auth.K1Manager;
-import org.tbk.lnurl.auth.LnurlAuthPairingService;
+import org.tbk.lnurl.auth.*;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 import scodec.bits.ByteVector;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProvider {
@@ -28,7 +22,7 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
     private final K1Manager k1Manager;
 
     @NonNull
-    private final LnurlAuthPairingService lnurlAuthSecurityService;
+    private final LnurlAuthPairingService lnurlAuthPairingService;
 
     @NonNull
     private final UserDetailsService userDetailsService;
@@ -43,6 +37,10 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
         Assert.isTrue(supports(authentication.getClass()), "Unsupported authentication class");
 
         LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
+        return authenticateInternal(auth);
+    }
+
+    private Authentication authenticateInternal(LnurlAuthWalletToken auth) {
         if (auth.isAuthenticated()) {
             throw new LnurlAuthenticationException("Already authenticated.");
         }
@@ -59,25 +57,26 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
             throw new BadCredentialsException("k1 and signature could not be verified.");
         }
 
+        try {
+            lnurlAuthPairingService.pairK1WithLinkingKey(auth.getK1(), auth.getLinkingKey());
+        } catch (Exception e) {
+            throw new LnurlAuthenticationException("Could not pair k1 with linkingKey", e);
+        }
+
         k1Manager.invalidate(k1);
 
-        lnurlAuthSecurityService.pairK1WithLinkingKey(auth.getK1(), auth.getLinkingKey());
+        UserDetails user = userDetailsService.loadUserByUsername(auth.getLinkingKey().toHex());
 
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("WALLET_USER"));
-        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getK1(), auth.getSignature(), auth.getLinkingKey(), authorities);
-
-
-        UserDetails user = userDetailsService.loadUserByUsername(Hex.encode(auth.getLinkingKey()));
-
+        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getK1(), auth.getSignature(), auth.getLinkingKey(), user.getAuthorities());
         newAuth.setDetails(user);
 
         return newAuth;
     }
 
-    private boolean verifyLogin(K1 k1, byte[] signature, byte[] linkingKey) {
-        ByteVector rawK1 = ByteVector.view(k1.getBytes());
-        ByteVector64 rawSig = Crypto.der2compact(ByteVector.view(signature));
-        Crypto.PublicKey rawKey = new Crypto.PublicKey(ByteVector.view(linkingKey));
+    private boolean verifyLogin(K1 k1, Signature signature, LinkingKey linkingKey) {
+        ByteVector rawK1 = ByteVector.view(k1.toArray());
+        ByteVector64 rawSig = Crypto.der2compact(ByteVector.view(signature.toArray()));
+        Crypto.PublicKey rawKey = new Crypto.PublicKey(ByteVector.view(linkingKey.toArray()));
 
         return Crypto.verifySignature(rawK1, rawSig, rawKey);
     }

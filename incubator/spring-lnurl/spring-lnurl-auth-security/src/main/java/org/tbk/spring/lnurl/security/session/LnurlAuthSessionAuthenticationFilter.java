@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.tbk.lnurl.K1;
-import org.tbk.lnurl.simple.SimpleK1;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.simple.auth.SimpleK1;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +33,7 @@ public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthentication
                 .map(SimpleK1::fromHex);
 
         if (log.isDebugEnabled()) {
-            log.debug("got lnurl-auth session migration request for k1 '{}'", k1.map(K1::getHex).orElse(null));
+            log.debug("got lnurl-auth session migration request for k1 '{}'", k1.map(K1::toHex).orElse(null));
         }
 
         if (k1.isEmpty()) {

@@ -1,13 +1,13 @@
 package org.tbk.spring.lnurl.security.session;
 
-import fr.acinq.secp256k1.Hex;
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
-import org.tbk.lnurl.K1;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.auth.LinkingKey;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
@@ -16,10 +16,12 @@ public class LnurlAuthSessionToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = 1L;
 
+    @Getter
     private final K1 k1;
 
     @Nullable
-    private byte[] linkingKey;
+    @Getter
+    private LinkingKey linkingKey;
 
     public LnurlAuthSessionToken(K1 k1) {
         super(null);
@@ -27,10 +29,10 @@ public class LnurlAuthSessionToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public LnurlAuthSessionToken(K1 k1, byte[] linkingKey, Collection<? extends GrantedAuthority> authorities) {
+    public LnurlAuthSessionToken(K1 k1, LinkingKey linkingKey, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.k1 = requireNonNull(k1);
-        this.linkingKey = Arrays.copyOf(linkingKey, linkingKey.length);
+        this.linkingKey = requireNonNull(linkingKey);
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -41,25 +43,16 @@ public class LnurlAuthSessionToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        if (linkingKey != null) {
-            return Hex.encode(this.linkingKey);
-        } else {
-            // TODO: can null be returned? would at least be better than misleading k1 value..
-            return k1.getHex();
+        if (!this.isAuthenticated() || linkingKey == null) {
+            throw new IllegalStateException("Cannot call method 'getPrincipal' on unauthenticated session token");
         }
+
+        return linkingKey.toHex();
     }
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         Assert.isTrue(!isAuthenticated, "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
         super.setAuthenticated(false);
-    }
-
-    public K1 getK1() {
-        return k1;
-    }
-
-    public byte[] getLinkingKey() {
-        return linkingKey == null ? null : Arrays.copyOf(linkingKey, linkingKey.length);
     }
 }

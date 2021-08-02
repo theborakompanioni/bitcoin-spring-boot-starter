@@ -1,6 +1,5 @@
 package org.tbk.spring.lnurl.security.wallet;
 
-import fr.acinq.secp256k1.Hex;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -8,8 +7,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.tbk.lnurl.K1;
-import org.tbk.lnurl.simple.SimpleK1;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.auth.LinkingKey;
+import org.tbk.lnurl.auth.Signature;
+import org.tbk.lnurl.simple.auth.SimpleK1;
+import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
+import org.tbk.lnurl.simple.auth.SimpleSignature;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +48,7 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         LnurlAuthWalletToken authRequest = buildToken(request);
 
         if (log.isDebugEnabled()) {
-            log.debug("got lnurl-auth wallet authentication request for k1 '{}'", authRequest.getK1().getHex());
+            log.debug("got lnurl-auth wallet authentication request for k1 '{}'", authRequest.getK1().toHex());
         }
 
         // Allow subclasses to set the "details" property
@@ -57,12 +60,14 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
     private LnurlAuthWalletToken buildToken(HttpServletRequest request) {
         try {
             K1 k1 = obtainK1(request).orElseThrow(() -> new LnurlAuthenticationException("'k1' is missing or invalid."));
-            byte[] sig = obtainSig(request).orElseThrow(() -> new LnurlAuthenticationException("'sig' is missing or invalid."));
-            byte[] key = obtainKey(request).orElseThrow(() -> new LnurlAuthenticationException("'key' is missing or invalid."));
+            Signature sig = obtainSig(request).orElseThrow(() -> new LnurlAuthenticationException("'sig' is missing or invalid."));
+            LinkingKey key = obtainKey(request).orElseThrow(() -> new LnurlAuthenticationException("'key' is missing or invalid."));
 
             return new LnurlAuthWalletToken(k1, sig, key);
-        } catch (IllegalArgumentException e) {
-            throw new LnurlAuthenticationException("Authentication error: " + e.getMessage());
+        } catch (AuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new LnurlAuthenticationException("Cannot build wallet token from request", e);
         }
     }
 
@@ -71,14 +76,14 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
                 .map(SimpleK1::fromHex);
     }
 
-    protected Optional<byte[]> obtainSig(HttpServletRequest request) {
+    protected Optional<Signature> obtainSig(HttpServletRequest request) {
         return Optional.ofNullable(request.getParameter(LNURL_AUTH_SIG_KEY))
-                .map(Hex::decode);
+                .map(SimpleSignature::fromHex);
     }
 
-    protected Optional<byte[]> obtainKey(HttpServletRequest request) {
+    protected Optional<LinkingKey> obtainKey(HttpServletRequest request) {
         return Optional.ofNullable(request.getParameter(LNURL_AUTH_KEY_KEY))
-                .map(Hex::decode);
+                .map(SimpleLinkingKey::fromHexStrict);
     }
 
     /**

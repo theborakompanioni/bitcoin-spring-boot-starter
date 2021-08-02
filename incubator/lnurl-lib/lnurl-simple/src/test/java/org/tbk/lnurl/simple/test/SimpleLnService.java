@@ -9,10 +9,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.tbk.lnurl.K1;
-import org.tbk.lnurl.LnUrlAuth;
-import org.tbk.lnurl.simple.SimpleK1;
-import org.tbk.lnurl.simple.SimpleLnUrlAuth;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.simple.auth.SimpleK1;
+import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 import scodec.bits.ByteVector;
 
 import java.net.URI;
@@ -41,10 +41,10 @@ class SimpleLnService {
         this.base = requireNonNull(domain);
     }
 
-    public LnUrlAuth createLnUrlAuth() {
+    public LnurlAuth createLnUrlAuth() {
         K1 k1 = SimpleK1.random();
         k1Cache.put(k1, "");
-        return SimpleLnUrlAuth.create(base, k1);
+        return SimpleLnurlAuth.create(base, k1);
     }
 
     public boolean verifyLogin(URI loginUri) {
@@ -57,7 +57,7 @@ class SimpleLnService {
         K1 k1 = SimpleK1.fromHex(k1Param.getValue());
         invalidateK1ValueOrThrow(k1);
 
-        ByteVector rawK1 = ByteVector.view(k1.getBytes());
+        ByteVector rawK1 = ByteVector.view(k1.toArray());
         ByteVector64 rawSig = Crypto.der2compact(ByteVector.view(Hex.decode(sigParam.getValue())));
         Crypto.PublicKey rawKey = new Crypto.PublicKey(ByteVector.view(Hex.decode(keyParam.getValue())));
 

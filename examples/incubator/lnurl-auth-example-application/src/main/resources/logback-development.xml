@@ -3,4 +3,6 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <logger name="org.tbk.lightning.lnurl.example" level="DEBUG"/>
+    <logger name="org.tbk.lnurl" level="DEBUG"/>
+    <logger name="org.tbk.spring.lnurl" level="DEBUG"/>
 </configuration>

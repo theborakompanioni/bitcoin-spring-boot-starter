@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.tbk.lnurl.LnUrl;
-import org.tbk.lnurl.LnUrlAuth;
+import org.tbk.lnurl.Lnurl;
+import org.tbk.lnurl.auth.LnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
-import org.tbk.lnurl.simple.SimpleLnUrl;
-import org.tbk.lnurl.simple.SimpleLnUrlAuth;
+import org.tbk.lnurl.simple.SimpleLnurl;
+import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;
@@ -38,21 +38,21 @@ public class LnUrlAuthApi {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> loginJson() {
-        LnUrlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+        LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
 
         return toJsonResponse(lnUrlAuth);
     }
 
     @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<BufferedImage> loginImage() throws Exception {
-        LnUrlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+        LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
 
         return toQrCodeResponse(lnUrlAuth);
     }
 
     @GetMapping(path = "/decode", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<Map<String, Object>> lnurlAuthDecode(@RequestParam("lnurlauth") String lnurlauthEncoded){
-        LnUrlAuth lnUrlAuth = SimpleLnUrlAuth.from(SimpleLnUrl.decode(lnurlauthEncoded));
+        LnurlAuth lnUrlAuth = SimpleLnurlAuth.from(SimpleLnurl.fromBech32(lnurlauthEncoded));
         return toJsonResponse(lnUrlAuth);
     }
 
@@ -64,19 +64,19 @@ public class LnUrlAuthApi {
      */
     @GetMapping(path = "/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<BufferedImage> lnurlAuthQrcode(@RequestParam("lnurlauth") String lnurlauthEncoded) throws Exception {
-        return toQrCodeResponse(SimpleLnUrlAuth.from(SimpleLnUrl.decode(lnurlauthEncoded)));
+        return toQrCodeResponse(SimpleLnurlAuth.from(SimpleLnurl.fromBech32(lnurlauthEncoded)));
     }
 
-    private ResponseEntity<Map<String, Object>> toJsonResponse(LnUrlAuth lnUrlAuth) {
-        LnUrl lnUrl = lnUrlAuth.toLnUrl();
+    private ResponseEntity<Map<String, Object>> toJsonResponse(LnurlAuth lnUrlAuth) {
+        Lnurl lnUrl = lnUrlAuth.toLnUrl();
         return ResponseEntity.ok(ImmutableMap.<String, Object>builder()
-                .put("k1", lnUrlAuth.getK1().getHex())
+                .put("k1", lnUrlAuth.getK1().toHex())
                 .put("encoded", lnUrl.toLnUrlString())
                 .put("url", lnUrl.toUri().toString())
                 .build());
     }
 
-    private ResponseEntity<BufferedImage> toQrCodeResponse(LnUrlAuth lnUrlAuth) throws WriterException {
+    private ResponseEntity<BufferedImage> toQrCodeResponse(LnurlAuth lnUrlAuth) throws WriterException {
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache()
                 .noTransform()
@@ -89,7 +89,7 @@ public class LnUrlAuthApi {
 
 
 
-    private static BufferedImage generateQrCodeImage(LnUrlAuth lnUrlAuth) throws WriterException {
+    private static BufferedImage generateQrCodeImage(LnurlAuth lnUrlAuth) throws WriterException {
         return generateQrCodeImage(lnUrlAuth.toLnUrl().toLnUrlString());
     }
 

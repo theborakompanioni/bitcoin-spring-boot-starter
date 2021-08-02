@@ -14,13 +14,15 @@ import java.io.IOException;
 final class LnurlAuthWalletAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private static final String body = "{\n"
-            + "\"status\": \"OK\"\n"
+            + "  \"status\": \"OK\"\n"
             + "}";
 
     @Override
     @SuppressFBWarnings("XSS_SERVLET") // false positive - a hardcoded value is written
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        log.debug("Received successful lnurl-auth request of user '{}'", authentication.getPrincipal());
+        if (log.isDebugEnabled()) {
+            log.debug("Received successful lnurl-auth request of user '{}'", authentication.getPrincipal());
+        }
 
         response.setStatus(HttpStatus.OK.value());
 
