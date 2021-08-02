@@ -18,6 +18,8 @@ import org.tbk.lnurl.auth.LnurlAuthFactory;
 
 import javax.servlet.http.HttpSession;
 
+import static org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig.lnurlAuthSessionK1Key;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/login")
@@ -31,7 +33,7 @@ public class LnLoginPageCtrl {
     public ResponseEntity<String> loginHtml(HttpSession session) {
         LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
 
-        session.setAttribute("k1", lnUrlAuth.getK1().toHex());
+        session.setAttribute(lnurlAuthSessionK1Key(), lnUrlAuth.getK1().toHex());
 
         UriComponents qrCodeImageUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .scheme(null)

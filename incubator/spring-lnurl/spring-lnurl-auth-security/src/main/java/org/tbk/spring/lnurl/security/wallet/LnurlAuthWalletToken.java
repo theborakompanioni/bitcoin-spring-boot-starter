@@ -25,7 +25,7 @@ public class LnurlAuthWalletToken extends AbstractAuthenticationToken {
     @Getter
     private final LinkingKey linkingKey;
 
-    public LnurlAuthWalletToken(K1 k1, Signature signature, LinkingKey linkingKey) {
+    LnurlAuthWalletToken(K1 k1, Signature signature, LinkingKey linkingKey) {
         super(null);
         this.k1 = requireNonNull(k1);
         this.signature = requireNonNull(signature);
@@ -33,8 +33,8 @@ public class LnurlAuthWalletToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public LnurlAuthWalletToken(K1 k1, Signature signature, LinkingKey linkingKey,
-                                Collection<? extends GrantedAuthority> authorities) {
+    LnurlAuthWalletToken(K1 k1, Signature signature, LinkingKey linkingKey,
+                         Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.k1 = requireNonNull(k1);
         this.signature = requireNonNull(signature);
@@ -44,8 +44,7 @@ public class LnurlAuthWalletToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        // todo: really needed? why not just return ""?
-        return this.k1.toHex() + ":" + this.signature.toHex();
+        return null;
     }
 
     @Override

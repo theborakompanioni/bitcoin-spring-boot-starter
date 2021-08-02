@@ -23,13 +23,13 @@ public class LnurlAuthSessionToken extends AbstractAuthenticationToken {
     @Getter
     private LinkingKey linkingKey;
 
-    public LnurlAuthSessionToken(K1 k1) {
+    LnurlAuthSessionToken(K1 k1) {
         super(null);
         this.k1 = requireNonNull(k1);
         setAuthenticated(false);
     }
 
-    public LnurlAuthSessionToken(K1 k1, LinkingKey linkingKey, Collection<? extends GrantedAuthority> authorities) {
+    LnurlAuthSessionToken(K1 k1, LinkingKey linkingKey, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.k1 = requireNonNull(k1);
         this.linkingKey = requireNonNull(linkingKey);
@@ -38,7 +38,7 @@ public class LnurlAuthSessionToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return "";
+        return null;
     }
 
     @Override

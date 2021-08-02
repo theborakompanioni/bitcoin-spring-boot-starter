@@ -20,14 +20,19 @@ import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationProvide
 @RequiredArgsConstructor
 public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigurer, HttpSecurity> {
     private static final String DEFAULT_WALLET_LOGIN_URL = "/lnurl-auth/wallet/login";
-    private static final String DEFAUT_SESSION_LOGIN_URL = "/lnurl-auth/session/migrate";
+    private static final String DEFAULT_SESSION_LOGIN_URL = "/lnurl-auth/session/migrate";
+    private static final String DEFAULT_SESSION_K1_KEY = "LNURL_AUTH_K1";
 
     public static String defaultWalletLoginUrl() {
         return DEFAULT_WALLET_LOGIN_URL;
     }
 
     public static String defaultSessionLoginUrl() {
-        return DEFAUT_SESSION_LOGIN_URL;
+        return DEFAULT_SESSION_LOGIN_URL;
+    }
+
+    public static String defaultSessionK1Key() {
+        return DEFAULT_SESSION_K1_KEY;
     }
 
     @NonNull
@@ -38,6 +43,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
 
     protected String walletLoginUrl = defaultWalletLoginUrl();
     protected String sessionLoginUrl = defaultSessionLoginUrl();
+    protected String sessionK1Key = defaultSessionK1Key();
 
     public LnurlAuthConfigurer walletLoginUrl(String walletLoginUrl) {
         Assert.hasText(walletLoginUrl, "walletLoginUrl cannot be empty");
@@ -51,6 +57,12 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         return this;
     }
 
+    public LnurlAuthConfigurer sessionK1Key(String sessionK1Key) {
+        Assert.hasText(sessionK1Key, "sessionK1Key cannot be empty");
+        this.sessionK1Key = sessionK1Key;
+        return this;
+    }
+
     @Override
     public void configure(HttpSecurity http) {
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
@@ -61,7 +73,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         walletAuthFilter.setAuthenticationManager(authenticationManager);
         walletAuthFilter.setSessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy());
 
-        LnurlAuthSessionAuthenticationFilter sessionAuthFilter = new LnurlAuthSessionAuthenticationFilter(sessionLoginUrl);
+        LnurlAuthSessionAuthenticationFilter sessionAuthFilter = new LnurlAuthSessionAuthenticationFilter(sessionLoginUrl, sessionK1Key);
         sessionAuthFilter.setAuthenticationManager(authenticationManager);
         sessionAuthFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
 
