@@ -15,7 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,6 +39,14 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
     private String name;
 
     private Long lastSuccessfulAuthAt;
+
+    private Long accountDisabledAt;
+
+    private Long accountLockedAt;
+
+    private Long accountExpiredAt;
+
+    private Long credentialsExpiredAt;
 
     @JoinColumn(name = "lnurl_auth_wallet_user_id")
     private final List<AuthLinkingKey> linkingKeys = new ArrayList<>();
@@ -76,6 +87,26 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
                 .map(AuthLinkingKey::getLinkingKey)
                 .findFirst()
                 .map(SimpleLinkingKey::fromHex);
+    }
+
+    public boolean isAccountEnabled(Instant now) {
+        return !isAccountDisabled(now);
+    }
+
+    private boolean isAccountDisabled(Instant now) {
+        return accountDisabledAt != null && accountDisabledAt <= now.toEpochMilli();
+    }
+
+    public boolean isAccountLocked(Instant now) {
+        return accountLockedAt != null && accountLockedAt <= now.toEpochMilli();
+    }
+
+    public boolean isAccountExpired(Instant now) {
+        return accountExpiredAt != null && accountExpiredAt <= now.toEpochMilli();
+    }
+
+    public boolean isCredentialsExpired(Instant now) {
+        return credentialsExpiredAt != null && credentialsExpiredAt <= now.toEpochMilli();
     }
 
     @Value(staticConstructor = "of")

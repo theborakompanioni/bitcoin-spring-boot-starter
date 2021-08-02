@@ -16,8 +16,12 @@ public class V1__init extends BaseJavaMigration {
                 + "id string PRIMARY KEY, "
                 + "version integer, "
                 + "created_at integer, "
+                + "name string, "
                 + "last_successful_auth_at integer, "
-                + "name string"
+                + "account_disabled_at integer, "
+                + "account_locked_at integer, "
+                + "account_expired_at integer, "
+                + "credentials_expired_at integer"
                 + ")";
 
         String sql2 = "create table if not exists lnurl_auth_linking_key "
