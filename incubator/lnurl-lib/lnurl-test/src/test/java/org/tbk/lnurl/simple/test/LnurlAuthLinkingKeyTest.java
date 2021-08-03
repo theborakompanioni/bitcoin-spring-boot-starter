@@ -4,8 +4,9 @@ import fr.acinq.bitcoin.DeterministicWallet;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
 import fr.acinq.bitcoin.DeterministicWallet.KeyPath;
 import fr.acinq.secp256k1.Hex;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.tbk.lnurl.test.LnUrlAuthLinkingKey;
+import scala.collection.immutable.Seq;
 import scodec.bits.ByteVector;
 
 import java.net.URI;
@@ -15,7 +16,6 @@ import static fr.acinq.bitcoin.DeterministicWallet.hardened;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static scala.collection.JavaConverters.asScala;
 
 class LnurlAuthLinkingKeyTest {
 
@@ -43,7 +43,7 @@ class LnurlAuthLinkingKeyTest {
         var hashingKey = Hex.decode("7d417a6a5e9a6a4a879aeaba11a11838764c8fa2b959c242d43dea682b3e409b01");
 
         // expected path: m/138'/1603989739'/682320451'/2081389135'/1986563837'
-        KeyPath expectedKeyPath = new KeyPath(asScala(Lists.emptyList()).toSeq())
+        KeyPath expectedKeyPath = new KeyPath(Seq.newBuilder().result())
                 .derive(hardened(138L))
                 .derive(3751473387L)
                 .derive(2829804099L)
@@ -62,7 +62,7 @@ class LnurlAuthLinkingKeyTest {
         var walletSeed = Hex.decode("00".repeat(512));
 
         // expected path: m/138'/443735582/1653120675'/1066334360'/230068797'
-        KeyPath expectedKeyPath = new KeyPath(asScala(Lists.emptyList()).toSeq())
+        KeyPath expectedKeyPath = new KeyPath(Seq.newBuilder().result())
                 .derive(hardened(138L))
                 .derive(443735582L)
                 .derive(hardened(1653120675L))

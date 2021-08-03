@@ -1,4 +1,4 @@
-package org.tbk.lnurl.simple.test;
+package org.tbk.lnurl.test;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-class SimpleLnService {
+public class SimpleLnService {
     public static SimpleLnService of(URI domain) {
         return new SimpleLnService(domain);
     }

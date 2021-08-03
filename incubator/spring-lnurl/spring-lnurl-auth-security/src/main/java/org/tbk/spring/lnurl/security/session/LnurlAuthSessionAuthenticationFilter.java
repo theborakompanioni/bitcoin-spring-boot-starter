@@ -53,7 +53,7 @@ public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthentication
 
     protected Optional<K1> obtainK1(HttpServletRequest request) {
         return Optional.of(request)
-                .map(HttpServletRequest::getSession)
+                .map(it -> it.getSession(false))
                 .map(it -> (String) it.getAttribute(k1AttributeName))
                 .map(SimpleK1::fromHex);
     }

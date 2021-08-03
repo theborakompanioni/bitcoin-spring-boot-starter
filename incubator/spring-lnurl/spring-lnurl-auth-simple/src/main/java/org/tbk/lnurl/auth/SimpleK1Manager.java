@@ -7,6 +7,10 @@ public final class SimpleK1Manager implements K1Manager {
     private final K1Factory factory;
     private final K1Cache cache;
 
+    public SimpleK1Manager() {
+        this(new SimpleK1Factory(), new InMemoryK1Cache());
+    }
+
     public SimpleK1Manager(K1Factory factory, K1Cache cache) {
         this.factory = requireNonNull(factory);
         this.cache = requireNonNull(cache);

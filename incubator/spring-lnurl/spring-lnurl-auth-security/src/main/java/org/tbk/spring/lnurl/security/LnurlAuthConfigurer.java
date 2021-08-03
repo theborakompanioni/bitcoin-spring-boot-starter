@@ -1,7 +1,5 @@
 package org.tbk.spring.lnurl.security;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,7 +15,8 @@ import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationProvi
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationFilter;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationProvider;
 
-@RequiredArgsConstructor
+import static java.util.Objects.requireNonNull;
+
 public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigurer, HttpSecurity> {
     private static final String DEFAULT_WALLET_LOGIN_URL = "/lnurl-auth/wallet/login";
     private static final String DEFAULT_SESSION_LOGIN_URL = "/lnurl-auth/session/migrate";
@@ -35,15 +34,23 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         return DEFAULT_SESSION_K1_KEY;
     }
 
-    @NonNull
-    private final K1Manager k1Manager;
+    protected K1Manager k1Manager;
 
-    @NonNull
-    private final LnurlAuthPairingService lnurlAuthPairingService;
+    protected LnurlAuthPairingService pairingService;
 
     protected String walletLoginUrl = defaultWalletLoginUrl();
     protected String sessionLoginUrl = defaultSessionLoginUrl();
     protected String sessionK1Key = defaultSessionK1Key();
+
+    public LnurlAuthConfigurer k1Manager(K1Manager k1Manager) {
+        this.k1Manager = requireNonNull(k1Manager);
+        return this;
+    }
+
+    public LnurlAuthConfigurer pairingService(LnurlAuthPairingService pairingService) {
+        this.pairingService = requireNonNull(pairingService);
+        return this;
+    }
 
     public LnurlAuthConfigurer walletLoginUrl(String walletLoginUrl) {
         Assert.hasText(walletLoginUrl, "walletLoginUrl cannot be empty");
@@ -65,6 +72,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
 
     @Override
     public void configure(HttpSecurity http) {
+
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http.getSharedObject(SessionAuthenticationStrategy.class);
         UserDetailsService userDetailsService = http.getSharedObject(UserDetailsService.class);
@@ -85,10 +93,10 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     }
 
     protected LnurlAuthWalletAuthenticationProvider walletAuthenticationProvider(UserDetailsService userDetailsService) {
-        return new LnurlAuthWalletAuthenticationProvider(k1Manager, lnurlAuthPairingService, userDetailsService);
+        return new LnurlAuthWalletAuthenticationProvider(k1Manager, pairingService, userDetailsService);
     }
 
     protected LnurlAuthSessionAuthenticationProvider sessionAuthenticationProvider(UserDetailsService userDetailsService) {
-        return new LnurlAuthSessionAuthenticationProvider(lnurlAuthPairingService, userDetailsService);
+        return new LnurlAuthSessionAuthenticationProvider(pairingService, userDetailsService);
     }
 }

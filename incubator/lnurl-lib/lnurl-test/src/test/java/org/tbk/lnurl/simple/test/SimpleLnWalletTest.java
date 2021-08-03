@@ -2,6 +2,8 @@ package org.tbk.lnurl.simple.test;
 
 import org.junit.jupiter.api.Test;
 import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.test.SimpleLnService;
+import org.tbk.lnurl.test.SimpleLnWallet;
 
 import java.net.URI;
 import java.security.SecureRandom;

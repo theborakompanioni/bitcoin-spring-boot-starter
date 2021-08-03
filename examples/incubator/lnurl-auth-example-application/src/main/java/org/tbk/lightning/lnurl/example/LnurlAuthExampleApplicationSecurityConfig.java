@@ -9,9 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.tbk.lnurl.auth.InMemoryK1Cache;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
-import org.tbk.lnurl.auth.SimpleK1Factory;
 import org.tbk.lnurl.auth.SimpleK1Manager;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
@@ -36,7 +34,6 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
     }
 
     private final LnurlAuthPairingService lnurlAuthPairingService;
-
     private final UserDetailsService userDetailsService;
 
     public LnurlAuthExampleApplicationSecurityConfig(LnurlAuthPairingService lnurlAuthPairingService,
@@ -56,7 +53,9 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                 .userDetailsService(userDetailsService())
                 .csrf().disable()
                 .cors().disable()
-                .apply(lnurlAuthConfigurer())
+                .apply(new LnurlAuthConfigurer())
+                .k1Manager(k1Manager())
+                .pairingService(lnurlAuthPairingService)
                 .walletLoginUrl(lnurlAuthWalletLoginPath())
                 .sessionLoginUrl(lnurlAuthSessionLoginPath())
                 .sessionK1Key(lnurlAuthSessionK1Key())
@@ -93,22 +92,8 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
     }
 
     @Bean
-    public LnurlAuthConfigurer lnurlAuthConfigurer() {
-        return new LnurlAuthConfigurer(k1Manager(), lnurlAuthPairingService);
-    }
-
-    @Bean
     public SimpleK1Manager k1Manager() {
-        return new SimpleK1Manager(k1Factory(), k1Cache());
+        return new SimpleK1Manager();
     }
 
-    @Bean
-    public SimpleK1Factory k1Factory() {
-        return new SimpleK1Factory();
-    }
-
-    @Bean
-    public InMemoryK1Cache k1Cache() {
-        return new InMemoryK1Cache();
-    }
 }

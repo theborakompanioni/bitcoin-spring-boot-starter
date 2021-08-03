@@ -1,14 +1,14 @@
-package org.tbk.lnurl.simple.test;
+package org.tbk.lnurl.test;
 
 import com.google.common.collect.ImmutableList;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
 import fr.acinq.bitcoin.DeterministicWallet.KeyPath;
 import fr.acinq.bitcoin.Protocol;
-import org.assertj.core.util.Lists;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
+import scala.collection.immutable.Seq;
 import scodec.bits.ByteVector;
 
 import java.io.ByteArrayInputStream;
@@ -22,9 +22,9 @@ import static fr.acinq.bitcoin.DeterministicWallet.hardened;
 import static scala.collection.JavaConverters.asJava;
 import static scala.collection.JavaConverters.asScala;
 
-class LnUrlAuthLinkingKey {
+public class LnUrlAuthLinkingKey {
     // lnurl-auth base path: m/138'
-    private static final KeyPath lnurlAuthKeyPathBase = new KeyPath(asScala(Lists.emptyList()).toSeq()).derive(hardened(138L));
+    private static final KeyPath lnurlAuthKeyPathBase = new KeyPath(Seq.newBuilder().result()).derive(hardened(138L));
 
     // lnurl-auth hashing key path: m/138'/0
     private static final KeyPath lnurlAuthHashingKeyPath = lnurlAuthKeyPathBase.derive(0L);
