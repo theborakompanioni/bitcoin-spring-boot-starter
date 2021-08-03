@@ -39,14 +39,14 @@ public class LnLoginPageCtrl {
                 .scheme(null)
                 .host(null)
                 .replacePath("/api/v1/lnauth/qrcode")
-                .queryParam("lnurlauth", lnUrlAuth.toLnUrl().toLnUrlString())
+                .queryParam("lnurlauth", lnUrlAuth.toLnurl().toLnurlString())
                 .build();
 
         return ResponseEntity.ok(createLoginPageHtml(qrCodeImageUri, lnUrlAuth));
     }
 
     private String createLoginPageHtml(UriComponents qrCodeImageUri, LnurlAuth lnUrlAuth) {
-        String lnurl = lnUrlAuth.toLnUrl().toLnUrlString();
+        String lnurl = lnUrlAuth.toLnurl().toLnurlString();
 
         String template = "<!DOCTYPE html>\n"
                 + "<html lang=\"en\">\n"

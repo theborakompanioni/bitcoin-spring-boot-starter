@@ -45,7 +45,7 @@ public class SimpleLnurl implements Lnurl {
     }
 
     @Override
-    public String toLnUrlString() {
+    public String toLnurlString() {
         if (this.encoded == null) {
             this.encoded = toBech32(this.decoded);
         }
@@ -54,7 +54,7 @@ public class SimpleLnurl implements Lnurl {
 
     @Override
     public String toString() {
-        return this.toLnUrlString();
+        return this.toLnurlString();
     }
 
     private static String toBech32(URI uri) {

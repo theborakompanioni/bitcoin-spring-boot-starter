@@ -68,10 +68,10 @@ public class LnUrlAuthApi {
     }
 
     private ResponseEntity<Map<String, Object>> toJsonResponse(LnurlAuth lnUrlAuth) {
-        Lnurl lnUrl = lnUrlAuth.toLnUrl();
+        Lnurl lnUrl = lnUrlAuth.toLnurl();
         return ResponseEntity.ok(ImmutableMap.<String, Object>builder()
                 .put("k1", lnUrlAuth.getK1().toHex())
-                .put("encoded", lnUrl.toLnUrlString())
+                .put("encoded", lnUrl.toLnurlString())
                 .put("url", lnUrl.toUri().toString())
                 .build());
     }
@@ -90,7 +90,7 @@ public class LnUrlAuthApi {
 
 
     private static BufferedImage generateQrCodeImage(LnurlAuth lnUrlAuth) throws WriterException {
-        return generateQrCodeImage(lnUrlAuth.toLnUrl().toLnUrlString());
+        return generateQrCodeImage(lnUrlAuth.toLnurl().toLnurlString());
     }
 
     private static BufferedImage generateQrCodeImage(String barcodeText) throws WriterException {

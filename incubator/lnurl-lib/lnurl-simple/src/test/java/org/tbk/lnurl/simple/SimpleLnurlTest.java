@@ -18,7 +18,7 @@ class SimpleLnurlTest {
 
         SimpleLnurl lnurlParsed = SimpleLnurl.fromBech32(bech32lnurl);
 
-        assertThat(lnurlParsed.toLnUrlString(), equalToIgnoringCase(bech32lnurl));
+        assertThat(lnurlParsed.toLnurlString(), equalToIgnoringCase(bech32lnurl));
         assertThat(lnurlParsed.toUri().toString(), is(expected));
     }
 
@@ -30,6 +30,6 @@ class SimpleLnurlTest {
         URI uri = URI.create(url);
         SimpleLnurl lnurl = SimpleLnurl.fromUri(uri);
 
-        assertThat(lnurl.toLnUrlString().toUpperCase(), is(expectedBech32lnurl));
+        assertThat(lnurl.toLnurlString().toUpperCase(), is(expectedBech32lnurl));
     }
 }

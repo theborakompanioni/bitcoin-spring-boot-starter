@@ -17,5 +17,5 @@ public interface Lnurl {
 
     URI toUri();
 
-    String toLnUrlString();
+    String toLnurlString();
 }

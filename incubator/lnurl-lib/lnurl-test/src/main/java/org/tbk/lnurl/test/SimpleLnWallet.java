@@ -33,10 +33,6 @@ public class SimpleLnWallet {
         this.masterPrivateKey = DeterministicWallet.generate(ByteVector.view(seed));
     }
 
-    private ExtendedPrivateKey deriveLinkingKey(URI domain) {
-        return LnUrlAuthLinkingKey.deriveLinkingKey(masterPrivateKey, domain);
-    }
-
     @SneakyThrows
     public URI createLoginUri(LnurlAuth lnUrlAuth) {
         Params params = createParams(lnUrlAuth);
@@ -63,6 +59,17 @@ public class SimpleLnWallet {
                 .sig(SimpleSignature.fromHex(sigParam))
                 .key(SimpleLinkingKey.fromHex(keyParam))
                 .build();
+    }
+
+    public LinkingKey deriveLinkingPublicKey(URI uri) {
+        ExtendedPrivateKey linkingKey = deriveLinkingKey(uri);
+
+        byte[] linkingPubKey = linkingKey.publicKey().value().toArray();
+        return SimpleLinkingKey.fromHex(Hex.encode(linkingPubKey));
+    }
+
+    private ExtendedPrivateKey deriveLinkingKey(URI domain) {
+        return LnUrlAuthLinkingKey.deriveLinkingKey(masterPrivateKey, domain);
     }
 
     @Value

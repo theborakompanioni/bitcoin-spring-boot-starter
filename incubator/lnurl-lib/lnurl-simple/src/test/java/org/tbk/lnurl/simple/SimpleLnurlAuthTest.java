@@ -19,11 +19,11 @@ class SimpleLnurlAuthTest {
         URI url = URI.create("http://example.onion");
 
         SimpleLnurlAuth lnUrlAuth = SimpleLnurlAuth.create(url);
-        Lnurl lnurlCreated = lnUrlAuth.toLnUrl();
+        Lnurl lnurlCreated = lnUrlAuth.toLnurl();
 
         assertThat(lnurlCreated.toUri().getScheme(), is(url.getScheme()));
         assertThat(lnurlCreated.toUri().getHost(), is(url.getHost()));
-        assertThat(lnurlCreated.toLnUrlString(), is(notNullValue()));
+        assertThat(lnurlCreated.toLnurlString(), is(notNullValue()));
     }
 
     @Test
@@ -32,9 +32,9 @@ class SimpleLnurlAuthTest {
         String expectedLnurl = "lnurl1dp68gup69uhk27rpd4cxcefwdahxjmmw8a6xzeead3hkw6twye4nz0trvg6kzvpjx56rjc3excmrqwtr8yunsvfcvdnr2wphvyunjdf5v3snxvehxgerydfex9jxvv3cx3jrxdnyvgunzvf5vfjrgvesvd3rxfnpvd6xjmmw84kx7emfdcwfl4xp";
 
         SimpleLnurlAuth lnUrlAuth = SimpleLnurlAuth.from(uri);
-        Lnurl lnurlCreated = lnUrlAuth.toLnUrl();
+        Lnurl lnurlCreated = lnUrlAuth.toLnurl();
 
-        assertThat(lnurlCreated.toLnUrlString(), is(expectedLnurl));
+        assertThat(lnurlCreated.toLnurlString(), is(expectedLnurl));
     }
 
     @Test

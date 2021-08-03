@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 public interface LnurlAuth {
     URI toUri();
 
-    Lnurl toLnUrl();
+    Lnurl toLnurl();
 
     K1 getK1();
 

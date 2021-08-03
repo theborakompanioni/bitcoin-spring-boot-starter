@@ -100,7 +100,7 @@ public class SimpleLnurlAuth implements LnurlAuth {
     }
 
     @Override
-    public Lnurl toLnUrl() {
+    public Lnurl toLnurl() {
         return SimpleLnurl.fromUri(toUri());
     }
 
