@@ -41,7 +41,7 @@ public class TestPairingService implements LnurlAuthPairingService {
             userDetailsManager.createUser(User.builder()
                     .username(linkingKey.toHex())
                     .password(k1.toHex()) // password must not be null -_-
-                    .authorities(new SimpleGrantedAuthority("USER"))
+                    .authorities(new SimpleGrantedAuthority("ROLE_LNURL_AUTH_TEST_USER"))
                     .build());
         }
     }

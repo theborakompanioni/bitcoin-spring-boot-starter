@@ -121,7 +121,7 @@ class LnurlWalletAuthenticationFilterTest {
 
         Params params = testWallet.createParams(lnurlAuth);
 
-        String mismatchingKeyHex = params.getKey().toHex().replaceAll(".", "0");
+        String mismatchingKeyHex = params.getKey().toHex().replaceAll("[0-9a-fA-F]", "0");
 
         mockMvc.perform(get(loginUri)
                 .queryParam(LNURL_AUTH_K1_KEY, params.getK1().toHex())

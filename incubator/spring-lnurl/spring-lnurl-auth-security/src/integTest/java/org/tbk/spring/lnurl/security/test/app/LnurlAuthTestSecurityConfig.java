@@ -1,6 +1,5 @@
 package org.tbk.spring.lnurl.security.test.app;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,6 @@ import org.tbk.lnurl.auth.SimpleLnurlAuthFactory;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @Slf4j
 @EnableWebSecurity

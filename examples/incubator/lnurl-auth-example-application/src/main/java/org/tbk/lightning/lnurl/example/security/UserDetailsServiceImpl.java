@@ -31,7 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Instant now = Instant.now();
 
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("WALLET_USER"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
         return User.builder()
                 .username(walletUser.getName())
                 .password("") // there is no "password" with lnurl-auth - set to arbitrary value
