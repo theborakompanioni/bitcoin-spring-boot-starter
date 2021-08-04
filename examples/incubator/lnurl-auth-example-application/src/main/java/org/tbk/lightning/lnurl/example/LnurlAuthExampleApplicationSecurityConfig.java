@@ -82,7 +82,7 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                         .xssProtectionEnabled(true)
                         .block(true)
                         .and()
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("script-src 'self'"))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'"))
                 )
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()

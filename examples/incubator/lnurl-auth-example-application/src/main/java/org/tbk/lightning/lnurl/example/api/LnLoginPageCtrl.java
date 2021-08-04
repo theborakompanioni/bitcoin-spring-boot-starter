@@ -53,6 +53,7 @@ public class LnLoginPageCtrl {
                 + "<head>\n"
                 + "    <meta charset=\"UTF-8\" />\n"
                 + "    <title>lnurl-auth login</title>\n"
+                + "    <script async=\"\" src=\"/js/lnurl-auth-session-migrate-fetch.js\"></script>\n"
                 + "</head>\n"
                 + "<body>\n"
                 + "<img src=\"%s\" alt=\"%s\" />\n"
@@ -66,7 +67,7 @@ public class LnLoginPageCtrl {
                 + "logged in: %s\n"
                 + "</p>\n"
                 + "<p>\n"
-                + "if ready click: <a href=\"%s\">%s</a>\n"
+                + "if you are not logged in automatically after scanning the qr-code click here: <a href=\"%s\">%s</a>\n"
                 + "</p>\n"
                 + "</body>\n"
                 + "</html>";
