@@ -11,12 +11,16 @@ import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.simple.auth.SimpleK1;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
 public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private static final LnurlAuthSessionAuthenticationSuccessHandler successHandler = new LnurlAuthSessionAuthenticationSuccessHandler();
 
     private final String k1AttributeName;
 
@@ -29,6 +33,8 @@ public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthentication
 
         Assert.hasText(k1AttributeName, "k1AttributeName cannot be empty");
         this.k1AttributeName = k1AttributeName;
+
+        this.setAuthenticationSuccessHandler(successHandler);
         this.setAllowSessionCreation(false); // session must only be created by the application itself
     }
 
@@ -41,6 +47,8 @@ public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthentication
         }
 
         if (k1.isEmpty()) {
+            // as 'k1' is deleted once the user is logged in - any attempt to migrate the session again
+            // will logout the user (security context is clear if exception is thrown)
             throw new AuthenticationServiceException("'k1' is missing or invalid.");
         }
 
@@ -51,11 +59,26 @@ public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthentication
         return this.getAuthenticationManager().authenticate(lnurlAuthSessionToken);
     }
 
-    protected Optional<K1> obtainK1(HttpServletRequest request) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+        super.successfulAuthentication(request, response, chain, authResult);
+
+        // when authentication is successful and the migration is done,
+        // we can delete 'k1' as the pairing is now complete.
+        removeK1(request);
+    }
+
+    private Optional<K1> obtainK1(HttpServletRequest request) {
         return Optional.of(request)
                 .map(it -> it.getSession(false))
                 .map(it -> (String) it.getAttribute(k1AttributeName))
                 .map(SimpleK1::fromHex);
+    }
+
+    private void removeK1(HttpServletRequest request) {
+        Optional.of(request)
+                .map(it -> it.getSession(false))
+                .ifPresent(it -> it.removeAttribute(k1AttributeName));
     }
 
     protected void setDetails(HttpServletRequest request, LnurlAuthSessionToken authRequest) {

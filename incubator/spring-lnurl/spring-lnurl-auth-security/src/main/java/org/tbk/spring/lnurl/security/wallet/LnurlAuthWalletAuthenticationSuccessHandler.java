@@ -21,11 +21,10 @@ final class LnurlAuthWalletAuthenticationSuccessHandler implements Authenticatio
     @SuppressFBWarnings("XSS_SERVLET") // false positive - a hardcoded value is written
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Received successful lnurl-auth request of user '{}'", authentication.getPrincipal());
+            log.debug("Received successful lnurl-auth wallet request of user '{}'", authentication.getPrincipal());
         }
 
         response.setStatus(HttpStatus.OK.value());
-
         response.getWriter().write(body);
     }
 }

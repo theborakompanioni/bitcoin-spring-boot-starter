@@ -19,6 +19,7 @@ import org.tbk.spring.lnurl.security.test.app.LnurlAuthTestApplication;
 import java.net.URI;
 import java.security.SecureRandom;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,15 +52,14 @@ class LnurlSessionAuthenticationFilterTest {
 
     @Test
     void sessionLoginMissingParamsError() throws Exception {
-        mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl()))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().bytes(new byte[0]));
     }
 
     @Test
-    void sessionLoginSuccess() throws Exception {
+    void sessionLoginSuccessBrowser() throws Exception {
         K1 k1 = k1Manager.create();
 
         // simulate linking with wallet
@@ -72,6 +72,23 @@ class LnurlSessionAuthenticationFilterTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(content().bytes(new byte[0]));
+    }
+
+    @Test
+    void sessionLoginSuccessXhr() throws Exception {
+        K1 k1 = k1Manager.create();
+
+        // simulate linking with wallet
+        LinkingKey linkingKey = testWallet.deriveLinkingPublicKey(URI.create("https://localhost"));
+        pairingService.pairK1WithLinkingKey(k1, linkingKey);
+
+        mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
+                .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("OK")))
+                .andExpect(jsonPath("$.headers").exists())
+                .andExpect(jsonPath("$.headers.location").value("/"));
     }
 
     @Test
