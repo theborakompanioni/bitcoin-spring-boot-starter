@@ -3,9 +3,33 @@
 
 A lnurl-auth example application.
 
+- uses [spring-lnurl-auth-security](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/tree/master/incubator/spring-lnurl)
+  with default login page
+- uses [jMolecules](https://github.com/xmolecules/jmolecules) for DDD
+- uses [sqlite](https://sqlite.org) database for persistence
+- uses in-memory k1 cache (reboots invalidate previous login challenges)
+- automatically registers an `.onion` url
+
 <p align="center">
-    <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/raw/master/examples/incubator/lnurl-auth-example-application/docs/assets/images/screenshot.png" alt="Screenshot" />
+    <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/raw/master/incubator/spring-lnurl/docs/assets/images/screenshot.png" alt="Screenshot" />
 </p>
+
+### Run
+In order for lnurl-auth to work you must provide a https url for the wallet authentication to work properly
+(once it is possible over http-onion urls () this is not necessary anymore).
+
+This can be done with [ngrok](https://ngrok.com/):
+```shell
+./ngrok http 8080
+# Forwarding  https://abcdef012345.ngrok.io -> http://localhost:8080 
+```
+
+Make sure to adapt the application configuration accordingly:
+```yml
+app:
+  # use your own url here (e.g. https://myapp.ngrok.io)
+  lnurl-auth-base-url: https://abcdef012345.ngrok.io
+```
 
 Start the application with
 ```shell
@@ -25,15 +49,16 @@ Example console output:
 2021-07-27 13:33:21.524  INFO 1221814 --- [  restartedMain] o.t.l.l.e.LnurlAuthExampleApplication    : Started LnurlAuthExampleApplication in 8.305 seconds (JVM running for 8.974)
 2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
 2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : ===== LNURL_AUTH ================================
-2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
-2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : login page: https://myonionurl.onion/login
-2021-07-27 13:33:21.563  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
-2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : example auth url: https://myonionurl.onion?tag=login&k1=90fcb971de936e7bb9a97015e537980e92f5c49f7550094edfc359be2feec270
-2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
+2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : example auth url: https://abcdef012345.ngrok.io?tag=login&k1=90fcb971de936e7bb9a97015e537980e92f5c49f7550094edfc359be2feec270
+2021-07-27 13:33:21.572  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : ===== TOR IS ENABLED ============================
+2021-07-27 13:33:21.573  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : onion login: http://abcdef0123456789abcdef0123456789abcdef0123456789abcdef42.onion/login
+2021-07-27 13:33:21.573  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
 ```
 
 # Resources
 - lnurl RFC (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - Wallets supporting lnurl: https://github.com/fiatjaf/awesome-lnurl#wallets
 - jMolecules (GitHub): https://github.com/xmolecules/jmolecules
+- sqlite (GitHub): https://github.com/sqlite/sqlite
+- ngrok Website: https://ngrok.com
 
