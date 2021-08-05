@@ -90,9 +90,9 @@ include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoin
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter'
 
-include 'incubator:lnurl-lib:lnurl-core'
-include 'incubator:lnurl-lib:lnurl-simple'
-include 'incubator:lnurl-lib:lnurl-test'
+include 'incubator:lnurl-java:lnurl-core'
+include 'incubator:lnurl-java:lnurl-simple'
+include 'incubator:lnurl-java:lnurl-test'
 
 include 'incubator:spring-lnurl:spring-lnurl-auth-core'
 include 'incubator:spring-lnurl:spring-lnurl-auth-simple'

@@ -2,12 +2,12 @@ plugins {
     id 'java'
 }
 
-description = 'lnurl test package'
+description = 'lnurl simple implementation package'
 
 dependencies {
-    api project(':incubator:lnurl-lib:lnurl-simple')
+    api project(':incubator:lnurl-java:lnurl-core')
 
-    api "fr.acinq:bitcoin-lib_2.13:${acinqBitcoinLibVerson}"
+    implementation "fr.acinq:bitcoin-lib_2.13:${acinqBitcoinLibVerson}"
 
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
