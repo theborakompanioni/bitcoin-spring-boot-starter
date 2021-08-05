@@ -38,26 +38,29 @@ public final class SimpleSignature extends AbstractByteArrayView implements Sign
      * The S coordinate, as a big-endian integer.
      * 1-byte value indicating what data is hashed (not part of the DER signature)
      * <p>
-     * This method is called "lax" because, we let the [sighash] byte at the end be optional.
      */
     private boolean isDERSignature(byte[] data) {
         if (data.length < 8) {
             return false;
         }
-        if (data.length >= 73) {
+        if (data.length > 73) {
             return false;
         }
         if (data[0] != 0x30 || data[2] != 0x02) {
             return false;
         }
 
+        boolean sighashAbsent = 2 + data[1] == data.length;
         boolean sighashPresent = 2 + data[1] == data.length - 1;
-        if(sighashPresent) {
+        if (sighashAbsent) {
+            // data has no sighash byte at the end - append one byte and try again.
+            return Crypto.isDERSignature(ByteVector.view(Arrays.copyOf(data, data.length + 1)));
+            // return Crypto.isDERSignature(ByteVector.view(data).padTo(data.length + 1));
+        } else if (sighashPresent) {
             // data has sighash byte at the end
             return Crypto.isDERSignature(ByteVector.view(data));
         } else {
-            // data has no sighash byte at the end - append one byte and try again.
-            return isDERSignature(Arrays.copyOf(data, data.length + 1));
+            return false;
         }
     }
 }

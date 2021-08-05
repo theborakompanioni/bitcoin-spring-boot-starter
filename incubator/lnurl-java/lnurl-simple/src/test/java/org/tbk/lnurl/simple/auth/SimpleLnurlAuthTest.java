@@ -1,4 +1,4 @@
-package org.tbk.lnurl.simple;
+package org.tbk.lnurl.simple.auth;
 
 import org.junit.jupiter.api.Test;
 import org.tbk.lnurl.Lnurl;
