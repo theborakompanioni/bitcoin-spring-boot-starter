@@ -1,7 +1,11 @@
-lnurl-auth-example-application
+🗲 lnurl-auth-example-application
 ===
 
 A lnurl-auth example application.
+
+<p align="center">
+    <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/examples/incubator/lnurl-auth-example-application/docs/assets/images/screenshot.png" alt="Screenshot" />
+</p>
 
 Start the application with
 ```shell
@@ -22,9 +26,9 @@ Example console output:
 2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
 2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : ===== LNURL_AUTH ================================
 2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
-2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : login page: http://myonionurl.onion/login
+2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : login page: https://myonionurl.onion/login
 2021-07-27 13:33:21.563  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
-2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : example auth url: http://myonionurl.onion?tag=login&k1=90fcb971de936e7bb9a97015e537980e92f5c49f7550094edfc359be2feec270
+2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : example auth url: https://myonionurl.onion?tag=login&k1=90fcb971de936e7bb9a97015e537980e92f5c49f7550094edfc359be2feec270
 2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
 ```
 
