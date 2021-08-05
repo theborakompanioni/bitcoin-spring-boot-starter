@@ -31,7 +31,7 @@ final class LnurlAuthSessionRedirectStrategy extends DefaultRedirectStrategy {
         if (!clientPrefersJson) {
             this.delegate.sendRedirect(request, response, url);
         } else {
-            String targetUrl = response.encodeRedirectURL(calculateRedirectUrl(request.getContextPath(), url));
+            String targetUrl = calculateRedirectUrl(request.getContextPath(), url);
             String body = "{\n"
                     + "  \"status\": \"OK\",\n"
                     + "  \"headers\": {\n"
@@ -41,6 +41,7 @@ final class LnurlAuthSessionRedirectStrategy extends DefaultRedirectStrategy {
 
             // prevent redirection and write a json to the client indicating successful authentication
             response.setStatus(HttpStatus.OK.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(body);
         }
     }

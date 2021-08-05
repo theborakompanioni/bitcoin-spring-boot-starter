@@ -91,8 +91,7 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
      * request's details property.
      *
      * @param request     that an authentication request is being created for
-     * @param authRequest the authentication request object that should have its details
-     *                    set
+     * @param authRequest the authentication request object that should have its details set
      */
     protected void setDetails(HttpServletRequest request, LnurlAuthWalletToken authRequest) {
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
