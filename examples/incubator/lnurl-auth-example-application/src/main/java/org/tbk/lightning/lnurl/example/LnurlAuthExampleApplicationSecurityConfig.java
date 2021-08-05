@@ -1,8 +1,9 @@
 package org.tbk.lightning.lnurl.example;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -11,17 +12,24 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.tbk.lnurl.auth.K1Manager;
+import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
-import org.tbk.lnurl.auth.SimpleK1Manager;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
 @Slf4j
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
-    static final String LNURL_AUTH_WALLET_LOGIN_PATH = "/api/v1/lnauth/login/wallet";
-    static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnauth/login/session";
+    static final String LNURL_AUTH_LOGIN_PAGE_PATH = "/login";
+    static final String LNURL_AUTH_WALLET_LOGIN_PATH = "/api/v1/lnurl-auth/login/wallet";
+    static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnurl-auth/login/session";
     static final String LNURL_AUTH_SESSION_K1_KEY = "my_lnurl_auth_k1";
+
+    public static String lnurlAuthLoginPagePath() {
+        return LNURL_AUTH_LOGIN_PAGE_PATH;
+    }
 
     public static String lnurlAuthWalletLoginPath() {
         return LNURL_AUTH_WALLET_LOGIN_PATH;
@@ -35,14 +43,17 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
         return LNURL_AUTH_SESSION_K1_KEY;
     }
 
+    @NonNull
+    private final K1Manager lnurlAuthk1Manager;
+
+    @NonNull
     private final LnurlAuthPairingService lnurlAuthPairingService;
+
+    @NonNull
     private final UserDetailsService userDetailsService;
 
-    public LnurlAuthExampleApplicationSecurityConfig(LnurlAuthPairingService lnurlAuthPairingService,
-                                                     UserDetailsService userDetailsService) {
-        this.lnurlAuthPairingService = lnurlAuthPairingService;
-        this.userDetailsService = userDetailsService;
-    }
+    @NonNull
+    private final LnurlAuthFactory lnurlAuthFactory;
 
     @Override
     protected UserDetailsService userDetailsService() {
@@ -53,7 +64,7 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
     public void configure(WebSecurity web) {
         web.httpFirewall(new StrictHttpFirewall());
     }
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -61,8 +72,11 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                 .csrf().disable()
                 .cors().disable()
                 .apply(new LnurlAuthConfigurer())
-                .k1Manager(k1Manager())
+                .k1Manager(lnurlAuthk1Manager)
                 .pairingService(lnurlAuthPairingService)
+                .lnurlAuthFactory(lnurlAuthFactory)
+                .enableDefaultLoginPage()
+                .loginPageUrl(lnurlAuthLoginPagePath())
                 .walletLoginUrl(lnurlAuthWalletLoginPath())
                 .sessionLoginUrl(lnurlAuthSessionLoginPath())
                 .sessionK1Key(lnurlAuthSessionK1Key())
@@ -82,25 +96,20 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                         .xssProtectionEnabled(true)
                         .block(true)
                         .and()
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'"))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'; img-src 'self' data:"))
                 )
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .antMatchers("/").permitAll()
                         .antMatchers("/index.html").permitAll()
                         .antMatchers("/authenticated.html").authenticated()
-                        // login page should be readable by all - session will be initialized
-                        .antMatchers("/login").permitAll()
+                        // lnurl-auth endpoints should be readable for everyone
                         .antMatchers(lnurlAuthWalletLoginPath()).permitAll()
                         .antMatchers(lnurlAuthSessionLoginPath()).permitAll()
-                        .antMatchers("/api/v1/lnauth/**").permitAll()
+                        // the login page will initialize the session
+                        .antMatchers(lnurlAuthLoginPagePath()).permitAll()
                         .anyRequest().authenticated()
                 );
-    }
-
-    @Bean
-    public SimpleK1Manager k1Manager() {
-        return new SimpleK1Manager();
     }
 
 }

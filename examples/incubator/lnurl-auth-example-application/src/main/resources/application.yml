@@ -50,7 +50,7 @@ app:
   lnurl-auth-base-url: http://localhost
 
 org.tbk.tor:
-  enabled: false  # default is `true`
+  enabled: true  # default is `true`
   autoPublishEnabled: true # default is `true`
   working-directory: 'tor-working-dir' # default is `tor-working-dir`
   startup-timeout: 30s # default is `60s`

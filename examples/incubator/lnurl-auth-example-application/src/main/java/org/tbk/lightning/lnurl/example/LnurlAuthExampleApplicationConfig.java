@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +44,11 @@ public class LnurlAuthExampleApplicationConfig {
     }
 
     @Bean
+    public SimpleK1Manager k1Manager() {
+        return new SimpleK1Manager();
+    }
+
+    @Bean
     public UserDetailsService userDetailsService(WalletUserService walletUserService) {
         return new UserDetailsServiceImpl(walletUserService);
     }
@@ -71,7 +75,6 @@ public class LnurlAuthExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    @ConditionalOnBean(HiddenServiceDefinition.class)
     public ApplicationRunner applicationHiddenServiceConsoleInfoRunner(HiddenServiceDefinition applicationHiddenServiceDefinition) {
         return args -> {
             String onionUrl = applicationHiddenServiceDefinition.getVirtualHost()
