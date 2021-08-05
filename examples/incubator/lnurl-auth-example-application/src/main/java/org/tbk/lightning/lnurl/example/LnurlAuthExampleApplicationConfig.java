@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import static java.util.Objects.requireNonNull;
 import static org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig.lnurlAuthWalletLoginPath;
+import static org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig.lnurlAuthLoginPagePath;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -89,11 +90,13 @@ public class LnurlAuthExampleApplicationConfig {
                         return "http://" + val + ":" + applicationHiddenServiceDefinition.getVirtualPort();
                     })
                     .map(it -> it + servletContext.getContextPath())
+                    .map(it -> it + servletContext.getContextPath())
                     .orElseThrow();
 
+            String loginUrl = onionUrl + servletContext.getContextPath() + lnurlAuthLoginPagePath();
             log.info("=================================================");
             log.info("===== TOR IS ENABLED ============================");
-            log.info("onion url: {}", onionUrl);
+            log.info("onion login: {}", loginUrl);
             log.info("=================================================");
         };
     }
