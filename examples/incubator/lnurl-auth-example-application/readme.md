@@ -35,4 +35,5 @@ Example console output:
 # Resources
 - lnurl RFC (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - Wallets supporting lnurl: https://github.com/fiatjaf/awesome-lnurl#wallets
+- jMolecules (GitHub): https://github.com/xmolecules/jmolecules
 

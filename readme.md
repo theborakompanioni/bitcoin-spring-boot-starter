@@ -234,6 +234,9 @@ A module containing a spring boot starter for [Moquette](https://github.com/moqu
 #### bitcoin-mqtt
 A module containing a spring boot starter for a broker publishing Bitcoin ZeroMQ messages via MQTT.
 
+#### spring-lnurl-auth
+A module containing classes and spring security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).
+
 ## Examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 
 example applications showing basic usage of the functionality provided by these modules.
@@ -241,6 +244,7 @@ example applications showing basic usage of the functionality provided by these 
 - [x] bitcoin-autodca: [Stacking Sats on Kraken: Auto DCA example application](examples/bitcoin-autodca-example-application)
 - [x] bitcoin-exchange-rate: [Currency Conversion API example application](examples/bitcoin-exchange-rate-example-application)
 - [x] lnd-playground: [Lightning Network Playground example application](examples/lnd-playground-example-application) (using lnd)
+- [x] lnurl-auth: [Spring Security Authentication With lnurl-auth example application](examples/incubator/lnurl-auth-example-application)
 
 Example apps can be started with a single command, e.g.:
 ```shell script
@@ -324,6 +328,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 ---
 - Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin
 - lnd (GitHub): https://github.com/LightningNetwork/lnd
+- lnurl (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx
 - Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server
 - Electrum Client (GitHub): https://github.com/spesmilo/electrum
