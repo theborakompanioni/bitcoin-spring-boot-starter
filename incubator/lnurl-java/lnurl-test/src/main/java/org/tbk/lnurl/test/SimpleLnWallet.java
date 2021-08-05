@@ -57,7 +57,7 @@ public class SimpleLnWallet {
         return Params.builder()
                 .k1(lnUrlAuth.getK1())
                 .sig(SimpleSignature.fromHex(sigParam))
-                .key(SimpleLinkingKey.fromHex(keyParam))
+                .key(SimpleLinkingKey.fromHexLax(keyParam))
                 .build();
     }
 
@@ -65,7 +65,7 @@ public class SimpleLnWallet {
         ExtendedPrivateKey linkingKey = deriveLinkingKey(uri);
 
         byte[] linkingPubKey = linkingKey.publicKey().value().toArray();
-        return SimpleLinkingKey.fromHex(Hex.encode(linkingPubKey));
+        return SimpleLinkingKey.fromHexLax(Hex.encode(linkingPubKey));
     }
 
     private ExtendedPrivateKey deriveLinkingKey(URI domain) {

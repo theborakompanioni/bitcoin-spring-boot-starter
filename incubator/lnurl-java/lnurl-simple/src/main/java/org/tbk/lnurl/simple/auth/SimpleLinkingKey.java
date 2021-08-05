@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public final class SimpleLinkingKey extends AbstractByteArrayView implements LinkingKey {
 
-    public static SimpleLinkingKey fromHex(String hex) {
+    public static SimpleLinkingKey fromHexLax(String hex) {
         return fromHex(hex, Crypto::isPubKeyValidLax);
     }
 
