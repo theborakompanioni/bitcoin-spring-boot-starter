@@ -15,8 +15,8 @@ A lnurl-auth example application.
 </p>
 
 ### Run
-In order for lnurl-auth to work you must provide a https url for the wallet authentication to work properly
-(once it is possible over http-onion urls () this is not necessary anymore).
+In order for lnurl-auth to work you must provide a https url for the wallet authentication to work properly.
+once [lnurl-rfc#74](https://github.com/fiatjaf/lnurl-rfc/pull/74) is resolved (and it is possible over http-onion urls) this step is not needed anymore.
 
 This can be done with [ngrok](https://ngrok.com/):
 ```shell
