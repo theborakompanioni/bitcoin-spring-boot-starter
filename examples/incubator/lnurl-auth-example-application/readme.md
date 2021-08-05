@@ -4,7 +4,7 @@
 A lnurl-auth example application.
 
 <p align="center">
-    <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/examples/incubator/lnurl-auth-example-application/docs/assets/images/screenshot.png" alt="Screenshot" />
+    <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/raw/master/examples/incubator/lnurl-auth-example-application/docs/assets/images/screenshot.png" alt="Screenshot" />
 </p>
 
 Start the application with
