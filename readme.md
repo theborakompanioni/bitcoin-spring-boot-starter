@@ -234,8 +234,8 @@ A module containing a spring boot starter for [Moquette](https://github.com/moqu
 #### bitcoin-mqtt
 A module containing a spring boot starter for a broker publishing Bitcoin ZeroMQ messages via MQTT.
 
-#### spring-lnurl-auth
-A module containing classes and spring security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).
+#### spring-lnurl
+The [spring-lnurl module](incubator/spring-lnurl) contains classes and spring security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).
 
 ## Examples
 Besides, that most starter modules also have their own example applications, there are also stand-alone 
