@@ -16,10 +16,12 @@ import org.tbk.lightning.lnurl.example.security.UserDetailsServiceImpl;
 import org.tbk.lnurl.auth.*;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
+import javax.servlet.ServletContext;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import static java.util.Objects.requireNonNull;
+import static org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurityConfig.lnurlAuthWalletLoginPath;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -35,9 +37,9 @@ public class LnurlAuthExampleApplicationConfig {
 
     @Bean
     @SneakyThrows(URISyntaxException.class)
-    public LnurlAuthFactory lnurlAuthFactory(K1Manager k1Manager) {
+    public LnurlAuthFactory lnurlAuthFactory(ServletContext servletContext, K1Manager k1Manager) {
         URI callbackUrl = new URIBuilder(properties.getLnurlAuthBaseUrl())
-                .setPath(LnurlAuthExampleApplicationSecurityConfig.lnurlAuthWalletLoginPath())
+                .setPath(servletContext.getContextPath() + lnurlAuthWalletLoginPath())
                 .build();
 
         return new SimpleLnurlAuthFactory(callbackUrl, k1Manager);
@@ -66,8 +68,6 @@ public class LnurlAuthExampleApplicationConfig {
 
             log.info("=================================================");
             log.info("===== LNURL_AUTH ================================");
-            log.info("login page: {}", new URIBuilder(lnUrlAuth.toUri()).setPath("/login").removeQuery().build());
-            log.info("=================================================");
             log.info("example auth url: {}", lnUrlAuth.toUri().toString());
             log.info("=================================================");
         };
@@ -75,7 +75,8 @@ public class LnurlAuthExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner applicationHiddenServiceConsoleInfoRunner(HiddenServiceDefinition applicationHiddenServiceDefinition) {
+    public ApplicationRunner applicationHiddenServiceConsoleInfoRunner(ServletContext servletContext,
+                                                                       HiddenServiceDefinition applicationHiddenServiceDefinition) {
         return args -> {
             String onionUrl = applicationHiddenServiceDefinition.getVirtualHost()
                     .map(val -> {
@@ -86,7 +87,9 @@ public class LnurlAuthExampleApplicationConfig {
                             return "https://" + val;
                         }
                         return "http://" + val + ":" + applicationHiddenServiceDefinition.getVirtualPort();
-                    }).orElseThrow();
+                    })
+                    .map(it -> it + servletContext.getContextPath())
+                    .orElseThrow();
 
             log.info("=================================================");
             log.info("===== TOR IS ENABLED ============================");

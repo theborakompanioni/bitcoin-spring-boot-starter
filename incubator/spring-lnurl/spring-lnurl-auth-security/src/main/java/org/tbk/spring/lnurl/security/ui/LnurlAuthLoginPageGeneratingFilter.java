@@ -26,6 +26,15 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * For internal use with namespace configuration in the case where a user doesn't
+ * configure a login page. The configuration code will insert this filter in the chain
+ * instead.
+ * <p>
+ * Will only work if a redirect is used to the login page.
+ * There is currently no way to customize the behaviour.
+ * Depending on demand for customizations future implementations will be more configurable.
+ */
 @Slf4j
 public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
 
@@ -42,14 +51,18 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
     // the url to the login page html should be delivered
     private final String loginPageUrl;
 
+    // the url for browser session migration after wallet signed in
+    private final String authenticationUrl;
+
+    private final LnurlAuthFactory lnurlAuthFactory;
+
     private final String logoutSuccessUrl;
 
     private final String failureUrl;
 
     private final String loginScriptUrl;
-    private final String loginStylesheetUrl;
 
-    private final LnurlAuthFactory lnurlAuthFactory;
+    private final String loginStylesheetUrl;
 
     private final LoginPageGenerator loginPageGenerator;
 
@@ -63,6 +76,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
 
         this.lnurlAuthFactory = requireNonNull(lnurlAuthFactory);
         this.loginPageUrl = requireNonNull(defaultLoginPageUrl);
+        this.authenticationUrl = requireNonNull(authenticationUrl);
         this.k1AttributeName = k1AttributeName;
 
         this.logoutSuccessUrl = this.loginPageUrl + "?logout";
@@ -71,7 +85,6 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         this.loginStylesheetUrl = this.loginPageUrl + "?stylesheet=default";
 
         this.loginPageGenerator = new LoginPageGenerator(ScriptConfig.builder()
-                .sessionMigrateEndpoint(authenticationUrl)
                 .initialDelay(Duration.ofSeconds(3))
                 .pollingInterval(Duration.ofSeconds(3))
                 .maxAttempts(100)
@@ -134,9 +147,15 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
 
     @SuppressFBWarnings("XSS_SERVLET") // false positive
     private void writeLoginScript(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // prevent logged in users from invoking browser session migration - this would logout the user
+        // as an AuthenticationException is thrown, which invalidates the users authentication.
+        // it is better not to load the script, regardless the configuration of the underlying application.
+        // better: 1) redirect authenticated users before the login page is loaded or
+        //         2) requesting the login page will trigger a logout -> user needs to login again.
+        String authenticationUrl = request.getContextPath() + this.authenticationUrl;
         String content = Optional.ofNullable(request.getUserPrincipal())
                 .map(user -> "/* you are already logged in */")
-                .orElseGet(this.loginPageGenerator::createScript);
+                .orElseGet(() -> this.loginPageGenerator.createScript(authenticationUrl));
 
         response.setContentType(JAVASCRIPT_CONTENT_TYPE);
         response.setContentLength(content.getBytes(StandardCharsets.UTF_8).length);

@@ -9,14 +9,12 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 final class LoginPageGenerator {
 
-    private final String script;
     private final String stylesheet;
+    private final LoginScriptGenerator loginScriptGenerator;
     private final String htmlTemplate;
 
     LoginPageGenerator(ScriptConfig scriptConfig) {
         requireNonNull(scriptConfig);
-
-        this.script = new LoginScriptGenerator(scriptConfig).createScript();
 
         this.stylesheet = ""
                 + StaticTemplateUtils.readContents("normalize.css")
@@ -24,11 +22,13 @@ final class LoginPageGenerator {
                 + StaticTemplateUtils.readContents("login.css")
                 + "\n";
 
+        this.loginScriptGenerator = new LoginScriptGenerator(scriptConfig);
+
         this.htmlTemplate = StaticTemplateUtils.readContents("login.html");
     }
 
-    public String createScript() {
-        return script;
+    public String createScript(String authenticationUrl) {
+        return loginScriptGenerator.createScript(authenticationUrl);
     }
 
     public String createStylesheet() {

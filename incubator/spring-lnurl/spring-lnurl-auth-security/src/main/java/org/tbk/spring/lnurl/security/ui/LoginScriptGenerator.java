@@ -30,8 +30,6 @@ final class LoginScriptGenerator {
             };
         }
 
-        String sessionMigrateEndpoint;
-
         @Builder.Default
         Duration initialDelay = Duration.ofSeconds(3);
 
@@ -47,17 +45,15 @@ final class LoginScriptGenerator {
     LoginScriptGenerator(ScriptConfig config) {
         requireNonNull(config);
 
-        //this.script = createInnerScript(sessionMigrateEndpoint, initialDelay, pollingInterval, maxAttempts);
-
         String scriptTemplate = StaticTemplateUtils.readContents("login.js");
         this.script = scriptTemplate
-                .replace("%%_LNURL_AUTH_SESSION_MIGRATION_ENDPOINT_%%", JavaScriptUtils.javaScriptEscape(config.getSessionMigrateEndpoint()))
                 .replace("%%_LNURL_AUTH_INITIAL_DELAY_%%", "" + config.getInitialDelay().toMillis())
                 .replace("%%_LNURL_AUTH_POLLING_INTERVAL_%%", "" + config.getPollingInterval().toMillis())
                 .replace("%%_LNURL_AUTH_MAX_ATTEMPTS_%%", "" + config.getMaxAttempts());
     }
 
-    public String createScript() {
-        return script;
+    public String createScript(String sessionMigrationEndpoint) {
+        requireNonNull(sessionMigrationEndpoint);
+        return script.replace("%%_LNURL_AUTH_SESSION_MIGRATION_ENDPOINT_%%", JavaScriptUtils.javaScriptEscape(sessionMigrationEndpoint));
     }
 }
