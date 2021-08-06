@@ -1,13 +1,16 @@
-package org.tbk.lnurl.auth;
+package org.tbk.lnurl.test;
 
+
+import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.simple.auth.SimpleK1;
 
 import java.security.SecureRandom;
 
-public final class SimpleK1Factory implements K1Factory {
+public final class K1TestUtils {
+
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private static SimpleK1 random() {
+    public static K1 random() {
         byte[] bytes = new byte[32];
 
         RANDOM.nextBytes(bytes);
@@ -15,8 +18,7 @@ public final class SimpleK1Factory implements K1Factory {
         return SimpleK1.fromBytes(bytes);
     }
 
-    @Override
-    public K1 create() {
-        return random();
+    private K1TestUtils() {
+        throw new UnsupportedOperationException();
     }
 }

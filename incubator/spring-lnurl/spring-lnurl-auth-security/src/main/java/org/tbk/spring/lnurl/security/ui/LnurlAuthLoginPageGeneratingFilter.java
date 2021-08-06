@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.util.UriUtils;
 import org.tbk.lnurl.auth.LnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.spring.lnurl.security.ui.LoginScriptGenerator.ScriptConfig;
@@ -75,8 +76,8 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         Assert.hasText(authenticationUrl, "'authenticationUrl' must not be empty");
 
         this.lnurlAuthFactory = requireNonNull(lnurlAuthFactory);
-        this.loginPageUrl = requireNonNull(defaultLoginPageUrl);
-        this.authenticationUrl = requireNonNull(authenticationUrl);
+        this.loginPageUrl = defaultLoginPageUrl;
+        this.authenticationUrl = authenticationUrl;
         this.k1AttributeName = k1AttributeName;
 
         this.logoutSuccessUrl = this.loginPageUrl + "?logout";
@@ -113,7 +114,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
             boolean loginError = isErrorPage(request);
             boolean logoutSuccess = isLogoutSuccess(request);
             if (isLoginUrlRequest(request) || loginError || logoutSuccess) {
-                LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+                LnurlAuth lnurlAuth = lnurlAuthFactory.createLnUrlAuth();
 
                 // we do not want already logged in users to generate a new k1 value
                 // the polling script will trigger errors and the user will be logged out
@@ -124,10 +125,10 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
                 if (!alreadyLoggedIn) {
                     // create session so the user is identified
                     HttpSession session = request.getSession(true);
-                    session.setAttribute(k1AttributeName, lnUrlAuth.getK1().toHex());
+                    session.setAttribute(k1AttributeName, lnurlAuth.getK1().toHex());
                 }
 
-                writeLoginPage(request, response, lnUrlAuth);
+                writeLoginPage(request, response, lnurlAuth);
 
                 return;
             }
@@ -162,8 +163,8 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         response.getWriter().write(content);
     }
 
-    private void writeLoginPage(HttpServletRequest request, HttpServletResponse response, LnurlAuth lnUrlAuth) throws IOException {
-        LnurlQrcode lnurlQrcode = new LnurlQrcode(lnUrlAuth.toLnurl(), 300);
+    private void writeLoginPage(HttpServletRequest request, HttpServletResponse response, LnurlAuth lnurlAuth) throws IOException {
+        LnurlQrcode lnurlQrcode = new LnurlQrcode(lnurlAuth.toLnurl(), 300);
 
         String stylesheetUrl = request.getContextPath() + this.loginStylesheetUrl;
         String scriptUrl = request.getContextPath() + this.loginScriptUrl;

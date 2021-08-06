@@ -13,10 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.lnurl.simple.SimpleLnurl;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
-import org.tbk.lnurl.test.SimpleLnWallet;
+import org.tbk.lnurl.test.SimpleLnurlWallet;
 import org.tbk.spring.lnurl.security.test.app.LnurlAuthTestApplication;
 
 import java.security.SecureRandom;
@@ -28,7 +29,6 @@ import static org.hamcrest.Matchers.not;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationFilter.*;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -41,12 +41,12 @@ class LnurlAuthFlowTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static SimpleLnWallet testWallet;
+    private static SimpleLnurlWallet testWallet;
 
     @BeforeAll
     static void setUpAll() {
         byte[] seed = new SecureRandom().generateSeed(256);
-        testWallet = SimpleLnWallet.fromSeed(seed);
+        testWallet = SimpleLnurlWallet.fromSeed(seed);
     }
 
     @Test
@@ -68,9 +68,9 @@ class LnurlAuthFlowTest {
                 .orElseThrow(() -> new IllegalStateException("Could not find session."));
 
         String body = loginResult.getResponse().getContentAsString();
-        LnurlAuth lnurlAuth = SimpleLnurlAuth.from(SimpleLnurl.fromBech32(body));
+        LnurlAuth lnurlAuth = SimpleLnurlAuth.parse(SimpleLnurl.fromBech32(body));
 
-        SimpleLnWallet.Params params = testWallet.createParams(lnurlAuth);
+        SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
 
         /*
          * STEP 2: Login with wallet
@@ -79,10 +79,7 @@ class LnurlAuthFlowTest {
          * This step is done by the wallet.
          * Most likely based on a scanned qr code.
          */
-        mockMvc.perform(get(lnurlAuth.toUri().getPath())
-                .queryParam(LNURL_AUTH_K1_KEY, params.getK1().toHex())
-                .queryParam(LNURL_AUTH_SIG_KEY, params.getSig().toHex())
-                .queryParam(LNURL_AUTH_KEY_KEY, params.getKey().toHex()))
+        mockMvc.perform(get(signedLnurlAuth.toLnurl().toUri()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", is("OK")));
 
@@ -128,6 +125,6 @@ class LnurlAuthFlowTest {
                 .andReturn();
 
         LinkingKey authenticatedKey = SimpleLinkingKey.fromHexStrict(authenticatedResult.getResponse().getContentAsString());
-        assertThat("Web user has been authenticated with wallet linking key", authenticatedKey, is(params.getKey()));
+        assertThat("Web user has been authenticated with wallet linking key", authenticatedKey, is(signedLnurlAuth.getLinkingKey()));
     }
 }

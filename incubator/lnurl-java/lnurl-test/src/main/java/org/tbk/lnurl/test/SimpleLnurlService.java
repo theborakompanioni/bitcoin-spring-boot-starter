@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.lnurl.simple.auth.SimpleK1;
 import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 import scodec.bits.ByteVector;
@@ -24,9 +25,9 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class SimpleLnService {
-    public static SimpleLnService of(URI domain) {
-        return new SimpleLnService(domain);
+public class SimpleLnurlService implements LnurlService {
+    public static SimpleLnurlService of(URI domain) {
+        return new SimpleLnurlService(domain);
     }
 
     private final URI base;
@@ -37,17 +38,23 @@ public class SimpleLnService {
             .build();
 
     @SneakyThrows
-    private SimpleLnService(URI domain) {
+    private SimpleLnurlService(URI domain) {
         this.base = requireNonNull(domain);
     }
 
+    @Override
     public LnurlAuth createLnUrlAuth() {
-        K1 k1 = SimpleK1.random();
+        K1 k1 = K1TestUtils.random();
         k1Cache.put(k1, "");
         return SimpleLnurlAuth.create(base, k1);
     }
 
-    public boolean verifyLogin(URI loginUri) {
+    @Override
+    public boolean verify(SignedLnurlAuth auth) {
+        return verify(auth.toLnurl().toUri());
+    }
+
+    private boolean verify(URI loginUri) {
         List<NameValuePair> params = URLEncodedUtils.parse(loginUri, StandardCharsets.UTF_8);
 
         NameValuePair k1Param = findFirstQueryParamOrThrow(params, "k1");

@@ -65,11 +65,11 @@ public class LnurlAuthExampleApplicationConfig {
     @Profile("!test")
     public ApplicationRunner lnurlAuthExampleConsoleInfoRunner(LnurlAuthFactory lnurlAuthFactory) {
         return args -> {
-            LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+            LnurlAuth lnurlAuth = lnurlAuthFactory.createLnUrlAuth();
 
             log.info("=================================================");
             log.info("===== LNURL_AUTH ================================");
-            log.info("example auth url: {}", lnUrlAuth.toUri().toString());
+            log.info("example auth url: {}", lnurlAuth.toLnurl().toUri());
             log.info("=================================================");
         };
     }

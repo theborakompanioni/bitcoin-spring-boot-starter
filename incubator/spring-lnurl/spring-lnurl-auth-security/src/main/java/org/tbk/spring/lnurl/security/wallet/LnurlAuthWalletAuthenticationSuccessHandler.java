@@ -14,7 +14,7 @@ import java.io.IOException;
 @Slf4j
 final class LnurlAuthWalletAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final String body = "{\n"
+    private static final String successBody = "{\n"
             + "  \"status\": \"OK\"\n"
             + "}";
 
@@ -27,6 +27,6 @@ final class LnurlAuthWalletAuthenticationSuccessHandler implements Authenticatio
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(body);
+        response.getWriter().write(successBody);
     }
 }

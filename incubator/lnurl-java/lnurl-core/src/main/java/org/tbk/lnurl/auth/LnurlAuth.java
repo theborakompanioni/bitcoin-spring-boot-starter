@@ -9,7 +9,11 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 public interface LnurlAuth {
-    URI toUri();
+
+    String LNURL_AUTH_TAG_KEY = "tag";
+    String LNURL_AUTH_TAG_PARAM_VALUE = "login";
+    String LNURL_AUTH_K1_KEY = "k1";
+    String LNURL_AUTH_ACTION_KEY = "action";
 
     Lnurl toLnurl();
 

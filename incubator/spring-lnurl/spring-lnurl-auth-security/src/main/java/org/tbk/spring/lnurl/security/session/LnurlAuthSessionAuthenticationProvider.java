@@ -31,6 +31,10 @@ public class LnurlAuthSessionAuthenticationProvider implements AuthenticationPro
         Assert.isTrue(supports(authentication.getClass()), "Unsupported authentication class");
 
         LnurlAuthSessionToken auth = (LnurlAuthSessionToken) authentication;
+        return authenticateInternal(auth);
+    }
+
+    private Authentication authenticateInternal(LnurlAuthSessionToken auth) {
         if (auth.isAuthenticated()) {
             throw new LnurlAuthenticationException("Already authenticated.");
         }

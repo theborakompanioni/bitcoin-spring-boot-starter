@@ -11,4 +11,6 @@ dependencies {
 
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
     implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+
+    testImplementation project(':incubator:lnurl-java:lnurl-test')
 }

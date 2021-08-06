@@ -13,7 +13,7 @@ import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
-import org.tbk.lnurl.test.SimpleLnWallet;
+import org.tbk.lnurl.test.SimpleLnurlWallet;
 import org.tbk.spring.lnurl.security.test.app.LnurlAuthTestApplication;
 
 import java.net.URI;
@@ -42,12 +42,12 @@ class LnurlSessionAuthenticationFilterTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static SimpleLnWallet testWallet;
+    private static SimpleLnurlWallet testWallet;
 
     @BeforeAll
     static void setUpAll() {
         byte[] seed = new SecureRandom().generateSeed(256);
-        testWallet = SimpleLnWallet.fromSeed(seed);
+        testWallet = SimpleLnurlWallet.fromSeed(seed);
     }
 
     @Test

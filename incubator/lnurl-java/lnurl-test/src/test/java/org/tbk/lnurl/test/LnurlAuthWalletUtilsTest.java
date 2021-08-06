@@ -1,11 +1,10 @@
-package org.tbk.lnurl.simple.test;
+package org.tbk.lnurl.test;
 
 import fr.acinq.bitcoin.DeterministicWallet;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
 import fr.acinq.bitcoin.DeterministicWallet.KeyPath;
 import fr.acinq.secp256k1.Hex;
 import org.junit.jupiter.api.Test;
-import org.tbk.lnurl.test.LnUrlAuthLinkingKey;
 import scala.collection.immutable.Seq;
 import scodec.bits.ByteVector;
 
@@ -17,14 +16,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-class LnurlAuthLinkingKeyTest {
+class LnurlAuthWalletUtilsTest {
 
     @Test
     void itShouldCreateLinkingKeyForSiteWithRandomWallet() {
         var domainName = URI.create("https://example.com");
         ExtendedPrivateKey masterPrivateKey = DeterministicWallet.generate(ByteVector.view(new SecureRandom().generateSeed(256)));
 
-        ExtendedPrivateKey linkingKey = LnUrlAuthLinkingKey.deriveLinkingKey(masterPrivateKey, domainName);
+        ExtendedPrivateKey linkingKey = LnurlAuthWalletUtils.deriveLinkingKey(masterPrivateKey, domainName);
         assertThat(linkingKey, is(notNullValue()));
     }
 
@@ -50,7 +49,7 @@ class LnurlAuthLinkingKeyTest {
                 .derive(4228872783L)
                 .derive(4134047485L);
 
-        KeyPath linkingKeyPath = LnUrlAuthLinkingKey.deriveLinkingKeyPathWithHashingKey(hashingKey, domainName);
+        KeyPath linkingKeyPath = LnurlAuthWalletUtils.deriveLinkingKeyPathWithHashingKey(hashingKey, domainName);
 
         assertThat(linkingKeyPath, is(expectedKeyPath));
         assertThat(linkingKeyPath.toString(), is("m/138'/1603989739'/682320451'/2081389135'/1986563837'"));
@@ -71,7 +70,7 @@ class LnurlAuthLinkingKeyTest {
 
         ExtendedPrivateKey masterPrivateKey = DeterministicWallet.generate(ByteVector.view(walletSeed));
 
-        ExtendedPrivateKey linkingKey = LnUrlAuthLinkingKey.deriveLinkingKey(masterPrivateKey, domainName);
+        ExtendedPrivateKey linkingKey = LnurlAuthWalletUtils.deriveLinkingKey(masterPrivateKey, domainName);
 
         assertThat(linkingKey.path(), is(expectedKeyPath));
         assertThat(linkingKey.path().toString(), is("m/138'/443735582/1653120675'/1066334360'/230068797'"));

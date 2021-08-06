@@ -2,7 +2,8 @@ package org.tbk.lnurl.simple.auth;
 
 import org.junit.jupiter.api.Test;
 import org.tbk.lnurl.Lnurl;
-import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
+import org.tbk.lnurl.auth.K1;
+import org.tbk.lnurl.test.K1TestUtils;
 
 import java.net.URI;
 
@@ -15,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SimpleLnurlAuthTest {
 
     @Test
-    void create() {
+    void createSuccess() {
         URI url = URI.create("http://example.onion");
 
-        SimpleLnurlAuth lnUrlAuth = SimpleLnurlAuth.create(url);
-        Lnurl lnurlCreated = lnUrlAuth.toLnurl();
+        SimpleLnurlAuth lnurlAuth = SimpleLnurlAuth.create(url, K1TestUtils.random());
+        Lnurl lnurlCreated = lnurlAuth.toLnurl();
 
         assertThat(lnurlCreated.toUri().getScheme(), is(url.getScheme()));
         assertThat(lnurlCreated.toUri().getHost(), is(url.getHost()));
@@ -27,12 +28,32 @@ class SimpleLnurlAuthTest {
     }
 
     @Test
-    void fromUri() {
+    void createFail() {
+        K1 k1 = K1TestUtils.random();
+        URI url1 = URI.create("http://example.onion?tag=login");
+        IllegalArgumentException e1 = assertThrows(IllegalArgumentException.class, () -> SimpleLnurlAuth.create(url1, k1));
+        assertThat(e1.getMessage(), is("Url must not include 'tag' query parameter"));
+
+        URI url2 = URI.create("http://example.onion?action=login");
+        IllegalArgumentException e2 = assertThrows(IllegalArgumentException.class, () -> SimpleLnurlAuth.create(url2, k1));
+        assertThat(e2.getMessage(), is("Url must not include 'action' query parameter"));
+
+        URI url3 = URI.create("http://example.onion?k1=cb5a02549b96609c99818cf587a9954da337222591df284d36db9114bd430cb3");
+        IllegalArgumentException e3 = assertThrows(IllegalArgumentException.class, () -> SimpleLnurlAuth.create(url3, k1));
+        assertThat(e3.getMessage(), is("Url must not include 'k1' query parameter"));
+
+        URI url4 = URI.create("http://example.onion?tag=login&action=login&k1=cb5a02549b96609c99818cf587a9954da337222591df284d36db9114bd430cb3");
+        IllegalArgumentException e4 = assertThrows(IllegalArgumentException.class, () -> SimpleLnurlAuth.create(url4, k1));
+        assertThat(e4.getMessage(), is("Url must not include 'tag' query parameter"));
+    }
+
+    @Test
+    void parseSuccess() {
         URI uri = URI.create("http://example.onion?tag=login&action=login&k1=cb5a02549b96609c99818cf587a9954da337222591df284d36db9114bd430cb3");
         String expectedLnurl = "lnurl1dp68gup69uhk27rpd4cxcefwdahxjmmw8a6xzeead3hkw6twye4nz0trvg6kzvpjx56rjc3excmrqwtr8yunsvfcvdnr2wphvyunjdf5v3snxvehxgerydfex9jxvv3cx3jrxdnyvgunzvf5vfjrgvesvd3rxfnpvd6xjmmw84kx7emfdcwfl4xp";
 
-        SimpleLnurlAuth lnUrlAuth = SimpleLnurlAuth.from(uri);
-        Lnurl lnurlCreated = lnUrlAuth.toLnurl();
+        SimpleLnurlAuth lnurlAuth = SimpleLnurlAuth.parse(uri);
+        Lnurl lnurlCreated = lnurlAuth.toLnurl();
 
         assertThat(lnurlCreated.toLnurlString(), is(expectedLnurl));
     }

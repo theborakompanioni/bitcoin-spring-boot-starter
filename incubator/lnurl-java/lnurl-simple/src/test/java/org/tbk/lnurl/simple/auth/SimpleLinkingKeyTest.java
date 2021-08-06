@@ -1,5 +1,6 @@
 package org.tbk.lnurl.simple.auth;
 
+import fr.acinq.secp256k1.Hex;
 import fr.acinq.secp256k1.Secp256k1Exception;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ class SimpleLinkingKeyTest {
         SimpleLinkingKey linkingKey = SimpleLinkingKey.fromHexStrict(validLinkingKey);
 
         assertThat(linkingKey.toHex(), is(validLinkingKey));
+        assertThat(linkingKey, is(new SimpleLinkingKey(Hex.decode(validLinkingKey))));
     }
 
     @Test

@@ -31,11 +31,11 @@ public class LnurlAuthTestCtrl {
      */
     @GetMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> initLogin(HttpSession session) {
-        LnurlAuth lnUrlAuth = lnurlAuthFactory.createLnUrlAuth();
+        LnurlAuth lnurlAuth = lnurlAuthFactory.createLnUrlAuth();
 
-        session.setAttribute(LnurlAuthConfigurer.defaultSessionK1Key(), lnUrlAuth.getK1().toHex());
+        session.setAttribute(LnurlAuthConfigurer.defaultSessionK1Key(), lnurlAuth.getK1().toHex());
 
-        return ResponseEntity.ok(lnUrlAuth.toLnurl().toLnurlString());
+        return ResponseEntity.ok(lnurlAuth.toLnurl().toLnurlString());
     }
 
     /**

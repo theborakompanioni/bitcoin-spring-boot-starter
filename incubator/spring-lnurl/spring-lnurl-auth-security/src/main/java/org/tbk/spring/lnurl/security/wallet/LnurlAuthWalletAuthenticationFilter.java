@@ -7,26 +7,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.tbk.lnurl.auth.K1;
-import org.tbk.lnurl.auth.LinkingKey;
-import org.tbk.lnurl.auth.Signature;
+import org.springframework.util.StringUtils;
+import org.tbk.lnurl.auth.*;
 import org.tbk.lnurl.simple.auth.SimpleK1;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 import org.tbk.lnurl.simple.auth.SimpleSignature;
+import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
 public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final LnurlAuthWalletAuthenticationFailureHandler failureHandler = new LnurlAuthWalletAuthenticationFailureHandler();
     private static final LnurlAuthWalletAuthenticationSuccessHandler successHandler = new LnurlAuthWalletAuthenticationSuccessHandler();
-
-    public static final String LNURL_AUTH_K1_KEY = "k1";
-    public static final String LNURL_AUTH_SIG_KEY = "sig";
-    public static final String LNURL_AUTH_KEY_KEY = "key";
 
     public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern) {
         this(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()));
@@ -45,6 +42,7 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         if (!request.getMethod().equals(HttpMethod.GET.name())) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
+
         LnurlAuthWalletToken authRequest = buildToken(request);
 
         if (log.isDebugEnabled()) {
@@ -59,9 +57,9 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
 
     private LnurlAuthWalletToken buildToken(HttpServletRequest request) {
         try {
-            K1 k1 = obtainK1(request).orElseThrow(() -> new LnurlAuthenticationException("'k1' is missing or invalid."));
-            Signature sig = obtainSig(request).orElseThrow(() -> new LnurlAuthenticationException("'sig' is missing or invalid."));
-            LinkingKey key = obtainKey(request).orElseThrow(() -> new LnurlAuthenticationException("'key' is missing or invalid."));
+            K1 k1 = obtainK1(request).orElseThrow(() -> new LnurlAuthenticationException("k1 is missing or invalid."));
+            Signature sig = obtainSig(request).orElseThrow(() -> new LnurlAuthenticationException("Signature is missing or invalid."));
+            LinkingKey key = obtainKey(request).orElseThrow(() -> new LnurlAuthenticationException("Key is missing or invalid."));
 
             return new LnurlAuthWalletToken(k1, sig, key);
         } catch (AuthenticationException e) {
@@ -72,17 +70,17 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
     }
 
     protected Optional<K1> obtainK1(HttpServletRequest request) {
-        return Optional.ofNullable(request.getParameter(LNURL_AUTH_K1_KEY))
+        return Optional.ofNullable(request.getParameter(LnurlAuth.LNURL_AUTH_K1_KEY))
                 .map(SimpleK1::fromHex);
     }
 
     protected Optional<Signature> obtainSig(HttpServletRequest request) {
-        return Optional.ofNullable(request.getParameter(LNURL_AUTH_SIG_KEY))
+        return Optional.ofNullable(request.getParameter(SignedLnurlAuth.LNURL_AUTH_SIG_KEY))
                 .map(SimpleSignature::fromHex);
     }
 
     protected Optional<LinkingKey> obtainKey(HttpServletRequest request) {
-        return Optional.ofNullable(request.getParameter(LNURL_AUTH_KEY_KEY))
+        return Optional.ofNullable(request.getParameter(SignedLnurlAuth.LNURL_AUTH_KEY_KEY))
                 .map(SimpleLinkingKey::fromHexStrict);
     }
 

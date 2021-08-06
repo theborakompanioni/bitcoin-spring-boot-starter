@@ -6,6 +6,8 @@ import org.tbk.lnurl.auth.ByteArrayView;
 
 import java.util.Arrays;
 
+import static java.util.Objects.requireNonNull;
+
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 abstract class AbstractByteArrayView implements ByteArrayView {
 
@@ -15,6 +17,7 @@ abstract class AbstractByteArrayView implements ByteArrayView {
     private transient String hex;
 
     AbstractByteArrayView(byte[] data) {
+        requireNonNull(data);
         validate(data);
         this.data = Arrays.copyOf(data, data.length);
     }

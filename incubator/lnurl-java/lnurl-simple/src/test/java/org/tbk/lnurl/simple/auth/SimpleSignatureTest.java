@@ -1,5 +1,6 @@
 package org.tbk.lnurl.simple.auth;
 
+import fr.acinq.secp256k1.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +32,7 @@ class SimpleSignatureTest {
         SimpleSignature signature = SimpleSignature.fromHex(validSignatureHex);
 
         assertThat(signature.toHex(), is(validSignatureHex));
+        assertThat(signature, is(new SimpleSignature(Hex.decode(validSignatureHex))));
     }
 
     @Test
