@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.HtmlUtils;
 import org.tbk.spring.lnurl.security.ui.LoginScriptGenerator.ScriptConfig;
 
+import javax.annotation.Nullable;
+import java.security.Principal;
+
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -27,7 +30,14 @@ final class LoginPageGenerator {
         this.htmlTemplate = StaticTemplateUtils.readContents("login.html");
     }
 
-    public String createScript(String authenticationUrl) {
+    public String createScript(String authenticationUrl, @Nullable Principal principal, @Nullable String errorMessage) {
+        if (errorMessage != null) {
+            return loginScriptGenerator.createErrorScript(errorMessage);
+        }
+        if (principal != null) {
+            return loginScriptGenerator.createAuthenticatedScript();
+        }
+
         return loginScriptGenerator.createScript(authenticationUrl);
     }
 

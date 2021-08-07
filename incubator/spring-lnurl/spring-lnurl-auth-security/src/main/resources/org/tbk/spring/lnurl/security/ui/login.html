@@ -16,56 +16,82 @@
 <body>
 <div class="content-body">
     <div class="form-wrapper">
-        <h1 class="heading text-center">Login</h1>
-        <h3 class="sub-heading text-center">
-            powered by Lightning Network
-        </h3>
-        <div class="qrcode">
-            <a href="lightning:%%_LNURL_AUTH_LOGIN_LNURL_STRING_%%">
-                %%_LNURL_AUTH_LOGIN_QR_CODE_SECTION_%%
-            </a>
-        </div>
+        <div class="visible-on-anonymous">
+            <h1 class="heading text-center">Login</h1>
+            <h3 class="sub-heading text-center">
+                powered by Lightning Network
+            </h3>
+            <div class="qrcode">
+                <a href="lightning:%%_LNURL_AUTH_LOGIN_LNURL_STRING_%%">
+                    %%_LNURL_AUTH_LOGIN_QR_CODE_SECTION_%%
+                </a>
+            </div>
 
-        <div class="input-group">
-            <input class="form-control input" name="lnurl" type="text" readonly=""
-                   value="%%_LNURL_AUTH_LOGIN_LNURL_STRING_%%">
-            <div class="input-group-append">
-                <button type="button" class="btn primary">copy</button>
+            <div class="input-group">
+                <input class="form-control input" name="lnurl" type="text" readonly=""
+                       id="lnurl-auth-lnurl-input"
+                       value="%%_LNURL_AUTH_LOGIN_LNURL_STRING_%%">
+                <div class="input-group-append">
+                    <button type="button" id="lnurl-auth-copy-button" class="btn primary">copy</button>
+                </div>
+            </div>
+
+            <div class="description-text text-center">
+                <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40px"
+                     height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+                    <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+                        s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+                        c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
+                    <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+                    C22.32,8.481,24.301,9.057,26.013,10.047z">
+                        <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" repeatCount="indefinite" dur="1.5s"></animateTransform>
+                    </path>
+                </svg>
+                <p>Waiting for you ...</p>
+            </div>
+
+            <div class="description-text text-center">
+                <a class="text-muted" href="https://github.com/fiatjaf/awesome-lnurl#wallets" target="_blank"
+                   rel="noreferrer">Does my wallet support lnurl-auth?</a>
+            </div>
+
+            <div class="description-text">
+                <p>
+                    <small>
+                        Your account is protected by your seed. You must control your keys.
+                        Not your key, not your account. Do not trust, verify.
+                    </small>
+                </p>
             </div>
         </div>
 
-        <div class="description-text text-center">
-            <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40px"
-                 height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-                <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-                    s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-                    c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
-                <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-                C22.32,8.481,24.301,9.057,26.013,10.047z">
-                    <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" repeatCount="indefinite" dur="1.5s"></animateTransform>
-                </path>
-            </svg>
-            <p>Waiting for you ...</p>
+        <div class="visible-on-authenticated text-center">
+            <h1 class="heading">Hello.</h1>
+            <h3 class="sub-heading">
+                You are successfully logged in.
+            </h3>
         </div>
 
-        <div class="description-text text-center">
-            <a class="text-muted" href="https://github.com/fiatjaf/awesome-lnurl#wallets" target="_blank"
-               rel="noreferrer">Does my wallet support lnurl-auth?</a>
+        <div class="visible-on-error text-center">
+            <h1 class="heading">Login</h1>
+            <h3 class="sub-heading">
+                powered by Lightning Network
+            </h3>
+
+            <div class="description-text">
+                <p id="lnurl-auth-error-message"></p>
+                <br />
+            </div>
+
+            <div>
+                <button type="button" class="btn primary js-reload-button">Try again</button>
+            </div>
         </div>
 
-        <div class="description-text">
-            <p>
-                <small>
-                    Your account is protected by your seed. You must control your keys.
-                    Not your key, not your account. Do not trust, verify.
-                </small>
-            </p>
+        <div class="form-action">
+            <button type="button" class="btn secondary js-back-button">Back</button>
+            <!--a href="#" class="btn primary">Action</a-->
         </div>
-
-        <!--div class="form-action">
-            <a href="#" class="btn secondary">Back</a>
-            <a href="#" class="btn primary">Action</a>
-        </div-->
     </div>
 </div>
 

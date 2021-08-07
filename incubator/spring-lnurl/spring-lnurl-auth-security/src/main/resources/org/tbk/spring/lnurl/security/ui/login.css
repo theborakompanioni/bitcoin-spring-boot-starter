@@ -65,7 +65,6 @@ a {
 
 .form-wrapper {
   width: 448px;
-  min-height: 500px;
   margin: 0 auto;
   background-color: #fff;
   padding: 32px 42px 36px;
@@ -149,6 +148,27 @@ a {
 .input-group > .form-control:not(:last-child) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+.visible-on-anonymous {
+  display: none;
+}
+.anonymous .visible-on-anonymous {
+    display: block;
+}
+
+.visible-on-authenticated {
+  display: none;
+}
+.authenticated .visible-on-authenticated {
+    display: block;
+}
+
+.visible-on-error {
+  display: none;
+}
+.error .visible-on-error {
+    display: block;
 }
 
 /* For Mobile View */

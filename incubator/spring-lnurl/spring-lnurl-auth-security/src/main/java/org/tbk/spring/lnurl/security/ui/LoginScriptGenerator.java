@@ -54,6 +54,23 @@ final class LoginScriptGenerator {
 
     public String createScript(String sessionMigrationEndpoint) {
         requireNonNull(sessionMigrationEndpoint);
-        return script.replace("%%_LNURL_AUTH_SESSION_MIGRATION_ENDPOINT_%%", JavaScriptUtils.javaScriptEscape(sessionMigrationEndpoint));
+        return script
+                .replace("%%_LNURL_AUTH_LOGIN_SCRIPT_MODE_%%", "ANONYMOUS")
+                .replace("%%_LNURL_AUTH_LOGIN_ERROR_MESSAGE_%%", "")
+                .replace("%%_LNURL_AUTH_SESSION_MIGRATION_ENDPOINT_%%", JavaScriptUtils.javaScriptEscape(sessionMigrationEndpoint));
+    }
+
+    public String createAuthenticatedScript() {
+        return script
+                .replace("%%_LNURL_AUTH_LOGIN_SCRIPT_MODE_%%", "AUTHENTICATED")
+                .replace("%%_LNURL_AUTH_LOGIN_ERROR_MESSAGE_%%", "")
+                .replace("%%_LNURL_AUTH_SESSION_MIGRATION_ENDPOINT_%%", "");
+    }
+
+    public String createErrorScript(String errorMessage) {
+        return script
+                .replace("%%_LNURL_AUTH_LOGIN_SCRIPT_MODE_%%", "ERROR")
+                .replace("%%_LNURL_AUTH_LOGIN_ERROR_MESSAGE_%%", JavaScriptUtils.javaScriptEscape(errorMessage))
+                .replace("%%_LNURL_AUTH_SESSION_MIGRATION_ENDPOINT_%%", "");
     }
 }

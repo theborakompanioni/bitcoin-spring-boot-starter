@@ -6,9 +6,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.util.UriUtils;
 import org.tbk.lnurl.auth.LnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.spring.lnurl.security.ui.LoginScriptGenerator.ScriptConfig;
@@ -154,9 +155,13 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         // better: 1) redirect authenticated users before the login page is loaded or
         //         2) requesting the login page will trigger a logout -> user needs to login again.
         String authenticationUrl = request.getContextPath() + this.authenticationUrl;
-        String content = Optional.ofNullable(request.getUserPrincipal())
-                .map(user -> "/* you are already logged in */")
-                .orElseGet(() -> this.loginPageGenerator.createScript(authenticationUrl));
+
+        Optional<String> errorMessage = Optional.ofNullable(request.getSession(false))
+                .map(it -> it.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION))
+                .map(it -> (AuthenticationException) it)
+                .map(Throwable::getMessage);
+
+        String content = this.loginPageGenerator.createScript(authenticationUrl, request.getUserPrincipal(), errorMessage.orElse(null));
 
         response.setContentType(JAVASCRIPT_CONTENT_TYPE);
         response.setContentLength(content.getBytes(StandardCharsets.UTF_8).length);
