@@ -234,6 +234,7 @@ A module containing a spring boot starter for [Moquette](https://github.com/moqu
 #### bitcoin-mqtt
 A module containing a spring boot starter for a broker publishing Bitcoin ZeroMQ messages via MQTT.
 
+<!-- there are external links on the anchor #spring-lnurl - so please do not remove it -->
 #### spring-lnurl
 The [spring-lnurl module](incubator/spring-lnurl) contains classes and spring security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).
 
@@ -244,7 +245,7 @@ example applications showing basic usage of the functionality provided by these 
 - [x] bitcoin-autodca: [Stacking Sats on Kraken: Auto DCA example application](examples/bitcoin-autodca-example-application)
 - [x] bitcoin-exchange-rate: [Currency Conversion API example application](examples/bitcoin-exchange-rate-example-application)
 - [x] lnd-playground: [Lightning Network Playground example application](examples/lnd-playground-example-application) (using lnd)
-- [x] lnurl-auth: [Spring Security Authentication With lnurl-auth example application](examples/incubator/lnurl-auth-example-application)
+- [x] lnurl-auth: [Spring Security Authentication with `lnurl-auth` example application](incubator/spring-lnurl/spring-lnurl-auth-example-application)
 
 Example apps can be started with a single command, e.g.:
 ```shell script

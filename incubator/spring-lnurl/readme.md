@@ -8,7 +8,7 @@ Spring Security Authentication with `lnurl-auth`.
 - extensible with your own custom handling if needed
 
 ### Examples
-See the [Spring Security Authentication With lnurl-auth example application](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/tree/master/examples/incubator/lnurl-auth-example-application).
+See the [Spring Security Authentication with lnurl-auth example application](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/tree/master/incubator/spring-lnurl/spring-lnurl-auth-example-application).
 
 <p align="center">
     <img src="https://github.com/theborakompanioni/bitcoin-spring-boot-starter/raw/master/incubator/spring-lnurl/docs/assets/images/screenshot.png" alt="Screenshot" />
