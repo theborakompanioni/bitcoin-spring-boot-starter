@@ -89,25 +89,23 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/")
                 )
                 .headers(headers -> headers
                         .xssProtection()
                         .xssProtectionEnabled(true)
                         .block(true)
                         .and()
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'; img-src 'self' data:"))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
+                                + "script-src 'self'; "
+                                + "img-src 'self' data: https://robohash.org"))
                 )
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .antMatchers("/").permitAll()
                         .antMatchers("/index.html").permitAll()
                         .antMatchers("/authenticated.html").authenticated()
-                        // lnurl-auth endpoints should be readable for everyone
-                        .antMatchers(lnurlAuthWalletLoginPath()).permitAll()
-                        .antMatchers(lnurlAuthSessionLoginPath()).permitAll()
-                        // the login page will initialize the session
-                        .antMatchers(lnurlAuthLoginPagePath()).permitAll()
+                        .antMatchers("/api/v1/demo/**").permitAll()
                         .anyRequest().authenticated()
                 );
     }

@@ -41,18 +41,11 @@ public class LnurlAuthTestSecurityConfig extends WebSecurityConfigurerAdapter {
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionFixation().migrateSession()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .logoutSuccessUrl("/login?logout")
-                )
+                .logout().and()
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .antMatchers("/").permitAll()
                         .antMatchers("/login").permitAll()
-                        .antMatchers(LnurlAuthConfigurer.defaultWalletLoginUrl()).permitAll()
-                        .antMatchers(LnurlAuthConfigurer.defaultSessionLoginUrl()).permitAll()
                         .anyRequest().authenticated()
                 );
     }
