@@ -58,6 +58,7 @@ Example console output:
 # Resources
 - lnurl RFC (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - Wallets supporting lnurl: https://github.com/fiatjaf/awesome-lnurl#wallets
+- Lightning Login Buttons (GitHub): https://github.com/dergigi/lightning-buttons
 - jMolecules (GitHub): https://github.com/xmolecules/jmolecules
 - sqlite (GitHub): https://github.com/sqlite/sqlite
 - ngrok Website: https://ngrok.com
