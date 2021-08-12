@@ -42,11 +42,8 @@ plugins {
 }
 
 contacts {
-    'mail@example.com' {
-        moniker 'tbk'
-        role 'owner'
-        mail 'mail@1'
-        email 'mail@2'
+    'theborakompanioni+github@gmail.com' {
+        moniker 'theborakompanioni'
         github 'theborakompanioni'
     }
 }
@@ -106,6 +103,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'java-library'
+    apply plugin: 'signing'
     apply plugin: 'jacoco'
     apply plugin: 'checkstyle'
     apply plugin: 'com.github.spotbugs'
@@ -234,6 +232,15 @@ subprojects {
 
     artifacts {
         archives testJar, sourcesJar
+    }
+
+    signing {
+        // https://docs.gradle.org/current/userguide/signing_plugin.html#sec:signatory_credentials
+        sign configurations.archives
+    }
+
+    tasks.withType(Sign) {
+        onlyIf { project.hasProperty('signing.password') }
     }
 
     lombok {
