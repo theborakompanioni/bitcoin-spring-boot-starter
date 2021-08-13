@@ -50,8 +50,6 @@ contacts {
 
 apply from: 'versions.gradle'
 
-group = 'io.github.theborakompanioni'
-
 def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
 
 configurations.all {
@@ -67,6 +65,8 @@ configurations.all {
 
 allprojects {
     apply plugin: 'nebula.lint'
+
+    group = 'io.github.theborakompanioni'
 
     gradleLint {
         alwaysRun = false // do not automatically run - must be executed manually
