@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+description = 'bitcoin zeromq autoconfigure package'
+
 dependencies {
     compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
     compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')

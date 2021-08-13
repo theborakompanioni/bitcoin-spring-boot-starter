@@ -94,7 +94,6 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'signing'
     apply plugin: 'jacoco'
     apply plugin: 'checkstyle'
     apply plugin: 'com.github.spotbugs'
@@ -136,9 +135,14 @@ subprojects {
         }
     }
 
+    jar {
+        exclude("*-local.yml")
+        exclude("**/mainnet/**")
+    }
+
     task sourcesJar(type: Jar) {
         archiveClassifier.set('sources')
-        from sourceSets.main.allSource
+        from sourceSets.main.java
     }
 
     task testJar(type: Jar) {
@@ -200,16 +204,7 @@ subprojects {
     }
 
     artifacts {
-        archives testJar, sourcesJar
-    }
-
-    signing {
-        // https://docs.gradle.org/current/userguide/signing_plugin.html#sec:signatory_credentials
-        sign configurations.archives
-    }
-
-    tasks.withType(Sign) {
-        onlyIf { project.hasProperty('signing.password') }
+        archives testJar, sourcesJar, javadocJar
     }
 
     lombok {
@@ -308,19 +303,29 @@ subprojects {
 // disable test tasks in check phase for all 'spring-testcontainer-*' subprojects.
 // these subprojects tests are very expensive as they all start a lot of docker containers.
 // you can invoke them manually via `./gradlew check -PtestcontainerTest`
-configure(subprojects.findAll { project -> project.name.startsWith('spring-testcontainer-') }) {
+configure(subprojects.findAll { project -> project.name.indexOf('spring-testcontainer-') == 0 }) {
     test.onlyIf { project.hasProperty('testcontainerTest') }
     integrationTest.onlyIf { project.hasProperty('testcontainerTest') }
 }
 
 // disable test tasks in check phase for all '*-example-application' subprojects.
 // you can invoke them manually via `./gradlew check -PexampleTest`
-configure(subprojects.findAll { project -> project.name.endsWith('-example-application') }) {
+configure(subprojects.findAll { project -> project.name.indexOf('-example-application') > 0 }) {
     test.onlyIf { project.hasProperty('exampleTest') }
     integrationTest.onlyIf { project.hasProperty('exampleTest') }
 }
 
-configure(subprojects.findAll { project -> project.name.startsWith('bitcoin-fee') ||
-        (project.name == 'tbk-btcabuse-client-core') }) {
+configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
+        (project.name.startsWith('bitcoin-fee') || (project.name == 'tbk-btcabuse-client-core'))
+}) {
     apply from: "${project.rootDir}/proto.gradle"
 }
+
+// enable publishing for all subproject except for "example applications"
+configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
+        !project.pluginManager.hasPlugin('org.springframework.boot') &&
+        project.name.indexOf('-example-application') < 0 }) {
+    apply from: "${project.rootDir}/publish.gradle"
+}
+
+

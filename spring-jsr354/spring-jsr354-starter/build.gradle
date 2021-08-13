@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+description = 'spring jsr354 starter package'
+
 dependencies {
     api project(':spring-jsr354:spring-jsr354-core')
     implementation project(':spring-jsr354:spring-jsr354-autoconfigure')

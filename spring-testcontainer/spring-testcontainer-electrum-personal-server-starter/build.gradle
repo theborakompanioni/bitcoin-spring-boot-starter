@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+description = 'spring testcontainer electrum personal server starter'
+
 dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')

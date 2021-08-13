@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+description = 'spring testcontainer tor starter'
+
 dependencies {
     api project(':spring-tor:spring-tor-http')
     api "org.testcontainers:testcontainers:${testcontainersVersion}"

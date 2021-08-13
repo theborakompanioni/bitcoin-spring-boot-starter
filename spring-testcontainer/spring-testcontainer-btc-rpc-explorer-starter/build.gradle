@@ -1,6 +1,7 @@
 plugins {
     id 'java'
 }
+description = 'spring testcontainer btc-rpc-explorer starter'
 
 dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"

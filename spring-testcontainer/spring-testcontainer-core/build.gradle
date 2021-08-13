@@ -1,6 +1,7 @@
 plugins {
     id 'java'
 }
+description = 'spring testcontainer core package'
 
 dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"

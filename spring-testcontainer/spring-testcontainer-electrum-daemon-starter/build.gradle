@@ -1,6 +1,7 @@
 plugins {
     id 'java'
 }
+description = 'spring testcontainer electrum daemon starter'
 
 dependencies {
     api "org.testcontainers:testcontainers:${testcontainersVersion}"

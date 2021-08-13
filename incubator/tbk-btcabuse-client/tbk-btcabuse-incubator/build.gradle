@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-description = 'btcabuse client package'
+description = 'btcabuse incubator package'
 
 dependencies {
     api project(':incubator:tbk-btcabuse-client:tbk-btcabuse-client-core')

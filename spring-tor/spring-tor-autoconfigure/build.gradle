@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+description = 'spring tor autoconfigure package'
+
 integrationTest {
     forkEvery = 1 // run every test in own process.. otherwise tor sometimes errors with "binary still in use".
 }

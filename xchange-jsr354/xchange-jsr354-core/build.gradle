@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+description = 'xchange jsr354 core package'
+
 dependencies {
     api "javax.money:money-api:${jsr354Version}"
 
