@@ -110,7 +110,6 @@ subprojects {
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
     apply plugin: 'nebula.integtest-standalone'
-    apply plugin: 'com.google.protobuf'
     apply plugin: 'io.franzbecker.gradle-lombok'
     apply plugin: 'io.spring.dependency-management'
 
@@ -122,19 +121,6 @@ subprojects {
         maven {
             // needed for netlayer, consensusj and moquette packages
             url "https://jitpack.io"
-        }
-    }
-
-    sourceSets {
-        main {
-            proto {
-                // In addition to the default 'src/main/proto'
-                srcDir file('src/main/java')
-            }
-            java {
-                srcDirs 'build/generated/source/proto/main/grpc'
-                srcDirs 'build/generated/source/proto/main/java'
-            }
         }
     }
 
@@ -151,9 +137,6 @@ subprojects {
 
         implementation 'org.slf4j:slf4j-api'
         implementation "com.google.guava:guava:${guavaVersion}"
-
-        implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-        implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
@@ -248,18 +231,6 @@ subprojects {
         sha256 = null // skip verifyLombok task - will be done by gradle dependency verification
     }
 
-    protobuf {
-        protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
-
-        plugins {
-            grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
-        }
-
-        generateProtoTasks {
-            all()*.plugins { grpc {} }
-        }
-    }
-
     tasks.withType(Test) {
         testLogging {
             // set options for log level LIFECYCLE
@@ -313,6 +284,7 @@ subprojects {
         reportsDir = rootProject.file("$rootProject.buildDir/reports/spotbugs/$project.name")
     }
     tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+        onlyIf { gradle.taskGraph.hasTask('build') }
         reports {
             html.enabled = true
             xml.enabled = false
@@ -327,6 +299,7 @@ subprojects {
         reportsDir = rootProject.file("$rootProject.buildDir/reports/checkstyle/$project.name")
     }
     tasks.withType(Checkstyle) {
+        onlyIf { gradle.taskGraph.hasTask('build') }
         reports {
             xml.enabled = false
             html.enabled = true
@@ -349,14 +322,19 @@ subprojects {
 // disable test tasks in check phase for all 'spring-testcontainer-*' subprojects.
 // these subprojects tests are very expensive as they all start a lot of docker containers.
 // you can invoke them manually via `./gradlew check -PtestcontainerTest`
-configure(subprojects.findAll { project -> project.name.indexOf('spring-testcontainer-') == 0 }) {
+configure(subprojects.findAll { project -> project.name.startsWith('spring-testcontainer-') }) {
     test.onlyIf { project.hasProperty('testcontainerTest') }
     integrationTest.onlyIf { project.hasProperty('testcontainerTest') }
 }
 
 // disable test tasks in check phase for all '*-example-application' subprojects.
 // you can invoke them manually via `./gradlew check -PexampleTest`
-configure(subprojects.findAll { project -> project.name.indexOf('-example-application') > 0 }) {
+configure(subprojects.findAll { project -> project.name.endsWith('-example-application') }) {
     test.onlyIf { project.hasProperty('exampleTest') }
     integrationTest.onlyIf { project.hasProperty('exampleTest') }
+}
+
+configure(subprojects.findAll { project -> project.name.startsWith('bitcoin-fee') ||
+        (project.name == 'tbk-btcabuse-client-core') }) {
+    apply from: "${project.rootDir}/proto.gradle"
 }
