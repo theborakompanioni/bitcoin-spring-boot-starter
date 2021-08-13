@@ -4,14 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
-    ext {
-        springBootGradlePluginVersion = '2.5.3'
-        protobufGradleVersion = '0.8.16'
-        jmoleculesBomVersion = '2021.0.2'
-        // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
-        // drawback: has issues on project import in intellij; '1.10.14' would work with intellij but does not work on command line : /
-        bytebuddyPluginVersion = '1.10.22'
-    }
+    apply from: 'versions.gradle'
     repositories {
         mavenCentral()
     }
@@ -47,8 +40,6 @@ contacts {
         github 'theborakompanioni'
     }
 }
-
-apply from: 'versions.gradle'
 
 def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
 
@@ -143,8 +134,8 @@ subprojects {
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
 
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }

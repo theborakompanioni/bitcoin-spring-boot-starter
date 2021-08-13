@@ -24,7 +24,12 @@ ext {
     lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'
     mockserverVersion = '5.11.2'
-    jUnitVersion = '5.7.1'
     checkstyleVersion = '8.44'
     findsecbugsPluginVersion = '1.11.0'
+    springBootGradlePluginVersion = '2.5.3'
+    protobufGradleVersion = '0.8.16'
+    jmoleculesBomVersion = '2021.0.2'
+    // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
+    // drawback: has issues on project import in intellij; '1.10.14' would work with intellij but does not work on command line : /
+    bytebuddyPluginVersion = '1.10.22'
 }
