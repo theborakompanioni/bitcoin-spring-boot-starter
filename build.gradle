@@ -129,11 +129,6 @@ subprojects {
         implementation 'org.slf4j:slf4j-api'
         implementation "com.google.guava:guava:${guavaVersion}"
 
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
-        testCompileOnly 'org.projectlombok:lombok'
-        testAnnotationProcessor 'org.projectlombok:lombok'
-
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
