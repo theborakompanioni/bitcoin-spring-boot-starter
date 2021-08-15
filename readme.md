@@ -1,5 +1,6 @@
 [![Build](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/build.yml/badge.svg)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/build.yml)
-[![Download](https://jitpack.io/v/theborakompanioni/bitcoin-spring-boot-starter.svg)](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter)
+[![GitHub Release](https://img.shields.io/github/release/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=3600)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/releases/latest)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.theborakompanioni/spring-tor-core.svg?maxAge=3600)](https://search.maven.org/#search|g%3A%22io.github.theborakompanioni%22)
 [![License](https://img.shields.io/github/license/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE)
 
 
@@ -35,45 +36,23 @@ This project is under active development. Pull requests and issues are welcome.
 
 ## Install
 
-Simply define JitPack as an artifact repository and add the desired modules as dependencies. 
-See [bitcoin-spring-boot-starter on JitPack](https://jitpack.io/#theborakompanioni/bitcoin-spring-boot-starter) 
-to find the most recent releases. The examples below import `bitcoin-jsonrpc-client-starter` but you can import 
-any module by its name.
+[Download](https://search.maven.org/#search|g%3A%22io.github.theborakompanioni%22) from Maven Central.
 
 ### Gradle
 ```groovy
-repositories {
-    maven {
-        // needed for bitcoin-spring-boot-starter packages
-        url 'https://jitpack.io'
-    }
-}
-```
-
-```groovy
-dependencies {
-    implementation "com.github.theborakompanioni.bitcoin-spring-boot-starter:bitcoin-jsonrpc-client-starter:${bitcoinSpringBootStarterVersion}"
-}
+implementation "io.github.theborakompanioni:spring-tor-starter:${bitcoinSpringBootStarterVersion}"
 ```
 
 ### Maven
 ```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-
-```xml
 <dependency>
-    <groupId>com.github.theborakompanioni.bitcoin-spring-boot-starter</groupId>
-    <artifactId>bitcoin-jsonrpc-client-starter</artifactId>
+    <groupId>io.github.theborakompanioni</groupId>
+    <artifactId>spring-tor-starter</artifactId>
     <version>${bitcoinSpringBootStarter.version}</version>
 </dependency>
 ```
 
+The example above imports module `spring-tor-starter` - you can import any module by its name.
 
 ## Modules
 
