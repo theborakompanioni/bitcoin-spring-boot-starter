@@ -32,10 +32,9 @@ public class LnurlAuthTestSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .userDetailsService(userDetailsService())
-                .apply(new LnurlAuthConfigurer())
-                .k1Manager(k1Manager())
-                .pairingService(pairingService())
-                .disableDefaultLoginPage()
+                .apply(LnurlAuthConfigurer.create(k1Manager(), pairingService()))
+                .loginPageEndpoint().disable()
+                .and()
                 .and()
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)

@@ -58,7 +58,7 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
         }
 
         try {
-            lnurlAuthPairingService.pairK1WithLinkingKey(auth.getK1(), auth.getLinkingKey());
+            lnurlAuthPairingService.pairK1WithLinkingKey(k1, auth.getLinkingKey());
         } catch (Exception e) {
             throw new LnurlAuthenticationException("Could not pair k1 with linkingKey", e);
         }

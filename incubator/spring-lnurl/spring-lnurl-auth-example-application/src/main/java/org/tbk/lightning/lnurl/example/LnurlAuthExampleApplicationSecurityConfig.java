@@ -71,15 +71,26 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                 .userDetailsService(userDetailsService())
                 .csrf().disable()
                 .cors().disable()
-                .apply(new LnurlAuthConfigurer())
-                .k1Manager(lnurlAuthk1Manager)
-                .pairingService(lnurlAuthPairingService)
-                .lnurlAuthFactory(lnurlAuthFactory)
-                .enableDefaultLoginPage()
-                .loginPageUrl(lnurlAuthLoginPagePath())
-                .walletLoginUrl(lnurlAuthWalletLoginPath())
-                .sessionLoginUrl(lnurlAuthSessionLoginPath())
-                .sessionK1Key(lnurlAuthSessionK1Key())
+                /*
+                 * An overly verbose definition of the lnurl-auth authorization filter configuration.
+                 * This should demonstrate the ability of creating more customized setups.
+                 */
+                .apply(new LnurlAuthConfigurer()
+                        .k1Manager(lnurlAuthk1Manager)
+                        .pairingService(lnurlAuthPairingService)
+                        .lnurlAuthFactory(lnurlAuthFactory)
+                        .loginPageEndpoint(login -> login
+                                .enable(true)
+                                .baseUri(lnurlAuthLoginPagePath())
+                        )
+                        .sessionEndpoint(session -> session
+                                .baseUri(lnurlAuthSessionLoginPath())
+                                .sessionK1Key(lnurlAuthSessionK1Key())
+                        )
+                        .walletEndpoint(wallet -> wallet
+                                .baseUri(lnurlAuthWalletLoginPath())
+                        )
+                )
                 .and()
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)

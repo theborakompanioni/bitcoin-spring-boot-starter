@@ -1,5 +1,6 @@
 package org.tbk.spring.lnurl.security.session;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -22,17 +23,20 @@ import java.util.Optional;
 public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final LnurlAuthSessionAuthenticationSuccessHandler successHandler = new LnurlAuthSessionAuthenticationSuccessHandler();
 
+    @Getter
     private final String k1AttributeName;
 
-    public LnurlAuthSessionAuthenticationFilter(String pathRequestPattern, String k1AttributeName) {
-        this(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()), k1AttributeName);
-    }
+    @Getter
+    private final String sessionLoginUrl;
 
-    protected LnurlAuthSessionAuthenticationFilter(AntPathRequestMatcher pathRequestPattern, String k1AttributeName) {
-        super(pathRequestPattern);
+    public LnurlAuthSessionAuthenticationFilter(String sessionLoginUrl, String k1AttributeName) {
+        super(new AntPathRequestMatcher(sessionLoginUrl, HttpMethod.GET.name()));
 
         Assert.hasText(k1AttributeName, "k1AttributeName cannot be empty");
         this.k1AttributeName = k1AttributeName;
+
+        Assert.hasText(sessionLoginUrl, "sessionLoginUrl cannot be empty");
+        this.sessionLoginUrl = sessionLoginUrl;
 
         this.setAuthenticationSuccessHandler(successHandler);
         this.setAllowSessionCreation(false); // session must only be created by the application itself

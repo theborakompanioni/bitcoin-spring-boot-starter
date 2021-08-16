@@ -54,7 +54,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
     private final String loginPageUrl;
 
     // the url for browser session migration after wallet signed in
-    private final String authenticationUrl;
+    private final String sessionAuthenticationUrl;
 
     private final LnurlAuthFactory lnurlAuthFactory;
 
@@ -69,16 +69,16 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
     private final LoginPageGenerator loginPageGenerator;
 
     public LnurlAuthLoginPageGeneratingFilter(LnurlAuthFactory lnurlAuthFactory,
-                                              String k1AttributeName,
                                               String defaultLoginPageUrl,
-                                              String authenticationUrl) {
+                                              String sessionAuthenticationUrl,
+                                              String k1AttributeName) {
         Assert.hasText(k1AttributeName, "'k1AttributeName' must not be empty");
         Assert.hasText(defaultLoginPageUrl, "'defaultLoginPageUrl' must not be empty");
-        Assert.hasText(authenticationUrl, "'authenticationUrl' must not be empty");
+        Assert.hasText(sessionAuthenticationUrl, "'sessionAuthenticationUrl' must not be empty");
 
         this.lnurlAuthFactory = requireNonNull(lnurlAuthFactory);
         this.loginPageUrl = defaultLoginPageUrl;
-        this.authenticationUrl = authenticationUrl;
+        this.sessionAuthenticationUrl = sessionAuthenticationUrl;
         this.k1AttributeName = k1AttributeName;
 
         this.logoutSuccessUrl = this.loginPageUrl + "?logout";
@@ -154,7 +154,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         // it is better not to load the script, regardless the configuration of the underlying application.
         // better: 1) redirect authenticated users before the login page is loaded or
         //         2) requesting the login page will trigger a logout -> user needs to login again.
-        String authenticationUrl = request.getContextPath() + this.authenticationUrl;
+        String authenticationUrl = request.getContextPath() + this.sessionAuthenticationUrl;
 
         Optional<String> errorMessage = Optional.ofNullable(request.getSession(false))
                 .map(it -> it.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION))

@@ -7,17 +7,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.util.StringUtils;
 import org.tbk.lnurl.auth.*;
 import org.tbk.lnurl.simple.auth.SimpleK1;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 import org.tbk.lnurl.simple.auth.SimpleSignature;
-import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
