@@ -12,7 +12,7 @@ import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
-public class LnurlAuthWalletToken extends AbstractAuthenticationToken {
+public final class LnurlAuthWalletToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = 1L;
 

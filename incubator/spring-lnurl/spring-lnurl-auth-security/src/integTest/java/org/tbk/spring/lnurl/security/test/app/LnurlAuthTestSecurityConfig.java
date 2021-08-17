@@ -33,8 +33,6 @@ public class LnurlAuthTestSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .userDetailsService(userDetailsService())
                 .apply(LnurlAuthConfigurer.create(k1Manager(), pairingService()))
-                .loginPageEndpoint().disable()
-                .and()
                 .and()
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
