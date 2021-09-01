@@ -69,7 +69,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
         return rpcConfigBuilder.build();
     }
 
-    @Bean
+    @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(RpcConfig.class)
     public BitcoinClient bitcoinJsonRpcClient(BitcoinJsonRpcClientFactory bitcoinClientFactory, RpcConfig rpcConfig) {
