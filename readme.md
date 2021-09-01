@@ -22,6 +22,7 @@ Bitcoin in financial applications and computations.
 **Note**: Most code is still experimental - **do not use in production**.
 This project is under active development. Pull requests and issues are welcome.
 [Look at the changelog](changelog.md) to track notable changes.
+<a id="fun"></a>Also, [developing this project is fun](docs/FALSEHOODS.md).
 
 
 ## Table of Contents
@@ -69,11 +70,11 @@ You can find a small selection in the following table. But there is much more to
 |[bitcoin-jsonrpc-client](modules.md#bitcoin-jsonrpc-client)|Connect to Bitcoin Core via [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.|
 |[bitcoin-zeromq-client](modules.md#bitcoin-zeromq-client)|Connect to Bitcoin Core via ZeroMq API client.|
 |[bitcoin-regtest](modules.md#bitcoin-regtest)|Integration and regression testing your own application.|
-|[bitcoin-mqtt](modules.md#bitcoin-mqtt)|Handle Bitcoin ZeroMQ messages via MQTT|
+|[bitcoin-mqtt](modules.md#bitcoin-mqtt)|Handle Bitcoin ZeroMQ messages via MQTT.|
 |[lnd-grpc-client](modules.md#lnd-grpc-client)|Connect to lnd node via [Lightningj](https://www.lightningj.org/) gRPC API client.|
-|[spring-xchange](modules.md#spring-xchange)|Creating and configure [XChange]( https://github.com/knowm/XChange) beans|
-|[spring-tor](modules.md#spring-tor)|Automatically expose your application as [Tor Hidden Service](https://www.torproject.org/).|
 |[xchange-jsr354](modules.md#xchange-jsr354)|Exchange rates from popular Bitcoin exchanges for your application.|
+|[spring-xchange](modules.md#spring-xchange)|Creating and configure [XChange]( https://github.com/knowm/XChange) beans.|
+|[spring-tor](modules.md#spring-tor)|Automatically expose your application as [Tor Hidden Service](https://www.torproject.org/).|
 |<a id="spring-lnurl"></a>[spring-lnurl](incubator/spring-lnurl)|Spring Security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).|
 
 [See modules.md for general information](readme.md) about specific modules.
