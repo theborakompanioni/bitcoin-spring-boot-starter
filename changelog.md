@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - spring-lnurl: Improved customization support for `LnurlAuthConfigurer`
+- refactor: throw IllegalArgumentException instead of NPE on @NonNull violations
 - upgrade: update jmolecules from v2021.0.2 to v2021.1.0
 - upgrade: update consensusj from v0.5.8 to v0.5.9
 
