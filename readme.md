@@ -15,7 +15,7 @@ bitcoin-spring-boot-starter
 **Write enterprise Bitcoin applications with Spring Boot.**
 
 Spring boot starter projects with convenient dependency descriptors for multiple Bitcoin related modules that you can 
-import into your application. Strong focus on integration and regression testing your own application or module.
+include in your application. Strong focus on integration and regression testing your own application or module.
 Included are features for representing, transporting, and performing comprehensive calculations and tests with 
 Bitcoin in financial applications and computations.
  
@@ -73,11 +73,11 @@ You can find a small selection in the following table. But there is much more to
 |[bitcoin-mqtt](modules.md#bitcoin-mqtt)|Handle Bitcoin ZeroMQ messages via MQTT.|
 |[lnd-grpc-client](modules.md#lnd-grpc-client)|Connect to lnd node via [Lightningj](https://www.lightningj.org/) gRPC API client.|
 |[xchange-jsr354](modules.md#xchange-jsr354)|Exchange rates from popular Bitcoin exchanges for your application.|
-|[spring-xchange](modules.md#spring-xchange)|Creating and configure [XChange]( https://github.com/knowm/XChange) beans.|
+|[spring-xchange](modules.md#spring-xchange)|Automatically create and configure [XChange]( https://github.com/knowm/XChange) beans.|
 |[spring-tor](modules.md#spring-tor)|Automatically expose your application as [Tor Hidden Service](https://www.torproject.org/).|
 |<a id="spring-lnurl"></a>[spring-lnurl](incubator/spring-lnurl)|Spring Security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).|
 
-[See modules.md for general information](readme.md) about specific modules.
+[See modules.md for general information](modules.md) about specific modules.
 
 
 ## Examples
@@ -91,7 +91,7 @@ example applications showing basic usage of the functionality provided by these 
 
 Example apps can be started with a single command, e.g.:
 ```shell script
-./gradlew -p examples/lnd-playground-example-application bootRun
+./gradlew -p incubator/spring-lnurl/spring-lnurl-auth-example-application bootRun
 ```
 
 
@@ -124,7 +124,6 @@ To run all tests pass arguments `-PexampleTest` and `-PtestcontainerTest`:
 ```
 Be aware this might take several minutes to complete (>= 10 minutes).
 
-
 ### Dependency Verification
 Gradle is used for checksum and signature verification of dependencies.
 
@@ -136,7 +135,6 @@ Gradle is used for checksum and signature verification of dependencies.
 See [Gradle Userguide: Verifying dependencies](https://docs.gradle.org/current/userguide/dependency_verification.html)
 for more information.
 
-
 ### Checkstyle
 [Checkstyle](https://github.com/checkstyle/checkstyle) with adapted [google_checks](https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml)
 is used for checking Java source code for adherence to a Code Standard.
@@ -145,7 +143,6 @@ is used for checking Java source code for adherence to a Code Standard.
 # check for code standard violations with checkstyle
 ./gradlew checkstyleMain
 ```
-
 
 ### SpotBugs
 [SpotBugs](https://spotbugs.github.io/) is used for static code analysis.
