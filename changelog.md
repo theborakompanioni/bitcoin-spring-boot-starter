@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - refactor: throw IllegalArgumentException instead of NPE on @NonNull violations
 - upgrade: update jmolecules from v2021.0.2 to v2021.1.0
 - upgrade: update consensusj from v0.5.8 to v0.5.9
+- upgrade: update xchange from v5.0.7 to v5.0.11
 
 ## [0.1.0] - 2021-08-14
 ### Added
