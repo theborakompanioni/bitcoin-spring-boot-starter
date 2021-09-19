@@ -48,12 +48,12 @@ public class KrakenStackCommandRunner extends ConditionalOnNonOptionApplicationR
     protected void doRun(ApplicationArguments args) {
         log.info("Would stack on exchange {}", exchange);
 
-        Currency cryptoCurrency = Currency.BTC;
+        Currency bitcoin = Currency.BTC;
 
         Currency fiatCurrency = Currency.getInstance(properties.getFiatCurrency());
         BigDecimal fiatAmount = properties.getFiatAmount();
 
-        CurrencyPair currencyPair = new CurrencyPair(cryptoCurrency, fiatCurrency);
+        CurrencyPair currencyPair = new CurrencyPair(bitcoin, fiatCurrency);
         boolean supportedCurrencyPair = exchange.getExchangeSymbols().contains(currencyPair);
         if (!supportedCurrencyPair) {
             throw new IllegalStateException("Currency pair is not supported: " + currencyPair);
@@ -67,13 +67,16 @@ public class KrakenStackCommandRunner extends ConditionalOnNonOptionApplicationR
                 .or(() -> Optional.ofNullable(krakenBalance.get(fiatCurrency.getCurrencyCode())))
                 .orElse(BigDecimal.ZERO);
 
-        BigDecimal cryptoBalance = Optional.ofNullable(krakenBalance.get("X" + cryptoCurrency.getCurrencyCode()))
-                .or(() -> Optional.ofNullable(krakenBalance.get(cryptoCurrency.getCurrencyCode())))
+        BigDecimal bitcoinBalance = bitcoin.getCurrencyCodes().stream()
+                .filter(it -> krakenBalance.containsKey("X" + it))
+                .map(it -> krakenBalance.get("X" + it))
+                .findFirst()
+                .or(() -> Optional.ofNullable(krakenBalance.get(bitcoin.getCurrencyCode())))
                 .orElse(BigDecimal.ZERO);
 
         System.out.printf("💰 Balance: %s %s / %s %s%n",
                 fiatBalance.toPlainString(), fiatCurrency,
-                cryptoBalance.toPlainString(), cryptoCurrency);
+                bitcoinBalance.toPlainString(), bitcoin);
 
         if (fiatBalance.compareTo(fiatAmount) < 0) {
             System.out.printf("❌ Balance is too low - balance < order price: %s < %s%n",

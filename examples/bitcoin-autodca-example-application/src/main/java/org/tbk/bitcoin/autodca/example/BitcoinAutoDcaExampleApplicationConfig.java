@@ -105,6 +105,13 @@ public class BitcoinAutoDcaExampleApplicationConfig {
         return new KrakenHistoryCommandRunner(krakenExchange);
     }
 
+    @Bean
+    @ConditionalOnNotWebApplication
+    public ApplicationRunner rebalanceCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
+        KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
+        return new KrakenRebalanceCommandRunner(krakenExchange, this.properties, dryRunOption);
+    }
+
     private KrakenExchange toKrakenExchangeOrThrow(Exchange exchange) {
         boolean isKrakenExchange = exchange instanceof KrakenExchange;
 
