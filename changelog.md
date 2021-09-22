@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - spring-lnurl: Publish `LnurlAuthWalletActionEvent` on successfully authorized wallet requests
-
-### Removed
-- fix: 
+- lnd: create beans for all available LightningJ APIs
 
 ### Changed
 - spring-lnurl: Improved customization support for `LnurlAuthConfigurer`
