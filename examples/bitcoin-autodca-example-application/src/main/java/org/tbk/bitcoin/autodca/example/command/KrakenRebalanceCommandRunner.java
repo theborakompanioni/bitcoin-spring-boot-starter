@@ -19,6 +19,7 @@ import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.format.MonetaryFormats;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
     }
 
     @Override
-    @SneakyThrows
+    @SneakyThrows({IllegalStateException.class, IOException.class})
     protected void doRun(ApplicationArguments args) {
         log.debug("Calculate rebalance on exchange {}", exchange);
 
@@ -78,16 +79,18 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
             return;
         }
 
-        BigDecimal bitcoinBalance = bitcoin.getCurrencyCodes().stream()
+        BigDecimal bitcoinBalanceValue = bitcoin.getCurrencyCodes().stream()
                 .filter(it -> krakenBalance.containsKey("X" + it))
                 .map(it -> krakenBalance.get("X" + it))
                 .findFirst()
                 .or(() -> Optional.ofNullable(krakenBalance.get(bitcoin.getCurrencyCode())))
                 .orElse(BigDecimal.ZERO);
+        Money bitcoinBalance = Money.of(bitcoinBalanceValue, bitcoinCurrencyUnit);
 
-        BigDecimal fiatBalance = Optional.ofNullable(krakenBalance.get("Z" + fiatCurrency.getCurrencyCode()))
+        BigDecimal fiatBalanceValue = Optional.ofNullable(krakenBalance.get("Z" + fiatCurrency.getCurrencyCode()))
                 .or(() -> Optional.ofNullable(krakenBalance.get(fiatCurrency.getCurrencyCode())))
                 .orElse(BigDecimal.ZERO);
+        Money fiatBalance = Money.of(fiatBalanceValue, fiatCurrency.getCurrencyCode());
         // ---------------------------------------------- balance - end
 
         // ---------------------------------------------- ask/bid
@@ -95,53 +98,62 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
         Ticker ticker = marketDataService.getTicker(currencyPair);
         // ---------------------------------------------- ask/bid - end
 
-        BigDecimal oneBitcoinInFiat = ticker.getAsk();
-        System.out.printf("📎 1 BTC = %s %s%n", oneBitcoinInFiat, fiatCurrency);
+        Money oneBitcoin = Money.of(BigDecimal.ONE, "BTC");
+        Money oneBitcoinInFiat = Money.of(ticker.getAsk(), fiatCurrency.getCurrencyCode());
+        System.out.printf("📎 %s = %s%n",
+                moneyFormat.format(oneBitcoin),
+                moneyFormat.format(oneBitcoinInFiat));
 
-        BigDecimal bitcoinInFiat = bitcoinBalance.multiply(oneBitcoinInFiat).setScale(4, RoundingMode.DOWN);
-        BigDecimal totalInFiat = fiatBalance.add(bitcoinInFiat).setScale(4, RoundingMode.DOWN);
-        BigDecimal fiatInBitcoin = fiatBalance.divide(oneBitcoinInFiat, 8, RoundingMode.HALF_UP);
-        BigDecimal totalInBitcoin = bitcoinBalance.add(fiatInBitcoin).setScale(8, RoundingMode.DOWN);
+        Money bitcoinInFiat = oneBitcoinInFiat.multiply(bitcoinBalance.getNumber());
+        Money totalInFiat = fiatBalance.add(bitcoinInFiat);
+        Money fiatInBitcoin = Money.of(fiatBalance.divide(oneBitcoinInFiat.getNumber()).getNumber(), bitcoinCurrencyUnit);
+        Money totalInBitcoin = bitcoinBalance.add(fiatInBitcoin);
 
-        BigDecimal percentageOfBalanceInBtc = bitcoinBalance.divide(totalInBitcoin, RoundingMode.HALF_UP)
+        BigDecimal percentageOfBalanceInBtc = bitcoinBalance.getNumberStripped()
+                .divide(totalInBitcoin.getNumberStripped(), RoundingMode.HALF_UP)
                 .setScale(4, RoundingMode.HALF_UP)
                 .movePointRight(2);
-        System.out.printf("💰 Balance BTC (%s%%): %s (%s %s)%n",
+
+        System.out.printf("💰 Balance BTC (%s%%): %s (%s)%n",
                 percentageOfBalanceInBtc,
-                moneyFormat.format(Money.of(bitcoinBalance, bitcoinCurrencyUnit)),
-                bitcoinInFiat, fiatCurrency);
+                moneyFormat.format(bitcoinBalance),
+                moneyFormat.format(bitcoinInFiat));
 
-        BigDecimal percentageOfBalanceInFiat = fiatInBitcoin.divide(totalInBitcoin, RoundingMode.HALF_UP)
+        BigDecimal percentageOfBalanceInFiat = fiatInBitcoin.getNumberStripped()
+                .divide(totalInBitcoin.getNumberStripped(), RoundingMode.HALF_UP)
                 .setScale(4, RoundingMode.HALF_UP)
                 .movePointRight(2);
-        System.out.printf("💰 Balance FIAT (%s%%): %s (%s %s)%n",
+        System.out.printf("💰 Balance FIAT (%s%%): %s (%s)%n",
                 percentageOfBalanceInFiat,
-                moneyFormat.format(Money.of(fiatBalance, fiatCurrency.getCurrencyCode())),
-                fiatInBitcoin, bitcoin);
+                moneyFormat.format(fiatBalance),
+                moneyFormat.format(fiatInBitcoin));
 
-        System.out.printf("   (_Hypothetical_ Total Balances: %s %s or %s %s)%n", totalInBitcoin, bitcoin, totalInFiat, fiatCurrency);
+        System.out.printf("   (_Hypothetical_ Total Balances: %s or %s)%n",
+                moneyFormat.format(totalInBitcoin),
+                moneyFormat.format(totalInFiat));
 
         BigDecimal multiplicand = new BigDecimal("0.5");
-        BigDecimal bitcoinTargetBalance = totalInBitcoin.multiply(multiplicand).setScale(8, RoundingMode.DOWN);
+        Money bitcoinTargetBalance = totalInBitcoin.multiply(multiplicand);
 
-        System.out.printf("📎 Target Balance BTC (%s%%): %s %s%n", multiplicand.multiply(BigDecimal.valueOf(100)),
-                bitcoinTargetBalance, bitcoin);
+        System.out.printf("📎 Target Balance BTC (%s%%): %s%n",
+                multiplicand.multiply(BigDecimal.valueOf(100)),
+                moneyFormat.format(bitcoinTargetBalance));
 
-        BigDecimal missingBitcoin = bitcoinTargetBalance.subtract(bitcoinBalance)
-                .setScale(8, RoundingMode.HALF_UP);
-        BigDecimal missingBitcoinInFiat = missingBitcoin.multiply(oneBitcoinInFiat)
-                .setScale(4, RoundingMode.DOWN);
+        Money missingBitcoin = bitcoinTargetBalance.subtract(bitcoinBalance);
+        Money missingBitcoinInFiat = oneBitcoinInFiat.multiply(missingBitcoin.getNumber());
 
-        MonetaryAmount source = Money.of(missingBitcoinInFiat, fiatCurrency.getCurrencyCode());
-        MonetaryAmount target = Money.of(missingBitcoin, bitcoinCurrencyUnit);
+        MonetaryAmount source = missingBitcoinInFiat;
+        MonetaryAmount target = missingBitcoin;
 
-        boolean buyBitcoin = missingBitcoin.compareTo(BigDecimal.ZERO) > 0;
+        boolean buyBitcoin = missingBitcoin.isPositive();
         if (!buyBitcoin) {
             MonetaryAmount tmp = source.abs();
             source = target.abs();
             target = tmp;
         }
 
-        System.out.printf("📈 You should use %s to get %s%n", moneyFormat.format(source), moneyFormat.format(target));
+        System.out.printf("📈 You should use %s to get %s%n",
+                moneyFormat.format(source),
+                moneyFormat.format(target));
     }
 }

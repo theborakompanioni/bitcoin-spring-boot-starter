@@ -22,7 +22,7 @@ logging.level.si.mazi.rescu.ResponseReader: INFO
 
 org.tbk.bitcoin.autodca:
   dry: true
-  max-relative-fee: 0.001 # -> 0.01% will probably never withdraw ; )
+  max-relative-fee: 0.001 # -> 0.001% will probably never withdraw ; )
 
 org.tbk.xchange:
   enabled: true

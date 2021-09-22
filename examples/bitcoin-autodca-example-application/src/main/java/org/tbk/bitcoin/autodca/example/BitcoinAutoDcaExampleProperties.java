@@ -21,27 +21,37 @@ public class BitcoinAutoDcaExampleProperties implements Validator {
 
     /**
      * the governmental shitcoin you are selling.
+     * See {@link Currency#getAvailableCurrencyCodes()}
+     *
+     * @param fiatCurrency the governmental shitcoin you are selling.
+     * @return the governmental shitcoin you are selling.
      */
     private String fiatCurrency;
 
     /**
      * fiat amount you trade for the future of money.
+     *
+     * @param fiatAmount fiat amount you trade for the future of money.
+     * @return fiat amount you trade for the future of money.
      */
     private BigDecimal fiatAmount;
 
     /**
      * maximum fee in % that you are willing to pay.
+     *
+     * @param maxRelativeFee maximum fee in % that you are willing to pay.
+     * @return maximum fee in % that you are willing to pay.
      */
     private BigDecimal maxRelativeFee;
 
     /**
      * description of withdrawal address.
+     *
+     * @param withdrawAddress description of withdrawal address.
+     * @return description of withdrawal address.
      */
     private String withdrawAddress;
 
-    /**
-     * description of withdrawal address.
-     */
     private Boolean dry;
 
     public boolean getDry() {
