@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
-import org.tbk.lightning.lnd.grpc.config.LndJsonRpcClientAutoConfigProperties;
+import org.tbk.lightning.lnd.grpc.config.LndClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 
 import javax.xml.bind.DatatypeConverter;
@@ -21,7 +21,7 @@ import javax.xml.bind.DatatypeConverter;
 public class CustomTestcontainerLndJsonRpcConfig {
 
     @Bean
-    public LndRpcConfig lndRpcConfig(LndJsonRpcClientAutoConfigProperties properties,
+    public LndRpcConfig lndRpcConfig(LndClientAutoConfigProperties properties,
                                      LndContainer<?> lndContainer,
                                      MacaroonContext lndJsonRpcMacaroonContext,
                                      SslContext lndJsonRpcSslContext) {
@@ -37,7 +37,7 @@ public class CustomTestcontainerLndJsonRpcConfig {
     }
 
     @Bean
-    public MacaroonContext lndJsonRpcMacaroonContext(LndJsonRpcClientAutoConfigProperties properties,
+    public MacaroonContext lndJsonRpcMacaroonContext(LndClientAutoConfigProperties properties,
                                                      LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
             byte[] bytes = IOUtils.toByteArray(inputStream);
@@ -47,7 +47,7 @@ public class CustomTestcontainerLndJsonRpcConfig {
     }
 
     @Bean
-    public SslContext lndJsonRpcSslContext(LndJsonRpcClientAutoConfigProperties properties,
+    public SslContext lndJsonRpcSslContext(LndClientAutoConfigProperties properties,
                                            LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
             return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)

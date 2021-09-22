@@ -16,8 +16,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
-import org.tbk.lightning.lnd.grpc.actuator.health.LndJsonRpcHealthIndicator;
+import org.tbk.lightning.lnd.grpc.LndRpcConfig;
+import org.tbk.lightning.lnd.grpc.actuator.health.LndHealthIndicator;
 
 import java.util.Map;
 
@@ -26,21 +26,21 @@ import java.util.Map;
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({
         HealthContributor.class,
-        LndJsonRpcClientFactory.class
+        LndRpcConfig.class
 })
-@AutoConfigureAfter(LndJsonRpcClientAutoConfiguration.class)
-public class LndJsonRpcHealthContributorAutoConfiguration {
+@AutoConfigureAfter(LndClientAutoConfiguration.class)
+public class LndHealthContributorAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnEnabledHealthIndicator("lndJsonRpc")
     @ConditionalOnBean(SynchronousLndAPI.class)
-    @AutoConfigureAfter(LndJsonRpcClientAutoConfiguration.class)
+    @AutoConfigureAfter(LndClientAutoConfiguration.class)
     public class LndJsonRpcClientHealthContributorAutoConfiguration extends
-            CompositeHealthContributorConfiguration<LndJsonRpcHealthIndicator, SynchronousLndAPI> {
+            CompositeHealthContributorConfiguration<LndHealthIndicator, SynchronousLndAPI> {
 
         @Override
-        protected LndJsonRpcHealthIndicator createIndicator(SynchronousLndAPI bean) {
-            return new LndJsonRpcHealthIndicator(bean);
+        protected LndHealthIndicator createIndicator(SynchronousLndAPI bean) {
+            return new LndHealthIndicator(bean);
         }
 
         @Bean
@@ -64,7 +64,7 @@ public class LndJsonRpcHealthContributorAutoConfiguration {
                 NetworkInfo networkInfo = client.getNetworkInfo();
 
                 builder.withDetail("lndJsonRpc", detailBuilder
-                        .put("info", LndJsonRpcHealthIndicator.createMapFromInfoResponse(info))
+                        .put("info", LndHealthIndicator.createMapFromInfoResponse(info))
                         .put("networkInfo", ImmutableMap.<String, Object>builder()
                                 .put("graphDiameter", networkInfo.getGraphDiameter())
                                 .put("avgOutDegree", networkInfo.getAvgOutDegree())

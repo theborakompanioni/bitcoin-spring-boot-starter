@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-class LndJsonRpcInfoContributorIntegrationTest {
+class LndInfoContributorIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {

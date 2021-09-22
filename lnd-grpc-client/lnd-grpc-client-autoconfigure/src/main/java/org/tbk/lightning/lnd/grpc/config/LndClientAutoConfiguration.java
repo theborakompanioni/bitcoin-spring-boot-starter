@@ -17,8 +17,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactory;
-import org.tbk.lightning.lnd.grpc.LndJsonRpcClientFactoryImpl;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 
@@ -30,31 +28,25 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(LndJsonRpcClientAutoConfigProperties.class)
-@ConditionalOnClass(LndJsonRpcClientFactory.class)
+@EnableConfigurationProperties(LndClientAutoConfigProperties.class)
+@ConditionalOnClass(LndRpcConfig.class)
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
-public class LndJsonRpcClientAutoConfiguration {
+public class LndClientAutoConfiguration {
 
-    private final LndJsonRpcClientAutoConfigProperties properties;
+    private final LndClientAutoConfigProperties properties;
 
-    public LndJsonRpcClientAutoConfiguration(LndJsonRpcClientAutoConfigProperties properties) {
+    public LndClientAutoConfiguration(LndClientAutoConfigProperties properties) {
         this.properties = requireNonNull(properties);
     }
 
-    @Bean("lndJsonRpcClientFactory")
-    @ConditionalOnMissingBean
-    public LndJsonRpcClientFactory lndJsonRpcClientFactory() {
-        return new LndJsonRpcClientFactoryImpl();
-    }
-
-    @Bean("lndJsonRpcMacaroonContext")
+    @Bean("lndMacaroonContext")
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
             "org.tbk.lightning.lnd.grpc.macaroonFilePath"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    public MacaroonContext lndJsonRpcMacaroonContext() {
+    public MacaroonContext lndMacaroonContext() {
         requireNonNull(properties.getMacaroonFilePath(), "'macaroonFilePath' must not be null");
 
         File macaroonFile = new File(properties.getMacaroonFilePath());
@@ -66,14 +58,14 @@ public class LndJsonRpcClientAutoConfiguration {
         return () -> hex;
     }
 
-    @Bean("lndJsonRpcSslContext")
+    @Bean("lndSslContext")
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
             "org.tbk.lightning.lnd.grpc.certFilePath"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    public SslContext lndJsonRpcSslContext() {
+    public SslContext lndSslContext() {
         requireNonNull(properties.getCertFilePath(), "'certFilePath' must not be null");
 
         File certFile = new File(properties.getCertFilePath());
@@ -92,29 +84,37 @@ public class LndJsonRpcClientAutoConfiguration {
             "org.tbk.lightning.lnd.grpc.rpcport"
     })
     @ConditionalOnBean({MacaroonContext.class, SslContext.class})
-    public LndRpcConfig lndJsonRpcConfig(
-            @Qualifier("lndJsonRpcMacaroonContext") MacaroonContext lndJsonRpcMacaroonContext,
-            @Qualifier("lndJsonRpcSslContext") SslContext lndJsonRpcSslContext) {
+    public LndRpcConfig lndRpcConfig(
+            @Qualifier("lndMacaroonContext") MacaroonContext lndMacaroonContext,
+            @Qualifier("lndSslContext") SslContext lndSslContext) {
         return LndRpcConfigImpl.builder()
                 .rpchost(properties.getRpchost())
                 .rpcport(properties.getRpcport())
-                .macaroonContext(lndJsonRpcMacaroonContext)
-                .sslContext(lndJsonRpcSslContext)
+                .macaroonContext(lndMacaroonContext)
+                .sslContext(lndSslContext)
                 .build();
     }
 
-    @Bean(name = "synchronousLndJsonRpcClient", destroyMethod = "close")
+    @Bean(name = "synchronousLndClient", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousLndAPI synchronousLndJsonRpcClient(LndJsonRpcClientFactory bitcoinClientFactory, LndRpcConfig rpcConfig) {
-        return bitcoinClientFactory.createSync(rpcConfig);
+    public SynchronousLndAPI synchronousLndClient(LndRpcConfig rpcConfig) {
+        return new SynchronousLndAPI(
+                rpcConfig.getRpchost(),
+                rpcConfig.getRpcport(),
+                rpcConfig.getSslContext(),
+                rpcConfig.getMacaroonContext());
     }
 
-    @Bean(name = "lndJsonRpcClient", destroyMethod = "close")
+    @Bean(name = "lndClient", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousLndAPI lndJsonRpcClient(LndJsonRpcClientFactory bitcoinClientFactory, LndRpcConfig rpcConfig) {
-        return bitcoinClientFactory.create(rpcConfig);
+    public AsynchronousLndAPI lndClient(LndRpcConfig rpcConfig) {
+        return new AsynchronousLndAPI(
+                rpcConfig.getRpchost(),
+                rpcConfig.getRpcport(),
+                rpcConfig.getSslContext(),
+                rpcConfig.getMacaroonContext());
     }
 
 }

@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.lightning.lnd.grpc.config.LndJsonRpcClientAutoConfiguration,\
-org.tbk.lightning.lnd.grpc.config.LndJsonRpcHealthContributorAutoConfiguration,\
-org.tbk.lightning.lnd.grpc.config.LndJsonRpcMetricsConfiguration
+org.tbk.lightning.lnd.grpc.config.LndClientAutoConfiguration,\
+org.tbk.lightning.lnd.grpc.config.LndHealthContributorAutoConfiguration,\
+org.tbk.lightning.lnd.grpc.config.LndMetricsAutoConfiguration

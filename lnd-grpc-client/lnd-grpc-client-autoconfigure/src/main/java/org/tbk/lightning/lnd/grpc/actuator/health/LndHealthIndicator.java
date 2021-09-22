@@ -21,10 +21,10 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class LndJsonRpcHealthIndicator extends AbstractHealthIndicator {
+public class LndHealthIndicator extends AbstractHealthIndicator {
     private final SynchronousLndAPI client;
 
-    public LndJsonRpcHealthIndicator(SynchronousLndAPI client) {
+    public LndHealthIndicator(SynchronousLndAPI client) {
         this.client = requireNonNull(client);
     }
 

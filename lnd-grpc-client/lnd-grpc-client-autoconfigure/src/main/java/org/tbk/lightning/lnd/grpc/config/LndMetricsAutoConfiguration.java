@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -28,31 +29,34 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
-@ConditionalOnClass(MeterBinder.class)
-@AutoConfigureAfter(LndJsonRpcClientAutoConfiguration.class)
-public class LndJsonRpcMetricsConfiguration {
+@ConditionalOnClass({
+        MeterBinder.class,
+        LndRpcConfig.class
+})
+@AutoConfigureAfter(LndClientAutoConfiguration.class)
+public class LndMetricsAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(SynchronousLndAPI.class)
-    public LndJsonRpcClientMetrics lndJsonRpcClientMetrics(SynchronousLndAPI client) {
-        return new LndJsonRpcClientMetrics(client);
+    public LndClientMetrics lndJsonRpcClientMetrics(SynchronousLndAPI client) {
+        return new LndClientMetrics(client);
     }
 
     @Slf4j
     @NonNullApi
     @NonNullFields
-    public static class LndJsonRpcClientMetrics implements MeterBinder {
+    public static class LndClientMetrics implements MeterBinder {
         private final SynchronousLndAPI client;
         private final Iterable<Tag> tags;
 
         private final Supplier<Optional<GetInfoResponse>> infoSupplier = Suppliers
                 .memoizeWithExpiration(this::fetchInfo, 1, TimeUnit.SECONDS);
 
-        public LndJsonRpcClientMetrics(SynchronousLndAPI client) {
+        public LndClientMetrics(SynchronousLndAPI client) {
             this(client, Tags.empty());
         }
 
-        public LndJsonRpcClientMetrics(SynchronousLndAPI client, Iterable<Tag> tags) {
+        public LndClientMetrics(SynchronousLndAPI client, Iterable<Tag> tags) {
             this.client = requireNonNull(client);
             this.tags = requireNonNull(tags);
         }

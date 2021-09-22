@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-public class EnabledLndJsonRpcHealthIndicatorIntegrationTest {
+public class EnabledLndHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
     public static class LndJsonRpcTestApplication {

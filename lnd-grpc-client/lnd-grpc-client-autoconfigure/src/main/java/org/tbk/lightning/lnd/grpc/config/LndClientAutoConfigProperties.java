@@ -12,7 +12,7 @@ import java.util.Optional;
         prefix = "org.tbk.lightning.lnd.grpc",
         ignoreUnknownFields = false
 )
-public class LndJsonRpcClientAutoConfigProperties implements Validator {
+public class LndClientAutoConfigProperties implements Validator {
 
     public enum Network {
         mainnet,
@@ -55,12 +55,12 @@ public class LndJsonRpcClientAutoConfigProperties implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz == LndJsonRpcClientAutoConfigProperties.class;
+        return clazz == LndClientAutoConfigProperties.class;
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        LndJsonRpcClientAutoConfigProperties properties = (LndJsonRpcClientAutoConfigProperties) target;
+        LndClientAutoConfigProperties properties = (LndClientAutoConfigProperties) target;
 
         if (properties.getRpcport() < 0) {
             String errorMessage = String.format("Port must not be negative - invalid value: %d", properties.getRpcport());
