@@ -35,6 +35,8 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
     private static final MonetaryAmountFormat moneyFormat = MonetaryFormats
             .getAmountFormat(BitcoinAmountFormatProvider.formatNameBitcoin());
 
+    private static final BigDecimal defaultBitcoinTargetPercentage = new BigDecimal("0.5"); // 0.5 := 50%
+
     private final KrakenExchange exchange;
     private final BitcoinAutoDcaExampleProperties properties;
     private final DryRunOption dryRun;
@@ -55,6 +57,18 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
 
         if (!dryRun.isEnabled()) {
             throw new IllegalStateException("Currently only implemented with '--dry-run' option");
+        }
+
+        BigDecimal bitcoinTargetPercentage = Optional.ofNullable(args.getOptionValues("target"))
+                .flatMap(it -> it.stream().findFirst())
+                .map(BigDecimal::new)
+                .orElse(defaultBitcoinTargetPercentage);
+        // target percentage must be between 0 and 1
+        boolean targetParamIsWithinBounds = bitcoinTargetPercentage.compareTo(BigDecimal.ZERO) >= 0
+                && bitcoinTargetPercentage.compareTo(BigDecimal.ONE) <= 0;
+
+        if (!targetParamIsWithinBounds) {
+            throw new IllegalStateException("Invalid target percentage param: " + bitcoinTargetPercentage);
         }
 
         Currency bitcoin = Currency.BTC;
@@ -132,11 +146,10 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
                 moneyFormat.format(totalInBitcoin),
                 moneyFormat.format(totalInFiat));
 
-        BigDecimal multiplicand = new BigDecimal("0.5");
-        Money bitcoinTargetBalance = totalInBitcoin.multiply(multiplicand);
+        Money bitcoinTargetBalance = totalInBitcoin.multiply(bitcoinTargetPercentage);
 
         System.out.printf("📎 Target Balance BTC (%s%%): %s%n",
-                multiplicand.multiply(BigDecimal.valueOf(100)),
+                bitcoinTargetPercentage.multiply(BigDecimal.valueOf(100)),
                 moneyFormat.format(bitcoinTargetBalance));
 
         Money missingBitcoin = bitcoinTargetBalance.subtract(bitcoinBalance);
