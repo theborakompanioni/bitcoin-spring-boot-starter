@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "server.port=13337",
         "management.server.port=13337",
         "management.endpoint.health.show-details=always",
-        "management.health.lndJsonRpc.enabled=false",
+        "management.health.lndApi.enabled=false",
         "org.tbk.lightning.lnd.grpc.rpchost=localhost",
         "org.tbk.lightning.lnd.grpc.rpcport=13337",
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
@@ -33,11 +33,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DisabledLndHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
-    public static class LndJsonRpcTestApplication {
+    public static class LndHealthIndicatorTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(LndJsonRpcTestApplication.class)
+                    .sources(LndHealthIndicatorTestApplication.class)
                     .web(WebApplicationType.SERVLET)
                     .run(args);
         }
@@ -48,7 +48,7 @@ public class DisabledLndHealthIndicatorIntegrationTest {
 
     @Test
     public void itShouldCheckHealthEndpointDoesNotExist() throws Exception {
-        mockMvc.perform(get("/actuator/health/lndJsonRpc"))
+        mockMvc.perform(get("/actuator/health/lndAPI"))
                 .andExpect(status().isNotFound());
     }
 
@@ -56,7 +56,7 @@ public class DisabledLndHealthIndicatorIntegrationTest {
     public void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andExpect(jsonPath("status").value("UP"))
-                .andExpect(jsonPath("components.lndJsonRpc").doesNotExist())
+                .andExpect(jsonPath("components.lndAPI").doesNotExist())
                 .andExpect(status().isOk());
     }
 }

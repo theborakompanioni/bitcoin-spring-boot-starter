@@ -32,10 +32,10 @@ import java.util.Map;
 public class LndHealthContributorAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnEnabledHealthIndicator("lndJsonRpc")
+    @ConditionalOnEnabledHealthIndicator("lndApi")
     @ConditionalOnBean(SynchronousLndAPI.class)
     @AutoConfigureAfter(LndClientAutoConfiguration.class)
-    public class LndJsonRpcClientHealthContributorAutoConfiguration extends
+    public class LndApiHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<LndHealthIndicator, SynchronousLndAPI> {
 
         @Override
@@ -44,17 +44,17 @@ public class LndHealthContributorAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(name = {"lndJsonRpcHealthIndicator", "lndJsonRpcHealthContributor"})
-        public HealthContributor lndJsonRpcHealthContributor(Map<String, SynchronousLndAPI> beans) {
+        @ConditionalOnMissingBean(name = {"lndApiHealthIndicator", "lndApiHealthContributor"})
+        public HealthContributor lndApiHealthContributor(Map<String, SynchronousLndAPI> beans) {
             return createContributor(beans);
         }
     }
 
     @Bean
     @ConditionalOnSingleCandidate(SynchronousLndAPI.class)
-    @ConditionalOnEnabledInfoContributor("lndJsonRpc")
-    @ConditionalOnMissingBean(name = "lndJsonRpcInfoContributor")
-    public InfoContributor lndJsonRpcInfoContributor(SynchronousLndAPI client) {
+    @ConditionalOnEnabledInfoContributor("lndApi")
+    @ConditionalOnMissingBean(name = "lndApiInfoContributor")
+    public InfoContributor lndApiInfoContributor(SynchronousLndAPI client) {
         return builder -> {
             ImmutableMap.Builder<String, Object> detailBuilder = ImmutableMap.<String, Object>builder()
                     .put("performValidation", client.isPerformValidation());
@@ -63,7 +63,7 @@ public class LndHealthContributorAutoConfiguration {
                 GetInfoResponse info = client.getInfo();
                 NetworkInfo networkInfo = client.getNetworkInfo();
 
-                builder.withDetail("lndJsonRpc", detailBuilder
+                builder.withDetail("lndAPI", detailBuilder
                         .put("info", LndHealthIndicator.createMapFromInfoResponse(info))
                         .put("networkInfo", ImmutableMap.<String, Object>builder()
                                 .put("graphDiameter", networkInfo.getGraphDiameter())
@@ -80,15 +80,15 @@ public class LndHealthContributorAutoConfiguration {
                                 .build())
                         .build());
             } catch (ValidationException e) {
-                builder.withDetail("lndJsonRpc", detailBuilder
+                builder.withDetail("lndApi", detailBuilder
                         .put("validationResult", e.getValidationResult())
                         .build());
             } catch (StatusException e) {
-                builder.withDetail("lndJsonRpc", detailBuilder
+                builder.withDetail("lndApi", detailBuilder
                         .put("status", e.getStatus())
                         .build());
             } catch (Exception e) {
-                builder.withDetail("lndJsonRpc", detailBuilder
+                builder.withDetail("lndApi", detailBuilder
                         .put("error", e.getMessage())
                         .build());
             }

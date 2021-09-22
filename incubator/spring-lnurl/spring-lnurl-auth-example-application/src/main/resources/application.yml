@@ -43,7 +43,7 @@ management.endpoints.web.exposure.include: '*'
 management.info.bitcoinJsonRpc.enabled: true
 management.info.lndJsonRpc.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
-management.health.lndJsonRpc.enabled: true
+management.health.lndApi.enabled: true
 
 app:
   # use your own url here (e.g. https://myapp.ngrok.io)

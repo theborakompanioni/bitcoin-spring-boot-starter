@@ -36,11 +36,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LndMetricsIntegrationTest {
 
     @SpringBootApplication
-    public static class BitcoinJsonRpcTestApplication {
+    public static class LndMetricsIntegrationTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(BitcoinJsonRpcTestApplication.class)
+                    .sources(LndMetricsIntegrationTestApplication.class)
                     .web(WebApplicationType.SERVLET)
                     .run(args);
         }

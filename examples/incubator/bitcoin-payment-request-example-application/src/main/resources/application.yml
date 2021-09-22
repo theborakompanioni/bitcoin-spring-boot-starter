@@ -30,7 +30,7 @@ management.endpoints.web.exposure.include: '*'
 management.info.bitcoinJsonRpc.enabled: true
 management.info.lndJsonRpc.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
-management.health.lndJsonRpc.enabled: true
+management.health.lndApi.enabled: true
 
 spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
 spring.jpa.properties.hibernate.jdbc.time_zone: UTC

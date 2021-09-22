@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "server.port=13337",
         "management.server.port=13337",
         "management.endpoint.health.show-details=always",
-        "management.health.lndJsonRpc.enabled=true",
+        "management.health.lndApi.enabled=true",
         "org.tbk.lightning.lnd.grpc.rpchost=localhost",
         "org.tbk.lightning.lnd.grpc.rpcport=13337",
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
@@ -38,11 +38,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EnabledLndHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
-    public static class LndJsonRpcTestApplication {
+    public static class LndHealthIndicatorTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(LndJsonRpcTestApplication.class)
+                    .sources(LndHealthIndicatorTestApplication.class)
                     .web(WebApplicationType.SERVLET)
                     .run(args);
         }
@@ -55,7 +55,7 @@ public class EnabledLndHealthIndicatorIntegrationTest {
     public void itShouldCheckHealthEndpoint() throws Exception {
         // here we just check if the response is well-formed
         // as no lnd is running, we will end up with 503 DOWN
-        mockMvc.perform(get("/actuator/health/lndJsonRpc"))
+        mockMvc.perform(get("/actuator/health/lndApi"))
                 .andExpect(jsonPath("status").value(Status.DOWN.getCode()))
                 .andExpect(jsonPath("details.performValidation").exists())
                 .andExpect(jsonPath("details.status").exists())
@@ -71,14 +71,14 @@ public class EnabledLndHealthIndicatorIntegrationTest {
         mockMvc.perform(get("/actuator/health"))
                 .andDo(print())
                 .andExpect(jsonPath("status").value(Status.DOWN.getCode()))
-                .andExpect(jsonPath("components.lndJsonRpc").exists())
-                .andExpect(jsonPath("components.lndJsonRpc.status").value(Status.DOWN.getCode()))
-                .andExpect(jsonPath("components.lndJsonRpc.details").exists())
-                .andExpect(jsonPath("components.lndJsonRpc.details.performValidation").exists())
-                .andExpect(jsonPath("components.lndJsonRpc.details.status").exists())
-                .andExpect(jsonPath("components.lndJsonRpc.details.status.code").value("UNAVAILABLE"))
-                .andExpect(jsonPath("components.lndJsonRpc.details.status.cause").exists())
-                .andExpect(jsonPath("components.lndJsonRpc.details.error")
+                .andExpect(jsonPath("components.lndApi").exists())
+                .andExpect(jsonPath("components.lndApi.status").value(Status.DOWN.getCode()))
+                .andExpect(jsonPath("components.lndApi.details").exists())
+                .andExpect(jsonPath("components.lndApi.details.performValidation").exists())
+                .andExpect(jsonPath("components.lndApi.details.status").exists())
+                .andExpect(jsonPath("components.lndApi.details.status.code").value("UNAVAILABLE"))
+                .andExpect(jsonPath("components.lndApi.details.status.cause").exists())
+                .andExpect(jsonPath("components.lndApi.details.error")
                         .value(startsWith("org.lightningj.lnd.wrapper.CommunicationException: UNAVAILABLE")))
                 .andExpect(status().is(WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE));
     }

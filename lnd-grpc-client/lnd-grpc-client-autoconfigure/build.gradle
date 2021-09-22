@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-description = 'lnd jsonrpc client autoconfigure package'
+description = 'lnd grpc client autoconfigure package'
 
 dependencies {
     api project(':lnd-grpc-client:lnd-grpc-client-core')

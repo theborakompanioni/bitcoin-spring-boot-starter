@@ -5,14 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Breaking
+- refactor: throw IllegalArgumentException instead of NPE on @NonNull violations
+- adapt class names in lnd client module (remove 'JsonRpc' string in names)
+- rename lnd info/health actuator property from 'lndJsonRpc' to 'lndApi'
+- remove class `LndRpcClientFactory`
+
 ### Added
 - spring-lnurl: Publish `LnurlAuthWalletActionEvent` on successfully authorized wallet requests
 - lnd: create beans for all available LightningJ APIs
 
 ### Changed
 - spring-lnurl: Improved customization support for `LnurlAuthConfigurer`
-- refactor: throw IllegalArgumentException instead of NPE on @NonNull violations
-- adapt class names in lnd client module (remove 'JsonRpc' string in names)
 - upgrade: update jmolecules from v2021.0.2 to v2021.1.0
 - upgrade: update consensusj from v0.5.8 to v0.5.9
 - upgrade: update xchange from v5.0.7 to v5.0.11

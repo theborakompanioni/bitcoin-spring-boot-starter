@@ -33,11 +33,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LndInfoContributorIntegrationTest {
 
     @SpringBootApplication
-    public static class BitcoinJsonRpcTestApplication {
+    public static class LndInfoContributorTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(BitcoinJsonRpcTestApplication.class)
+                    .sources(LndInfoContributorTestApplication.class)
                     .web(WebApplicationType.SERVLET)
                     .run(args);
         }
@@ -49,8 +49,8 @@ class LndInfoContributorIntegrationTest {
     @Test
     void itShouldAddInformationToInfoEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/info"))
-                .andExpect(jsonPath("lndJsonRpc").exists())
-                .andExpect(jsonPath("lndJsonRpc.performValidation").exists())
+                .andExpect(jsonPath("lndApi").exists())
+                .andExpect(jsonPath("lndApi.performValidation").exists())
                 .andExpect(status().isOk());
     }
 }
