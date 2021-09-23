@@ -38,7 +38,7 @@ of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory
 
 
 ### lnd-grpc-client
-A module containing a spring boot starter for a [Lightningj](https://www.lightningj.org/) lnd gRPC API client.
+A module containing a spring boot starter for a [LightningJ](https://www.lightningj.org/) lnd gRPC API client.
 The starter will automatically create injectable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
 
 ```yaml
