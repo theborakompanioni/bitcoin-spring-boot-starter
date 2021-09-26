@@ -48,26 +48,26 @@ public class LndContainerApplicationTest {
         }
 
         @Configuration(proxyBeanMethods = false)
-        public static class CustomTestcontainerLndJsonRpcConfiguration {
+        public static class CustomTestcontainerLndRpcConfiguration {
 
             @Bean
             public LndRpcConfig lndRpcConfig(LndClientAutoConfigProperties properties,
                                              LndContainer<?> lndContainer,
-                                             MacaroonContext lndJsonRpcMacaroonContext,
-                                             SslContext lndJsonRpcSslContext) {
+                                             MacaroonContext lndRpcMacaroonContext,
+                                             SslContext lndRpcSslContext) {
                 String host = lndContainer.getHost();
                 Integer mappedPort = lndContainer.getMappedPort(properties.getRpcport());
 
                 return LndRpcConfigImpl.builder()
                         .rpchost(host)
                         .rpcport(mappedPort)
-                        .macaroonContext(lndJsonRpcMacaroonContext)
-                        .sslContext(lndJsonRpcSslContext)
+                        .macaroonContext(lndRpcMacaroonContext)
+                        .sslContext(lndRpcSslContext)
                         .build();
             }
 
             @Bean
-            public MacaroonContext lndJsonRpcMacaroonContext(LndClientAutoConfigProperties properties,
+            public MacaroonContext lndRpcMacaroonContext(LndClientAutoConfigProperties properties,
                                                              LndContainer<?> lndContainer) {
                 return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
                     byte[] bytes = IOUtils.toByteArray(inputStream);
@@ -77,7 +77,7 @@ public class LndContainerApplicationTest {
             }
 
             @Bean
-            public SslContext lndJsonRpcSslContext(LndClientAutoConfigProperties properties,
+            public SslContext lndRpcSslContext(LndClientAutoConfigProperties properties,
                                                    LndContainer<?> lndContainer) {
                 return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
                     return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
