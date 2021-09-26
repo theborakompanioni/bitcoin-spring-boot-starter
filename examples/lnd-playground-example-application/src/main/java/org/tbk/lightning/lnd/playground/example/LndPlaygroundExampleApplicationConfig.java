@@ -7,6 +7,8 @@ import org.bitcoinj.core.Block;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
+import org.lightningj.lnd.wrapper.autopilot.SynchronousAutopilotAPI;
+import org.lightningj.lnd.wrapper.autopilot.message.StatusResponse;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.ApplicationRunner;
@@ -38,19 +40,23 @@ public class LndPlaygroundExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner mainRunner(SynchronousLndAPI lndApi) {
+    public ApplicationRunner mainRunner(SynchronousLndAPI lndApi,
+                                        SynchronousAutopilotAPI autopilotApi) {
         return args -> {
             GetInfoResponse info = lndApi.getInfo();
+            StatusResponse autopilotStatus = autopilotApi.status();
             log.info("=================================================");
             log.info("[lnd] identity_pubkey: {}", info.getIdentityPubkey());
             log.info("[lnd] alias: {}", info.getAlias());
             log.info("[lnd] version: {}", info.getVersion());
+            log.info("[lnd] autopilot active: {}", autopilotStatus.getActive());
         };
     }
 
     @Bean
     @Profile("!test")
     public ApplicationRunner lndBestBlockLogger(SynchronousLndAPI lndApi,
+
                                                 MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
