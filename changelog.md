@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2021-09-26
 ### Breaking
 - refactor: throw IllegalArgumentException instead of NPE on @NonNull violations
 - adapt class names in lnd client module (remove 'JsonRpc' string in names)
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/releases/tag/0.1.0
 

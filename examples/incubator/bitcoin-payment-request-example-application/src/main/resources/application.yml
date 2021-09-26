@@ -28,7 +28,7 @@ logging.level.org.javamoney.moneta.Money: WARN
 management.endpoint.health.show-details: 'always'
 management.endpoints.web.exposure.include: '*'
 management.info.bitcoinJsonRpc.enabled: true
-management.info.lndJsonRpc.enabled: true
+management.info.lndApi.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
 management.health.lndApi.enabled: true
 
