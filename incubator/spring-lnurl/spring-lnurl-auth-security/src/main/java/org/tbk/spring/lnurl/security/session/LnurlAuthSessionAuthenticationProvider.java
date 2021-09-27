@@ -3,6 +3,7 @@ package org.tbk.spring.lnurl.security.session;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +41,7 @@ public class LnurlAuthSessionAuthenticationProvider implements AuthenticationPro
         }
 
         LinkingKey linkingKey = lnurlAuthSecurityService.findPairedLinkingKeyByK1(auth.getK1())
-                .orElseThrow(() -> new LnurlAuthenticationException("Cannot migrate session."));
+                .orElseThrow(() -> new BadCredentialsException("Cannot migrate session."));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(linkingKey.toHex());
         LnurlAuthSessionToken newAuth = new LnurlAuthSessionToken(auth.getK1(), linkingKey, userDetails.getAuthorities());

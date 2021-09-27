@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
+import org.springframework.security.authentication.event.AuthenticationFailureProviderNotFoundEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
@@ -24,10 +27,11 @@ import org.tbk.spring.lnurl.security.test.app.LnurlAuthTestApplication;
 
 import java.net.URI;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -160,5 +164,25 @@ class LnurlSessionAuthenticationFilterTest {
         /*assertThat("no AuthorizationFailureEvent received", applicationEvents
                 .stream(AbstractAuthenticationFailureEvent.class)
                 .count(), is(0L));*/
+    }
+
+    @Test
+    void springSecurityIssue10206() throws Exception {
+        K1 k1 = k1Manager.create();
+
+        mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
+                .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex()))
+                .andExpect(status().isUnauthorized());
+
+        // EXPECTED: Just a single BadCredentialsEvent should be published.
+        // ACTUAL: In addition to a BadCredentialsEvent, a ProviderNotFoundEvent is also published.
+        assertThat("a AuthenticationFailureBadCredentialsEvent is received", this.applicationEvents
+                .stream(AuthenticationFailureBadCredentialsEvent.class)
+                .count(), is(1L));
+
+        // THIS SHOULD BE `is(0L)`
+        assertThat("an additional AuthenticationFailureProviderNotFoundEvent is received (???)", this.applicationEvents
+                .stream(AuthenticationFailureProviderNotFoundEvent.class)
+                .count(), is(1L));
     }
 }
