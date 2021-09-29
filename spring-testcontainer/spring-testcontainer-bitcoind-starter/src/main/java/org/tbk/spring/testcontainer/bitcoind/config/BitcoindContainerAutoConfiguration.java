@@ -170,7 +170,7 @@ public class BitcoindContainerAutoConfiguration {
             String commandPrefix = "-";
             return Optional.ofNullable(command)
                     .filter(it -> it.startsWith(commandPrefix))
-                    .map(it -> it.split(commandPrefix)[1])
+                    .map(it -> it.split(commandPrefix, 2)[1])
                     .map(it -> {
                         boolean withoutValue = !it.contains("=");
                         if (withoutValue) {
@@ -179,7 +179,7 @@ public class BitcoindContainerAutoConfiguration {
                                     .build();
                         }
 
-                        String[] parts = it.split("=");
+                        String[] parts = it.split("=", 2);
 
                         return BitcoindConfigEntry.builder()
                                 .name(parts[0])

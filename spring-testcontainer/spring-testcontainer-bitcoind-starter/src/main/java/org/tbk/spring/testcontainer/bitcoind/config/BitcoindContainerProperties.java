@@ -103,7 +103,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
                     }
 
                     checkArgument('=' == it.charAt(commandWithPrefix.length()));
-                    return it.split(commandWithPrefix + "=")[1];
+                    return it.split(commandWithPrefix + "=", 2)[1];
                 })
                 .findFirst();
     }
