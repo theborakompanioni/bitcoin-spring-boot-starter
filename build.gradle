@@ -136,8 +136,11 @@ subprojects {
     }
 
     jar {
-        exclude("*-local.yml")
-        exclude("**/mainnet/**")
+        exclude('*-local.yml')
+        exclude('**/mainnet/**')
+        exclude('**/*.proto')
+
+        includeEmptyDirs false
     }
 
     task sourcesJar(type: Jar) {
