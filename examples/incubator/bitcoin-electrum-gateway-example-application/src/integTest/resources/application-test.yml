@@ -7,9 +7,8 @@ my.application:
   # an address from "second_wallet" with key:
   # castle else craft crush glass leisure client click embrace original bar senior
   destinationAddress: bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j
-  initial-delay: 0
-  delay: 1
-  time-unit: SECONDS
+  initial-delay: 0s
+  delay: 1s
 
 org.tbk.bitcoin.regtest:
   enabled: true

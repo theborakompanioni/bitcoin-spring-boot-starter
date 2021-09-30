@@ -14,6 +14,8 @@ import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
 
+import java.util.concurrent.TimeUnit;
+
 import static java.util.Objects.requireNonNull;
 import static org.tbk.bitcoin.regtest.common.BitcoindStatusLogging.logBitcoinStatusOnNewBlock;
 import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.logElectrumStatusOnNewBlock;
@@ -32,9 +34,9 @@ public class ElectrumGatewayExampleApplicationConfig {
     @Bean(destroyMethod = "stopAsync")
     public ElectrumWalletWatchLoop electrumWalletWatchLoop(ElectrumClient electrumClient) {
         Scheduler scheduler = Scheduler.newFixedDelaySchedule(
-                this.properties.getInitialDelay(),
-                this.properties.getDelay(),
-                this.properties.getTimeUnitOrThrow()
+                this.properties.getInitialDelay().toNanos(),
+                this.properties.getDelay().toNanos(),
+                TimeUnit.NANOSECONDS
         );
 
         String destinationAddress = this.properties.getDestinationAddress();

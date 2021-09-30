@@ -23,9 +23,8 @@ my.application:
   # an address from "second_wallet" with key:
   # castle else craft crush glass leisure client click embrace original bar senior
   destinationAddress: bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j
-  initial-delay: 0
-  delay: 30
-  time-unit: SECONDS
+  initial-delay: 15s
+  delay: 30s
 
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
