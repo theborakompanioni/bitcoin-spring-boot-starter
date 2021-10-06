@@ -28,6 +28,9 @@ public interface BitcoinJsonRpcFeeApiClient {
      * "errors": [ str... ] (json array of strings, optional) Errors encountered during processing
      * "blocks" : n         (numeric) block number where estimate was found
      * }
+     *
+     * @param request the fee estimation request
+     * @return the fee estimation response
      */
     EstimateSmartFeeResponse estimatesmartfee(EstimateSmartFeeRequest request);
 }

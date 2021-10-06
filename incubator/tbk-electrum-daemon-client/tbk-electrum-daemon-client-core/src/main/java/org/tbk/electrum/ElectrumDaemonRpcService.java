@@ -94,6 +94,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Returns true if the address belongs to the wallet, or false otherwise.
      *
+     * @param address the wallet address
      * @return true if the address belongs to the wallet, or false otherwise
      */
     @JsonRpcMethod("ismine")
@@ -153,6 +154,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Returns the balance of address. This is a walletless server query. Results are not checked by SPV.
      *
+     * @param address the wallet address
      * @return the balance of address
      */
     @JsonRpcMethod("getaddressbalance")
@@ -171,6 +173,9 @@ public interface ElectrumDaemonRpcService {
      * "tx_hash": "ed1350d20674d9a9596d66be869bba2da135ac24111a11205c0255221b6e95b6"
      * }
      * ]
+     *
+     * @param address the wallet address
+     * @return the address history
      */
     @JsonRpcMethod("getaddresshistory")
     List<AddressHistoryResponse.Entry> getaddresshistory(@JsonRpcParam("address") String address);
@@ -178,6 +183,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Returns a list of unspent transaction outputs for the given address.
      *
+     * @param address the wallet address
      * @return a list of unspent transaction outputs
      */
     @JsonRpcMethod("getaddressunspent")
@@ -205,6 +211,8 @@ public interface ElectrumDaemonRpcService {
     /**
      * Set a configuration variable. 'value' may be a string or a Python expression.
      *
+     * @param key the config key
+     * @param value the config value
      * @return will always return true or errors (in v3.3.8)
      */
     @JsonRpcMethod("setconfig")
@@ -257,6 +265,8 @@ public interface ElectrumDaemonRpcService {
     /**
      * Watch an address. Everytime the address changes, a http POST is sent to the URL.
      *
+     * @param address the address being watched
+     * @param url the url to POST to when address balances changes
      * @return will always return true or errors (in v3.3.8)
      */
     @JsonRpcMethod("notify")
@@ -265,6 +275,8 @@ public interface ElectrumDaemonRpcService {
     /**
      * Encrypt a message with a public key. Use quotes if the message contains whitespaces.
      *
+     * @param pubkey the pubkey
+     * @param message the plaintext message
      * @return an encrypted message
      */
     @JsonRpcMethod("encrypt")
@@ -273,6 +285,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Decrypt a message encrypted with a public key.
      *
+     * @param pubkey the pubkey
+     * @param encrypted the encrypted message
+     * @param password the wallet password
      * @return a decrypted message
      */
     @JsonRpcMethod("decrypt")
@@ -283,6 +298,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Return the public keys for a wallet address.
      *
+     * @param address the wallet address
      * @return the public keys for a wallet address
      */
     @JsonRpcMethod("getpubkeys")
@@ -291,6 +307,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Sign a message with a key. Use quotes if your message contains whitespaces
      *
+     * @param address the wallet address
+     * @param message the message
+     * @param password the wallet password
      * @return signature base64
      */
     @JsonRpcMethod("signmessage")
@@ -301,7 +320,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Verify a signature.
      *
-     * @param address the address
+     * @param address the wallet address
      * @param signature signature in base64
      * @param message the message
      * @return true if the signature is valid

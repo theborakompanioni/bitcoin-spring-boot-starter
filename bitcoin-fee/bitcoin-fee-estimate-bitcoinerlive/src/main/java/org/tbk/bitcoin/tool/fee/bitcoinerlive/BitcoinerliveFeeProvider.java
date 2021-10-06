@@ -111,6 +111,9 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
      *
      * <p>This may or may not what the user wants or expect and is subject to change.
      * As this api provides values with up to 90% confidence, it might be safe to do so.
+     *
+     * @param request the fee estimation request
+     * @return the extracted confidence value from the request
      */
     private Optional<Confidence> toConfidenceType(FeeRecommendationRequest request) {
         return request.getDesiredConfidence()

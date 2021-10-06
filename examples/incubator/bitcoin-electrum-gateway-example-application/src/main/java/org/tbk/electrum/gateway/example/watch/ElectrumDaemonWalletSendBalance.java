@@ -21,9 +21,17 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
     @Value
     @Builder
     public static class Options {
+        /**
+         * @param walletPassphrase the wallet passphrase
+         * @return the wallet passphrase
+         */
         @Nullable
         String walletPassphrase;
 
+        /**
+         * @param destinationAddress the destination address
+         * @return the destination address
+         */
         @NonNull
         String destinationAddress;
     }
