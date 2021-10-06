@@ -24,6 +24,8 @@ publishing {
                     }
                 }
             }
+            sourcesJar
+            javadocJar
         }
     }
 

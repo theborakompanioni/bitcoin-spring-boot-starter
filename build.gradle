@@ -207,7 +207,7 @@ subprojects {
     }
 
     artifacts {
-        archives testJar, sourcesJar, javadocJar
+        archives testJar
     }
 
     lombok {

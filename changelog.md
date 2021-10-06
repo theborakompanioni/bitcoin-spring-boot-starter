@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Breaking
-- build: exclude protobuf files from jar file 
+- build: exclude protobuf files from jar file
+
+### Changed
+- build: build javadoc and sources jar only for publication by default
 
 ## [0.2.0] - 2021-09-26
 ### Breaking
