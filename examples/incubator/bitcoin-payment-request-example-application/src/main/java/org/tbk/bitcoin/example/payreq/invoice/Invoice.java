@@ -39,7 +39,7 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
 
     Invoice(Order order) {
         checkArgument(order != null, "Order must not be null");
-        checkArgument(order.isPaid(), "Order not paid");
+        checkArgument(order.isCompleted(), "Order not completed");
 
         this.id = InvoiceId.create();
         this.createdAt = Instant.now().toEpochMilli();

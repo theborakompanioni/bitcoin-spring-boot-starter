@@ -14,7 +14,7 @@ public class V1__init extends BaseJavaMigration {
     public void migrate(Context context) throws Exception {
 
         String sql1 = "create table if not exists customer_order "
-                + "(id string PRIMARY KEY, version integer, created_at integer, status string)";
+                + "(id string PRIMARY KEY, version integer, created_at integer, updated_at integer, status string)";
 
         String sql2 = "create table if not exists customer_order_line_item "
                 + "(id string PRIMARY KEY, order_id string, position integer, name string, price string, currency_unit string, display_price string, quantity integer, "
@@ -22,7 +22,7 @@ public class V1__init extends BaseJavaMigration {
                 + ")";
 
         String sql3 = "create table if not exists payment_request "
-                + "(id string PRIMARY KEY, version integer, created_at integer, order_id string, dtype string, valid_until integer, network string, address string, amount string, currency_unit string, display_price string, "
+                + "(id string PRIMARY KEY, version integer, created_at integer, updated_at integer, order_id string, dtype string, status string, valid_until integer, network string, address string, amount string, currency_unit string, display_price string, "
                 + "FOREIGN KEY(order_id) REFERENCES customer_order(id)"
                 + ")";
 

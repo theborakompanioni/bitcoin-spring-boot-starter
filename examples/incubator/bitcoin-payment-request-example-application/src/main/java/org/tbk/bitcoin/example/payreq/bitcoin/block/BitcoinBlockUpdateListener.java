@@ -26,7 +26,7 @@ class BitcoinBlockUpdateListener implements InitializingBean, DisposableBean {
     private final MessagePublishService<Block> bitcoinBlockPublishService;
 
     @NonNull
-    private final BitcoinClient bitcoinJsonRpcClient;
+    private final BitcoinClient bitcoinClient;
 
     @NonNull
     private final BitcoinBlockService blockService;
@@ -38,7 +38,7 @@ class BitcoinBlockUpdateListener implements InitializingBean, DisposableBean {
         bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
         this.subscription = Flux.from(bitcoinBlockPublishService).subscribe(block -> {
             try {
-                BlockInfo info = bitcoinJsonRpcClient.getBlockInfo(block.getHash());
+                BlockInfo info = bitcoinClient.getBlockInfo(block.getHash());
                 blockService.createBlock(info);
             } catch (IOException e) {
                 log.error("error while fetching 'blockinfo' via bitcoin api", e);

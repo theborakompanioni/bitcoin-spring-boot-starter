@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Value;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.params.MainNetParams;
 import org.javamoney.moneta.Money;
 import org.tbk.bitcoin.example.payreq.common.Network;
 import org.tbk.bitcoin.example.payreq.order.Order;
@@ -48,6 +50,13 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest {
         // String.format("bitcoin:%s?amount={}&label={}");
         BigInteger satoshi = Money.from(getAmount()).getNumberStripped().unscaledValue();
         return String.format("bitcoin:%s?amount=%s", address, Coin.valueOf(satoshi.longValue()).toPlainString());
+    }
+
+    public Address toBitcoinjAddress() {
+        NetworkParameters network = Network.ofNullable(this.getNetwork())
+                .orElseGet(MainNetParams::get);
+
+        return Address.fromString(network, this.getAddress());
     }
 
     @Override

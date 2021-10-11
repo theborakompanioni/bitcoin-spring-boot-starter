@@ -18,5 +18,9 @@ public interface PaymentRequestService {
      * @param order The given order.
      * @return the {@link PaymentRequest} for the given {@link Order} or {@link Optional#empty()} if the Order hasn't been payed yet.
      */
-    Optional<PaymentRequest> getPaymentRequestFor(Order order);
+    Optional<PaymentRequest> findPaymentRequestFor(Order order);
+
+    Optional<PaymentRequest> findPaymentRequestBy(PaymentRequest.PaymentRequestId paymentRequestId);
+
+    PaymentRequest reevaluatePaymentRequest(PaymentRequest paymentRequest);
 }

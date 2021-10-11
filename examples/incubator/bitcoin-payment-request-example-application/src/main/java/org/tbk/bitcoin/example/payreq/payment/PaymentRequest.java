@@ -2,6 +2,7 @@ package org.tbk.bitcoin.example.payreq.payment;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
@@ -41,8 +42,13 @@ public abstract class PaymentRequest
 
     private final String displayPrice;
 
+    private Status status;
+
     @CreationTimestamp
     private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant updatedAt;
 
     @Column(name = "order_id")
     private final Association<Order, Order.OrderId> order;
@@ -61,6 +67,7 @@ public abstract class PaymentRequest
         this.amount = price.getNumber();
         this.currencyUnit = price.getCurrency();
         this.displayPrice = order.getDisplayPrice();
+        this.status = Status.PAYMENT_EXPECTED;
 
         this.order = Association.forAggregate(order);
     }
@@ -70,6 +77,89 @@ public abstract class PaymentRequest
     }
 
     public abstract String getPaymentUrl();
+
+    /**
+     * Returns whether the {@link Order} has been paid already.
+     *
+     * @return true if order is paid.
+     */
+    public boolean isOpen() {
+        return this.status == Status.PAYMENT_EXPECTED;
+    }
+
+    public boolean isCompleted() {
+        return this.status == Status.COMPLETED;
+    }
+
+    /**
+     * Marks the {@link PaymentRequest} as payed.
+     */
+    public PaymentRequest markCompleted() {
+        if (!isOpen()) {
+            throw new IllegalStateException("Cannot be completed as request is already final.");
+        }
+
+        this.status = Status.COMPLETED;
+
+        registerEvent(new PaymentRequestCompleted(id));
+
+        return this;
+    }
+
+    /**
+     * Marks the {@link PaymentRequest} as expired.
+     */
+    public PaymentRequest markExpired() {
+        if (!isOpen()) {
+            throw new IllegalStateException("Cannot be marked as expired as request is already final.");
+        }
+
+        this.status = Status.EXPIRED;
+
+        registerEvent(new PaymentRequestExpired(id));
+
+        return this;
+    }
+
+    /**
+     * Marks the {@link PaymentRequest} as payed.
+     */
+    public PaymentRequest markCancelled() {
+        if (!isOpen()) {
+            throw new IllegalStateException("Cannot be cancelled as request is already final.");
+        }
+
+        this.status = Status.CANCELLED;
+
+        registerEvent(new PaymentRequestCancelled(id));
+
+        return this;
+    }
+
+    /**
+     * Enumeration for all the statuses a {@link PaymentRequest} can be in.
+     */
+    public enum Status {
+        /**
+         * {@link PaymentRequest} placed, but not payed yet.
+         */
+        PAYMENT_EXPECTED,
+
+        /**
+         * The {@link PaymentRequest} was completed.
+         */
+        COMPLETED,
+
+        /**
+         * {@link PaymentRequest} was cancelled. No changes allowed to it anymore.
+         */
+        CANCELLED,
+
+        /**
+         * {@link PaymentRequest} was expired. No changes allowed to it anymore.
+         */
+        EXPIRED;
+    }
 
     @Value(staticConstructor = "of")
     public static class PaymentRequestId implements Identifier {

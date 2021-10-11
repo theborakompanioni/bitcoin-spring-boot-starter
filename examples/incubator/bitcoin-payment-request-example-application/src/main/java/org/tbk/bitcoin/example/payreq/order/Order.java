@@ -1,17 +1,20 @@
 package org.tbk.bitcoin.example.payreq.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.Value;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.tbk.bitcoin.example.payreq.common.Currencies;
 import org.tbk.bitcoin.example.payreq.common.MonetaryAmountFormats;
+import org.tbk.bitcoin.example.payreq.exchangerate.ExchangeRate;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
@@ -21,10 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * An order.
@@ -38,6 +38,9 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
 
     @CreationTimestamp
     private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant updatedAt;
 
     private Status status;
 
@@ -56,21 +59,10 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      */
     public Order(Collection<LineItem> lineItems) {
         this.id = OrderId.create();
-        this.status = Status.PAYMENT_EXPECTED;
+        this.status = Status.CREATED;
         this.lineItems.addAll(lineItems);
-    }
 
-    /**
-     * Creates a new {@link Order} containing the given {@link LineItem}s.
-     *
-     * @param items must not be {@literal null}.
-     */
-    public Order(LineItem... items) {
-        this(List.of(items));
-    }
-
-    Order() {
-        this(new LineItem[0]);
+        registerEvent(OrderCreated.of(this.id));
     }
 
     /**
@@ -92,115 +84,129 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     }
 
     /**
-     * Marks the {@link Order} as payed.
+     * Marks the {@link Order} as ready.
      */
-    public Order markPaid() {
-
-        if (isPaid()) {
-            throw new IllegalStateException("Already paid order cannot be paid again!");
-        }
-
-        this.status = Status.PAID;
-
-        registerEvent(new OrderPaid(id));
-
+    public Order markReady() {
+        this.status = this.status.transitTo(Status.READY);
+        registerEvent(OrderReady.of(id));
         return this;
     }
 
     /**
      * Marks the {@link Order} as in preparation.
      */
-    public Order markInPreparation() {
-
-        if (this.status != Status.PAID) {
-            String errorMessage = String.format("Order must be in state payed to start preparation! Current status: %s", this.status);
-            throw new IllegalStateException(
-                    errorMessage);
-        }
-
-        this.status = Status.PREPARING;
-
+    public Order markInProgress() {
+        this.status = this.status.transitTo(Status.IN_PROGRESS);
+        registerEvent(OrderInProgress.of(id));
         return this;
     }
 
     /**
      * Marks the {@link Order} as prepared.
      */
-    public Order markPrepared() {
-
-        if (this.status != Status.PREPARING) {
-            String errorMessage = String.format("Cannot mark Order prepared that is currently not preparing! Current status: %s.", this.status);
-            throw new IllegalStateException(errorMessage);
-        }
-
-        this.status = Status.READY;
-
-        return this;
-    }
-
-    public Order markTaken() {
-
-        if (this.status != Status.READY) {
-            String errorMessage = String.format("Cannot mark Order taken that is currently not paid! Current status: %s.", this.status);
-            throw new IllegalStateException(errorMessage);
-        }
-
-        this.status = Status.TAKEN;
-
+    public Order markCompleted() {
+        this.status = this.status.transitTo(Status.COMPLETED);
+        registerEvent(OrderCompleted.of(id));
         return this;
     }
 
     /**
-     * Returns whether the {@link Order} has been paid already.
-     *
-     * @return true if order is paid.
+     * Marks the {@link Order} as prepared.
      */
-    public boolean isPaid() {
-        return !this.status.equals(Status.PAYMENT_EXPECTED);
+    public Order markError() {
+        this.status = this.status.transitTo(Status.ERROR);
+        registerEvent(OrderError.of(id));
+        return this;
+    }
+
+    public Order markCancelled() {
+        this.status = this.status.transitTo(Status.CANCELLED);
+        registerEvent(OrderCancelled.of(id));
+        return this;
     }
 
     /**
-     * Returns if the {@link Order} is ready to be taken.
+     * Returns if the {@link Order} is in process or ready to be processed.
      *
-     * @return true if order is ready.
+     * @return true if order can be reevaluated.
      */
-    public boolean isReady() {
-        return this.status.equals(Status.READY);
+    public boolean canReevaluate() {
+        return this.status == Status.READY
+                || this.status == Status.IN_PROGRESS;
     }
 
-    public boolean isTaken() {
-        return this.status.equals(Status.TAKEN);
+    /**
+     * Returns if the {@link Order} is currently processed.
+     *
+     * @return true if order in progress.
+     */
+    public boolean isInProgress() {
+        return this.status == Status.IN_PROGRESS;
+    }
+
+    /**
+     * Returns if the {@link Order} is completed.
+     *
+     * @return true if order completed.
+     */
+    public boolean isCompleted() {
+        return this.status == Status.COMPLETED;
     }
 
     /**
      * Enumeration for all the statuses an {@link Order} can be in.
      */
     public enum Status {
-
         /**
          * Placed, but not payed yet. Still changeable.
          */
-        PAYMENT_EXPECTED,
+        CREATED,
 
         /**
-         * {@link Order} was payed. No changes allowed to it anymore.
-         */
-        PAID,
-
-        /**
-         * The {@link Order} is currently processed.
-         */
-        PREPARING,
-
-        /**
-         * The {@link Order} is ready to be picked up by the customer.
+         * Placed, paid and ready. No changes allowed to it anymore.
          */
         READY,
 
         /**
+         * The {@link Order} is currently processed. Order can be partially executed at this stage.
+         */
+        IN_PROGRESS,
+
+        /**
          * The {@link Order} was completed.
          */
-        TAKEN;
+        COMPLETED,
+
+        /**
+         * The {@link Order} is cancelled.
+         */
+        CANCELLED,
+
+        /**
+         * The {@link Order} processing resulted in an error.
+         */
+        ERROR;
+
+        static Map<Status, Set<Status>> transitions = ImmutableMap.<Status, Set<Status>>builder()
+                .put(CREATED, Set.of(READY, CANCELLED))
+                .put(READY, Set.of(CANCELLED, IN_PROGRESS))
+                .put(IN_PROGRESS, Set.of(COMPLETED, ERROR))
+                .put(COMPLETED, Collections.emptySet())
+                .put(CANCELLED, Collections.emptySet())
+                .put(ERROR, Collections.emptySet())
+                .build();
+
+        boolean isTransitionAllowed(Status status) {
+            return transitions.get(this).contains(status);
+        }
+
+        Status transitTo(Status status) {
+            if (!this.isTransitionAllowed(status)) {
+                String errorMessage = String.format("Transition from %s to %s is not allowed.", this, status);
+                throw new IllegalStateException(errorMessage);
+            }
+            return status;
+        }
     }
 
     @Value(staticConstructor = "of")
