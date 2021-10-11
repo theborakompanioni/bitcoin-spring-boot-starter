@@ -41,3 +41,22 @@ Example log output:
 2021-05-16 15:12:50.175  INFO 684724 --- [tchLoop RUNNING] .e.g.e.w.ElectrumDaemonWalletSendBalance : broadcast: 07cdcaa5daf5ddad719e71815690bd6c3afa6962e80337735dd3381453db1ad3
 2021-05-16 15:12:50.175  INFO 684724 --- [tchLoop RUNNING] o.t.e.g.e.watch.ElectrumWalletWatchLoop  : Run 5 completed on 2021-05-16T15:12:50.175509021 after 144.1 ms
 ````
+
+2. Find the port of electrumx via docker
+```shell
+docker ps
+```
+
+Example output:
+```
+CONTAINER ID        IMAGE                                   COMMAND                   CREATED             STATUS              PORTS                                                                                                                                                                                                          NAMES
+a82b555c724e        lukechilds/electrumx:v1.15.0            "init"                    4 minutes ago       Up 3 minutes        0.0.0.0:33378->8000/tcp, 0.0.0.0:33377->50001/tcp, 0.0.0.0:33376->50002/tcp, 0.0.0.0:33375->50004/tcp                                                                                                          tbk-testcontainer-lukechilds-electrumx-2f43982c
+```
+Use the port that is mapped to `50001`: `0.0.0.0:33377->50001/tcp` -> `33377`
+
+3. Start an electrum daemon in regtest mode connecting to the electrumx server:
+```shell
+./electrum --regtest --oneserver --server 127.0.0.1:33377:t
+```
+
+4. Create a regtest wallet with the seed taken from the `application.yml` file

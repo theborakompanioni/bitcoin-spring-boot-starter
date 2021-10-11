@@ -89,11 +89,30 @@ org.tbk.spring.testcontainer.bitcoind:
     # Send trace/debug info to console instead of debug.log.
     - '-printtoconsole=1'
 
+# optionally start an electrumx server to be able to connect to with
+# electrum and manually initiate payments on the local regtest network.
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true # disable if you do not need this functionality
+  rpchost: localhost
+  rpcport: 18443
+  rpcuser: myoneandonlyrpcuser
+  rpcpass: correcthorsebatterystaple123
+  environment:
+    NET: regtest
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
+
 org.tbk.bitcoin.regtest:
   enabled: true
   # mine blocks every 10 - 120 seconds
   mining:
     enabled: true
+    # an address with regtest key:
+    # truth fever mom transfer steak immense lake jacket glide bring fancy electric
+    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+    mine-initial-amount-of-blocks: 99
     next-block-duration:
       min-duration: PT10S
       max-duration: PT120S
