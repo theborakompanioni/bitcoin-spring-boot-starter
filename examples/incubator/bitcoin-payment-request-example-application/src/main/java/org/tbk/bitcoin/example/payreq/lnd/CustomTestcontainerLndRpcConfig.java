@@ -38,7 +38,7 @@ public class CustomTestcontainerLndRpcConfig {
 
     @Bean
     public MacaroonContext lndRpcMacaroonContext(LndClientAutoConfigProperties properties,
-                                                     LndContainer<?> lndContainer) {
+                                                 LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             String hex = DatatypeConverter.printHexBinary(bytes);
@@ -48,7 +48,7 @@ public class CustomTestcontainerLndRpcConfig {
 
     @Bean
     public SslContext lndRpcSslContext(LndClientAutoConfigProperties properties,
-                                           LndContainer<?> lndContainer) {
+                                       LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
             return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                     .trustManager(inputStream)
