@@ -319,7 +319,7 @@ configure(subprojects.findAll { project -> project.name.indexOf('-example-applic
 }
 
 configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
-        (project.name.startsWith('bitcoin-fee') || (project.name == 'tbk-btcabuse-client-core'))
+        (project.name.startsWith('bitcoin-fee'))
 }) {
     apply from: "${project.rootDir}/proto.gradle"
 }

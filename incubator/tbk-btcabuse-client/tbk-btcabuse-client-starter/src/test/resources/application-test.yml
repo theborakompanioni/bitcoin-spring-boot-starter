@@ -1,5 +1,0 @@
-org.tbk.bitcoin.tool.btcabuse.client:
-  enabled: true
-  base-url: http://localhost
-  api-token: 123456
-  user-agent: test-agent
