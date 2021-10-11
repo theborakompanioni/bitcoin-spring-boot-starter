@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BitcoinOnchainPaymentListener {
+class BitcoinOnchainPaymentListener {
 
     @NonNull
     private final PaymentRequestService paymentRequestService;
@@ -27,7 +27,7 @@ public class BitcoinOnchainPaymentListener {
         List<BitcoinOnchainPaymentRequest> paymentRequests = bitcoinOnchainPaymentRequests
                 .findByStatus(PaymentRequest.Status.PAYMENT_EXPECTED);
 
-        log.info("Found {} payment requests waiting to be paid", paymentRequests.size());
+        log.info("Found {} onchain payment requests waiting to be paid", paymentRequests.size());
 
         for (BitcoinOnchainPaymentRequest paymentRequest : paymentRequests) {
             try {
