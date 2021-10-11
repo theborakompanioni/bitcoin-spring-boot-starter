@@ -57,7 +57,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      *
      * @param lineItems must not be {@literal null}.
      */
-    public Order(Collection<LineItem> lineItems) {
+    Order(Collection<LineItem> lineItems) {
         this.id = OrderId.create();
         this.status = Status.CREATED;
         this.lineItems.addAll(lineItems);

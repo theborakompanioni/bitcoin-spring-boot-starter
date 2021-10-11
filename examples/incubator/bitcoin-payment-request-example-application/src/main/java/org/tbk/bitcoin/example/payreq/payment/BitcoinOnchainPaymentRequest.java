@@ -15,6 +15,7 @@ import org.tbk.bitcoin.example.payreq.order.Order;
 import java.math.BigInteger;
 import java.time.Instant;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 
@@ -23,6 +24,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Getter
 public class BitcoinOnchainPaymentRequest extends PaymentRequest {
+    private static final int DEFAULT_MIN_CONFIRMATIONS = 6;
 
     private final Instant validUntil;
 
@@ -30,16 +32,36 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest {
 
     private final String address;
 
+    private final int minConfirmations;
+
+    /**
+     * Creates a new {@link BitcoinOnchainPaymentRequest} referring to the given {@link Order}.
+     * Using {@code DEFAULT_MIN_CONFIRMATIONS} as minimum amount of confirmations.
+     *
+     * @param order must not be {@literal null}.
+     * @param validUntil must not be {@literal null}.
+     * @param address must not be {@literal null}.
+     */
+    BitcoinOnchainPaymentRequest(Order order, Instant validUntil, Address address) {
+        this(order, validUntil, address, DEFAULT_MIN_CONFIRMATIONS);
+    }
+
     /**
      * Creates a new {@link BitcoinOnchainPaymentRequest} referring to the given {@link Order}.
      *
      * @param order must not be {@literal null}.
+     * @param validUntil must not be {@literal null}.
+     * @param address must not be {@literal null}.
+     * @param minConfirmations must not be negative.
      */
-    protected BitcoinOnchainPaymentRequest(Order order, Instant validUntil, Address address) {
+    BitcoinOnchainPaymentRequest(Order order, Instant validUntil, Address address, int minConfirmations) {
         super(order);
         this.validUntil = requireNonNull(validUntil);
         this.address = address.toString();
         this.network = Network.fromNetworkParameters(address.getParameters()).name();
+
+        checkArgument(minConfirmations >= 0, "'minConfirmations' must not be negative");
+        this.minConfirmations = minConfirmations;
 
         registerEvent(BitcoinOnchainPaymentRequestCreatedEvent.of(this.getId()));
     }

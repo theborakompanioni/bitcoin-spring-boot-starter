@@ -30,7 +30,7 @@ public class LightningPaymentRequest extends PaymentRequest {
      *
      * @param order must not be {@literal null}.
      */
-    protected LightningPaymentRequest(Order order, Instant validUntil, NetworkParameters network, String address) {
+    LightningPaymentRequest(Order order, Instant validUntil, NetworkParameters network, String address) {
         super(order);
         this.validUntil = requireNonNull(validUntil);
         this.network = Network.fromNetworkParameters(network).name();

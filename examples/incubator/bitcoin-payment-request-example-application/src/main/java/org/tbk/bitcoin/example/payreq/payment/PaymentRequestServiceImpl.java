@@ -42,7 +42,7 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
     private final PaymentRequests paymentRequests;
 
     @Override
-    public PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil) {
+    public PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil, int minConfirmations) {
         boolean networkSupported = bitcoinClient.getNetParams().equals(network.toNetworkParameters());
         if (!networkSupported) {
             throw new IllegalArgumentException("Network not supported");
@@ -55,7 +55,7 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
             throw new RuntimeException("Error while executing 'getnewaddress' via bitcoin api", e);
         }
 
-        BitcoinOnchainPaymentRequest paymentRequest = new BitcoinOnchainPaymentRequest(order, validUntil, newAddress);
+        BitcoinOnchainPaymentRequest paymentRequest = new BitcoinOnchainPaymentRequest(order, validUntil, newAddress, minConfirmations);
 
         return paymentRequests.save(paymentRequest);
     }
@@ -120,30 +120,30 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
         boolean stillValid = Instant.now().isBefore(onchainPaymentRequest.getValidUntil());
         if (!stillValid) {
             log.debug("Payment request {} is expired and won't be reevaluated", onchainPaymentRequest.getId().getId());
-            return paymentRequests.save(onchainPaymentRequest.markExpired());
-        }
-
-        Address address = onchainPaymentRequest.toBitcoinjAddress();
-        log.info("Checking balance of address {} for payment request {}", address, onchainPaymentRequest.getId().getId());
-
-        Coin coinsReceivedByAddress;
-        try {
-            coinsReceivedByAddress = bitcoinClient.getReceivedByAddress(address);
-        } catch (IOException e) {
-            throw new RuntimeException("Error while executing 'getReceivedByAddress' via bitcoin api", e);
-        }
-
-        MonetaryAmount expectedAmount = onchainPaymentRequest.getAmount();
-        MonetaryAmount receivedAmount = Money.ofMinor(bitcoin, coinsReceivedByAddress.getValue());
-
-        boolean fullyPaid = receivedAmount.isGreaterThanOrEqualTo(expectedAmount);
-        if (fullyPaid) {
-            log.info("Marking payment request {} as paid", onchainPaymentRequest.getId().getId());
-            return paymentRequests.save(onchainPaymentRequest.markCompleted());
+            onchainPaymentRequest.markExpired();
         } else {
-            log.info("Payment request {} has not been paid yet", onchainPaymentRequest.getId().getId());
+            Address address = onchainPaymentRequest.toBitcoinjAddress();
+            log.debug("Checking balance of address {} for payment request {}", address, onchainPaymentRequest.getId().getId());
+
+            Coin coinsReceivedByAddress;
+            try {
+                coinsReceivedByAddress = bitcoinClient.getReceivedByAddress(address, onchainPaymentRequest.getMinConfirmations());
+            } catch (IOException e) {
+                throw new RuntimeException("Error while executing 'getReceivedByAddress' via bitcoin api", e);
+            }
+
+            MonetaryAmount expectedAmount = onchainPaymentRequest.getAmount();
+            MonetaryAmount receivedAmount = Money.ofMinor(bitcoin, coinsReceivedByAddress.getValue());
+
+            boolean fullyPaid = receivedAmount.isGreaterThanOrEqualTo(expectedAmount);
+            if (fullyPaid) {
+                log.info("Marking payment request {} as paid", onchainPaymentRequest.getId().getId());
+                onchainPaymentRequest.markCompleted();
+            } else {
+                log.debug("Payment request {} has not been paid yet", onchainPaymentRequest.getId().getId());
+            }
         }
 
-        return onchainPaymentRequest;
+        return paymentRequests.save(onchainPaymentRequest);
     }
 }

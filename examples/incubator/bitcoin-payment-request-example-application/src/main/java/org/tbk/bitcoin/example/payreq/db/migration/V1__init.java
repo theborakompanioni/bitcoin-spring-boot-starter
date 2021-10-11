@@ -22,8 +22,10 @@ public class V1__init extends BaseJavaMigration {
                 + ")";
 
         String sql3 = "create table if not exists payment_request "
-                + "(id string PRIMARY KEY, version integer, created_at integer, updated_at integer, order_id string, dtype string, status string, valid_until integer, network string, address string, amount string, currency_unit string, display_price string, "
-                + "FOREIGN KEY(order_id) REFERENCES customer_order(id)"
+                + "(id string PRIMARY KEY, version integer, created_at integer, updated_at integer, order_id string, dtype string, status string, valid_until integer, amount string, currency_unit string, display_price string, "
+                + "network string, address string, min_confirmations integer, "
+                + "FOREIGN KEY(order_id) REFERENCES customer_order(id), "
+                + "UNIQUE(address) "
                 + ")";
 
         String sql4 = "create table if not exists invoice "

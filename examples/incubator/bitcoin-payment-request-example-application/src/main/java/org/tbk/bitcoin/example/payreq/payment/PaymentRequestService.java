@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PaymentRequestService {
 
-    PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil);
+    PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil, int minConfirmations);
 
     PaymentRequest createLightningPayment(Order order, Network network, Instant validUntil);
 

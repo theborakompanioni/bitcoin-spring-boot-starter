@@ -58,7 +58,7 @@ public abstract class PaymentRequest
      *
      * @param order must not be {@literal null}.
      */
-    protected PaymentRequest(Order order) {
+    PaymentRequest(Order order) {
         checkArgument(order != null, "Order must not be null");
 
         this.id = PaymentRequestId.create();

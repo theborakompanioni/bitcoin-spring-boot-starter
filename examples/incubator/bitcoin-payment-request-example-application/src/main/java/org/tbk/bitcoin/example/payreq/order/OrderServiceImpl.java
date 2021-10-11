@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
                 break;
         }
 
-        log.info("Reevaluating order {} finished in state {}.", order.getId(), order.getStatus());
+        log.debug("Reevaluating order {} finished in state {}.", order.getId(), order.getStatus());
 
         return orders.save(order);
     }
