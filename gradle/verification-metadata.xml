@@ -50,7 +50,10 @@
          <trusted-key id="1d04a424f505394dbed15d451d0690e353be126d" group="net.minidev"/>
          <trusted-key id="1d339b6a68ae2e8daeda65d5276962ca56e73c81" group="io.vavr"/>
          <trusted-key id="1f47744c9b6e14f2049c2857f1f111af65925306" group="io.github.classgraph" name="classgraph" version="4.8.83"/>
-         <trusted-key id="1f6774b9d58c5ea6bf84d534704514f6556102e5" group="^io[.]swagger($|([.].*))" regex="true"/>
+         <trusted-key id="1f6774b9d58c5ea6bf84d534704514f6556102e5">
+            <trusting group="^io[.]swagger($|([.].*))" regex="true"/>
+            <trusting group="io.swagger.core.v3"/>
+         </trusted-key>
          <trusted-key id="1fa868a348719e88b6d0de24c03ef1d7d692bcff" group="org.scala-lang" name="scala-library" version="2.13.3"/>
          <trusted-key id="22b79f456b06f4e75b8b579db57bd58ef6d0a713" group="com.google.protobuf"/>
          <trusted-key id="250ec75d1d52e967ce132c548b0378a57cd8e243" group="org.codehaus.plexus" name="plexus-interpolation" version="1.25"/>
@@ -104,6 +107,7 @@
             <trusting group="javax.annotation"/>
             <trusting group="javax.activation"/>
             <trusting group="javax.servlet"/>
+            <trusting group="com.sun.activation"/>
          </trusted-key>
          <trusted-key id="517b94f8d0a46317a28d8ab30da8a5ec02d11ead" group="net.sf.jopt-simple" name="jopt-simple" version="5.0.4"/>
          <trusted-key id="51deabf5b60ee9f1894e69e6225152106037a0df" group="com.librato.metrics"/>
@@ -163,7 +167,7 @@
          <trusted-key id="97cb58abba8f94d9358e5968f0b5c3e6be36bc75" group="org.mapstruct"/>
          <trusted-key id="9857c388d7d1d9d031274cd0a5def5a76f94a471" group="com.github.spotbugs"/>
          <trusted-key id="9b32cbc0f3f6ba4c13d611fc21871d2a9ab66a31" group="io.rsocket" name="rsocket-bom" version="1.1.1"/>
-         <trusted-key id="9b63808b61f2b8940875656cca75c6c8bb8bb9d5" group="com.bugsnag" name="bugsnag" version="3.6.2"/>
+         <trusted-key id="9b63808b61f2b8940875656cca75c6c8bb8bb9d5" group="com.bugsnag" name="bugsnag"/>
          <trusted-key id="9bf5eceb3869d58caa1f5917c76a8d3d0a99d052" group="org.bitcoinj" name="bitcoinj-core" version="0.15.10"/>
          <trusted-key id="9d0a56aaa0d60e0c0c7dccc0b4c70893b62babe8" group="org.apache.logging" name="logging-parent" version="3"/>
          <trusted-key id="9f95ef0de4d90f26ccaffead982f38d39bb64ba8" group="com.mchange"/>
