@@ -70,7 +70,6 @@ You can find a small selection in the following table. But there is much more to
 |[bitcoin-jsonrpc-client](modules.md#bitcoin-jsonrpc-client)|Connect to Bitcoin Core via [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.|
 |[bitcoin-zeromq-client](modules.md#bitcoin-zeromq-client)|Connect to Bitcoin Core via ZeroMq API client.|
 |[bitcoin-regtest](modules.md#bitcoin-regtest)|Integration and regression testing your own application.|
-|[bitcoin-mqtt](modules.md#bitcoin-mqtt)|Handle Bitcoin ZeroMQ messages via MQTT.|
 |[lnd-grpc-client](modules.md#lnd-grpc-client)|Connect to lnd node via [LightningJ](https://www.lightningj.org/) gRPC API client.|
 |[xchange-jsr354](modules.md#xchange-jsr354)|Exchange rates from popular Bitcoin exchanges for your application.|
 |[spring-xchange](modules.md#spring-xchange)|Automatically create and configure [XChange]( https://github.com/knowm/XChange) beans.|

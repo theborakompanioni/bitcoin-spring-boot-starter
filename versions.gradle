@@ -17,8 +17,6 @@ ext {
     jmoleculesIntegrationsVersion = '0.4.0'
     jmoleculesBomVersion = '2021.1.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
-    moquetteVersion = '0.12.1'
-    pahoMqttClientVersion = '1.2.5'
     zxingVersion = '3.4.1'
     acinqBitcoinLibVerson = '0.19'
     netlayerVersion = '0.7.2'

@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - module: sunset incubator module 'tbk-btcabuse-client'
+- module: sunset incubator module 'spring-mqtt'
+- module: sunset incubator module 'bitcoin-mqtt'
   
 ## [0.2.0] - 2021-09-26
 ### Breaking

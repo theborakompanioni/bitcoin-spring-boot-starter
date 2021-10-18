@@ -72,14 +72,6 @@ include 'spring-xchange:spring-xchange-starter'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-util'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
-include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-core'
-include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-autoconfigure'
-include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-starter'
-include 'incubator:bitcoin-mqtt:bitcoin-mqtt-server-example-application'
-
-include 'incubator:spring-mqtt:moquette-autoconfigure'
-include 'incubator:spring-mqtt:moquette-starter'
-
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoinj'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'

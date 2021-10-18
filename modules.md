@@ -156,12 +156,6 @@ This subproject is home to all almost-ready modules.
 A module containing a spring boot starter for an [Electrum daemon](https://github.com/moquette-io/moquette) JSON-RPC API client.
 It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
-#### spring-mqtt
-A module containing a spring boot starter for [Moquette](https://github.com/moquette-io/moquette) MQTT broker.
-
-#### bitcoin-mqtt
-A module containing a spring boot starter for a broker publishing Bitcoin ZeroMQ messages via MQTT.
-
 #### spring-lnurl
 The [spring-lnurl module](incubator/spring-lnurl) contains classes and spring security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).
 
