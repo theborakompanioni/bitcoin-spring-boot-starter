@@ -21,6 +21,7 @@ ext {
     pahoMqttClientVersion = '1.2.5'
     zxingVersion = '3.4.1'
     acinqBitcoinLibVerson = '0.19'
+    netlayerVersion = '0.7.2'
     sqliteVersion = '3.34.0'
     lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'
