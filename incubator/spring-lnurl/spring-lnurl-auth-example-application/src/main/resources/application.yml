@@ -45,9 +45,10 @@ management.info.lndApi.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
 management.health.lndApi.enabled: true
 
-app:
-  # use your own url here (e.g. https://myapp.ngrok.io)
-  lnurl-auth-base-url: http://localhost
+# app:
+#  # use your own url here (e.g. http://myapp.onion or https://myapp.ngrok.io).
+#  # if tor is enabled (`org.tbk.tor.enabled=true`) and this field is blank, tor will be used automatically.
+#  lnurl-auth-base-url: http://localhost
 
 org.tbk.tor:
   enabled: true  # default is `true`

@@ -15,10 +15,11 @@ A lnurl-auth example application.
 </p>
 
 ### Run
-In order for lnurl-auth to work you must provide a https url for the wallet authentication to work properly.
-once [lnurl-rfc#74](https://github.com/fiatjaf/lnurl-rfc/pull/74) is resolved (and it is possible over http-onion urls) this step is not needed anymore.
+In order for lnurl-auth to work you must either serve your app over `https` (no self-signed cert allowed) or over tor.
+Currently, there is only [Simple Bitcoin Wallet](https://github.com/btcontract/wallet/) that natively supports `onion` addresses.
+Other wallets will probably support it in the near future.
 
-This can be done with [ngrok](https://ngrok.com/):
+Serving your app with `https` during development can be done with [ngrok](https://ngrok.com/):
 ```shell
 ./ngrok http 8080
 # Forwarding  https://abcdef012345.ngrok.io -> http://localhost:8080 
@@ -52,7 +53,8 @@ Example console output:
 
 # Resources
 - lnurl RFC (GitHub): https://github.com/fiatjaf/lnurl-rfc
-- Wallets supporting lnurl: https://github.com/fiatjaf/awesome-lnurl#wallets
+- Wallets supporting lnurl: https://github.com/fiatjaf/lnurl-rfc#lnurl-documents
+- Simple Bitcoin Wallet (GitHub): https://github.com/btcontract/wallet/
 - Lightning Login Buttons (GitHub): https://github.com/dergigi/lightning-buttons
 - jMolecules (GitHub): https://github.com/xmolecules/jmolecules
 - sqlite (GitHub): https://github.com/sqlite/sqlite
