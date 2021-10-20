@@ -3,6 +3,7 @@ package org.tbk.lightning.lnurl.example;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
+import org.berndpruenster.netlayer.tor.Tor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,7 @@ public class LnurlAuthExampleApplicationConfig {
     @SneakyThrows(URISyntaxException.class)
     public LnurlAuthFactory lnurlAuthFactory(K1Manager k1Manager,
                                              ServletContext servletContext,
+                                             Optional<Tor> tor, // injects only after tor is running!
                                              Optional<HiddenServiceDefinition> applicationHiddenServiceDefinition) {
         String callbackBaseUrl = properties.getLnurlAuthBaseUrl()
                 .or(() -> applicationHiddenServiceDefinition.flatMap(this::buildOnionUrl))
@@ -88,6 +90,7 @@ public class LnurlAuthExampleApplicationConfig {
     @Bean
     @Profile("!test")
     public ApplicationRunner applicationHiddenServiceConsoleInfoRunner(ServletContext servletContext,
+                                                                       Optional<Tor> tor, // injects only after tor is running!
                                                                        Optional<HiddenServiceDefinition> applicationHiddenServiceDefinition) {
         return args -> {
             if (applicationHiddenServiceDefinition.isEmpty()) {
