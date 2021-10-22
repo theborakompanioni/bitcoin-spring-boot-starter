@@ -29,7 +29,8 @@ public class V2__spring_session extends BaseJavaMigration {
         String sql3 = "CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (EXPIRY_TIME);";
         String sql4 = "CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);";
 
-        String sql5 = "CREATE TABLE SPRING_SESSION_ATTRIBUTES (\n"
+        String sql5 = ""
+                + "CREATE TABLE SPRING_SESSION_ATTRIBUTES (\n"
                 + "    SESSION_PRIMARY_ID CHAR(36) NOT NULL,\n"
                 + "    ATTRIBUTE_NAME VARCHAR(200) NOT NULL,\n"
                 + "    ATTRIBUTE_BYTES BLOB NOT NULL,\n"

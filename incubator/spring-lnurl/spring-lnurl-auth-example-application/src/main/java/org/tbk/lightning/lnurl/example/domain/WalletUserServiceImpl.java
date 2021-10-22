@@ -42,7 +42,7 @@ class WalletUserServiceImpl implements WalletUserService {
     public WalletUser findUserOrCreateIfMissing(LinkingKey linkingKey) {
         Optional<AuthLinkingKey> linkingKeyOrEmpty = linkingKeys.findByLinkingKey(linkingKey);
         if (linkingKeyOrEmpty.isEmpty()) {
-            return new WalletUser(new AuthLinkingKey(linkingKey));
+            return users.save(new WalletUser(new AuthLinkingKey(linkingKey)));
         }
 
         return users.findByLinkingKey(linkingKeyOrEmpty.get())

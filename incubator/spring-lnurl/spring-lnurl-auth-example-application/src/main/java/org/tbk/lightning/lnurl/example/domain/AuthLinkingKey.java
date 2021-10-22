@@ -47,7 +47,7 @@ class AuthLinkingKey implements Entity<WalletUser, AuthLinkingKey.LinkingKeyId> 
     }
 
     public Crypto.PublicKey toPublicKey() {
-        return new Crypto.PublicKey(ByteVector.view(Hex.decode(linkingKey)));
+        return Crypto.PublicKey$.MODULE$.fromBin(ByteVector.view(Hex.decode(linkingKey)), false);
     }
 
     public void markUsedK1(K1 k1) {
