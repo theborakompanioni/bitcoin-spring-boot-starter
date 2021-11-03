@@ -25,7 +25,7 @@ here is a list of mistaken perspectives on Bitcoin.
    the majority chain (with a higher chainwork) it will drop the minority chain in favor of the majority chain. In this
    case the valid block height (as seen by this node) might actually decrease.
    
-   It is a very difficult exercise to even imagine a scenario of how this could happen. 
+   It is a very difficult exercise to even imagine a scenario of how this could happen.
    
    _Thought experiment_: Suppose a miner with massive hash power outperforming the majority chain, but not publicly announcing the blocks. 
    After 2016 blocks a difficulty adjustment takes place and the difficulty on the hidden chain increases by a lot. 
@@ -33,7 +33,9 @@ here is a list of mistaken perspectives on Bitcoin.
    The miner produces a few more blocks, stops mining and waits for the other chain to catch up to his blocksize + 1 and then announces his blocks. 
    All nodes will follow the chain with lesser blockheight because it includes more chainwork.
    
-   It is left as an exercise for the reader to imagine how likely the occurrence of this case may be.   
+   It is left as an exercise for the reader to imagine how likely the occurrence of this case may be.
+   
+   A curious situation that impacted applications relying on a constantly increasing block height is the [March 2013 Chain Fork](#Bitcoin-never-had-a-double-spend). 
    If you can come up with an additional scenario, please - for the sake of Satoshi - create a PR!
 
 1. **Block time will only increase.**
@@ -273,3 +275,23 @@ here is a list of mistaken perspectives on Bitcoin.
    the address really resulted from an actual random hashing operation). Examples: [1CounterpartyXXXXXXXXXXXXXXXUWLpVr](https://www.blockchain.com/btc/address/1CounterpartyXXXXXXXXXXXXXXXUWLpVr) 
    or [1BitcoinEaterAddressDontSendf59kuE](https://www.blockchain.com/btc/address/1BitcoinEaterAddressDontSendf59kuE). One can safely assume, that these coins are unspendable forever.
    Besides all this, there are lots of addresses where the private key is lost.
+   
+1. <a id="Bitcoin-never-had-a-double-spend"></a>**Bitcoin never had a double spend.**
+   
+   Ouch! There was a little problem on March 11, 2013, starting at blockheight [#225430](https://blockchair.com/bitcoin/block/225430) during an upgrade from v0.7 to v0.8 ...
+   
+   A user described an interesting situation on that day that led to [OKPay suffering a $10,000 double spend](https://bitcointalk.org/index.php?topic=152348.0).
+   > 08:08 – Well before I knew what later have happened, [...], I paid OKPAY address 12z2n8YCJw1BEsJhhQPLCTuLqwH341nKnE 211.9093 BTC and 0.0005 BTC as transaction fee.
+   > 
+   > 09:30 – The transaction was included in version 0.8's fork, block 225446
+   > 
+   > 10:08 – Deposit completed [...]
+   > 
+   > 12:53 – After some study, I recognized, the transaction, though included in version 0.8's fork, was never confirmed by the pre-0.8 fork, so I decided to make two double spend transactions on two of the vins of the OKPAY transaction [...]
+   > 
+   > 13:01 – The double spend transaction was included in pre-0.8 fork block 225446
+   
+   Even waiting for confirmations would not have mitigated this scenario and could have had even bigger impacts by
+   making hostile miners more motivated to attempt a [Goldfinger attack](https://www.jkroll.com/papers/oakland15_bitcoin-sok.pdf).
+   After five years, no block explorer shows the original transactions anymore. That's why it's up for debate whether it was a real double spend.
+   See [March 2013 Chain Fork Post-Mortem (BIP50)](https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki) or read the [full story of the 2013 Bitcoin fork](https://freedom-to-tinker.com/2015/07/28/analyzing-the-2013-bitcoin-fork-centralized-decision-making-saved-the-day) - it's fascinating.
