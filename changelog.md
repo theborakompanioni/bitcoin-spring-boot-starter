@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - build: build javadoc and sources jar only for publication by default
 - upgrade: update netlayer from v0.6.8 to v0.7.2
+- upgrade: update jmolecules from v1.2.0 to v1.3.0
 
 ### Removed
 - module: sunset incubator module 'tbk-btcabuse-client'
