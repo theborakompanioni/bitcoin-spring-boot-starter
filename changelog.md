@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update spring-boot from v2.5.3 to v2.5.6
 - upgrade: update netlayer from v0.6.8 to v0.7.2
 - upgrade: update jmolecules from v1.2.0 to v1.3.0
+- upgrade: update testcontainers from v1.15.2 to v1.16.2
 
 ### Removed
 - module: sunset incubator module 'tbk-btcabuse-client'
