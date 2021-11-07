@@ -10,8 +10,8 @@ ext {
     testcontainersVersion = '1.16.2'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
-    grpcVersion = '1.38.0'
-    protobufVersion = '3.17.3'
+    grpcVersion = '1.41.1'
+    protobufVersion = '3.19.1'
     protocVersion = protobufVersion
     jmoleculesVersion = '1.3.0'
     jmoleculesIntegrationsVersion = '0.5.0'
@@ -27,7 +27,7 @@ ext {
     checkstyleVersion = '8.44'
     findsecbugsPluginVersion = '1.11.0'
     springBootGradlePluginVersion = '2.5.6'
-    protobufGradleVersion = '0.8.16'
+    protobufGradleVersion = '0.8.17'
     // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
     // drawback: has issues on project import in intellij; '1.10.14' would work with intellij but does not work on command line : /
     bytebuddyPluginVersion = '1.10.22'

@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update netlayer from v0.6.8 to v0.7.2
 - upgrade: update jmolecules from v1.2.0 to v1.3.0
 - upgrade: update testcontainers from v1.15.2 to v1.16.2
+- upgrade: update grpc from v1.38.0 to v1.41.1
+- upgrade: update protobuf from v3.17.3 to v3.19.1
 
 ### Removed
 - module: sunset incubator module 'tbk-btcabuse-client'
