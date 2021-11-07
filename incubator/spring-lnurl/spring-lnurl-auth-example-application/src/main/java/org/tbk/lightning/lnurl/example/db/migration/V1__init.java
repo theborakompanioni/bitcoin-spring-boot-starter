@@ -12,7 +12,7 @@ public class V1__init extends BaseJavaMigration {
 
     @Override
     public void migrate(Context context) throws Exception {
-        String sql1 = "create table if not exists lnurl_auth_wallet_user ("
+        String sql1 = "CREATE TABLE IF NOT EXISTS lnurl_auth_wallet_user ("
                 + "id string PRIMARY KEY, "
                 + "version integer, "
                 + "created_at integer, "
@@ -24,7 +24,7 @@ public class V1__init extends BaseJavaMigration {
                 + "credentials_expired_at integer"
                 + ")";
 
-        String sql2 = "create table if not exists lnurl_auth_linking_key "
+        String sql2 = "CREATE TABLE IF NOT EXISTS lnurl_auth_linking_key "
                 + "(id string PRIMARY KEY, "
                 + "version integer, "
                 + "created_at integer, "
@@ -35,7 +35,9 @@ public class V1__init extends BaseJavaMigration {
                 + "UNIQUE(linking_key)"
                 + ")";
 
-        for (String sql : Lists.newArrayList(sql1, sql2)) {
+        String sql3 = "CREATE INDEX IF NOT EXISTS lnurl_auth_linking_key_fk1 ON lnurl_auth_linking_key (lnurl_auth_wallet_user_id)";
+
+        for (String sql : Lists.newArrayList(sql1, sql2, sql3)) {
             try (PreparedStatement statement = context.getConnection().prepareStatement(sql)) {
                 statement.execute();
             }
