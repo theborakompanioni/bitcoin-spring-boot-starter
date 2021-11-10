@@ -2,6 +2,7 @@ package org.tbk.spring.lnurl.security.wallet;
 
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
+import fr.acinq.bitcoin.PublicKey;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.*;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
-import scodec.bits.ByteVector;
 
 @RequiredArgsConstructor
 public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProvider {
@@ -79,9 +79,9 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
     }
 
     private boolean verifyLogin(K1 k1, Signature signature, LinkingKey linkingKey) {
-        ByteVector rawK1 = ByteVector.view(k1.toArray());
-        ByteVector64 rawSig = Crypto.der2compact(ByteVector.view(signature.toArray()));
-        Crypto.PublicKey rawKey = new Crypto.PublicKey(ByteVector.view(linkingKey.toArray()));
+        byte[] rawK1 = k1.toArray();
+        ByteVector64 rawSig = Crypto.der2compact(signature.toArray());
+        PublicKey rawKey = PublicKey.fromHex(linkingKey.toHex());
 
         return Crypto.verifySignature(rawK1, rawSig, rawKey);
     }

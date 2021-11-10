@@ -18,7 +18,8 @@ ext {
     jmoleculesBomVersion = '2021.1.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.4.1'
-    acinqBitcoinLibVerson = '0.19'
+    acinqBitcoinKmpVersion = '0.8.1'
+    acinqSecp256k1KmpVersion = '0.6.1'
     netlayerVersion = '0.7.2'
     sqliteVersion = '3.34.0'
     lombokVersion = '1.18.20'
@@ -33,4 +34,4 @@ ext {
     bytebuddyPluginVersion = '1.10.22'
 }
 
-// hack: 2021-09-02T00:00Z - change this timestamp to invalidate GitHub Actions gradle caches.
+// hack: 2021-11-10T00:00Z - change this timestamp to invalidate GitHub Actions gradle caches.

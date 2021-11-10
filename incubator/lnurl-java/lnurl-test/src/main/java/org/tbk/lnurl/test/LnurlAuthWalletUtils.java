@@ -1,30 +1,26 @@
 package org.tbk.lnurl.test;
 
-import com.google.common.collect.ImmutableList;
-import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
-import fr.acinq.bitcoin.DeterministicWallet.KeyPath;
-import fr.acinq.bitcoin.Protocol;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.macs.HMac;
-import org.bouncycastle.crypto.params.KeyParameter;
-import scala.collection.immutable.Seq;
-import scodec.bits.ByteVector;
+import fr.acinq.bitcoin.KeyPath;
+import fr.acinq.bitcoin.PrivateKey;
+import fr.acinq.bitcoin.crypto.Pack;
+import fr.acinq.bitcoin.io.ByteArrayInput;
+import fr.acinq.bitcoin.io.Input;
+import org.apache.commons.codec.digest.HmacAlgorithms;
+import org.apache.commons.codec.digest.HmacUtils;
 
-import java.io.ByteArrayInputStream;
+import javax.crypto.Mac;
+import javax.crypto.ShortBufferException;
 import java.net.URI;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.Arrays;
 
 import static fr.acinq.bitcoin.DeterministicWallet.derivePrivateKey;
 import static fr.acinq.bitcoin.DeterministicWallet.hardened;
-import static scala.collection.JavaConverters.asJava;
-import static scala.collection.JavaConverters.asScala;
 
 final class LnurlAuthWalletUtils {
     // lnurl-auth base path: m/138'
-    private static final KeyPath lnurlAuthKeyPathBase = new KeyPath(Seq.newBuilder().result()).derive(hardened(138L));
+    private static final KeyPath lnurlAuthKeyPathBase = new KeyPath("").derive(hardened(138L));
 
     // lnurl-auth hashing key path: m/138'/0
     private static final KeyPath lnurlAuthHashingKeyPath = lnurlAuthKeyPathBase.derive(0L);
@@ -32,13 +28,13 @@ final class LnurlAuthWalletUtils {
     public static ExtendedPrivateKey deriveLinkingKey(ExtendedPrivateKey masterPrivateKey, URI domainName) {
         ExtendedPrivateKey hashingKey = derivePrivateKey(masterPrivateKey, lnurlAuthHashingKeyPath);
 
-        KeyPath linkingKeyPath = deriveLinkingKeyPathWithHashingKey(hashingKey.privateKey(), domainName);
+        KeyPath linkingKeyPath = deriveLinkingKeyPathWithHashingKey(hashingKey.getPrivateKey(), domainName);
 
         return derivePrivateKey(masterPrivateKey, linkingKeyPath);
     }
 
-    private static KeyPath deriveLinkingKeyPathWithHashingKey(Crypto.PrivateKey hashingKey, URI domainName) {
-        return deriveLinkingKeyPathWithHashingKey(hashingKey.value().bytes().toArray(), domainName);
+    private static KeyPath deriveLinkingKeyPathWithHashingKey(PrivateKey hashingKey, URI domainName) {
+        return deriveLinkingKeyPathWithHashingKey(hashingKey.value.toByteArray(), domainName);
     }
 
     /**
@@ -52,36 +48,32 @@ final class LnurlAuthWalletUtils {
      */
     public static KeyPath deriveLinkingKeyPathWithHashingKey(byte[] hashingKey, URI domainName) {
         byte[] domainBytes = domainName.getHost().getBytes(StandardCharsets.UTF_8);
-        var derivationMaterial = hmac256(ByteVector.view(hashingKey), ByteVector.view(domainBytes));
+        var derivationMaterial = hmac256(hashingKey, domainBytes);
 
-        var stream = new ByteArrayInputStream(derivationMaterial.slice(0, 16).toArray());
+        var stream = new ByteArrayInput(Arrays.copyOfRange(derivationMaterial, 0, 16));
 
         // each uint32 call consumes next 4 bytes
-        List<Long> linkingKeySubPath = ImmutableList.<Long>builder()
-                .add(Protocol.uint32(stream, ByteOrder.BIG_ENDIAN))
-                .add(Protocol.uint32(stream, ByteOrder.BIG_ENDIAN))
-                .add(Protocol.uint32(stream, ByteOrder.BIG_ENDIAN))
-                .add(Protocol.uint32(stream, ByteOrder.BIG_ENDIAN))
-                .build();
-
-        return derive(lnurlAuthKeyPathBase, linkingKeySubPath);
+        return lnurlAuthKeyPathBase
+                .derive(uint32BigEndian(stream))
+                .derive(uint32BigEndian(stream))
+                .derive(uint32BigEndian(stream))
+                .derive(uint32BigEndian(stream));
     }
 
-    private static ByteVector hmac256(final ByteVector key, final ByteVector data) {
-        HMac mac = new HMac(new SHA256Digest());
-        mac.init(new KeyParameter(key.toArray()));
-        mac.update(data.toArray(), 0, (int) data.length());
-        byte[] out = new byte[64];
-        mac.doFinal(out, 0);
-        return ByteVector.view(out);
+    private static long uint32BigEndian(Input stream) {
+        return Pack.int32BE(stream) & 0xFFFFFFFFL;
     }
 
-    private static KeyPath derive(KeyPath keypath, List<Long> subpath) {
-        List<Object> path = ImmutableList.builder()
-                .addAll(asJava(keypath.path()))
-                .addAll(subpath)
-                .build();
+    private static byte[] hmac256(final byte[] key, final byte[] data) {
+        Mac mac = HmacUtils.getInitializedMac(HmacAlgorithms.HMAC_SHA_256, key);
+        mac.update(data, 0, data.length);
 
-        return new KeyPath(asScala(path).toSeq());
+        try {
+            byte[] out = new byte[64];
+            mac.doFinal(out, 0);
+            return out;
+        } catch (ShortBufferException e) {
+            throw new IllegalStateException("Error while performing hmac256", e);
+        }
     }
 }

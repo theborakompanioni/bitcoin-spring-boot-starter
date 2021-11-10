@@ -124,7 +124,7 @@ class LnurlAuthFlowTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        LinkingKey authenticatedKey = SimpleLinkingKey.fromHexStrict(authenticatedResult.getResponse().getContentAsString());
+        LinkingKey authenticatedKey = SimpleLinkingKey.fromHex(authenticatedResult.getResponse().getContentAsString());
         assertThat("Web user has been authenticated with wallet linking key", authenticatedKey, is(signedLnurlAuth.getLinkingKey()));
     }
 }

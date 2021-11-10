@@ -3,7 +3,6 @@ package org.tbk.lnurl.simple.auth;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.secp256k1.Hex;
 import org.tbk.lnurl.auth.Signature;
-import scodec.bits.ByteVector;
 
 import java.util.Arrays;
 
@@ -54,11 +53,10 @@ public final class SimpleSignature extends AbstractByteArrayView implements Sign
         boolean sighashPresent = 2 + data[1] == data.length - 1;
         if (sighashAbsent) {
             // data has no sighash byte at the end - append one byte and try again.
-            return Crypto.isDERSignature(ByteVector.view(Arrays.copyOf(data, data.length + 1)));
-            // return Crypto.isDERSignature(ByteVector.view(data).padTo(data.length + 1));
+            return Crypto.isDERSignature(Arrays.copyOf(data, data.length + 1));
         } else if (sighashPresent) {
             // data has sighash byte at the end
-            return Crypto.isDERSignature(ByteVector.view(data));
+            return Crypto.isDERSignature(data);
         } else {
             return false;
         }

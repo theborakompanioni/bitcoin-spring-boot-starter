@@ -2,6 +2,7 @@ package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.acinq.bitcoin.Crypto;
+import fr.acinq.bitcoin.PublicKey;
 import fr.acinq.secp256k1.Hex;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
-import scodec.bits.ByteVector;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -46,8 +46,8 @@ class AuthLinkingKey implements Entity<WalletUser, AuthLinkingKey.LinkingKeyId> 
         checkArgument(this.toPublicKey().isValid(), "Linking key must be a valid public key");
     }
 
-    public Crypto.PublicKey toPublicKey() {
-        return Crypto.PublicKey$.MODULE$.fromBin(ByteVector.view(Hex.decode(linkingKey)), false);
+    public PublicKey toPublicKey() {
+        return PublicKey.fromHex(linkingKey);
     }
 
     public void markUsedK1(K1 k1) {

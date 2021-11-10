@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay in this case
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        WalletUser walletUser = walletUserService.findUser(SimpleLinkingKey.fromHexLax(username))
+        WalletUser walletUser = walletUserService.findUser(SimpleLinkingKey.fromHex(username))
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
         Instant now = Instant.now();

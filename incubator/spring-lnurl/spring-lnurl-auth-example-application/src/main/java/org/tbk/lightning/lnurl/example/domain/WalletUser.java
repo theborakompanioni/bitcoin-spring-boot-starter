@@ -86,7 +86,7 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
                 .filter(it -> k1hex.equals(it.getLeastRecentlyUsedK1()))
                 .map(AuthLinkingKey::getLinkingKey)
                 .findFirst()
-                .map(SimpleLinkingKey::fromHexLax);
+                .map(SimpleLinkingKey::fromHex);
     }
 
     public boolean isAccountEnabled(Instant now) {

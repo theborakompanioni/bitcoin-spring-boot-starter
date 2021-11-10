@@ -139,7 +139,7 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
 
     protected Optional<LinkingKey> obtainKey(HttpServletRequest request) {
         return Optional.ofNullable(request.getParameter(SignedLnurlAuth.LNURL_AUTH_KEY_KEY))
-                .map(SimpleLinkingKey::fromHexStrict);
+                .map(SimpleLinkingKey::fromHex);
     }
 
     protected void setDetails(HttpServletRequest request, LnurlAuthWalletToken authRequest) {

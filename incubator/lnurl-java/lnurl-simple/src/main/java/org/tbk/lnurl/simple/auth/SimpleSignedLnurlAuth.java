@@ -65,7 +65,7 @@ public class SimpleSignedLnurlAuth implements SignedLnurlAuth {
         checkArgument(sigQueryParams.size() == 1, "Url must include exactly one '" + LNURL_AUTH_SIG_KEY + "' query parameter");
         String sig = sigQueryParams.stream().map(NameValuePair::getValue).findFirst().orElseThrow();
 
-        return new SimpleSignedLnurlAuth(lnurlAuth, SimpleLinkingKey.fromHexLax(key), SimpleSignature.fromHex(sig));
+        return new SimpleSignedLnurlAuth(lnurlAuth, SimpleLinkingKey.fromHex(key), SimpleSignature.fromHex(sig));
     }
 
     @Override

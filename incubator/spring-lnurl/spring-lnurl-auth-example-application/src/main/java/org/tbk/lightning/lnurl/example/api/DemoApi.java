@@ -1,9 +1,9 @@
 package org.tbk.lightning.lnurl.example.api;
 
+import fr.acinq.bitcoin.Base58;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.secp256k1.Hex;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriUtils;
-import scodec.bits.ByteVector;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -55,8 +54,8 @@ public class DemoApi {
         return Optional.ofNullable(principal)
                 .map(Principal::getName)
                 .map(Hex::decode)
-                .map(it -> Crypto.sha256().apply(ByteVector.view(it)).bytes())
-                .map(ByteVector::toBase58)
+                .map(Crypto::sha256)
+                .map(Base58::encode)
                 .map(it -> it.substring(0, 30))
                 .orElse(ANONYMOUS_NAME);
     }

@@ -1,10 +1,10 @@
 package org.tbk.lnurl.test;
 
+import fr.acinq.bitcoin.ByteVector;
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.DeterministicWallet;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
-import fr.acinq.secp256k1.Hex;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -13,7 +13,6 @@ import org.tbk.lnurl.auth.*;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 import org.tbk.lnurl.simple.auth.SimpleSignature;
 import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
-import scodec.bits.ByteVector;
 
 import java.net.URI;
 
@@ -27,7 +26,7 @@ public class SimpleLnurlWallet implements LnurlWallet {
     private final ExtendedPrivateKey masterPrivateKey;
 
     private SimpleLnurlWallet(byte[] seed) {
-        this.masterPrivateKey = DeterministicWallet.generate(ByteVector.view(seed));
+        this.masterPrivateKey = DeterministicWallet.generate(seed);
     }
 
     @Override
@@ -39,9 +38,7 @@ public class SimpleLnurlWallet implements LnurlWallet {
     @Override
     public LinkingKey deriveLinkingPublicKey(URI uri) {
         ExtendedPrivateKey linkingKey = deriveLinkingKey(uri);
-
-        byte[] linkingPubKey = linkingKey.publicKey().value().toArray();
-        return SimpleLinkingKey.fromHexLax(Hex.encode(linkingPubKey));
+        return SimpleLinkingKey.fromHex(linkingKey.getPublicKey().toHex());
     }
 
     private ExtendedPrivateKey deriveLinkingKey(URI domain) {
@@ -51,17 +48,17 @@ public class SimpleLnurlWallet implements LnurlWallet {
     private K1WithSigAndKey authorizeInternal(LnurlAuth lnurlAuth) {
         ExtendedPrivateKey linkingKey = deriveLinkingKey(lnurlAuth.toLnurl().toUri());
 
-        ByteVector64 signedK1 = Crypto.sign(lnurlAuth.getK1().toArray(), linkingKey.privateKey());
+        ByteVector64 signedK1 = Crypto.sign(lnurlAuth.getK1().toArray(), linkingKey.getPrivateKey());
         ByteVector signedK1DerEncoded = Crypto.compact2der(signedK1);
 
         // <LNURL_hostname_and_path>?<LNURL_existing_query_parameters>&sig=<hex(sign(utf8ToBytes(k1), linkingPrivKey))>&key=<hex(linkingKey)>
-        String sigParam = Hex.encode(signedK1DerEncoded.toArray());
-        String keyParam = Hex.encode(linkingKey.publicKey().value().toArray());
+        String sigParam = signedK1DerEncoded.toHex();
+        String keyParam = linkingKey.getPublicKey().toHex();
 
         return K1WithSigAndKey.builder()
                 .k1(lnurlAuth.getK1())
                 .sig(SimpleSignature.fromHex(sigParam))
-                .key(SimpleLinkingKey.fromHexLax(keyParam))
+                .key(SimpleLinkingKey.fromHex(keyParam))
                 .build();
     }
 

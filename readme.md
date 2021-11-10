@@ -172,7 +172,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server
 - Electrum Client (GitHub): https://github.com/spesmilo/electrum
 - XChange (GitHub): https://github.com/knowm/XChange
-- bitcoin-lib (GitHub): https://github.com/ACINQ/bitcoin-lib
+- bitcoin-kmp (GitHub): https://github.com/ACINQ/bitcoin-kmp
 - bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - LightningJ (GitHub): https://github.com/lightningj-org/lightningj
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
