@@ -13,12 +13,12 @@ import static org.hamcrest.Matchers.*;
 
 @Slf4j
 class MempoolspaceFeeApiClientImplTest {
-    // url "https://mempool.ninja" is not used currently, as it is delivering a wrong certificate.
-    // "Certificate for <mempool.ninja> doesn't match any of the subject alternative names: [node204.mempool.space]"
     private static final List<String> baseUrls = ImmutableList.<String>builder()
             .add("https://mempool.space")
-            .add("https://mempool.emzy.de")
-            .add("https://mempool.bisq.services")
+            // following alternative endpoints can be used in case mempool.space is down:
+            // .add("https://mempool.emzy.de")
+            // .add("https://mempool.bisq.services")
+            // .add("https://mempool.ninja")
             .build();
 
     private static final String API_TOKEN = null;
