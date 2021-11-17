@@ -1,6 +1,7 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -10,10 +11,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
+import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerProperties.Chain;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +42,8 @@ public class BitcoindContainerAutoConfiguration {
     /**
      * Creates a bitcoin container from the properties given.
      *
-     * <p>NOTE: Currently only supports creating "regtest" container.
+     * <p>NOTE: Currently only really supports creating "regtest" container.
+     * Defaults do not play nicely with mainnet/testnet -> "networkactive" is disabled.
      *
      * <p>Mainnet
      * JSON-RPC/REST: 8332
@@ -52,6 +56,10 @@ public class BitcoindContainerAutoConfiguration {
      * <p>Regtest
      * JSON-RPC/REST: 18443 (since 0.16+, otherwise 18332)
      * P2P: 18444
+     *
+     * <p>Signet
+     * JSON-RPC/REST: 38332
+     * P2P: 38333
      */
     @Bean(name = "bitcoindContainer", destroyMethod = "stop")
     public BitcoindContainer<?> bitcoindContainer() {
@@ -59,8 +67,9 @@ public class BitcoindContainerAutoConfiguration {
 
         // TODO: expose ports specified via auto configuration properties
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
-                .add(18443)
-                .add(18444)
+                .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332, 8333) : Collections.emptyList())
+                .addAll(this.properties.getChain() == Chain.testnet ? Lists.newArrayList(18332, 18333) : Collections.emptyList())
+                .addAll(this.properties.getChain() == Chain.regtest ? Lists.newArrayList(18443, 18444) : Collections.emptyList())
                 .build();
 
         List<Integer> exposedPorts = ImmutableList.<Integer>builder()
@@ -68,9 +77,13 @@ public class BitcoindContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        // only wait for rpc ports - zeromq ports wont work (we can live with that for now)
+        // only wait for rpc ports - p2p ports might be disabled (networkactive=0); zeromq ports wont work (we can live with that for now)
         CustomHostPortWaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
-                .ports(hardcodedStandardPorts)
+                .ports(ImmutableList.<Integer>builder()
+                        .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332) : Collections.emptyList())
+                        .addAll(this.properties.getChain() == Chain.testnet ? Lists.newArrayList(18332) : Collections.emptyList())
+                        .addAll(this.properties.getChain() == Chain.regtest ? Lists.newArrayList(18443) : Collections.emptyList())
+                        .build())
                 .build();
 
         DockerImageName dockerImageName = this.properties.getImage()
@@ -99,19 +112,10 @@ public class BitcoindContainerAutoConfiguration {
     }
 
     private List<String> buildCommandList() {
-        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder()
-                // rpcport: Listen for JSON-RPC connections on this port
-                //rpcport=8282
-                // port: Listen for incoming connections on non-default port. (p2p)
-                //port=8888
-                // listen: Accept incoming connections from peers. <-- check if this is mandatory "1"
-                //.add("-listen=0")
-                // rest: Accept public REST requests.
-                //rest=1
-                ;
+        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder();
 
         Optional.of(this.properties.getChain())
-                .filter(it -> it != BitcoindContainerProperties.Chain.mainnet)
+                .filter(it -> it != Chain.mainnet)
                 .map(Enum::name)
                 .map(String::toLowerCase)
                 .map(it -> "-chain=" + it)
@@ -124,6 +128,8 @@ public class BitcoindContainerAutoConfiguration {
                 .add("-dnsseed=" + this.properties.getCommandValueByKey("dnsseed").orElse("0"))
                 // upnp: Use UPnP to map the listening port.
                 .add("-upnp=" + this.properties.getCommandValueByKey("upnp").orElse("0"))
+                // networkactiveEnable all P2P network activity.
+                .add("-networkactive=" + this.properties.getCommandValueByKey("networkactive").orElse("0"))
                 .add("-txindex=" + this.properties.getCommandValueByKey("txindex").orElse("1"))
                 .add("-server=" + this.properties.getCommandValueByKey("server").orElse("1"))
                 .add("-rpcbind=" + this.properties.getCommandValueByKey("rpcbind").orElse("0.0.0.0"))
