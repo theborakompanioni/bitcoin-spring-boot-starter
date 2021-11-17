@@ -128,8 +128,8 @@ public class BitcoindContainerAutoConfiguration {
                 .add("-dnsseed=" + this.properties.getCommandValueByKey("dnsseed").orElse("0"))
                 // upnp: Use UPnP to map the listening port.
                 .add("-upnp=" + this.properties.getCommandValueByKey("upnp").orElse("0"))
-                // networkactiveEnable all P2P network activity.
-                .add("-networkactive=" + this.properties.getCommandValueByKey("networkactive").orElse("0"))
+                // networkactive: enable all P2P network activity. TODO: not yet supported (revisit >v0.22)
+                //.add("-networkactive=" + this.properties.getCommandValueByKey("networkactive").orElse("0"))
                 .add("-txindex=" + this.properties.getCommandValueByKey("txindex").orElse("1"))
                 .add("-server=" + this.properties.getCommandValueByKey("server").orElse("1"))
                 .add("-rpcbind=" + this.properties.getCommandValueByKey("rpcbind").orElse("0.0.0.0"))
