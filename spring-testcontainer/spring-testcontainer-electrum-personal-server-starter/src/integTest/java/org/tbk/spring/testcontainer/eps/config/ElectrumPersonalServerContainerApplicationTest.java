@@ -18,14 +18,14 @@ import static org.hamcrest.Matchers.notNullValue;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class ElectrumPersonalServerContainerApplicationTest {
+class ElectrumPersonalServerContainerApplicationTest {
 
     @SpringBootApplication
-    public static class LndContainerTestApplication {
+    public static class ElectrumPersonalServerContainerTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(LndContainerTestApplication.class)
+                    .sources(ElectrumPersonalServerContainerTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
         }

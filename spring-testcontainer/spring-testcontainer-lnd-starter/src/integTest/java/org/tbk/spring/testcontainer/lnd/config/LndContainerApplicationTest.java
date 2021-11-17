@@ -38,7 +38,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class LndContainerApplicationTest {
+class LndContainerApplicationTest {
 
     @SpringBootApplication
     public static class LndContainerTestApplication {
@@ -101,7 +101,7 @@ public class LndContainerApplicationTest {
     private AsynchronousLndAPI lndAsyncApi;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(lndContainer, is(notNullValue()));
         assertThat(lndContainer.isRunning(), is(true));
 
@@ -111,7 +111,7 @@ public class LndContainerApplicationTest {
     }
 
     @Test
-    public void itShouldBeCompatibleWithLightningJ() throws StatusException, ValidationException {
+    void itShouldBeCompatibleWithLightningJ() throws StatusException, ValidationException {
         assertThat(lndSyncApi, is(notNullValue()));
 
         GetInfoResponse info = lndSyncApi.getInfo();
@@ -129,7 +129,7 @@ public class LndContainerApplicationTest {
     }
 
     @Test
-    public void itShouldBeCompatibleWithLightningJAsync() {
+    void itShouldBeCompatibleWithLightningJAsync() {
         assertThat(lndAsyncApi, is(notNullValue()));
 
         Flux<GetInfoResponse> infoResponseFlux = Flux.create(emitter -> {

@@ -31,7 +31,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinContainerWithZeroMqClientTest {
+class BitcoinContainerWithZeroMqClientTest {
 
     @SpringBootApplication
     public static class BitcoinContainerClientTestApplication {

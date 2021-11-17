@@ -11,12 +11,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BtcRpcExplorerContainerAutoConfigurationTest {
+class BtcRpcExplorerContainerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(BtcRpcExplorerContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.btcrpcexplorer.enabled=false"
@@ -28,7 +28,7 @@ public class BtcRpcExplorerContainerAutoConfigurationTest {
     }
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(BtcRpcExplorerContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.btcrpcexplorer.enabled=true",
@@ -46,7 +46,7 @@ public class BtcRpcExplorerContainerAutoConfigurationTest {
     }
 
     @Test
-    public void throwOnInvalidPropertiesValues() {
+    void throwOnInvalidPropertiesValues() {
         this.contextRunner.withUserConfiguration(BtcRpcExplorerContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.btcrpcexplorer.enabled=true",

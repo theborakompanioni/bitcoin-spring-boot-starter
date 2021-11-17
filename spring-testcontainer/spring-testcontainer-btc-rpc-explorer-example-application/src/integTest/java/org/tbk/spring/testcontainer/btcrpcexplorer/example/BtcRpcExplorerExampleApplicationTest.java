@@ -13,13 +13,13 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BtcRpcExplorerExampleApplicationTest {
+class BtcRpcExplorerExampleApplicationTest {
 
     @Autowired(required = false)
     private BtcRpcExplorerContainer<?> container;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 

@@ -18,14 +18,14 @@ import static org.hamcrest.Matchers.notNullValue;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class ElectrumxContainerApplicationTest {
+class ElectrumxContainerApplicationTest {
 
     @SpringBootApplication
-    public static class LndContainerTestApplication {
+    public static class ElectrumxContainerTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(LndContainerTestApplication.class)
+                    .sources(ElectrumxContainerTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
         }
@@ -35,7 +35,7 @@ public class ElectrumxContainerApplicationTest {
     private ElectrumxContainer<?> container;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 

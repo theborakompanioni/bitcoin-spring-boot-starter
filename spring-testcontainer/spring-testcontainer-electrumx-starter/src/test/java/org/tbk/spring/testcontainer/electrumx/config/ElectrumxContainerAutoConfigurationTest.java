@@ -11,12 +11,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ElectrumxContainerAutoConfigurationTest {
+class ElectrumxContainerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(
                 BitcoindContainerAutoConfiguration.class,
                 ElectrumxContainerAutoConfiguration.class
@@ -29,7 +29,7 @@ public class ElectrumxContainerAutoConfigurationTest {
     }
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(
                 BitcoindContainerAutoConfiguration.class,
                 ElectrumxContainerAutoConfiguration.class

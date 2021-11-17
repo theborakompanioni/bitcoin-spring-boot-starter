@@ -13,13 +13,13 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ElectrumDaemonExampleApplicationTest {
+class ElectrumDaemonExampleApplicationTest {
 
     @Autowired(required = false)
     private ElectrumDaemonContainer<?> container;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));
 

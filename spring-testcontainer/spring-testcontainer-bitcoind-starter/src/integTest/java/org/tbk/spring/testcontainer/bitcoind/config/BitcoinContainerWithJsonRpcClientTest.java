@@ -10,6 +10,7 @@ import org.bitcoinj.params.RegTestParams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -29,7 +30,7 @@ import static org.hamcrest.Matchers.is;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinContainerWithJsonRpcClientTest {
+class BitcoinContainerWithJsonRpcClientTest {
 
     @SpringBootApplication
     public static class BitcoinContainerClientTestApplication {
@@ -37,6 +38,7 @@ public class BitcoinContainerWithJsonRpcClientTest {
         public static void main(String[] args) {
             new SpringApplicationBuilder()
                     .sources(BitcoinContainerClientTestApplication.class)
+                    .bannerMode(Banner.Mode.OFF)
                     .web(WebApplicationType.NONE)
                     .run(args);
         }
@@ -51,13 +53,13 @@ public class BitcoinContainerWithJsonRpcClientTest {
     }
 
     @Test
-    public void testGetBlockChainInfo() throws IOException {
+    void testGetBlockChainInfo() throws IOException {
         BlockChainInfo blockChainInfo = bitcoinClient.getBlockChainInfo();
         assertThat(blockChainInfo.getChain(), is("regtest"));
     }
 
     @Test
-    public void testGenerateToAddress() throws IOException {
+    void testGenerateToAddress() throws IOException {
         BlockChainInfo blockChainInfoBefore = bitcoinClient.getBlockChainInfo();
         int blocksAmountBefore = blockChainInfoBefore.getBlocks();
 
@@ -77,7 +79,7 @@ public class BitcoinContainerWithJsonRpcClientTest {
     }
 
     @Test
-    public void testGenerateToAddressExpectingCoins() throws IOException {
+    void testGenerateToAddressExpectingCoins() throws IOException {
         Address newAddress = bitcoinClient.getNewAddress();
         // an address not controlled by the bitcoin core testcontainer (taken from second_wallet in electrum module)
         Address regtestEaterAddress = Address.fromString(RegTestParams.get(), "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j");

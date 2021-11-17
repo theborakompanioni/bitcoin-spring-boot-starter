@@ -12,12 +12,12 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class BitcoindContainerAutoConfigurationTest {
+class BitcoindContainerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.bitcoind.enabled=false"
@@ -29,7 +29,7 @@ public class BitcoindContainerAutoConfigurationTest {
     }
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.bitcoind.enabled=true"
@@ -41,7 +41,7 @@ public class BitcoindContainerAutoConfigurationTest {
     }
 
     @Test
-    public void beansWithCustomConfigAreCreated() {
+    void beansWithCustomConfigAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.bitcoind.enabled=true",
@@ -66,7 +66,7 @@ public class BitcoindContainerAutoConfigurationTest {
     }
 
     @Test
-    public void throwOnInvalidPropertiesValues() {
+    void throwOnInvalidPropertiesValues() {
         this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.spring.testcontainer.bitcoind.enabled=true",

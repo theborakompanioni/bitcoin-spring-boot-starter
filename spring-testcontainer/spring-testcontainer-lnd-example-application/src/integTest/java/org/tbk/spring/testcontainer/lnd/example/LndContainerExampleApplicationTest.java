@@ -7,10 +7,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class LndContainerExampleApplicationTest {
+class LndContainerExampleApplicationTest {
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
     }
 
 }
