@@ -10,6 +10,8 @@ server.compression.enabled: true
 
 management.server.port: 9001
 
+spring.datasource.url: 'jdbc:sqlite:lnurl_auth_example_application-dev.db'
+
 # LOGGING
 logging.file.path: ./var/log
 logging.file.name: application-dev.log

@@ -1,4 +1,4 @@
-app.name: tbk-bitcoin-spring-boot-starter-lnd-playground-example-app
+app.name: tbk-bitcoin-spring-boot-starter-demo
 app.description: A spring boot bitcoin demo application
 
 spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
@@ -16,6 +16,13 @@ server.error:
 
 management.server.port: 9001
 
+management.endpoint.health.show-details: 'always'
+management.endpoints.web.exposure.include: '*'
+management.info.bitcoinJsonRpc.enabled: true
+management.info.lndApi.enabled: true
+management.health.bitcoinJsonRpc.enabled: true
+management.health.lndApi.enabled: true
+
 # LOGGING
 logging.file.path: ./var/log
 logging.file.name: application.log
@@ -25,22 +32,21 @@ logging.level.org.springframework: INFO
 #logging.level.web: DEBUG
 logging.level.org.javamoney.moneta.Money: WARN
 
-management.endpoint.health.show-details: 'always'
-management.endpoints.web.exposure.include: '*'
-management.info.bitcoinJsonRpc.enabled: true
-management.info.lndApi.enabled: true
-management.health.bitcoinJsonRpc.enabled: true
-management.health.lndApi.enabled: true
+
+spring.datasource.url: 'jdbc:sqlite:bitcoin_payment_request_example_application.db'
+spring.datasource.driver-class-name: org.sqlite.JDBC
+spring.datasource.hikari.pool-name: SQLitePool
+spring.datasource.hikari.connection-timeout: 30000 #maximum number of milliseconds that a client will wait for a connection
+spring.datasource.hikari.connection-test-query: 'SELECT 1'
+spring.datasource.hikari.minimum-idle: 1 #minimum number of idle connections maintained by HikariCP in a connection pool
+spring.datasource.hikari.maximum-pool-size: 1 #maximum pool size
+spring.datasource.hikari.idle-timeout: 45000 #maximum idle time for connection
+spring.datasource.hikari.max-lifetime: 60000 # maximum lifetime in milliseconds of a connection in the pool after it is closed.
+spring.datasource.hikari.auto-commit: true #default auto-commit behavior.
 
 spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
 spring.jpa.properties.hibernate.jdbc.time_zone: UTC
 
-#spring.datasource.url: jdbc:postgresql://localhost/database_name
-#spring.datasource.username: username
-#spring.datasource.password: password
-#spring.datasource.hikari.connectionTimeout: 30000
-#spring.datasource.hikari.idleTimeout: 45000
-#spring.datasource.hikari.maxLifetime: 1800000
 
 org.tbk.spring.testcontainer.lnd:
   enabled: true

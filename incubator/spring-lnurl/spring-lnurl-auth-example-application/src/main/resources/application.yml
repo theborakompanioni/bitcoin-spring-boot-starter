@@ -11,12 +11,25 @@ server.compression.enabled: true
 
 server.servlet.session.timeout: 24h # Session timeout. If a duration suffix is not specified, seconds are used.
 
+spring.datasource.url: 'jdbc:sqlite:lnurl_auth_example_application.db'
+spring.datasource.driver-class-name: org.sqlite.JDBC
+spring.datasource.hikari.pool-name: SQLitePool
+spring.datasource.hikari.connection-timeout: 30000 #maximum number of milliseconds that a client will wait for a connection
+spring.datasource.hikari.connection-test-query: 'SELECT 1'
+spring.datasource.hikari.minimum-idle: 1 #minimum number of idle connections maintained by HikariCP in a connection pool
+spring.datasource.hikari.maximum-pool-size: 1 #maximum pool size
+spring.datasource.hikari.idle-timeout: 45000 #maximum idle time for connection
+spring.datasource.hikari.max-lifetime: 60000 # maximum lifetime in milliseconds of a connection in the pool after it is closed.
+spring.datasource.hikari.auto-commit: true #default auto-commit behavior.
+
+spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+spring.jpa.properties.hibernate.jdbc.time_zone: UTC
+
+
 spring.session.store-type: jdbc # Session store type.
 spring.session.jdbc.initialize-schema: never # never: do not initialize the schema - we will do that ourselves.
 spring.session.jdbc.table-name: SPRING_SESSION # Name of the database table used to store sessions.
 
-spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
-spring.jpa.properties.hibernate.jdbc.time_zone: UTC
 
 management.server.port: 9001
 
