@@ -8,7 +8,7 @@ version: "3"
 services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
-    image: ruimarinho/bitcoin-core:0.21.1-alpine
+    image: ruimarinho/bitcoin-core:22-alpine
     restart: always
     network_mode: "host"
     command:
