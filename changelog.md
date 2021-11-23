@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- upgrade: update electrumx testcontainer from v1.15.0 to v1.16.0
 - upgrade: update bitcoin testcontainer from v0.21.1 to v22
 
 ## [0.3.0] - 2021-11-10

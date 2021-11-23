@@ -37,7 +37,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 public class ElectrumxContainerAutoConfiguration {
 
     // currently only the image from "lukechilds" is supported
-    private static final String DOCKER_IMAGE_NAME = "lukechilds/electrumx:v1.15.0";
+    private static final String DOCKER_IMAGE_NAME = "lukechilds/electrumx:v1.16.0";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
