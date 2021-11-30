@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MoreHdKeyDerivationTest {
+class MoreHdKeyDerivationTest {
 
     private static final NetworkParameters network = MainNetParams.get();
 
@@ -27,23 +27,26 @@ public class MoreHdKeyDerivationTest {
     private static final String xpub = "xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8";
 
     @Test
-    public void itShouldCreateMainnetBech32AddressFromMnemonic() {
+    void itShouldCreateMainnetBech32AddressFromMnemonic() {
         byte[] seed = MnemonicCode.toSeed(mnemonicCodeList, "");
 
         DeterministicKey masterPrivateKey = HDKeyDerivation.createMasterPrivateKey(seed);
-        assertThat(masterPrivateKey.getPathAsString(), is("M"));
+        assertThat(masterPrivateKey.getPathAsString(), is("m"));
+        assertThat(masterPrivateKey.serializePrivB58(network), is(xpriv));
+        assertThat(masterPrivateKey.serializePubB58(network), is(xpub));
 
         DeterministicKey xprivChildBip84 = MoreHdKeyDerivation.deriveChildKey(masterPrivateKey, "84H / 0H / 0H / 0 / 0");
-        assertThat(xprivChildBip84.getPathAsString(), is("M/84H/0H/0H/0/0"));
+        assertThat(xprivChildBip84.getPathAsString(), is("m/84H/0H/0H/0/0"));
 
         Address address = Address.fromKey(network, xprivChildBip84, Script.ScriptType.P2WPKH);
         assertThat(address.toString(), is("bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"));
     }
 
     @Test
-    public void itShouldCreateMainnetBech32AddressFromXpriv() {
+    void itShouldCreateMainnetBech32AddressFromXpriv() {
         DeterministicKey xprivKey = DeterministicKey.deserializeB58(xpriv, network);
         assertThat(xprivKey.getPathAsString(), is("M"));
+        assertThat(xprivKey.serializePubB58(network), is(xpub));
 
         DeterministicKey xprivChildBip84 = MoreHdKeyDerivation.deriveChildKey(xprivKey, "84H / 0H / 0H / 0 / 0");
         assertThat(xprivChildBip84.getPathAsString(), is("M/84H/0H/0H/0/0"));
@@ -53,8 +56,8 @@ public class MoreHdKeyDerivationTest {
     }
 
     @Test
-    public void itShouldDeriveAddressesFromZpriv() {
-        // the zpriv of the path "84H / 0H / 0H" of mnemonic "abendon abendon ... about"
+    void itShouldDeriveAddressesFromZpriv() {
+        // the zpriv of the path "84H / 0H / 0H" of mnemonic "abandon abandon ... about"
         String zprivBip84 = "zprvAdG4iTXWBoARxkkzNpNh8r6Qag3irQB8PzEMkAFeTRXxHpbF9z4QgEvBRmfvqWvGp42t42nvgGpNgYSJA9iefm1yYNZKEm7z6qUWCroSQnE";
 
         DeterministicKey zprivBip84Key = DeterministicKey.deserializeB58(zprivBip84, network);
@@ -68,8 +71,8 @@ public class MoreHdKeyDerivationTest {
     }
 
     @Test
-    public void itShouldDeriveHardenedAddressesFromZpriv() {
-        // the zpriv of the path "84H / 0H / 0H" of mnemonic "abendon abendon ... about"
+    void itShouldDeriveHardenedAddressesFromZpriv() {
+        // the zpriv of the path "84H / 0H / 0H" of mnemonic "abandon abandon ... about"
         String zprivBip84 = "zprvAdG4iTXWBoARxkkzNpNh8r6Qag3irQB8PzEMkAFeTRXxHpbF9z4QgEvBRmfvqWvGp42t42nvgGpNgYSJA9iefm1yYNZKEm7z6qUWCroSQnE";
 
         DeterministicKey zprivBip84Key = DeterministicKey.deserializeB58(zprivBip84, network);
@@ -83,8 +86,8 @@ public class MoreHdKeyDerivationTest {
     }
 
     @Test
-    public void itShouldDeriveAddressesFromZpub() {
-        // zpub of "84H / 0H / 0H" of mnemonic "abendon abendon ... about"
+    void itShouldDeriveAddressesFromZpub() {
+        // zpub of "84H / 0H / 0H" of mnemonic "abandon abandon ... about"
         String zpubBip84 = "zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs";
 
         DeterministicKey zpubBip84Key = DeterministicKey.deserializeB58(zpubBip84, network);
@@ -98,8 +101,8 @@ public class MoreHdKeyDerivationTest {
     }
 
     @Test
-    public void itShouldFailToDeriveHardenedAddressesFromZpub() {
-        // zpub of "84H / 0H / 0H" of mnemonic "abendon abendon ... about"
+    void itShouldFailToDeriveHardenedAddressesFromZpub() {
+        // zpub of "84H / 0H / 0H" of mnemonic "abandon abandon ... about"
         String zpubBip84 = "zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs";
 
         DeterministicKey zpubBip84Key = DeterministicKey.deserializeB58(zpubBip84, network);

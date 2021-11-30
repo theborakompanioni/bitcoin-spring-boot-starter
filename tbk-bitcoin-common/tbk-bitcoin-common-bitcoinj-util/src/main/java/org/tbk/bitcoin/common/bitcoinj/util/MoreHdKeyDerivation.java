@@ -3,7 +3,7 @@ package org.tbk.bitcoin.common.bitcoinj.util;
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
-import org.bitcoinj.crypto.HDUtils;
+import org.bitcoinj.crypto.HDPath;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public final class MoreHdKeyDerivation {
         requireNonNull(parent, "'parent' must not be null");
         requireNonNull(path, "'path' must not be null");
 
-        return deriveChildKey(parent, HDUtils.parsePath(path));
+        return deriveChildKey(parent, HDPath.parsePath(path));
     }
 
     public static DeterministicKey deriveChildKey(DeterministicKey parent, List<ChildNumber> childNumbers) {
