@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- disable p2p network activity by default for bitcoin testcontainer (`networkactive=0`)
+
 ### Changed
 - upgrade: update electrumx testcontainer from v1.15.0 to v1.16.0
 - upgrade: update bitcoin testcontainer from v0.21.1 to v22
