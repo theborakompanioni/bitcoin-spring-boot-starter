@@ -7,10 +7,6 @@ description = 'tor core package'
 dependencies {
     api "io.projectreactor:reactor-core"
 
-    api("com.github.bisq-network.netlayer:tor.native:${netlayerVersion}") {
-        exclude(module: 'slf4j-api')
-    }
-    api("com.github.bisq-network.netlayer:tor.external:${netlayerVersion}") {
-        exclude(module: 'slf4j-api')
-    }
+    api "com.github.bisq-network.netlayer:tor.native:${netlayerVersion}"
+    api "com.github.bisq-network.netlayer:tor.external:${netlayerVersion}"
 }

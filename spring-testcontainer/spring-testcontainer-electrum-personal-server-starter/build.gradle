@@ -17,5 +17,6 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation project(':spring-testcontainer:spring-testcontainer-test')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
+    integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 }

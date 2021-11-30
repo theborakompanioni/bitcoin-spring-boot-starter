@@ -1,13 +1,19 @@
 package org.tbk.spring.testcontainer.eps.config;
 
+import com.msgilligan.bitcoinj.rpc.BitcoinExtendedClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 
@@ -20,7 +26,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @ActiveProfiles("test")
 class ElectrumPersonalServerContainerApplicationTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumPersonalServerContainerTestApplication {
 
         public static void main(String[] args) {
@@ -28,6 +34,21 @@ class ElectrumPersonalServerContainerApplicationTest {
                     .sources(ElectrumPersonalServerContainerTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
+        }
+
+        @Configuration
+        @AutoConfigureBefore(ElectrumPersonalServerContainerAutoConfiguration.class)
+        public static class ElectrumPersonalServerContainerTestConfig {
+
+            /**
+             * We must have access to a wallet for "getnewaddress" command to work.
+             * Create a wallet if none is found (currently only when in regtest mode)!
+             * Maybe move to {@link org.tbk.bitcoin.regtest.config.BitcoinRegtestAutoConfiguration}?
+             */
+            @Bean
+            public InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
+                return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinRegtestClient);
+            }
         }
     }
 

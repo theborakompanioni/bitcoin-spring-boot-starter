@@ -27,10 +27,13 @@ org.tbk.spring.testcontainer.eps:
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
-  # workaround: since bitcoin-core v0.21 no default wallet is created - but EPS needs a default wallet at boot time
-  image: ruimarinho/bitcoin-core:0.20.1-alpine
   rpcuser: this-is-my-rpc-user-20201218
   rpcpassword: correct_horse_battery_staple_20201218
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  mining:
+    enabled: false
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest
