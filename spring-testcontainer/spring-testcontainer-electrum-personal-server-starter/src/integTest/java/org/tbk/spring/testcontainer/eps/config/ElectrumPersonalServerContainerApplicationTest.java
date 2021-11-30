@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
+import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.model.SimpleBalance;
 import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 
@@ -55,6 +57,9 @@ class ElectrumPersonalServerContainerApplicationTest {
     @Autowired(required = false)
     private ElectrumPersonalServerContainer<?> container;
 
+    @Autowired(required = false)
+    private ElectrumClient electrumClient;
+
     @Test
     void contextLoads() {
         assertThat(container, is(notNullValue()));
@@ -63,6 +68,14 @@ class ElectrumPersonalServerContainerApplicationTest {
         Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(container).block();
 
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
+    }
+
+    @Test
+    void clientIsConnected() {
+        assertThat(electrumClient.isDaemonConnected(), is(true));
+
+        // triggers a lookup on the server
+        assertThat(electrumClient.getAddressBalance(electrumClient.createNewAddress()), is(SimpleBalance.zero()));
     }
 }
 
