@@ -10,6 +10,7 @@ here is a list of mistaken perspectives on Bitcoin.
   - [Addresses](#addresses)
 - [Privacy](#privacy)
 - [Exchanges](#exchanges)
+- [Total supply](#total-supply)
 - [Misc](#misc)
 
 
@@ -241,7 +242,7 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **Ask price will always be equal or higher than bid price.**
 
 
-## Misc
+## Total supply
 1. **There are exactly 21 million bitcoin to ever exist.**
 
    The total number of bitcoins has an asymptote at 21 million, due to a side-effect of the data structure of the blockchain – 
@@ -267,6 +268,21 @@ here is a list of mistaken perspectives on Bitcoin.
    So, technically, there was a short period in time, where the total amount of Bitcoin was higher than 21 million. If the RPC call `bitcoin-cli gettxoutsetinfo` would already have
    existed in 2010, it would have returned a total amount of over 184 billion total BTC between 17:02 and 23:53 on 2010-08-15.
 
+1. **Okay, but a finite total supply has been enforced from the beginning and will always be enforced forever.**
+
+   Actually, Satoshi added indefinite inflation to the protocol. 
+   It was removed in 2014, as proposed by Pieter Wuille in [BIP42](https://github.com/bitcoin/bips/blob/master/bip-0042.mediawiki)
+
+   > Although it is widely believed that Satoshi was an inflation-hating goldbug he never said this, and in fact programmed Bitcoin's money supply to grow indefinitely, forever. He modeled the monetary supply as 4 gold mines being discovered per mibillenium (1024 years), with equal intervals between them, each one being depleted over the course of 140 years.
+   > 
+   > [...]
+   >
+   > To combat this, this document proposes a controversial change: making Bitcoin's monetary supply finite.
+   
+   Will this lead to a softfork taking place in the year 2214 if a miner happens to run old software?
+
+
+## Misc
 1. **All UTXOs are spendable.**
 
    Some outputs are provably unspendable (for example the [50 BTC output in the genesis block can never be spent](https://bitcoin.stackexchange.com/a/10019/109728)) as 
