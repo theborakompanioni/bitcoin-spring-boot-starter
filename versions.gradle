@@ -18,7 +18,7 @@ ext {
     jmoleculesBomVersion = '2021.1.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.4.1'
-    acinqBitcoinKmpVersion = '0.8.1'
+    acinqBitcoinKmpVersion = '0.8.2'
     acinqSecp256k1KmpVersion = '0.6.1'
     netlayerVersion = '0.7.2'
     sqliteVersion = '3.34.0'
