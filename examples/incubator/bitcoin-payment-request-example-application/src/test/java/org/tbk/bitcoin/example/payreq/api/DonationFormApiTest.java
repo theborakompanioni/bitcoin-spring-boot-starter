@@ -17,8 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -69,8 +68,8 @@ class DonationFormApiTest {
                 .andExpect(jsonPath("$.displayPrice", is(notNullValue())))
                 .andExpect(jsonPath("$.paymentUrl", is(notNullValue())))
                 .andExpect(jsonPath("$.comment", is(notNullValue())))
-                .andExpect(jsonPath("$.order.id", is(notNullValue())))
-                .andExpect(jsonPath("$.paymentRequest.id", is(notNullValue())));
+                .andExpect(jsonPath("$.order", is(notNullValue())))
+                .andExpect(jsonPath("$.paymentRequest", is(notNullValue())));
     }
 
     @Test

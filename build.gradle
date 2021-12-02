@@ -117,6 +117,7 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom SpringBootPlugin.BOM_COORDINATES
+            mavenBom "org.jmolecules:jmolecules-bom:${jmoleculesBomVersion}"
         }
     }
 

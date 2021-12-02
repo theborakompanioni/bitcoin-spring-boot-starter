@@ -28,11 +28,11 @@ dependencies {
     implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
     implementation 'com.github.gwenn:sqlite-dialect:0.1.2'
 
-    implementation "org.jmolecules:jmolecules-ddd:${jmoleculesVersion}"
-    implementation "org.jmolecules:jmolecules-events:${jmoleculesVersion}"
-    implementation "org.jmolecules.integrations:jmolecules-jpa:${jmoleculesIntegrationsVersion}"
-    implementation "org.jmolecules.integrations:jmolecules-spring:${jmoleculesIntegrationsVersion}"
-    implementation "org.jmolecules.integrations:jmolecules-jackson:${jmoleculesIntegrationsVersion}"
+    implementation "org.jmolecules:jmolecules-ddd"
+    implementation "org.jmolecules:jmolecules-events"
+    implementation "org.jmolecules.integrations:jmolecules-jpa"
+    implementation "org.jmolecules.integrations:jmolecules-spring"
+    implementation "org.jmolecules.integrations:jmolecules-jackson"
 
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

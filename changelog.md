@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - upgrade: update electrumx testcontainer from v1.15.0 to v1.16.0
 - upgrade: update bitcoin testcontainer from v0.21.1 to v22
-- upgrade: upgrade bitcoin-kmp from v0.8.1 to v0.8.2
-- upgrade: upgrade bitcoinj from v0.15.10 to v0.16.1
+- upgrade: update bitcoin-kmp from v0.8.1 to v0.8.2
+- upgrade: update bitcoinj from v0.15.10 to v0.16.1
+- upgrade: update jmolecules bom from v2021.1.0 to v2021.2.0
 
 ## [0.3.0] - 2021-11-10
 ### Breaking
