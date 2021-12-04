@@ -63,6 +63,8 @@ include 'spring-xchange:spring-xchange-starter'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-util'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
+include 'incubator:bitcoin-bip85'
+
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoinj'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
