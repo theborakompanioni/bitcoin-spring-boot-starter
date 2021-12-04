@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+description = 'deterministic entropy from bip32 keychains'
+
+dependencies {
+    api "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
+    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"
+}
