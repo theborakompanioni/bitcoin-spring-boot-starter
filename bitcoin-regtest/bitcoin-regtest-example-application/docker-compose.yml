@@ -21,7 +21,6 @@ services:
       -dnsseed=0
       -networkactive=0
       -uacomment=tbkdevbitcoindregtest
-      -debug=mempool
       -printpriority=1
       -logtimemicros=1
       -rpcuser=regtest-rpc-user
