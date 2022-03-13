@@ -19,7 +19,7 @@ ext {
     acinqBitcoinKmpVersion = '0.8.2'
     acinqSecp256k1KmpVersion = '0.6.1'
     netlayerVersion = '0.7.2'
-    sqliteVersion = '3.34.0'
+    sqliteVersion = '3.36.0.3'
     lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'
     mockserverVersion = '5.11.2'
