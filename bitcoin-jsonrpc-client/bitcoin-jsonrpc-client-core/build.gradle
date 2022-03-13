@@ -5,5 +5,5 @@ plugins {
 description = 'bitcoin jsonrpc client package'
 
 dependencies {
-    api "com.github.ConsensusJ.consensusj:cj-btc-jsonrpc:${consensusJVersion}"
+    api "com.msgilligan:cj-btc-jsonrpc:${consensusJVersion}"
 }

@@ -1,9 +1,9 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
 import com.google.common.collect.ImmutableMap;
-import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
-import com.msgilligan.bitcoinj.json.pojo.NetworkInfo;
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
+import org.consensusj.bitcoin.json.pojo.NetworkInfo;
+import org.consensusj.bitcoin.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.consensusj.jsonrpc.JsonRpcStatusException;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;

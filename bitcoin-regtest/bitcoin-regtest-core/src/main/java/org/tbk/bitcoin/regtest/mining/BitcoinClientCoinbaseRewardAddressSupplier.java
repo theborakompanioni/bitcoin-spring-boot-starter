@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.regtest.mining;
 
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
+import org.consensusj.bitcoin.rpc.BitcoinClient;
 import org.bitcoinj.core.Address;
 
 import java.io.IOException;

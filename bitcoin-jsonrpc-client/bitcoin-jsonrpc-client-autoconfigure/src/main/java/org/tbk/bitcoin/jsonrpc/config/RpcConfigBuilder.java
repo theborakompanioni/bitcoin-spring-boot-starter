@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
-import com.msgilligan.bitcoinj.rpc.RpcConfig;
+import org.consensusj.bitcoin.rpc.RpcConfig;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

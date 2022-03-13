@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.jsonrpc;
 
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
-import com.msgilligan.bitcoinj.rpc.RpcConfig;
+import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.rpc.RpcConfig;
 
 public interface BitcoinJsonRpcClientFactory {
 

@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.regtest.example;
 
 import com.google.common.base.Stopwatch;
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
+import org.consensusj.bitcoin.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
 import org.springframework.boot.CommandLineRunner;

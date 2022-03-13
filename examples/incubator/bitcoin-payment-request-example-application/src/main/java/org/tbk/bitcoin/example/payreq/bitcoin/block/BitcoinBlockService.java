@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.block;
 
-import com.msgilligan.bitcoinj.json.pojo.BlockInfo;
+import org.consensusj.bitcoin.json.pojo.BlockInfo;
 
 public interface BitcoinBlockService {
     void createBlock(BlockInfo blockInfo);

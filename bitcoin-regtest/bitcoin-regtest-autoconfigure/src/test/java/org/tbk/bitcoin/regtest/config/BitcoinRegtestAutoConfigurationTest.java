@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.regtest.config;
 
-import com.msgilligan.bitcoinj.rpc.BitcoinExtendedClient;
+import org.consensusj.bitcoin.rpc.BitcoinExtendedClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;

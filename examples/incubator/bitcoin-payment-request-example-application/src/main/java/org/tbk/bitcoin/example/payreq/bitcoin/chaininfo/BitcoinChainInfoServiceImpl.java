@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.chaininfo;
 
 import com.google.common.base.MoreObjects;
-import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

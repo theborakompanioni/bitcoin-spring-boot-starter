@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.jsonrpc.example;
 
 import com.google.common.base.Stopwatch;
-import com.msgilligan.bitcoinj.json.pojo.BlockChainInfo;
-import com.msgilligan.bitcoinj.json.pojo.NetworkInfo;
-import com.msgilligan.bitcoinj.json.pojo.UnspentOutput;
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
+import org.consensusj.bitcoin.json.pojo.NetworkInfo;
+import org.consensusj.bitcoin.json.pojo.UnspentOutput;
+import org.consensusj.bitcoin.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;

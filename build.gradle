@@ -109,8 +109,12 @@ subprojects {
     repositories {
         mavenCentral()
         maven {
-            // needed for netlayer, consensusj and moquette packages
+            // needed for netlayer and moquette packages
             url "https://jitpack.io"
+        }
+        maven {
+            // needed for consensusj
+            url "https://gitlab.com/api/v4/projects/8482916/packages/maven"
         }
     }
 

@@ -12,6 +12,13 @@ sourceSets {
         }
     }
 }
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module("com.google.protobuf:protobuf-javalite") using module("com.google.protobuf:protobuf-java:${protobufVersion}")
+        }
+    }
+}
 
 dependencies {
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"

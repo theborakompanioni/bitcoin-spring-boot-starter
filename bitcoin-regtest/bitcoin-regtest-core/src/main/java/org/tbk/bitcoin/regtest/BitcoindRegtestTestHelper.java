@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.regtest;
 
-import com.msgilligan.bitcoinj.rpc.BitcoinClient;
+import org.consensusj.bitcoin.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

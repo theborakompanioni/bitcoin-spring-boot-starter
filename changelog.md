@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update bitcoinj from v0.15.10 to v0.16.1
 - upgrade: update jmolecules bom from v2021.1.0 to v2021.2.0
 
+### Breaking
+- upgrade: update consensusj from v0.5.9 to 0.5.14
+
 ## [0.3.0] - 2021-11-10
 ### Breaking
 - lnurl-auth: enforce compressed (33-byte) secp256k1 public key encoded as hex for `key` param
