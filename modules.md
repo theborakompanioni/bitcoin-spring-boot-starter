@@ -153,7 +153,7 @@ It includes functionality to create and fund addresses, send transactions, mine 
 This subproject is home to all almost-ready modules.
 
 #### tbk-electrum-daemon-client
-A module containing a spring boot starter for an [Electrum daemon](https://github.com/moquette-io/moquette) JSON-RPC API client.
+A module containing a spring boot starter for an [Electrum daemon](https://github.com/spesmilo/electrum) JSON-RPC API client.
 It can be used in combination with [spring-testcontainer-electrum-daemon-starter](#spring-testcontainer)!
 
 #### spring-lnurl

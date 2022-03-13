@@ -62,10 +62,6 @@ allprojects {
     gradleLint {
         alwaysRun = false // do not automatically run - must be executed manually
         autoLintAfterFailure = false // only run lint after a successful build
-        rules = [
-                // just warn because it has some false positives e.g. when excluding slf4j-log4j12 for moquette
-                'unused-exclude-by-dep'
-        ]
         criticalRules = [
                 'dependency-parantheses',
                 'overridden-dependency-version',
@@ -109,7 +105,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven {
-            // needed for netlayer and moquette packages
+            // needed for netlayer packages
             url "https://jitpack.io"
         }
         maven {
