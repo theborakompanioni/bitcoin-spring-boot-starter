@@ -12,8 +12,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class NativeTorFactoryIntegrationTest {
-    // "www.torproject.org" as onion. taken from https://onion.torproject.org/ on 2020-01-13
-    private static final String onionUrl = "expyuzz" + "4wqqyqh" + "j" + "n.on" + "ion";
+    // "www.torproject.org" as onion. taken from https://onion.torproject.org/ on 2022-07-01
+    private static final String onionUrl = "xao2lxsmia2edq2n5zxg6uahx6xox2t7bfjw6b5vdzsxi7ezmqob6qid.on" + "ion";
 
     private NativeTorFactory sut;
 
