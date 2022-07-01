@@ -29,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 class TorHttpClientTest {
-    // "onion.torproject.org" as onion. taken from https://onion.torproject.org/ on 2020-01-13
-    private static final URI ONION_URL = URI.create("http://yz7lpwfhhzcdyc5y.on" + "ion/");
+    // "onion.torproject.org" as onion. taken from https://onion.torproject.org/ on 2022-07-01
+    private static final URI ONION_URL = URI.create("http://xao2lxsmia2edq2n5zxg6uahx6xox2t7bfjw6b5vdzsxi7ezmqob6qid.on" + "ion/");
 
     private static final URI CHECK_TOR_URL_HTTP = URI.create("http://check.torproject.org/");
     private static final URI CHECK_TOR_URL_HTTPS = URI.create("https://check.torproject.org/");
