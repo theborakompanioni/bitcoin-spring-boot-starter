@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update bitcoin-kmp from v0.8.1 to v0.8.2
 - upgrade: update bitcoinj from v0.15.10 to v0.16.1
 - upgrade: update jmolecules bom from v2021.1.0 to v2021.2.0
+- upgrade: update testcontainers from v1.16.2 to v1.17.3
+- upgrade: update bitcoin-kmp from v0.8.2 to v0.8.4
+- upgrade: update sqlite v3.34.0 to v3.36.0.3
 
 ### Breaking
 - upgrade: update consensusj from v0.5.9 to 0.5.14
