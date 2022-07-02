@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
-import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collections;
 import java.util.List;

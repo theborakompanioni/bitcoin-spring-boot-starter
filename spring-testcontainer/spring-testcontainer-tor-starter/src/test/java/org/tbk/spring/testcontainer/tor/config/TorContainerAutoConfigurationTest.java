@@ -5,7 +5,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.spring.testcontainer.tor.HiddenServiceHostnameResolver;
 import org.tbk.spring.testcontainer.tor.TorContainer;
-import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

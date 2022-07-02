@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
-import org.testcontainers.shaded.org.apache.commons.lang.math.RandomUtils;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomUtils;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -59,17 +59,17 @@ class BitcoinContainerWithZeroMqClientTest {
     @Test
     void testPubzmqrawblock() throws InterruptedException, ExecutionException, TimeoutException {
         Duration timeout = Duration.ofSeconds(10);
-        int amountOfBlockToGenerate = Math.max(1, RandomUtils.nextInt(10));
+        int amountOfBlocksToGenerate = RandomUtils.nextInt(1, 10);
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         Future<List<Block>> blockFuture = executorService.submit(() -> Flux.from(bitcoinBlockPublishService)
-                .bufferTimeout(amountOfBlockToGenerate, Duration.ofSeconds(1))
+                .bufferTimeout(amountOfBlocksToGenerate, Duration.ofSeconds(1))
                 .blockFirst(timeout));
 
         Future<List<Sha256Hash>> generateBlockFuture = executorService.submit(() -> {
             try {
                 Address newAddress = bitcoinClient.getNewAddress();
-                List<Sha256Hash> sha256Hashes = bitcoinClient.generateToAddress(amountOfBlockToGenerate, newAddress);
+                List<Sha256Hash> sha256Hashes = bitcoinClient.generateToAddress(amountOfBlocksToGenerate, newAddress);
                 log.info("mined blocks {}", sha256Hashes);
                 return sha256Hashes;
             } catch (IOException e) {

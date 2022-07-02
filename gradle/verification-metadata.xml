@@ -49,6 +49,7 @@
          <trusted-key id="1f6774b9d58c5ea6bf84d534704514f6556102e5" group="io.swagger.core.v3"/>
          <trusted-key id="22b79f456b06f4e75b8b579db57bd58ef6d0a713" group="com.google.protobuf"/>
          <trusted-key id="250ec75d1d52e967ce132c548b0378a57cd8e243" group="org.codehaus.plexus" name="plexus-interpolation" version="1.25"/>
+         <trusted-key id="2655176f748fd83725b4805ff2a01147d830c125" group="org.testcontainers" name="testcontainers" version="1.17.3"/>
          <trusted-key id="2bcbdd0f23ea1cafcc11d4860374cf2e8dd1bdfd">
             <trusting group="org.sonatype.oss"/>
             <trusting group="net.java"/>
