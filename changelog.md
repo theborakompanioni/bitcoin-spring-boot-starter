@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update testcontainers from v1.16.2 to v1.17.3
 - upgrade: update bitcoin-kmp from v0.8.2 to v0.8.4
 - upgrade: update sqlite v3.34.0 to v3.36.0.3
+- upgrade: update protobuf-java v3.19.1 to v3.21.2
+- upgrade: update protoc-gen-grpc-java v1.41.1 to v1.47.0
 
 ### Breaking
 - upgrade: update consensusj from v0.5.9 to 0.5.14

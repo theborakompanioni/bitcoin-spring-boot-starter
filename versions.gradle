@@ -10,8 +10,8 @@ ext {
     testcontainersVersion = '1.17.3'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
-    grpcVersion = '1.41.1'
-    protobufVersion = '3.19.1'
+    grpcVersion = '1.47.0'
+    protobufVersion = '3.21.2'
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2021.2.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
