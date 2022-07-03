@@ -165,12 +165,12 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - JSR354 (GitHub): https://github.com/JavaMoney/jsr354-api
 - Spring Boot (GitHub): https://github.com/spring-projects/spring-boot
 ---
-- Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin
-- lnd (GitHub): https://github.com/LightningNetwork/lnd
+- Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin ([Docker](https://hub.docker.com/r/ruimarinho/bitcoin-core))
+- lnd (GitHub): https://github.com/LightningNetwork/lnd ([Docker](https://hub.docker.com/r/lnzap/lnd))
 - lnurl (GitHub): https://github.com/fiatjaf/lnurl-rfc
-- ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx
-- Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server
-- Electrum Client (GitHub): https://github.com/spesmilo/electrum
+- ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx ([Docker](https://hub.docker.com/r/lukechilds/electrumx))
+- Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server ([Docker](https://hub.docker.com/r/btcpayserver/eps))
+- Electrum Client (GitHub): https://github.com/spesmilo/electrum ([Docker](https://hub.docker.com/r/osminogin/electrum-daemon))
 - XChange (GitHub): https://github.com/knowm/XChange
 - bitcoin-kmp (GitHub): https://github.com/ACINQ/bitcoin-kmp
 - bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
