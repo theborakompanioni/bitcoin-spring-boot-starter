@@ -75,7 +75,10 @@ gradle-app.setting
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
+## advice is to track keyring.gpg or keyring.keys, but not both
+gradle/verification-keyring.gpg
 gradle/verification-keyring-dryrun.gpg
+gradle/verification-keyring-dryrun.keys
 gradle/verification-metadata.dryrun.xml
 
 ######################
