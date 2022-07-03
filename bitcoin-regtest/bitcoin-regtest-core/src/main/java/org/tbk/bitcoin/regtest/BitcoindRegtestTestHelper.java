@@ -1,16 +1,18 @@
 package org.tbk.bitcoin.regtest;
 
+import com.google.common.collect.ImmutableMap;
 import org.consensusj.bitcoin.rpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public final class BitcoindRegtestTestHelper {
 
-    // TODO: consider moving class to test jar and wrap in spring test execution listner or junit extension?
+    // TODO: consider moving class to test jar and wrap in spring test execution listener or junit extension?
     public static synchronized void createDefaultWalletIfNecessary(BitcoinClient bitcoinJsonRpcClient) throws IOException {
         int bitcoinCoreVersion = bitcoinJsonRpcClient.getNetworkInfo().getVersion();
 
@@ -23,7 +25,22 @@ public final class BitcoindRegtestTestHelper {
             String defaultWalletName = ""; // default wallet is named ""
             List<String> walletList = bitcoinJsonRpcClient.listWallets();
             if (!walletList.contains(defaultWalletName)) {
-                Map<String, String> result = bitcoinJsonRpcClient.createWallet(defaultWalletName, false, false);
+                // args for call to "createwallet". See https://developer.bitcoin.org/reference/rpc/createwallet.html
+                ImmutableMap<String, Optional<Object>> argsMap = ImmutableMap.<String, Optional<Object>>builder()
+                        .put("wallet_name", Optional.of(defaultWalletName))
+                        .put("disable_private_keys", Optional.of(false))
+                        .put("blank", Optional.of(false))
+                        .put("passphrase", Optional.empty())
+                        .put("avoid_reuse", Optional.of(false))
+                        // creating descriptors wallets needs bitcoind compiled with sqlite3 support,
+                        // which is unknown here and hence disabled
+                        // (e.g. docker image for tests does not support it)
+                        .put("descriptors", Optional.of(false))
+                        .put("load_on_startup", Optional.empty())
+                        .build();
+
+                Object[] args = argsMap.values().stream().map(it -> it.orElse(null)).toArray();
+                Map<String, String> result = bitcoinJsonRpcClient.send("createwallet", args);
                 log.warn("Created default wallet: {}", result);
             }
         }

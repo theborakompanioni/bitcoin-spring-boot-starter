@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind.enabled", havingValue = "true")
 public class BitcoindContainerAutoConfiguration {
     // currently only the image from "ruimarinho" is supported
-    private static final String DEFAULT_DOCKER_IMAGE_NAME = "ruimarinho/bitcoin-core:22-alpine";
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "ruimarinho/bitcoin-core:23-alpine";
     private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
     private final BitcoindContainerProperties properties;
