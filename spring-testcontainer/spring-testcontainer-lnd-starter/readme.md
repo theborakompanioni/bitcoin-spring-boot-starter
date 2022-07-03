@@ -11,9 +11,8 @@
   - https://github.com/lightningnetwork/lnd/blob/master/docs/DOCKER.md
 - btcpayserver docker fragment: https://github.com/btcpayserver/btcpayserver-docker/blob/master/docker-compose-generator/docker-fragments/bitcoin-lnd.yml
 
-- lnzap
-  - https://github.com/LN-Zap/docker-lnd
-  - https://hub.docker.com/r/lnzap/lnd
+- lnzap/lnd (GitHub): https://github.com/LN-Zap/docker-lnd
+- lnzap/lnd (Docker) Docker: https://hub.docker.com/r/lnzap/lnd
   
 
 https://medium.com/lightwork/lightning-network-development-for-modern-applications-e4dd012dac82
