@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 public class ElectrumPersonalServerContainerAutoConfiguration {
 
     // currently only the image from "btcpayserver" is supported
-    private static final String DOCKER_IMAGE_NAME = "btcpayserver/eps:0.2.1.1";
+    private static final String DOCKER_IMAGE_NAME = "btcpayserver/eps:0.2.2";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
