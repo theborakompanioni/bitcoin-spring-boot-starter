@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - disable p2p network activity by default for bitcoin testcontainer (`networkactive=0`)
 
 ### Changed
+- upgrade: update spring-boot from v2.5.6 to v2.7.1
 - upgrade: update electrumx testcontainer from v1.15.0 to v1.16.0
 - upgrade: update bitcoin testcontainer from v0.21.1 to v22
 - upgrade: update bitcoin-kmp from v0.8.1 to v0.8.2
