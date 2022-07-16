@@ -301,7 +301,16 @@ subprojects {
 
     infoBroker {
         // exclude properties that prevent reproducible builds
-        excludedManifestProperties = ['Created-By', 'Build-Date', 'Built-OS', 'Built-By', 'Build-Java-Version']
+        excludedManifestProperties = [
+                'Created-By',
+                'Built-By',
+                'Build-Date',
+                'Build-Date-UTC',
+                'Build-Host',
+                'Built-OS',
+                'Build-Timezone',
+                'Build-Url',
+        ]
     }
 }
 
