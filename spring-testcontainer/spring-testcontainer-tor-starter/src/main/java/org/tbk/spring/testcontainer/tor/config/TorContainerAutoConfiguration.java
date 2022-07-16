@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 public class TorContainerAutoConfiguration {
 
     // currently only the image from "btcpayserver" is supported
-    private static final String DOCKER_IMAGE_NAME = "btcpayserver/tor:0.4.2.7";
+    private static final String DOCKER_IMAGE_NAME = "btcpayserver/tor:0.4.7.8";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
