@@ -26,8 +26,7 @@ plugins {
     id 'idea'
     id 'nebula.release' version '16.0.0'
     id 'nebula.lint' version '17.6.1'
-    id 'nebula.project' version '7.0.9'
-    id 'nebula.info' version '11.3.3'
+    id 'nebula.project' version '9.6.3'
     id 'com.github.spotbugs' version '5.0.9' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
