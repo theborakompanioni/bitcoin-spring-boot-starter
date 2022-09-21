@@ -3,7 +3,7 @@ package org.tbk.bitcoin.regtest.config;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

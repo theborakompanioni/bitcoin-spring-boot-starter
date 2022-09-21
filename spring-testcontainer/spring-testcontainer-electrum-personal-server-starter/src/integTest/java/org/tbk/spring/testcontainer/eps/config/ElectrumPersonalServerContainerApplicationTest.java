@@ -1,6 +1,6 @@
 package org.tbk.spring.testcontainer.eps.config;
 
-import org.consensusj.bitcoin.rpc.BitcoinExtendedClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.InitializingBean;

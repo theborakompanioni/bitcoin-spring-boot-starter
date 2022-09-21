@@ -1,7 +1,7 @@
 package org.tbk.electrum.gateway.example;
 
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
 import org.springframework.boot.CommandLineRunner;

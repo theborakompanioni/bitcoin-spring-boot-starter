@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.tool.fee.jsonrpc;
 
 import com.google.common.collect.ImmutableList;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 
 import java.io.IOException;
 import java.util.Collections;

@@ -1,6 +1,6 @@
 package org.tbk.spring.testcontainer.bitcoind.example;
 
-import org.consensusj.bitcoin.rpc.BitcoinExtendedClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;

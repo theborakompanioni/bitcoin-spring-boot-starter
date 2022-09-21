@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
-import org.consensusj.bitcoin.rpc.BitcoinClient;
-import org.consensusj.bitcoin.rpc.RpcConfig;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;

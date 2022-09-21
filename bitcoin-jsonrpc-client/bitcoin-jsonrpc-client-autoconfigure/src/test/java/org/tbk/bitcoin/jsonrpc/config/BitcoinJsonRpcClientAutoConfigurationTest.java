@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;

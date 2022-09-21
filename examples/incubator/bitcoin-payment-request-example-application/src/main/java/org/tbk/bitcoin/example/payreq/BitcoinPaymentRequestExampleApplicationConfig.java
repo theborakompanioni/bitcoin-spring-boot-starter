@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.example.payreq;
 
 import com.google.common.io.CharStreams;
-import org.consensusj.bitcoin.rpc.BitcoinExtendedClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;

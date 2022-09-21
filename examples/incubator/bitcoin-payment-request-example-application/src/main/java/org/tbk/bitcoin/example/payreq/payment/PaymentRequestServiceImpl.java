@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
