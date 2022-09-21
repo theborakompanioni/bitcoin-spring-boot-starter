@@ -1,19 +1,27 @@
 package org.tbk.bitcoin.regtest;
 
 import com.google.common.collect.ImmutableMap;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public final class BitcoindRegtestTestHelper {
+    private static final Duration WAIT_FOR_SERVER_TIMEOUT = Duration.ofSeconds(30);
 
     // TODO: consider moving class to test jar and wrap in spring test execution listener or junit extension?
     public static synchronized void createDefaultWalletIfNecessary(BitcoinClient bitcoinJsonRpcClient) throws IOException {
+        boolean ready = bitcoinJsonRpcClient.waitForServer((int) WAIT_FOR_SERVER_TIMEOUT.toSeconds());
+        if (!ready) {
+            throw new IllegalStateException("Server is not ready");
+        }
+
         int bitcoinCoreVersion = bitcoinJsonRpcClient.getNetworkInfo().getVersion();
 
         // bitcoin core 0.21+ will not create default wallet (named "") if it doesn't exist - lets create it

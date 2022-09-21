@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.jsonrpc;
 
-import org.consensusj.bitcoin.rpc.BitcoinClient;
-import org.consensusj.bitcoin.rpc.RpcConfig;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 
 public final class BitcoinJsonRpcClientFactoryImpl implements BitcoinJsonRpcClientFactory {
 

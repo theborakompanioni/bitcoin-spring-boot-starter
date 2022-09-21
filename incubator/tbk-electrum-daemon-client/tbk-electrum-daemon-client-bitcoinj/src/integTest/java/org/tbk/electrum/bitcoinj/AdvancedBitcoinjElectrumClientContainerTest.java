@@ -1,7 +1,7 @@
 package org.tbk.electrum.bitcoinj;
 
 import com.google.common.base.Stopwatch;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.RegTestParams;

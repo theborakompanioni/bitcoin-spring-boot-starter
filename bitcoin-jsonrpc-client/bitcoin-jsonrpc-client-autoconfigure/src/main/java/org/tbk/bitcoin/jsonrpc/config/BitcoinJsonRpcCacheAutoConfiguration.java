@@ -5,7 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.consensusj.bitcoin.json.pojo.BlockInfo;
 import org.consensusj.bitcoin.json.pojo.RawTransactionInfo;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.Builder;
 import lombok.NonNull;
 import org.bitcoinj.core.Block;

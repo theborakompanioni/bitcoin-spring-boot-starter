@@ -2,7 +2,7 @@ package org.tbk.bitcoin.regtest;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
-import org.consensusj.bitcoin.rpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Sha256Hash;
 import org.junit.jupiter.api.Test;
