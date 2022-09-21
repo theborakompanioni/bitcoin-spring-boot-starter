@@ -1,7 +1,7 @@
 ext {
     jsr354Version = '1.1'
     monetaVersion = '1.4.2'
-    xChangeVersion = '5.0.11'
+    xChangeVersion = '5.0.13'
     bitcoinjVersion = '0.16.1'
     lightningjVersion = '0.12.1-Beta'
     consensusJVersion = '0.5.14'
@@ -15,17 +15,17 @@ ext {
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2021.2.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
-    zxingVersion = '3.4.1'
-    acinqBitcoinKmpVersion = '0.8.4'
+    zxingVersion = '3.5.0'
+    acinqBitcoinKmpVersion = '0.8.5'
     acinqSecp256k1KmpVersion = '0.6.4'
     netlayerVersion = '0.7.2'
-    sqliteVersion = '3.36.0.3'
+    sqliteVersion = '3.39.3.0'
     lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'
     mockserverVersion = '5.11.2'
     checkstyleVersion = '8.44'
     findsecbugsPluginVersion = '1.11.0'
-    springBootGradlePluginVersion = '2.7.1'
+    springBootGradlePluginVersion = '2.7.3'
     protobufGradleVersion = '0.8.17'
     // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
     // drawback: has issues on project import in intellij; '1.10.14' would work with intellij but does not work on command line : /
