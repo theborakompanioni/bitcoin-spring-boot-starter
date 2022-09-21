@@ -65,9 +65,10 @@ allprojects {
                 'dependency-parantheses',
                 'overridden-dependency-version',
                 'unused-exclude-by-conf',
-                'duplicate-dependency-class',
                 'dependency-tuple-expression'
         ]
+        // duplicate dependency false positives from "compileOnly 'javax.servlet:javax.servlet-api'"
+        excludedRules = ['duplicate-dependency-class']
     }
 }
 

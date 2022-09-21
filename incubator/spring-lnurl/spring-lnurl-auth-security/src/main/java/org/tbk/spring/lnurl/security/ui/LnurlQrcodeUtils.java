@@ -13,7 +13,6 @@ import org.tbk.lnurl.Lnurl;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.Map;
 

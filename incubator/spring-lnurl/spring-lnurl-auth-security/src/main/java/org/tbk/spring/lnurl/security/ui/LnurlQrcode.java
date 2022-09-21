@@ -3,12 +3,8 @@ package org.tbk.spring.lnurl.security.ui;
 import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.lnurl.Lnurl;
-import org.tbk.lnurl.auth.LnurlAuth;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Base64;
