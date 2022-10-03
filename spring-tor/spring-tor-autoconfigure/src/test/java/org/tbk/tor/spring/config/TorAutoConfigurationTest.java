@@ -111,6 +111,7 @@ public class TorAutoConfigurationTest {
     @Test
     public void torBeansCreatedInWebContext() {
         this.webContextRunner.withUserConfiguration(autoConfigClasses)
+                .withPropertyValues("server.port=13337")
                 .withBean(ServerProperties.class, () -> {
                     // fake a running webserver for the hidden service to bind to
                     ServerProperties serverProperties = new ServerProperties();
@@ -137,6 +138,13 @@ public class TorAutoConfigurationTest {
     public void torBeansCreatedInWebContextWithAutoPublishDisabled() {
         this.webContextRunner.withUserConfiguration(autoConfigClasses)
                 .withPropertyValues("org.tbk.tor.auto-publish-enabled=false")
+                .withPropertyValues("server.port=13337")
+                .withBean(ServerProperties.class, () -> {
+                    // fake a running webserver
+                    ServerProperties serverProperties = new ServerProperties();
+                    serverProperties.setPort(13337);
+                    return serverProperties;
+                })
                 .run(context -> {
                     autoPublishEnabledAndWebAppBeanNames.forEach(name -> {
                         boolean beanWithNameIsAvailable = context.containsBean(name);

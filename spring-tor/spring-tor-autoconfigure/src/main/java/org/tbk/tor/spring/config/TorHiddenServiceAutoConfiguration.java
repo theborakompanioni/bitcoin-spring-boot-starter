@@ -58,7 +58,7 @@ public class TorHiddenServiceAutoConfiguration {
     static class OnAutoPublishEnabledAndServerPortSpecified extends AllNestedConditions {
 
         OnAutoPublishEnabledAndServerPortSpecified() {
-            super(ConfigurationPhase.PARSE_CONFIGURATION);
+            super(ConfigurationPhase.REGISTER_BEAN);
         }
 
         @ConditionalOnProperty(name = "org.tbk.tor.auto-publish-enabled", havingValue = "true", matchIfMissing = true)
@@ -121,7 +121,7 @@ public class TorHiddenServiceAutoConfiguration {
         static class OnAutoPublishEnabledAndManagementServerPortSpecified extends AllNestedConditions {
 
             OnAutoPublishEnabledAndManagementServerPortSpecified() {
-                super(ConfigurationPhase.PARSE_CONFIGURATION);
+                super(ConfigurationPhase.REGISTER_BEAN);
             }
 
             @ConditionalOnProperty(name = "org.tbk.tor.auto-publish-enabled", havingValue = "true", matchIfMissing = true)
