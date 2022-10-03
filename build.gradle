@@ -168,6 +168,12 @@ subprojects {
             // creates a launch script for the executable jar
             launchScript()
             archiveClassifier.set('boot')
+
+            exclude('*-local.yml')
+            exclude('**/mainnet/**')
+            exclude('**/*.proto')
+
+            includeEmptyDirs false
         }
 
         bootRun {
@@ -203,9 +209,9 @@ subprojects {
         dependsOn test // tests are required to run before generating the report
 
         reports {
-            xml.enabled = true
-            html.enabled = true
-            csv.enabled = false
+            xml.required = true
+            html.required = true
+            csv.required = false
         }
     }
 
@@ -288,8 +294,8 @@ subprojects {
     tasks.withType(Checkstyle) {
         onlyIf { gradle.taskGraph.hasTask('build') }
         reports {
-            xml.enabled = false
-            html.enabled = true
+            xml.required = false
+            html.required = true
         }
     }
 
