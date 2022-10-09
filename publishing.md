@@ -2,12 +2,12 @@
 # Publishing
 
 Signing artifacts
-```
- ./gradlew clean sign -Psigning.password=secret
+```sh
+./gradlew clean sign -Psigning.password=secret
 ```
 
 In your local `~/.gradle/gradle.properties` you need
-```
+```properties
 signing.keyId=ABCDEF01
 #signing.password=secret - must be provided via command line
 signing.secretKeyRingFile=/home/user/.gnupg/secring.gpg
@@ -16,22 +16,28 @@ signing.secretKeyRingFile=/home/user/.gnupg/secring.gpg
 
 ### Local Maven Repository
 e.g. to publish to your local maven repository:
-```
+```sh
 ./gradlew publishNebulaPublicationToMavenLocal -Prelease.stage=SNAPSHOT -Prelease.scope=patch
 ```
-```
+```sh
 ./gradlew publishNebulaPublicationToMavenLocal -Prelease.useLastTag=true
 ```
 
 
 ### Maven Central
-```
-  ./gradlew clean -Prelease.useLastTag=true assemble sign -Psigning.password=secret publishAllPublicationsToMavenRepository -PossrhPassword=secret
+```sh
+./gradlew -Dorg.gradle.parallel=false -Prelease.useLastTag=true \
+    clean assemble \
+    sign -Psigning.password=secret \
+    publishAllPublicationsToMavenRepository -PossrhPassword=secret
 ```
 
 e.g. publishing an individual module to Maven Central (notice params `signing.password` and `ossrhPassword`):
-```
-  ./gradlew -p spring-tor/spring-tor-core clean -Prelease.useLastTag=true assemble sign -Psigning.password=secret publishAllPublicationsToMavenRepository -PossrhPassword=secret
+```sh
+./gradlew -p spring-tor/spring-tor-core -Dorg.gradle.parallel=false -Prelease.useLastTag=true \
+    clean assemble \
+    sign -Psigning.password=secret \
+    publishAllPublicationsToMavenRepository -PossrhPassword=secret
 ```
 
 In your local `~/.gradle/gradle.properties` you need
