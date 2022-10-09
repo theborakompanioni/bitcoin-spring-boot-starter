@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.berndpruenster.netlayer.tor.NativeTor;
 import org.berndpruenster.netlayer.tor.TorCtlException;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -104,8 +105,11 @@ class TorHttpClientTest {
                 }
             }
         });
-
-        assertThat(expectedException.getMessage(), containsString("Name or service not known"));
+        
+        assertThat(expectedException.getMessage(), Matchers.anyOf(
+                containsString("Temporary failure in name resolution"),
+                containsString("Name or service not known")
+        ));
     }
 
     @Test
