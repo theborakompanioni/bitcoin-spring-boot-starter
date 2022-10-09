@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2022-10-09
 ### Changed
 - upgrade: update netlayer from v0.7.2 to v0.7.5
 
@@ -29,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update protoc-gen-grpc-java v1.41.1 to v1.47.0
 - upgrade: update xchange from v5.0.11 to v5.0.13
 - upgrade: update zxing v3.4.1 to v3.5.0
-
 
 ### Breaking
 - upgrade: update spring-boot from v2.5.6 to v2.7.3
@@ -76,7 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.4.1...HEAD
+[0.4.1]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.1.0...0.2.0
