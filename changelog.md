@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- module: externalize 'spring-tor'
+
 ## [0.4.1] - 2022-10-09
 ### Changed
 - upgrade: update netlayer from v0.7.2 to v0.7.5

@@ -88,13 +88,6 @@ include 'incubator:spring-lnurl:spring-lnurl-auth-autoconfigure'
 include 'incubator:spring-lnurl:spring-lnurl-auth-starter'
 include 'incubator:spring-lnurl:spring-lnurl-auth-example-application'
 
-include 'spring-tor:spring-tor-core'
-include 'spring-tor:spring-tor-hidden-service'
-include 'spring-tor:spring-tor-http'
-include 'spring-tor:spring-tor-autoconfigure'
-include 'spring-tor:spring-tor-starter'
-include 'spring-tor:spring-tor-example-application'
-
 include 'examples:bitcoin-autodca-example-application'
 include 'examples:bitcoin-exchange-rate-example-application'
 include 'examples:lnd-playground-example-application'

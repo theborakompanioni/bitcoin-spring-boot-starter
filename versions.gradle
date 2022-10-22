@@ -25,6 +25,7 @@ ext {
     mockserverVersion = '5.11.2'
     checkstyleVersion = '8.44'
     findsecbugsPluginVersion = '1.11.0'
+    torSpringBootStarterVersion = '0.5.0'
     springBootGradlePluginVersion = '2.7.3'
     protobufGradleVersion = '0.8.17'
     // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)

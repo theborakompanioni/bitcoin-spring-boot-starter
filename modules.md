@@ -85,16 +85,7 @@ org.tbk.xchange:
 
 
 ### spring-tor
-A module containing a spring boot starter for an embedded [Tor daemon](https://www.torproject.org/).
-The starter will automatically expose your application as hidden service!
-
-```yaml
-org.tbk.tor:
-  enabled: true  # whether auto-config should run - default is `true`
-  auto-publish-enabled: true # auto publish the web port as hidden service - default is `true`
-  working-directory: 'my-tor-directory' # the working directory for tor - default is `tor-working-dir`
-  startup-timeout: 30s # max startup duration for tor to successfully start - default is `60s`
-```
+Moved to a distinct repo: https://github.com/theborakompanioni/tor-spring-boot-starter
 
 
 ### bitcoin-jsr354
@@ -158,4 +149,3 @@ It can be used in combination with [spring-testcontainer-electrum-daemon-starter
 
 #### spring-lnurl
 The [spring-lnurl module](incubator/spring-lnurl) contains classes and spring security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).
-

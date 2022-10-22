@@ -1,6 +1,6 @@
 [![Build](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/build.yml/badge.svg)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/actions/workflows/build.yml)
 [![GitHub Release](https://img.shields.io/github/release/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=3600)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/releases/latest)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.theborakompanioni/spring-tor-core.svg?maxAge=3600)](https://search.maven.org/#search|g%3A%22io.github.theborakompanioni%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.theborakompanioni/bitcoin-jsonrpc-client-core.svg?maxAge=3600)](https://search.maven.org/#search|g%3A%22io.github.theborakompanioni%22)
 [![License](https://img.shields.io/github/license/theborakompanioni/bitcoin-spring-boot-starter.svg?maxAge=2592000)](https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE)
 
 
@@ -42,19 +42,19 @@ This project is under active development. Pull requests and issues are welcome.
 
 ### Gradle
 ```groovy
-implementation "io.github.theborakompanioni:spring-tor-starter:${bitcoinSpringBootStarterVersion}"
+implementation "io.github.theborakompanioni:bitcoin-jsonrpc-client-starter:${bitcoinSpringBootStarterVersion}"
 ```
 
 ### Maven
 ```xml
 <dependency>
     <groupId>io.github.theborakompanioni</groupId>
-    <artifactId>spring-tor-starter</artifactId>
+    <artifactId>bitcoin-jsonrpc-client-starter</artifactId>
     <version>${bitcoinSpringBootStarter.version}</version>
 </dependency>
 ```
 
-The example above imports module `spring-tor-starter` - you can import any module by its name.
+The example above imports module `bitcoin-jsonrpc-client-starter` - you can import any module by its name.
 
 
 ## Modules

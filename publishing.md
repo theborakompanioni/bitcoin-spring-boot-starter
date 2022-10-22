@@ -34,7 +34,8 @@ e.g. to publish to your local maven repository:
 
 e.g. publishing an individual module to Maven Central (notice params `signing.password` and `ossrhPassword`):
 ```sh
-./gradlew -p spring-tor/spring-tor-core -Dorg.gradle.parallel=false -Prelease.useLastTag=true \
+./gradlew -p bitcoin-jsonrpc-client/bitcoin-jsonrpc-client-core \
+    -Dorg.gradle.parallel=false -Prelease.useLastTag=true \
     clean assemble \
     sign -Psigning.password=secret \
     publishAllPublicationsToMavenRepository -PossrhPassword=secret

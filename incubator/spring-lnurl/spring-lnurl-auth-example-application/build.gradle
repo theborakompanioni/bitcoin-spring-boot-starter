@@ -13,7 +13,7 @@ dependencies {
     implementation project(':incubator:lnurl-java:lnurl-simple')
 
     implementation project(':incubator:spring-lnurl:spring-lnurl-auth-starter')
-    implementation project(':spring-tor:spring-tor-starter')
+    implementation "io.github.theborakompanioni:spring-tor-starter:${torSpringBootStarterVersion}"
 
     implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
     implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"

@@ -5,7 +5,7 @@ plugins {
 description = 'spring testcontainer tor starter'
 
 dependencies {
-    api project(':spring-tor:spring-tor-http')
+    api "io.github.theborakompanioni:spring-tor-http:${torSpringBootStarterVersion}"
     api "org.testcontainers:testcontainers:${testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 

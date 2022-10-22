@@ -1,6 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.tor.spring.config.TorAutoConfiguration,\
-org.tbk.tor.spring.config.TorWebFilterAutoConfiguration,\
-org.tbk.tor.spring.config.TorHiddenServiceAutoConfiguration,\
-org.tbk.tor.spring.config.TorHttpClientAutoConfiguration,\
-org.tbk.tor.spring.config.TorHealthContributorAutoConfiguration
