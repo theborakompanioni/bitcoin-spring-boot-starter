@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- upgrade: update spring-boot from v2.7.3 to v2.7.5
+
 ### Removed
 - module: externalize 'spring-tor'
 
