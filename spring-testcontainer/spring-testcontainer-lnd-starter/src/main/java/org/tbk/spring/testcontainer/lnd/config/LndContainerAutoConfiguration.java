@@ -15,6 +15,8 @@ import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfigu
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -34,8 +36,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
 
-    // currently only the image from "lnzap" is supported
-    private static final String DOCKER_IMAGE_NAME = "lnzap/lnd:0.12.1-beta";
+    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.15.3-beta";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -66,11 +67,15 @@ public class LndContainerAutoConfiguration {
                 .build();
 
         // only wait for rpc ports - zeromq ports wont work (we can live with that for now)
-        WaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
+        WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(hardcodedStandardPorts)
                 .build()
                 // lnd sometimes takes more than 120 seconds to start..
                 .withStartupTimeout(Duration.ofSeconds(180));
+
+        WaitStrategy waitStrategy = new WaitAllStrategy()
+                .withStrategy(portWaitStrategy)
+                .withStrategy(Wait.forLogMessage(".*Opened wallet.*", 1));
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                 Integer.toHexString(System.identityHashCode(this)))

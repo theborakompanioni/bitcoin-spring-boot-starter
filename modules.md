@@ -46,8 +46,8 @@ org.tbk.lightning.lnd.grpc:
   enabled: true
   rpchost: localhost
   rpcport: 10009
-  macaroon-file-path: '/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
-  cert-file-path: '/lnd/.lnd/tls.cert'
+  macaroon-file-path: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  cert-file-path: '/root/.lnd/tls.cert'
 ```
 
 
