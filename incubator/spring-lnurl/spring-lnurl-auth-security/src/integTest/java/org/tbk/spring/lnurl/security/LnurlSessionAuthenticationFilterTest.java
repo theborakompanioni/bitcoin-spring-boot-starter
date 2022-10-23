@@ -41,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @RecordApplicationEvents
 class LnurlSessionAuthenticationFilterTest {
+    private static final SecureRandom random = new SecureRandom();
 
     @Autowired
     private K1Manager k1Manager;
@@ -58,7 +59,7 @@ class LnurlSessionAuthenticationFilterTest {
 
     @BeforeAll
     static void setUpAll() {
-        byte[] seed = new SecureRandom().generateSeed(256);
+        byte[] seed = random.generateSeed(256);
         testWallet = SimpleLnurlWallet.fromSeed(seed);
     }
 

@@ -13,6 +13,8 @@ import static org.hamcrest.Matchers.*;
 
 @Slf4j
 class MempoolspaceFeeApiClientImplTest {
+    private static final SecureRandom random = new SecureRandom();
+
     private static final List<String> baseUrls = ImmutableList.<String>builder()
             .add("https://mempool.space")
             // following alternative endpoints can be used in case mempool.space is down:
@@ -27,7 +29,7 @@ class MempoolspaceFeeApiClientImplTest {
 
     @BeforeEach
     void setUp() {
-        String url = baseUrls.get(((int) Math.ceil(new SecureRandom().nextDouble() * baseUrls.size())) - 1);
+        String url = baseUrls.get(((int) Math.ceil(random.nextDouble() * baseUrls.size())) - 1);
 
         log.debug("Using service {} for current test", url);
 

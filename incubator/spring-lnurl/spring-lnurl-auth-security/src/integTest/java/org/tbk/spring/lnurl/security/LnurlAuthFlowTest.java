@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(print = MockMvcPrint.LOG_DEBUG, printOnlyOnFailure = false)
 @ActiveProfiles("test")
 class LnurlAuthFlowTest {
+    private static final SecureRandom random = new SecureRandom();
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,7 +46,7 @@ class LnurlAuthFlowTest {
 
     @BeforeAll
     static void setUpAll() {
-        byte[] seed = new SecureRandom().generateSeed(256);
+        byte[] seed = random.generateSeed(256);
         testWallet = SimpleLnurlWallet.fromSeed(seed);
     }
 
