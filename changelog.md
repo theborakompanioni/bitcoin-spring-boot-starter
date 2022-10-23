@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - upgrade: update spring-boot from v2.7.3 to v2.7.5
+- upgrade: update testcontainers from v1.17.3 to v1.17.5
 
 ### Removed
 - module: externalize 'spring-tor'
