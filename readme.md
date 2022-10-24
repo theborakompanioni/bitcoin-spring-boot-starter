@@ -166,7 +166,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - Spring Boot (GitHub): https://github.com/spring-projects/spring-boot
 ---
 - Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin ([Docker](https://hub.docker.com/r/ruimarinho/bitcoin-core))
-- lnd (GitHub): https://github.com/LightningNetwork/lnd ([Docker](https://hub.docker.com/r/lnzap/lnd))
+- lnd (GitHub): https://github.com/LightningNetwork/lnd ([Docker](https://hub.docker.com/r/lightninglabs/lnd))
 - lnurl (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx ([Docker](https://hub.docker.com/r/lukechilds/electrumx))
 - Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server ([Docker](https://hub.docker.com/r/btcpayserver/eps))
