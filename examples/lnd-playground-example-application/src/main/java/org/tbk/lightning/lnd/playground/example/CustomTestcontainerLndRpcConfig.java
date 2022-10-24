@@ -9,12 +9,11 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.lightningj.lnd.wrapper.MacaroonContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.bitcoin.common.util.Hex;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 import org.tbk.lightning.lnd.grpc.config.LndClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
-
-import javax.xml.bind.DatatypeConverter;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -38,17 +37,17 @@ public class CustomTestcontainerLndRpcConfig {
 
     @Bean
     public MacaroonContext lndRpcMacaroonContext(LndClientAutoConfigProperties properties,
-                                                     LndContainer<?> lndContainer) {
+                                                 LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            String hex = DatatypeConverter.printHexBinary(bytes);
+            String hex = Hex.encode(bytes);
             return () -> hex;
         });
     }
 
     @Bean
     public SslContext lndRpcSslContext(LndClientAutoConfigProperties properties,
-                                           LndContainer<?> lndContainer) {
+                                       LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
             return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                     .trustManager(inputStream)

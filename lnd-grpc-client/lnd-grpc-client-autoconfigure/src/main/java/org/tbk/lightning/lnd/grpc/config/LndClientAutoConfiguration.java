@@ -37,10 +37,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.tbk.bitcoin.common.util.Hex;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.nio.file.Files;
 
@@ -74,7 +74,7 @@ public class LndClientAutoConfiguration {
         checkArgument(macaroonFile.canRead(), "'macaroonFile' must be readable");
 
         byte[] bytes = Files.readAllBytes(macaroonFile.toPath());
-        String hex = DatatypeConverter.printHexBinary(bytes);
+        String hex = Hex.encode(bytes);
         return () -> hex;
     }
 

@@ -6,4 +6,9 @@ description = 'lnd grpc client package'
 
 dependencies {
     api "org.lightningj:lightningj:${lightningjVersion}"
+
+    api "io.grpc:grpc-protobuf:${grpcVersion}"
+    api "io.grpc:grpc-stub:$grpcVersion"
+    api 'javax.json:javax.json-api:1.1.4'
+    api 'org.glassfish:javax.json:1.1.4'
 }

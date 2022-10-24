@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.lightningj.lnd.wrapper.*;
 import org.lightningj.lnd.wrapper.message.Chain;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
-import org.lightningj.lnd.wrapper.message.NetworkInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,15 +24,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 import org.tbk.lightning.lnd.grpc.config.LndClientAutoConfigProperties;
-import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
-import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-import reactor.util.retry.RetryBackoffSpec;
-import reactor.util.retry.RetrySpec;
 
 import javax.xml.bind.DatatypeConverter;
 import java.time.Duration;
@@ -88,8 +81,6 @@ class LndContainerApplicationTest {
             @Bean
             public SslContext lndRpcSslContext(LndClientAutoConfigProperties properties,
                                                LndContainer<?> lndContainer) {
-                /*MoreTestcontainers.waitTillFileExists(lndContainer, properties.getCertFilePath(), Retry.backoff(10, Duration.ofSeconds(1L)))
-                        .block(Duration.ofSeconds(20L));*/
                 return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
                     return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                             .trustManager(inputStream)
@@ -108,13 +99,6 @@ class LndContainerApplicationTest {
     @Autowired(required = false)
     private AsynchronousLndAPI lndAsyncApi;
 
-    private static Mono<Boolean> waitForServer(SynchronousLndAPI api, RetryBackoffSpec spec) {
-        return Flux.defer(() -> Mono.fromCallable(api::getInfo))
-                .retryWhen(spec.filter(throwable -> throwable instanceof ServerSideException))
-                .single()
-                .map(it -> true);
-    }
-
     @Test
     void contextLoads() {
         assertThat(lndContainer, is(notNullValue()));
@@ -127,9 +111,6 @@ class LndContainerApplicationTest {
 
     @Test
     void itShouldBeCompatibleWithLightningJ() throws StatusException, ValidationException {
-        waitForServer(lndSyncApi, Retry.backoff(10, Duration.ofSeconds(1L)))
-                .block(Duration.ofSeconds(20L));
-
         GetInfoResponse info = lndSyncApi.getInfo();
         assertThat(info, is(notNullValue()));
         assertThat(info.getVersion(), startsWith("0.15.3-beta"));
@@ -139,6 +120,7 @@ class LndContainerApplicationTest {
         Chain chain = info.getChains().stream().findFirst().orElseThrow();
         assertThat(chain.getNetwork(), is("regtest"));
 
+        // TODO: wait till https://github.com/lightningj-org/lightningj/issues/79 is resolved
         //NetworkInfo networkInfo = lndSyncApi.getNetworkInfo();
         //assertThat(networkInfo, is(notNullValue()));
         //assertThat("node is running alone in the network", networkInfo.getNumNodes(), is(1));
@@ -146,9 +128,6 @@ class LndContainerApplicationTest {
 
     @Test
     void itShouldBeCompatibleWithLightningJAsync() {
-        waitForServer(lndSyncApi, Retry.backoff(10, Duration.ofSeconds(1L)))
-                .block(Duration.ofSeconds(20L));
-
         Flux<GetInfoResponse> infoResponseFlux = Flux.create(emitter -> {
             try {
                 lndAsyncApi.getInfo(new EmittingStreamObserver<>(emitter));
