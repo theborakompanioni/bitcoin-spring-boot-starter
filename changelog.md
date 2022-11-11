@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - fix: allow non-https localhost lnurls
+- fix: lnurl copy button on login page served over tor
 
 ### Removed
 - module: externalize 'spring-tor'

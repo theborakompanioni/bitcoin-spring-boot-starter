@@ -74,12 +74,25 @@
     };
 
     (function init() {
-        function copyToClipboard(text, onSuccess) {
-            navigator.clipboard.writeText(text).then(function() {
-              onSuccess();
-            }, function(err) {
-              console.error('Async: Could not copy text: ', err);
-            });
+        function copyToClipboard(inputField) {
+            // The `navigator.clipboard` API might not be available, e.g. on sites served over HTTP (onion).
+            if (!navigator.clipboard) {
+              return copyToClipboardFallback(inputField, 'Cannot copy value to clipboard');
+            }
+
+            return navigator.clipboard
+              .writeText(inputField.value)
+              .then(() => true)
+              .catch((e) => copyToClipboardFallback(fallbackInputField, 'Cannot copy value to clipboard'))
+        }
+
+        function copyToClipboardFallback(inputField, errorMessage) {
+            return new Promise((resolve, reject) => {
+              inputField.select()
+              const success = document.execCommand && document.execCommand('copy')
+              inputField.blur()
+              success ? resolve(success) : reject(new Error(errorMessage))
+            })
         }
 
         function addClickHandlerToElements(elements, callback) {
@@ -110,12 +123,16 @@
             const lnurlInputElem = document.getElementById("lnurl-auth-lnurl-input");
             if (event.target && lnurlInputElem) {
                 const formerTargetElemInnerText = event.target.innerText;
-                copyToClipboard(lnurlInputElem.value, () => {
-                    event.target.innerText = " 👍 ";
-                    window.setTimeout(() => {
-                        event.target.innerText = formerTargetElemInnerText;
-                    }, 1337);
-                });
+                copyToClipboard(lnurlInputElem)
+                  .then(() => {
+                      event.target.innerText = " 👍 ";
+                      window.setTimeout(() => {
+                          event.target.innerText = formerTargetElemInnerText;
+                      }, 1337);
+                  })
+                  .catch((err) => {
+                    console.error('Async: Could not copy text: ', err);
+                  });
             }
         });
 
