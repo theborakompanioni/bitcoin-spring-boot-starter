@@ -79,5 +79,6 @@ class SimpleLnurlAuthTest {
         assertDoesNotThrow(() -> SimpleLnurlAuth.parse("https://example.com" + query));
         assertDoesNotThrow(() -> SimpleLnurlAuth.parse("http://example.onion" + query));
         assertDoesNotThrow(() -> SimpleLnurlAuth.parse("https://example.onion" + query));
+        assertDoesNotThrow(() -> SimpleLnurlAuth.parse("http://localhost" + query));
     }
 }

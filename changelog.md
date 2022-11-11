@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update grpc from v1.47.0 to v1.49.2
 - upgrade: update protobuf from v3.21.2 to v3.21.7
 
+### Fixed
+- fix: allow non-https localhost lnurls
+
 ### Removed
 - module: externalize 'spring-tor'
 

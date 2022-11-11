@@ -10,7 +10,9 @@ public interface Lnurl {
         requireNonNull(uri, "'uri' must not be null");
 
         if (!"https".equals(uri.getScheme())) {
-            return "http".equals(uri.getScheme()) && uri.getHost().endsWith(".onion");
+            boolean isLocal = "localhost".equals(uri.getHost());
+            boolean isTor = "http".equals(uri.getScheme()) && uri.getHost().endsWith(".onion");
+            return isLocal || isTor;
         }
         return true;
     }
