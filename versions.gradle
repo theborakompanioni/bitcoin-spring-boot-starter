@@ -4,7 +4,7 @@ ext {
     xChangeVersion = '5.0.13'
     bitcoinjVersion = '0.16.1'
     lightningjVersion = '0.15.3-Beta'
-    consensusJVersion = '0.6.3'
+    consensusJVersion = '0.6.4'
     guavaVersion = '30.1-jre'
     jeroMqVersion = '0.5.2'
     testcontainersVersion = '1.17.5'
