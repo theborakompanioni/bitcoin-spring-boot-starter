@@ -28,9 +28,7 @@ ext {
     torSpringBootStarterVersion = '0.5.0'
     springBootGradlePluginVersion = '2.7.5'
     protobufGradleVersion = '0.8.17'
-    // workaround: we have to use a slightly outdated version currently (see https://github.com/raphw/byte-buddy/issues/1054)
-    // drawback: has issues on project import in intellij; '1.10.14' would work with intellij but does not work on command line : /
-    bytebuddyPluginVersion = '1.10.22'
+    bytebuddyPluginVersion = '1.12.18'
 }
 
 // hack: 2021-11-10T00:00Z - change this timestamp to invalidate GitHub Actions gradle caches.
