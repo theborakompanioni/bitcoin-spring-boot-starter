@@ -4,4 +4,4 @@ jdk:
 install:
   - echo "Running a custom install command"
   # exclude spotbugs and checkstyle tasks for faster builds
-  - ./gradlew clean build publishToMavenLocal -x test -x checkstyleMain -x checkstyleTest -x checkstyleIntegTest -x spotbugsMain -x spotbugsTest -x spotbugsIntegTest
+  - ./gradlew clean build -PjavadocEnabled publishToMavenLocal -x test -x checkstyleMain -x checkstyleTest -x checkstyleIntegTest -x spotbugsMain -x spotbugsTest -x spotbugsIntegTest

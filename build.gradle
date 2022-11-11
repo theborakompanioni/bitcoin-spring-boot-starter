@@ -247,6 +247,7 @@ subprojects {
     task dependencyTree(type: DependencyReportTask) {}
 
     task delombok(type: DelombokTask, dependsOn: compileJava) {
+        onlyIf { project.hasProperty('javadocEnabled') }
         def srcDirs = sourceSets.main.java.srcDirs.findAll { it.exists() }
 
         enabled = subprojects.isEmpty() && !srcDirs.isEmpty()
@@ -264,6 +265,7 @@ subprojects {
     }
 
     javadoc {
+        onlyIf { project.hasProperty('javadocEnabled') }
         dependsOn delombok
         source = delombok.outputDir
         failOnError = false

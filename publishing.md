@@ -27,7 +27,7 @@ e.g. to publish to your local maven repository:
 ### Maven Central
 ```sh
 ./gradlew -Dorg.gradle.parallel=false -Prelease.useLastTag=true \
-    clean assemble \
+    clean assemble -PjavadocEnabled \
     sign -Psigning.password=secret \
     publishAllPublicationsToMavenRepository -PossrhPassword=secret
 ```
@@ -36,7 +36,7 @@ e.g. publishing an individual module to Maven Central (notice params `signing.pa
 ```sh
 ./gradlew -p bitcoin-jsonrpc-client/bitcoin-jsonrpc-client-core \
     -Dorg.gradle.parallel=false -Prelease.useLastTag=true \
-    clean assemble \
+    clean assemble -PjavadocEnabled \
     sign -Psigning.password=secret \
     publishAllPublicationsToMavenRepository -PossrhPassword=secret
 ```
