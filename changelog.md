@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update testcontainers from v1.17.3 to v1.17.5
 - upgrade: update grpc from v1.47.0 to v1.49.2
 - upgrade: update protobuf from v3.21.2 to v3.21.7
+- upgrade: update jmolecules bom from v2021.2.0 to v2022.2.2
 
 ### Fixed
 - fix: allow non-https localhost lnurls

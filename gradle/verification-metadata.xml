@@ -15,6 +15,9 @@
          <ignored-key id="991efb94db91127d" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="e6ec76b4c6d3ae8e" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="d364abaa39a47320" reason="Key couldn't be downloaded from any key server"/>
+         <ignored-key id="06e21faaf25a2c7a" reason="Key couldn't be downloaded from any key server"/>
+         <ignored-key id="2a742740e08e7f8d" reason="Key couldn't be downloaded from any key server"/>
+         <ignored-key id="0aa3e5c3d232e79b" reason="Key couldn't be downloaded from any key server"/>
       </ignored-keys>
       <trusted-keys>
          <trusted-key id="015479e1055341431b4545ab72475fd306b9cab7" group="com.googlecode.javaewah" name="JavaEWAH" version="1.1.12"/>
@@ -25,6 +28,10 @@
          <trusted-key id="04543577d6a9cc626239c50c7ecbd740ff06aeb5">
             <trusting group="org.glassfish.jaxb"/>
             <trusting group="^com[.]sun($|([.].*))" regex="true"/>
+         </trusted-key>
+         <trusted-key id="050a37a2e0577f4baa095b52602ec18d20c4661c">
+            <trusting group="com.thoughtworks.xstream"/>
+            <trusting group="io.github.x-stream"/>
          </trusted-key>
          <trusted-key id="06d34ed6ff73de368a772a781063fe98bcecb758" group="com.puppycrawl.tools" name="checkstyle" version="8.44"/>
          <trusted-key id="0785b3eff60b1b1bea94e0bb7c25280eae63ebe5">
@@ -57,6 +64,7 @@
          <trusted-key id="1f47744c9b6e14f2049c2857f1f111af65925306" group="io.github.classgraph" name="classgraph" version="4.8.83"/>
          <trusted-key id="1f6774b9d58c5ea6bf84d534704514f6556102e5" group="io.swagger.core.v3"/>
          <trusted-key id="2518174f4111f02779592a6f9757d7e7e06dd2ac" group="io.prometheus"/>
+         <trusted-key id="264b9ee9c35b105db1abcea835341680d17a378c" group="org.axonframework"/>
          <trusted-key id="2655176f748fd83725b4805ff2a01147d830c125" group="org.testcontainers"/>
          <trusted-key id="28118c070cb22a0175a2e8d43d12ca2ac19f3181" group="^com[.]fasterxml[.]jackson($|([.].*))" regex="true"/>
          <trusted-key id="2bcbdd0f23ea1cafcc11d4860374cf2e8dd1bdfd">
@@ -102,7 +110,10 @@
             <trusting group="org.slf4j"/>
          </trusted-key>
          <trusted-key id="477e62a656ad5475a1882855c809ca3c41ba6e96" group="jakarta.validation" name="jakarta.validation-api" version="2.0.2"/>
-         <trusted-key id="47ef0ec60c210bc6dfaa5819b7ae15c15c321c44" group="jakarta.transaction" name="jakarta.transaction-api" version="1.3.3"/>
+         <trusted-key id="47ef0ec60c210bc6dfaa5819b7ae15c15c321c44">
+            <trusting group="jakarta.transaction" name="jakarta.transaction-api" version="1.3.3"/>
+            <trusting group="jakarta.transaction" name="jakarta.transaction-api" version="2.0.0"/>
+         </trusted-key>
          <trusted-key id="48f8e69f6390c9f25cfedcd268248959359e722b" group="org.apache.tomcat.embed"/>
          <trusted-key id="4c5f68d09d42ba7fac888df9a929ea2321fdbf8f">
             <trusting group="net.sf.saxon"/>
@@ -147,8 +158,13 @@
             <trusting group="javax.json"/>
             <trusting group="javax.xml.bind"/>
             <trusting group="org.glassfish"/>
+            <trusting group="org.glassfish.jaxb"/>
+            <trusting group="^com[.]sun[.]xml[.]bind($|([.].*))" regex="true"/>
          </trusted-key>
-         <trusted-key id="71ebf1ca4125b10aab1e17cdb7dc526c17e3608b" group="jakarta.persistence" name="jakarta.persistence-api" version="2.2.3"/>
+         <trusted-key id="71ebf1ca4125b10aab1e17cdb7dc526c17e3608b">
+            <trusting group="jakarta.persistence" name="jakarta.persistence-api" version="2.2.3"/>
+            <trusting group="jakarta.persistence" name="jakarta.persistence-api" version="3.0.0"/>
+         </trusted-key>
          <trusted-key id="7615ad56144df2376f49d98b1669c4bb543e0445" group="com.google.errorprone"/>
          <trusted-key id="7616eb882daf57a11477aaf559a252fb1199d873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
          <trusted-key id="7795d734c5d1202b9436d0841261358604ae1a0f" group="org.zalando" name="jackson-datatype-money" version="1.2.2"/>
@@ -164,6 +180,7 @@
          <trusted-key id="80f6d6b0d90c6747753344cab5a9e81b565e89e0" group="org.tomlj" name="tomlj" version="1.0.0"/>
          <trusted-key id="814e2a389c0c8482989e0b9a839b0d3b6fd564fa" group="com.github.mmazi" name="rescu" version="2.1.0"/>
          <trusted-key id="84789d24df77a32433ce1f079eb80e92eb2135b1" group="org.apache" name="apache" version="27"/>
+         <trusted-key id="859be8d7c586f538430b19c2467b942d3a79bd29" group="mysql" name="mysql-connector-java" version="8.0.30"/>
          <trusted-key id="8756c4f765c9ac3cb6b85d62379ce192d401ab61">
             <trusting group="info.picocli"/>
             <trusting group="io.github.resilience4j"/>
@@ -265,6 +282,7 @@
             <trusting group="io.r2dbc"/>
             <trusting group="^org[.]springframework[.]data($|([.].*))" regex="true"/>
          </trusted-key>
+         <trusted-key id="f1a51e051f527e0c8e24d54d4b1e11d5a4b91e89" group="com.google.protobuf"/>
          <trusted-key id="f254b35617dc255d9344bcfa873a8e86b4372146">
             <trusting group="org.apache"/>
             <trusting group="org.eclipse.jetty" name="jetty-bom" version="9.4.49.v20220914"/>
@@ -495,6 +513,14 @@
             <sha256 value="385898c492ec183df04427b044947f2a6e1db6f000843aacd80af41aba157e20" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
+      <component group="com.lmax" name="disruptor" version="3.4.4">
+         <artifact name="disruptor-3.4.4.jar">
+            <sha256 value="1524ed31f13bcabee1b6146e67be30c6317cb94fcd0c7c2f7c7a1f3e82087c51" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="disruptor-3.4.4.pom">
+            <sha256 value="df840dacb358bdec8e9c16409721e4b0eb0524617d42426df728376fc587422f" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+      </component>
       <component group="com.msgilligan" name="cj-btc-json" version="0.6.3">
          <artifact name="cj-btc-json-0.6.3.jar">
             <sha256 value="8c644bb22ab33bfe135d1f9c9b8fc5fc6212a5e65df9c4ab44f85f0b9430987a" origin="Generated by Gradle because artifact wasn't signed"/>
@@ -629,6 +655,14 @@
             <sha256 value="07547039772fdd3475c3edcb4a46878ad5587167a7e3690bb36da28047ff2d88" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="jakarta.inject" name="jakarta.inject-api" version="2.0.0">
+         <artifact name="jakarta.inject-api-2.0.0.jar">
+            <sha256 value="842ccf3b892aca3fbd384c99d1516a8b7c448c55cee560ab2724488016198706" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="jakarta.inject-api-2.0.0.pom">
+            <sha256 value="d7fe9d15ed31e3f656cbc973f838bd5f708006fd770f1513448811e1974f7fde" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+      </component>
       <component group="javax.activation" name="activation" version="1.1.1">
          <artifact name="activation-1.1.1.jar">
             <sha256 value="ae475120e9fcd99b4b00b38329bd61cdc5eb754eee03fe66c01f50e137724f99" origin="Generated by Gradle because artifact wasn't signed"/>
@@ -676,6 +710,19 @@
          </artifact>
          <artifact name="jcip-annotations-1.0.pom">
             <sha256 value="5c19e6848cc550a95664fb082304bc5f9fcf7b672faf03af1635f0e93c268177" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.antlr" name="antlr4-master" version="4.10.1">
+         <artifact name="antlr4-master-4.10.1.pom">
+            <sha256 value="77ed2165c379d27e18a03929e1adfb414d5d52ef042984901a5e7232073f50d3" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.antlr" name="antlr4-runtime" version="4.10.1">
+         <artifact name="antlr4-runtime-4.10.1.jar">
+            <sha256 value="da66be0c98acfb29bc708300d05f1a3269c40f9984a4cb9251cf2ba1898d1334" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="antlr4-runtime-4.10.1.pom">
+            <sha256 value="29ce054c9d2f0c5c80602ac38d110890949c80097de847bf42f57085837118a7" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="org.apache" name="apache" version="18">
@@ -796,6 +843,22 @@
          </artifact>
          <artifact name="hibernate-commons-annotations-5.1.2.Final.pom">
             <sha256 value="4c576e8e0fa8c7964a0f35eea71c85b4f66ccc6363366a365f83ac664fe0364e" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.hibernate.common" name="hibernate-commons-annotations" version="6.0.2.Final">
+         <artifact name="hibernate-commons-annotations-6.0.2.Final.jar">
+            <sha256 value="682e834bd206d03dbe853edd049fe618d9b70624dd54a314252fd6e75b02e80a" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="hibernate-commons-annotations-6.0.2.Final.module">
+            <sha256 value="c4c0345c15535c18963684f0233be462cebd73aa4f84e8ce3942d29e4002f9f8" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.hibernate.orm" name="hibernate-core" version="6.1.5.Final">
+         <artifact name="hibernate-core-6.1.5.Final.jar">
+            <sha256 value="ed8a4f4d30600d0dd24f85803ea50f1a37f778a468c90db8639d7bb9a288df46" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="hibernate-core-6.1.5.Final.pom">
+            <sha256 value="976f5343dd4faf866e84e62e96ace968309f408c4526bc29cab5a566457595f9" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="org.hibernate.validator" name="hibernate-validator" version="6.2.4.Final">
@@ -977,9 +1040,22 @@
             <sha256 value="321ddbb7ee6fe4f53dea6b4cd6db74154d6bfa42391c1f763b361b9f485acf05" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
+      <component group="org.slf4j" name="slf4j-api" version="2.0.3">
+         <artifact name="slf4j-api-2.0.3.jar">
+            <sha256 value="68ddcda65300ff8097ad1a096d7cd2fb06cef25193887cec3f2690e01bdbf421" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="slf4j-api-2.0.3.pom">
+            <sha256 value="1b2985de22fda3ee76cd564ad106fb291b73439ec3c544be3d3242c6f7a26b46" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+      </component>
       <component group="org.slf4j" name="slf4j-parent" version="2.0.0">
          <artifact name="slf4j-parent-2.0.0.pom">
             <sha256 value="a62d2a67d77f7cb470fac888bc421d8488ef2014e7c2bf8d7b4193d5f28acfb5" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.slf4j" name="slf4j-parent" version="2.0.3">
+         <artifact name="slf4j-parent-2.0.3.pom">
+            <sha256 value="78293303db8c626674935fde8428baff8aaaacfc93ec461168692c92c8472339" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="org.slf4j" name="slf4j-simple" version="2.0.0">
@@ -1050,6 +1126,19 @@
       <component group="org.testcontainers" name="testcontainers-bom" version="1.15.3">
          <artifact name="testcontainers-bom-1.15.3.pom">
             <pgp value="8756c4f765c9ac3cb6b85d62379ce192d401ab61"/>
+         </artifact>
+      </component>
+      <component group="org.testcontainers" name="testcontainers-bom" version="1.16.3">
+         <artifact name="testcontainers-bom-1.16.3.pom">
+            <pgp value="d022218dcc08aad6ef3af876b3de72e647d35161"/>
+         </artifact>
+      </component>
+      <component group="xmlpull" name="xmlpull" version="1.1.3.1">
+         <artifact name="xmlpull-1.1.3.1.jar">
+            <sha256 value="34e08ee62116071cbb69c0ed70d15a7a5b208d62798c59f2120bb8929324cb63" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="xmlpull-1.1.3.1.pom">
+            <sha256 value="8f10ffd8df0d3e9819c8cc8402709c6b248bc53a954ef6e45470d9ae3a5735fb" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
    </components>

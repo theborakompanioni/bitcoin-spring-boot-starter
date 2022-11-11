@@ -13,7 +13,7 @@ ext {
     grpcVersion = '1.49.2'
     protobufVersion = '3.21.7'
     protocVersion = protobufVersion
-    jmoleculesBomVersion = '2021.2.0'
+    jmoleculesBomVersion = '2022.2.2'
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.0'
     acinqBitcoinKmpVersion = '0.8.5'
