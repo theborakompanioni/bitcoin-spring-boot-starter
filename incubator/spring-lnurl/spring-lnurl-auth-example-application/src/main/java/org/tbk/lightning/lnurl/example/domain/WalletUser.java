@@ -64,6 +64,7 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
         log.trace("AfterDomainEventPublication");
+        super.clearDomainEvents();
     }
 
     WalletUser pair(LinkingKey linkingKey, K1 k1) {

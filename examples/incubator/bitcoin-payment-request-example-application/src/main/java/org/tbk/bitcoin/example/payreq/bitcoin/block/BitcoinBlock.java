@@ -68,6 +68,7 @@ public class BitcoinBlock extends AbstractAggregateRoot<BitcoinBlock> implements
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
         log.trace("AfterDomainEventPublication");
+        super.clearDomainEvents();
     }
 
     void updateMutableValues(BlockInfo blockInfo) {

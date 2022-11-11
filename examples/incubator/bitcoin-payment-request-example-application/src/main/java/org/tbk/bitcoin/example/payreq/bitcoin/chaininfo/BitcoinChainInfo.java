@@ -55,6 +55,7 @@ public class BitcoinChainInfo extends AbstractAggregateRoot<BitcoinChainInfo> im
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
         log.trace("AfterDomainEventPublication");
+        super.clearDomainEvents();
     }
 
     @Override

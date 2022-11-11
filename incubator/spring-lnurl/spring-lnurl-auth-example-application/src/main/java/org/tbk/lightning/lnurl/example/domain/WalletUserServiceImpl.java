@@ -52,7 +52,8 @@ class WalletUserServiceImpl implements WalletUserService {
     @Override
     @Transactional
     public void pairLinkingKeyWithK1(LinkingKey linkingKey, K1 k1) {
-        WalletUser user = findUserOrCreateIfMissing(linkingKey);
+        WalletUser user = findUser(linkingKey)
+                .orElseThrow(() -> new EmptyResultDataAccessException("WalletUser key not found", 1));
 
         users.save(user.pair(linkingKey, k1));
     }

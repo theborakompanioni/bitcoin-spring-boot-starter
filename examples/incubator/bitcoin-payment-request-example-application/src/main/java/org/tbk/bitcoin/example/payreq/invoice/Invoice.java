@@ -51,6 +51,7 @@ public class Invoice extends AbstractAggregateRoot<Invoice> implements Aggregate
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
         log.trace("AfterDomainEventPublication");
+        super.clearDomainEvents();
     }
 
     @Value(staticConstructor = "of")

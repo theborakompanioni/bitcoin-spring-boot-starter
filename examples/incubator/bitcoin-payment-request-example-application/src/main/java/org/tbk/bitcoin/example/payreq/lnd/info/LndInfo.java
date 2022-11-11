@@ -41,6 +41,7 @@ public class LndInfo extends AbstractAggregateRoot<LndInfo> implements Aggregate
     @AfterDomainEventPublication
     void afterDomainEventPublication() {
         log.trace("AfterDomainEventPublication");
+        super.clearDomainEvents();
     }
 
     @Override
