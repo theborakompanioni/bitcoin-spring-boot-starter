@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update protobuf from v3.21.2 to v3.21.7
 - upgrade: update jmolecules bom from v2021.2.0 to v2022.2.2
 - upgrade: update bytebuddy from v1.10.22 to v1.12.18
+- upgrade: update checkstyle from v8.44 to v10.3.4
 
 ### Fixed
 - fix: allow non-https localhost lnurls

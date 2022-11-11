@@ -23,7 +23,7 @@ ext {
     lombokVersion = '1.18.20'
     springfoxVersion = '3.0.0'
     mockserverVersion = '5.11.2'
-    checkstyleVersion = '8.44'
+    checkstyleVersion = '10.3.4'
     findsecbugsPluginVersion = '1.11.0'
     torSpringBootStarterVersion = '0.5.0'
     springBootGradlePluginVersion = '2.7.5'
