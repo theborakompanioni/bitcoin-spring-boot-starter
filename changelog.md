@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update checkstyle from v8.44 to v10.3.4
 - upgrade: update consensusj from v0.6.3 to v0.6.4
 - upgrade: update bitcoin-kmp from v0.8.5 to v0.10.0
+- upgrade: update secp256k1-kmp from v0.6.4 to v0.7.0
 
 ### Fixed
 - fix: allow non-https localhost lnurls
