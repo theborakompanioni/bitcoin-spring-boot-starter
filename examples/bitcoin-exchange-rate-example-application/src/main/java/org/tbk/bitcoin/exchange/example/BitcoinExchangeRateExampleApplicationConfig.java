@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class BitcoinExchangeRateExampleApplicationConfig {
+class BitcoinExchangeRateExampleApplicationConfig {
 }

@@ -22,7 +22,7 @@ import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-public class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
+class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
 
     @NonNull
     private final LnurlAuthPairingService pairingService;

@@ -17,7 +17,7 @@ import org.tbk.bitcoin.tool.fee.mempoolspace.config.MempoolspaceFeeClientAutoCon
         // disable auto-creation of mempool.space fee providers as we want to create multiple custom providers ourselves
         MempoolspaceFeeClientAutoConfiguration.class
 })
-public class CustomMempoolSpaceFeeProviderConfig {
+class CustomMempoolSpaceFeeProviderConfig {
 
     // ****************************************** mempool.space
     @Bean

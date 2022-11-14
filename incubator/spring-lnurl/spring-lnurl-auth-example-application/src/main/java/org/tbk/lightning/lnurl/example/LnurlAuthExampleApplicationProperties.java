@@ -10,7 +10,7 @@ import java.util.Optional;
         prefix = "app",
         ignoreUnknownFields = false
 )
-public class LnurlAuthExampleApplicationProperties {
+class LnurlAuthExampleApplicationProperties {
 
     private String name;
 
