@@ -80,12 +80,14 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
 
     private LnurlAuthFactory lnurlAuthFactory;
 
+    private UserDetailsService authenticationUserDetailsService;
+
     /**
      * Creates a new instance
      * <p>
      * Most of springs internal {@link SecurityConfigurer} have default constructors,
      * so we try to provide a similar approach - even when some attributes are effectively non-nullable
-     * like {@link #k1Manager} and {@link #pairingService}.
+     * like {@link #k1Manager}, {@link #pairingService}.
      *
      * @see org.springframework.security.config.annotation.web.configurers.HeadersConfigurer#HeadersConfigurer()
      */
@@ -113,6 +115,11 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
      */
     public LnurlAuthConfigurer pairingService(LnurlAuthPairingService pairingService) {
         this.pairingService = requireNonNull(pairingService);
+        return this;
+    }
+
+    public LnurlAuthConfigurer authenticationUserDetailsService(UserDetailsService authenticationUserDetailsService) {
+        this.authenticationUserDetailsService = requireNonNull(authenticationUserDetailsService);
         return this;
     }
 
@@ -158,7 +165,13 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     public void configure(HttpSecurity http) {
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http.getSharedObject(SessionAuthenticationStrategy.class);
-        UserDetailsService userDetailsService = http.getSharedObject(UserDetailsService.class);
+        UserDetailsService userDetailsService = Optional.ofNullable(authenticationUserDetailsService)
+                // try to get UserDetailsService applied via {@link HttpSecurity#userDetailsService}
+                .or(() -> Optional.ofNullable(http.getSharedObject(AuthenticationManagerBuilder.class))
+                        .map(AuthenticationManagerBuilder::getDefaultUserDetailsService))
+                // try to get UserDetailsService from old {@link WebSecurityConfigurerAdapter} approach
+                .or(() -> Optional.ofNullable(http.getSharedObject(UserDetailsService.class)))
+                .orElseThrow(() -> new IllegalStateException("'userDetailsService' must not be null."));
 
         LnurlAuthWalletAuthenticationFilter walletAuthFilter = new LnurlAuthWalletAuthenticationFilter(walletEndpointConfig.authorizationRequestBaseUri);
         walletAuthFilter.setAuthenticationManager(authenticationManager);

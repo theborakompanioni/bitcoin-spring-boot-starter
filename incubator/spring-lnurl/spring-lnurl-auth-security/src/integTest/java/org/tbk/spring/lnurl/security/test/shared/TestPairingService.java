@@ -1,4 +1,4 @@
-package org.tbk.spring.lnurl.security.test.app;
+package org.tbk.spring.lnurl.security.test.shared;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

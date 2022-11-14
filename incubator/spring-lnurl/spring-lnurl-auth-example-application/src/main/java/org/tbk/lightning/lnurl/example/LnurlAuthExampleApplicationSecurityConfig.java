@@ -4,13 +4,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
@@ -21,7 +23,7 @@ import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
+public class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer {
     static final String LNURL_AUTH_LOGIN_PAGE_PATH = "/login";
     static final String LNURL_AUTH_WALLET_LOGIN_PATH = "/api/v1/lnurl-auth/login/wallet";
     static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnurl-auth/login/session";
@@ -56,19 +58,13 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
     private final LnurlAuthFactory lnurlAuthFactory;
 
     @Override
-    protected UserDetailsService userDetailsService() {
-        return userDetailsService;
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
+    public void customize(WebSecurity web) {
         web.httpFirewall(new StrictHttpFirewall());
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .userDetailsService(userDetailsService())
                 .csrf().disable()
                 .cors().disable()
                 /*
@@ -79,6 +75,7 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                         .k1Manager(lnurlAuthk1Manager)
                         .pairingService(lnurlAuthPairingService)
                         .lnurlAuthFactory(lnurlAuthFactory)
+                        .authenticationUserDetailsService(userDetailsService)
                         .loginPageEndpoint(login -> login
                                 .enable(true)
                                 .baseUri(lnurlAuthLoginPagePath())
@@ -119,6 +116,7 @@ public class LnurlAuthExampleApplicationSecurityConfig extends WebSecurityConfig
                         .antMatchers("/api/v1/demo/**").permitAll()
                         .anyRequest().authenticated()
                 );
-    }
 
+        return http.build();
+    }
 }

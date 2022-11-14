@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -20,7 +19,7 @@ import org.tbk.lnurl.auth.*;
 import org.tbk.lnurl.simple.auth.SimpleK1;
 import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 import org.tbk.lnurl.test.SimpleLnurlWallet;
-import org.tbk.spring.lnurl.security.test.app.LnurlAuthTestApplication;
+import org.tbk.spring.lnurl.security.test.app1.LnurlAuthTestApplication;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletActionEvent;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletToken;
 

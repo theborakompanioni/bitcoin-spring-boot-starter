@@ -1,4 +1,4 @@
-package org.tbk.spring.lnurl.security.test.app;
+package org.tbk.spring.lnurl.security.test.shared;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

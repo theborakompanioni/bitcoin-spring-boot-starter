@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - upgrade: update java from v11 to v17
 
+### Added
+- ability to apply custom `UserDetailsService` for `LnurlAuthConfigurer`
+
 ### Changed
 - change lnd docker image from lnzap/lnd to lightninglabs/lnd
 - upgrade: update lightningj from v0.12.1-Beta to v0.15.3-Beta

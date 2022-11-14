@@ -20,7 +20,7 @@ import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.lnurl.test.SimpleLnurlWallet;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionToken;
-import org.tbk.spring.lnurl.security.test.app.LnurlAuthTestApplication;
+import org.tbk.spring.lnurl.security.test.app1.LnurlAuthTestApplication;
 
 import java.net.URI;
 import java.security.SecureRandom;
