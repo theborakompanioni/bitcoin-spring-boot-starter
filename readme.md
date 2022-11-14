@@ -97,7 +97,7 @@ Example apps can be started with a single command, e.g.:
 ## Development
 
 ### Requirements
-- java >=11
+- java >=17
 - docker
 
 A Bitcoin Core Testcontainer running in regtest mode is started for most examples. 
