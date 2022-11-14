@@ -8,12 +8,14 @@ import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.Signature;
 
+import java.io.Serial;
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
 public final class LnurlAuthWalletToken extends AbstractAuthenticationToken {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Getter

@@ -3,6 +3,7 @@ package org.tbk.spring.lnurl.security;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.SecurityConfigurer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,8 @@ import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationProvi
 import org.tbk.spring.lnurl.security.ui.LnurlAuthLoginPageGeneratingFilter;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationFilter;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationProvider;
+
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 

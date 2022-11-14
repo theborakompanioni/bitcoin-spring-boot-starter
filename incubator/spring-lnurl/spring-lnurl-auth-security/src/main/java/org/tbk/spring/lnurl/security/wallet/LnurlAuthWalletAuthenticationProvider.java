@@ -5,19 +5,18 @@ import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.PublicKey;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.*;
+import org.tbk.spring.lnurl.security.AbstractTokenAuthenticationProvider;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
 @RequiredArgsConstructor
-public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProvider {
+public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenticationProvider {
 
     @NonNull
     private final K1Manager k1Manager;
@@ -34,14 +33,9 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Assert.isTrue(supports(authentication.getClass()), "Unsupported authentication class");
-
+    protected LinkingKey retrieveLinkingKey(Authentication authentication) throws AuthenticationException {
         LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
-        return authenticateInternal(auth);
-    }
 
-    private Authentication authenticateInternal(LnurlAuthWalletToken auth) {
         if (auth.isAuthenticated()) {
             throw new LnurlAuthenticationException("Already authenticated.");
         }
@@ -66,9 +60,19 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
 
         k1Manager.invalidate(k1);
 
-        UserDetails user = userDetailsService.loadUserByUsername(auth.getLinkingKey().toHex());
+        return auth.getLinkingKey();
+    }
 
-        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(k1, auth.getSignature(), auth.getLinkingKey(), user.getAuthorities());
+    @Override
+    protected UserDetails retrieveUser(LinkingKey linkingKey, Authentication authentication) throws AuthenticationException {
+        return userDetailsService.loadUserByUsername(linkingKey.toHex());
+    }
+
+    @Override
+    protected Authentication createSuccessAuthentication(LinkingKey linkingKey, Authentication authentication, UserDetails user) {
+        LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
+
+        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getK1(), auth.getSignature(), linkingKey, user.getAuthorities());
         newAuth.setDetails(user);
 
         return newAuth;
@@ -85,5 +89,4 @@ public class LnurlAuthWalletAuthenticationProvider implements AuthenticationProv
 
         return Crypto.verifySignature(rawK1, rawSig, rawKey);
     }
-
 }
