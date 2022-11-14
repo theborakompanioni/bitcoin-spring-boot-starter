@@ -19,7 +19,7 @@ import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-public class LnurlAuthTestSecurityDeprecatedConfig extends WebSecurityConfigurerAdapter {
+class LnurlAuthTestSecurityDeprecatedConfig extends WebSecurityConfigurerAdapter {
 
     @NonNull
     private final LnurlAuthPairingService pairingService;

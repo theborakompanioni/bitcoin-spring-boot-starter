@@ -18,7 +18,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration(proxyBeanMethods = false)
-public class BitcoinDuckDcaExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
+class BitcoinDuckDcaExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

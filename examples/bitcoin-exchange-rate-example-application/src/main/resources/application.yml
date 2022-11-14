@@ -28,8 +28,6 @@ org.tbk.xchange:
       exchangeClass: org.knowm.xchange.kraken.KrakenExchange
     bitstampExchange:
       exchangeClass: org.knowm.xchange.bitstamp.BitstampExchange
-    bittrexExchange:
-      exchangeClass: org.knowm.xchange.bittrex.BittrexExchange
     bitfinexExchange:
       exchangeClass: org.knowm.xchange.bitfinex.BitfinexExchange
       shouldLoadRemoteMetaData: false # prevent exception since exchange added pair DOGE/USD

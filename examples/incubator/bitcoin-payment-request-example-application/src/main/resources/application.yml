@@ -143,9 +143,6 @@ org.tbk.xchange:
     bitstampExchange:
       exchangeClass: org.knowm.xchange.bitstamp.BitstampExchange
       shouldLoadRemoteMetaData: false
-    bittrexExchange:
-      exchangeClass: org.knowm.xchange.bittrex.BittrexExchange
-      shouldLoadRemoteMetaData: false
     geminiExchange:
       exchangeClass: org.knowm.xchange.gemini.v1.GeminiExchange
       shouldLoadRemoteMetaData: false

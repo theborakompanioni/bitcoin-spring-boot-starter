@@ -346,7 +346,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         private AntPathRequestMatcher getRequestMatcher() {
             String pathWithoutQuery = UriComponentsBuilder.fromUriString(authorizationRequestBaseUri)
                     .replaceQuery("")
-                    .fragment("")
+                    .fragment(null)
                     .build().toUriString();
             return new AntPathRequestMatcher(pathWithoutQuery, HttpMethod.GET.name());
         }

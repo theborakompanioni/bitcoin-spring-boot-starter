@@ -30,7 +30,7 @@ import static org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurit
 @Configuration(proxyBeanMethods = false)
 @EnableScheduling
 @EnableConfigurationProperties(LnurlAuthExampleApplicationProperties.class)
-public class LnurlAuthExampleApplicationConfig {
+class LnurlAuthExampleApplicationConfig {
 
     private final LnurlAuthExampleApplicationProperties properties;
 

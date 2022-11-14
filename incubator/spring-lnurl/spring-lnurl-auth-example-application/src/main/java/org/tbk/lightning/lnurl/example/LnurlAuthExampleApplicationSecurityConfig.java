@@ -23,7 +23,7 @@ import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-public class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer {
+class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer {
     static final String LNURL_AUTH_LOGIN_PAGE_PATH = "/login";
     static final String LNURL_AUTH_WALLET_LOGIN_PATH = "/api/v1/lnurl-auth/login/wallet";
     static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnurl-auth/login/session?redirect=/authenticated.html";
