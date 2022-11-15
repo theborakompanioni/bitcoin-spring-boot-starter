@@ -46,7 +46,7 @@ final class LnurlAuthSessionRedirectStrategy extends DefaultRedirectStrategy {
         }
     }
 
-    protected boolean clientPrefersJson(HttpServletRequest request) {
+    private boolean clientPrefersJson(HttpServletRequest request) {
         MediaType acceptMediaType = Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT))
                 .map(MediaType::parseMediaTypes)
                 .flatMap(it -> it.stream().findFirst())

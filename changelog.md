@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 - upgrade: update java from v11 to v17
+- lnurl-auth: allow passing target url query parameter
 
 ### Added
 - ability to apply custom `UserDetailsService` for `LnurlAuthConfigurer`

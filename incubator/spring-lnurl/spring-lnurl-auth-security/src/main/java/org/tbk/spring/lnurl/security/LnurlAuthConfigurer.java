@@ -1,5 +1,6 @@
 package org.tbk.spring.lnurl.security;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.SecurityConfigurer;
@@ -9,12 +10,16 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationFilter;
+import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationFilter.SuccessHandlerCustomizer;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationProvider;
+import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationSuccessHandler;
 import org.tbk.spring.lnurl.security.ui.LnurlAuthLoginPageGeneratingFilter;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationFilter;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationProvider;
@@ -50,7 +55,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
      * You can enable it by providing an {@link LnurlAuthFactory} later,
      * or by using factory method {@link #createWithDefaultLoginPage}.
      *
-     * @return an new instance of {@link LnurlAuthConfigurer} with default login page disabled
+     * @return a new instance of {@link LnurlAuthConfigurer} with default login page disabled
      */
     public static LnurlAuthConfigurer create(K1Manager k1Manager, LnurlAuthPairingService pairingService) {
         return new LnurlAuthConfigurer()
@@ -62,9 +67,11 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     /**
      * Creates a new instance with default login page enabled.
      *
-     * @return an new instance of {@link LnurlAuthConfigurer} with default login page enabled
+     * @return a new instance of {@link LnurlAuthConfigurer} with default login page enabled
      */
-    public static LnurlAuthConfigurer createWithDefaultLoginPage(K1Manager k1Manager, LnurlAuthPairingService pairingService, LnurlAuthFactory lnurlAuthFactory) {
+    public static LnurlAuthConfigurer createWithDefaultLoginPage(K1Manager k1Manager,
+                                                                 LnurlAuthPairingService pairingService,
+                                                                 LnurlAuthFactory lnurlAuthFactory) {
         return create(k1Manager, pairingService)
                 .lnurlAuthFactory(lnurlAuthFactory)
                 .loginPageEndpoint(LoginPageEndpointConfig::enable);
@@ -85,7 +92,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     /**
      * Creates a new instance
      * <p>
-     * Most of springs internal {@link SecurityConfigurer} have default constructors,
+     * Most of spring's internal {@link SecurityConfigurer} have default constructors,
      * so we try to provide a similar approach - even when some attributes are effectively non-nullable
      * like {@link #k1Manager}, {@link #pairingService}.
      *
@@ -176,7 +183,10 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         LnurlAuthWalletAuthenticationFilter walletAuthFilter = new LnurlAuthWalletAuthenticationFilter(walletEndpointConfig.authorizationRequestBaseUri);
         walletAuthFilter.setAuthenticationManager(authenticationManager);
 
-        LnurlAuthSessionAuthenticationFilter sessionAuthFilter = new LnurlAuthSessionAuthenticationFilter(sessionEndpointConfig.authorizationRequestBaseUri, sessionEndpointConfig.sessionK1Key);
+        LnurlAuthSessionAuthenticationFilter sessionAuthFilter = new LnurlAuthSessionAuthenticationFilter(
+                sessionEndpointConfig.getRequestMatcher(),
+                sessionEndpointConfig.sessionK1Key,
+                sessionEndpointConfig.successHandlerCustomizer);
         sessionAuthFilter.setAuthenticationManager(authenticationManager);
         sessionAuthFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
 
@@ -283,6 +293,9 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
 
         private String sessionK1Key = defaultSessionK1Key();
 
+        private SuccessHandlerCustomizer successHandlerCustomizer = successHandler -> {
+        };
+
         /**
          * Sets the base {@code URI} used for session authorization requests.
          *
@@ -309,12 +322,33 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         }
 
         /**
+         * Sets a customizer for the success handler {@link LnurlAuthSessionAuthenticationSuccessHandler}.
+         * This can be used to customize the target url, redirect strategy, etc.
+         *
+         * @param successHandlerCustomizer the customizer applied to the success handler
+         * @return the {@link LnurlAuthConfigurer.SessionEndpointConfig} for further configuration
+         */
+        public SessionEndpointConfig successHandlerCustomizer(SuccessHandlerCustomizer successHandlerCustomizer) {
+            Assert.notNull(successHandlerCustomizer, "successHandlerCustomizer cannot be null");
+            this.successHandlerCustomizer = successHandlerCustomizer;
+            return this;
+        }
+
+        /**
          * Returns the {@link LnurlAuthConfigurer} for further configuration.
          *
          * @return the {@link LnurlAuthConfigurer}
          */
         public LnurlAuthConfigurer and() {
             return LnurlAuthConfigurer.this;
+        }
+
+        private AntPathRequestMatcher getRequestMatcher() {
+            String pathWithoutQuery = UriComponentsBuilder.fromUriString(authorizationRequestBaseUri)
+                    .replaceQuery("")
+                    .fragment("")
+                    .build().toUriString();
+            return new AntPathRequestMatcher(pathWithoutQuery, HttpMethod.GET.name());
         }
     }
 

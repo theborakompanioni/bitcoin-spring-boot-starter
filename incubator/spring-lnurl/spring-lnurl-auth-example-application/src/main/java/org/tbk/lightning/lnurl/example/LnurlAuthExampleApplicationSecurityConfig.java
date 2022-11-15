@@ -26,7 +26,7 @@ import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 public class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer {
     static final String LNURL_AUTH_LOGIN_PAGE_PATH = "/login";
     static final String LNURL_AUTH_WALLET_LOGIN_PATH = "/api/v1/lnurl-auth/login/wallet";
-    static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnurl-auth/login/session";
+    static final String LNURL_AUTH_SESSION_LOGIN_PATH = "/api/v1/lnurl-auth/login/session?redirect=/authenticated.html";
     static final String LNURL_AUTH_SESSION_K1_KEY = "my_lnurl_auth_k1";
 
     public static String lnurlAuthLoginPagePath() {
@@ -83,6 +83,12 @@ public class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCus
                         .sessionEndpoint(session -> session
                                 .baseUri(lnurlAuthSessionLoginPath())
                                 .sessionK1Key(lnurlAuthSessionK1Key())
+                                .successHandlerCustomizer(successHandler -> {
+                                    successHandler.setDefaultTargetUrl("/");
+                                    successHandler.setTargetUrlParameter("redirect");
+                                    successHandler.setAlwaysUseDefaultTargetUrl(false);
+                                    successHandler.setUseReferer(false);
+                                })
                         )
                         .walletEndpoint(wallet -> wallet
                                 .baseUri(lnurlAuthWalletLoginPath())

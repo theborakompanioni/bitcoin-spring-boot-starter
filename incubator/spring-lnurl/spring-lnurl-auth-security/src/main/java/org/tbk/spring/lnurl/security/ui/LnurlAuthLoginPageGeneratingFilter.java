@@ -112,12 +112,13 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
                 return;
             }
 
-            boolean loginError = isErrorPage(request);
-            boolean logoutSuccess = isLogoutSuccess(request);
-            if (isLoginUrlRequest(request) || loginError || logoutSuccess) {
+            boolean loginPageRequest = isLoginUrlRequest(request)
+                    || isLogoutSuccess(request)
+                    || isErrorPage(request);
+            if (loginPageRequest) {
                 LnurlAuth lnurlAuth = lnurlAuthFactory.createLnUrlAuth();
 
-                // we do not want already logged in users to generate a new k1 value
+                // we do not want already logged-in users to generate a new k1 value
                 // the polling script will trigger errors and the user will be logged out
                 // two solutions:
                 //   1. redirect user to other page
@@ -149,11 +150,11 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
 
     @SuppressFBWarnings("XSS_SERVLET") // false positive
     private void writeLoginScript(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // prevent logged in users from invoking browser session migration - this would logout the user
-        // as an AuthenticationException is thrown, which invalidates the users authentication.
+        // prevent logged-in users from invoking browser session migration - this would log out the user
+        // as an AuthenticationException is thrown, which invalidates the user's authentication.
         // it is better not to load the script, regardless the configuration of the underlying application.
         // better: 1) redirect authenticated users before the login page is loaded or
-        //         2) requesting the login page will trigger a logout -> user needs to login again.
+        //         2) requesting the login page will trigger a logout -> user needs to log in again.
         String authenticationUrl = request.getContextPath() + this.sessionAuthenticationUrl;
 
         Optional<String> errorMessage = Optional.ofNullable(request.getSession(false))
@@ -239,7 +240,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         String uri = request.getRequestURI();
         int pathParamIndex = uri.indexOf(';');
         if (pathParamIndex > 0) {
-            // strip everything after the first semi-colon
+            // strip everything after the first semicolon
             uri = uri.substring(0, pathParamIndex);
         }
         if (request.getQueryString() != null) {

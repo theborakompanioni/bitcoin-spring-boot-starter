@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-final class LnurlAuthSessionAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public final class LnurlAuthSessionAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     LnurlAuthSessionAuthenticationSuccessHandler() {
         this.setRedirectStrategy(new LnurlAuthSessionRedirectStrategy(this.getRedirectStrategy()));

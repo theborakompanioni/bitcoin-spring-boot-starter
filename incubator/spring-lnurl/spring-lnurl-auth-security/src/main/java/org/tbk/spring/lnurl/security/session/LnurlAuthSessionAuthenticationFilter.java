@@ -8,9 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.simple.auth.SimpleK1;
+import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,25 +23,34 @@ import java.util.Optional;
 
 @Slf4j
 public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private static final LnurlAuthSessionAuthenticationSuccessHandler successHandler = new LnurlAuthSessionAuthenticationSuccessHandler();
+    @FunctionalInterface
+    public
+    interface SuccessHandlerCustomizer {
+        void customize(LnurlAuthSessionAuthenticationSuccessHandler successHandler);
+    }
 
     @Getter
     private final String k1AttributeName;
 
     @Getter
-    private final String sessionLoginUrl;
+    private final RequestMatcher sessionLoginUrlRequestMather;
 
-    public LnurlAuthSessionAuthenticationFilter(String sessionLoginUrl, String k1AttributeName) {
-        super(new AntPathRequestMatcher(sessionLoginUrl, HttpMethod.GET.name()));
+    public LnurlAuthSessionAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher, String k1AttributeName, SuccessHandlerCustomizer successHandlerCustomizer) {
+        super(requiresAuthenticationRequestMatcher);
 
         Assert.hasText(k1AttributeName, "k1AttributeName cannot be empty");
         this.k1AttributeName = k1AttributeName;
 
-        Assert.hasText(sessionLoginUrl, "sessionLoginUrl cannot be empty");
-        this.sessionLoginUrl = sessionLoginUrl;
+        Assert.notNull(requiresAuthenticationRequestMatcher, "requiresAuthenticationRequestMatcher cannot be null");
+        this.sessionLoginUrlRequestMather = requiresAuthenticationRequestMatcher;
 
+        Assert.notNull(successHandlerCustomizer, "successHandlerCustomizer cannot be null");
+        LnurlAuthSessionAuthenticationSuccessHandler successHandler = new LnurlAuthSessionAuthenticationSuccessHandler();
+        successHandlerCustomizer.customize(successHandler);
         this.setAuthenticationSuccessHandler(successHandler);
-        this.setAllowSessionCreation(false); // session must only be created by the application itself
+
+        // session must only be created by the application itself
+        this.setAllowSessionCreation(false);
     }
 
     @Override
@@ -52,7 +63,7 @@ public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthentication
 
         if (k1.isEmpty()) {
             // as 'k1' is deleted once the user is logged in - any attempt to migrate the session again
-            // will logout the user (security context is clear if exception is thrown)
+            // will log out the user (security context is clear if exception is thrown)
             throw new AuthenticationServiceException("'k1' is missing or invalid.");
         }
 
