@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update grpc from v1.47.0 to v1.49.2
 - upgrade: update protobuf from v3.21.2 to v3.21.7
 - upgrade: update jmolecules bom from v2021.2.0 to v2022.2.2
-- upgrade: update bytebuddy from v1.10.22 to v1.12.18
+- upgrade: update bytebuddy from v1.10.22 to v1.12.19
 - upgrade: update checkstyle from v8.44 to v10.3.4
 - upgrade: update consensusj from v0.6.3 to v0.6.4
 - upgrade: update bitcoin-kmp from v0.8.5 to v0.10.0
