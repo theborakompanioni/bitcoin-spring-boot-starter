@@ -1,26 +1,44 @@
 package org.tbk.bitcoin.fee.example.swagger;
 
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@Configuration
+@RequiredArgsConstructor
 public class SwaggerUiWebMvcConfigurer implements WebMvcConfigurer {
-    private final String baseUrl;
 
-    public SwaggerUiWebMvcConfigurer(String baseUrl) {
-        this.baseUrl = StringUtils.trimTrailingCharacter(baseUrl, '/');
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(baseUrl + "/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-                .resourceChain(false);
-    }
+    public static final String APP_HANDLER_PATH = "/swagger-ui";
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController(baseUrl + "/swagger-ui/", baseUrl + "/swagger-ui/index.html");
+        String targetPath = "/swagger-ui/index.html";
+        registry.addRedirectViewController(APP_HANDLER_PATH, targetPath);
+        registry.addRedirectViewController(APP_HANDLER_PATH + "/", targetPath);
+    }
+
+    @Bean
+    public OpenAPI openApi() {
+        return new OpenAPI()
+                .info(new Info()
+                        .version(this.getClass().getPackage().getImplementationVersion())
+                        .title("Bitcoin Fee Recommendation API")
+                        .description("A Bitcoin Fee Recommendation API built with bitcoin-spring-boot-starter.")
+                        .termsOfService("https://github.com/theborakompanioni/bitcoin-spring-boot-starter")
+                        .contact(new Contact()
+                                .name("tbk")
+                                .url("")
+                                .email(""))
+                        .license(new License()
+                                .name("Apache License Version 2.0")
+                                .url("https://github.com/theborakompanioni/bitcoin-spring-boot-starter/blob/master/LICENSE")
+                        )
+                );
     }
 }

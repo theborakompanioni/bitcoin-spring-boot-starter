@@ -1,6 +1,10 @@
 package org.tbk.bitcoin.exchange.example.api.rate;
 
 import com.google.common.collect.ImmutableMap;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,6 +47,7 @@ public class ExchangeRateCtrl {
     @GetMapping("/latest")
     public ResponseEntity<ExchangeRateResponseImpl> latest(
             @RequestParam(name = "base", required = false) CurrencyUnit baseParamOrNull,
+            @Parameter(array = @ArraySchema(schema = @Schema(implementation = String.class)))
             @RequestParam(name = "target", required = false) List<CurrencyUnit> targetParamOrNull,
             @RequestParam(name = "provider", required = false) List<String> providerParamOrNull
     ) {

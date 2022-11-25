@@ -15,7 +15,8 @@ dependencies {
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
 
     implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
-    implementation "io.springfox:springfox-boot-starter:${springfoxVersion}"
+
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenApiVersion}"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'

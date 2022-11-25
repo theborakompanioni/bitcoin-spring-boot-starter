@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - change lnd docker image from lnzap/lnd to lightninglabs/lnd
+- replace springfox v3.0.0 with springdoc-openapi v1.6.13
 - upgrade: update lightningj from v0.12.1-Beta to v0.15.3-Beta
 - upgrade: update spring-boot from v2.7.3 to v2.7.5
 - upgrade: update testcontainers from v1.17.3 to v1.17.5

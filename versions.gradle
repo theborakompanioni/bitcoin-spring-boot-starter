@@ -21,7 +21,7 @@ ext {
     netlayerVersion = '0.7.5'
     sqliteVersion = '3.39.3.0'
     lombokVersion = '1.18.20'
-    springfoxVersion = '3.0.0'
+    springdocOpenApiVersion = '1.6.13'
     mockserverVersion = '5.11.2'
     checkstyleVersion = '10.3.4'
     findsecbugsPluginVersion = '1.12.0'
