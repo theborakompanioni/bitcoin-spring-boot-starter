@@ -70,7 +70,19 @@ class SimpleBitcoinjElectrumClientContainerTest {
                 .findFirst().orElseThrow();
 
         assertThat("wallet is known", walletSyncState.getKey(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
-        assertThat("wallet is loaded", walletSyncState.getValue(), is(true));
+
+        if (walletSyncState.getValue() == Boolean.FALSE) {
+            // might need some time to be loaded
+            Boolean walletIsLoaded = Flux.interval(Duration.ofMillis(100))
+                    .map(it -> sut.delegate().daemonStatus())
+                    .map(DaemonStatusResponse::getWallets)
+                    .map(it -> it.entrySet().stream().findFirst().orElseThrow())
+                    .map(Map.Entry::getValue)
+                    .filter(it -> it)
+                    .blockFirst(Duration.ofSeconds(3));
+
+            assertThat("wallet is loaded",walletIsLoaded, is(true));
+        }
     }
 
     @Test
