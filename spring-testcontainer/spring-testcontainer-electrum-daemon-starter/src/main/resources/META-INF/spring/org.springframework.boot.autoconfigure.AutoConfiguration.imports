@@ -1,0 +1,2 @@
+org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerAutoConfiguration
+org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerJsonRpcClientAutoConfiguration

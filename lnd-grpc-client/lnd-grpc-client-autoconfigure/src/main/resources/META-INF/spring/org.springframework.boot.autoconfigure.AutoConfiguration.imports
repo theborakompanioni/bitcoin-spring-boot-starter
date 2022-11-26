@@ -1,0 +1,3 @@
+org.tbk.lightning.lnd.grpc.config.LndClientAutoConfiguration
+org.tbk.lightning.lnd.grpc.config.LndHealthContributorAutoConfiguration
+org.tbk.lightning.lnd.grpc.config.LndMetricsAutoConfiguration

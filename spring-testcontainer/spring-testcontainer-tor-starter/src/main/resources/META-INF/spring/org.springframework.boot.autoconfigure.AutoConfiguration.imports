@@ -1,0 +1,2 @@
+org.tbk.spring.testcontainer.tor.config.TorContainerAutoConfiguration
+org.tbk.spring.testcontainer.tor.config.TorContainerHttpClientAutoConfiguration

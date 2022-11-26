@@ -1,0 +1,2 @@
+org.tbk.bitcoin.zeromq.config.BitcoinZeroMqClientAutoConfiguration
+org.tbk.bitcoin.zeromq.config.BitcoinjZeroMqClientAutoConfiguration

@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.bitcoin.jsr354.config.BitcoinJsr354AutoConfiguration

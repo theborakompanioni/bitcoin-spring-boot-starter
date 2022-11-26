@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfiguration,\
-org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcCacheAutoConfiguration,\
-org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcHealthContributorAutoConfiguration,\
-org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcMetricsConfiguration

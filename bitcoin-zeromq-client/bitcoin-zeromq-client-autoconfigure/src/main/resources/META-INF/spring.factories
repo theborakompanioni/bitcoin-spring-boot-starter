@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.tbk.bitcoin.zeromq.config.BitcoinZeroMqClientAutoConfiguration,\
-org.tbk.bitcoin.zeromq.config.BitcoinjZeroMqClientAutoConfiguration

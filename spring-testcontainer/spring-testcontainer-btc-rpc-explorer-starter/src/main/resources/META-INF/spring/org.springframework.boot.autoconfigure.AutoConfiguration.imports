@@ -1,2 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.tbk.spring.testcontainer.btcrpcexplorer.config.BtcRpcExplorerContainerAutoConfiguration
