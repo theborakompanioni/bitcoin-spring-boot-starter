@@ -136,6 +136,10 @@ subprojects {
         }
     }
 
+    compileJava {
+        options.compilerArgs << '-parameters'
+    }
+
     jar {
         exclude('*-local.yml')
         exclude('**/mainnet/**')
