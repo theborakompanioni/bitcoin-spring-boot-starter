@@ -158,6 +158,7 @@
          <trusted-key id="9d0a56aaa0d60e0c0c7dccc0b4c70893b62babe8" group="org.apache.logging" name="logging-parent" version="5"/>
          <trusted-key id="9f95ef0de4d90f26ccaffead982f38d39bb64ba8" group="com.mchange"/>
          <trusted-key id="a413f67d71beec23add0ce0acb43338e060cf9fa" group="org.jacoco"/>
+         <trusted-key id="a41a5960555f8cbbc7d8b2d7787f3a057b828d36" group="org.springdoc"/>
          <trusted-key id="a5bd02b93e7a40482eb1d66a5f69ad087600b22c" group="org.ow2.asm"/>
          <trusted-key id="a6d6c97108b8585f91b158748671a8df71296252" group="^com[.]squareup($|([.].*))" regex="true"/>
          <trusted-key id="a7892505cf1a58076453e52d7999befba1039e8b" group="net.bytebuddy"/>
@@ -179,7 +180,10 @@
          <trusted-key id="bdb5fa4fe719d787fb3d3197f6d4a1d411e9d1ae" group="com.google.guava"/>
          <trusted-key id="be685132afd2740d9095f9040cc0b712fee75827" group="org.assertj"/>
          <trusted-key id="be6b997eb563f4898c3c406b8db9fa0b0718bbf9" group="javax.cache" name="cache-api" version="1.1.1"/>
-         <trusted-key id="c1cba75ec9bd0baf8061935459e05ce618187ed4" group="org.xerial" name="sqlite-jdbc" version="3.39.3.0"/>
+         <trusted-key id="c1cba75ec9bd0baf8061935459e05ce618187ed4">
+            <trusting group="org.xerial" name="sqlite-jdbc" version="3.39.3.0"/>
+            <trusting group="org.xerial" name="sqlite-jdbc" version="3.40.0.0"/>
+         </trusted-key>
          <trusted-key id="c25a288a842eaf7aa5b5303f7a73fe77de2c4027" group="^fr[.]acinq($|([.].*))" regex="true"/>
          <trusted-key id="c6f7d1c804c821f49af3bfc13ad93c3c677a106e" group="io.perfmark" name="perfmark-api" version="0.25.0"/>
          <trusted-key id="c70b844f002f21f6d2b9c87522e44ac0622b91c3" group="com.beust" name="jcommander" version="1.82"/>

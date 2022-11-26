@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update nebula release plugin from v16.0.0 to v17.1.0
 - upgrade: update nebula project plugin from v9.6.3 to v10.0.1
 - upgrade: update spring-tor from v0.5.0 to v0.6.0
+- upgrade: update sqlite from v3.39.3.0 to v3.40.0.0
 
 ### Fixed
 - fix: allow non-https localhost lnurls
