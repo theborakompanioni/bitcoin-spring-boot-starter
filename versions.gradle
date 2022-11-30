@@ -18,7 +18,6 @@ ext {
     zxingVersion = '3.5.0'
     acinqBitcoinKmpVersion = '0.10.0'
     acinqSecp256k1KmpVersion = '0.7.0'
-    netlayerVersion = '0.7.5'
     sqliteVersion = '3.40.0.0'
     lombokVersion = '1.18.20'
     springdocOpenApiVersion = '1.6.13'
