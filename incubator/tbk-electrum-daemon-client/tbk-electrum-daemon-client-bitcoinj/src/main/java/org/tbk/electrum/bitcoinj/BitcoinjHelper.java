@@ -7,8 +7,6 @@ import org.tbk.electrum.model.TxoValue;
 import org.tbk.electrum.model.Utxo;
 import org.tbk.electrum.model.Utxos;
 
-import java.util.stream.Collectors;
-
 public final class BitcoinjHelper {
     private BitcoinjHelper() {
         throw new UnsupportedOperationException();
@@ -34,7 +32,7 @@ public final class BitcoinjHelper {
         return SimpleBitcoinjUtxos.builder()
                 .utxos(utxos.getUtxos().stream()
                         .map(BitcoinjHelper::toBitcoinjUtxo)
-                        .collect(Collectors.toUnmodifiableList()))
+                        .toList())
                 .build();
     }
 }

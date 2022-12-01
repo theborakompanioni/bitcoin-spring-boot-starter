@@ -20,7 +20,6 @@ import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.RateType;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -101,7 +100,7 @@ class ScheduledExchangeRateUpdater implements ApplicationContextAware, Disposabl
 
         List<ExchangeRateProvider> eligibleProvider = exchangeRateProviders.stream()
                 .filter(it -> it.isAvailable(conversionQuery))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("Eligible provider count: {}", eligibleProvider.size());
 

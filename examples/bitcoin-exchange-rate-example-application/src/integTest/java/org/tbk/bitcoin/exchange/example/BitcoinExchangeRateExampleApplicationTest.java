@@ -14,7 +14,6 @@ import javax.money.convert.*;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -77,7 +76,7 @@ public class BitcoinExchangeRateExampleApplicationTest {
 
         Collection<ExchangeRateProvider> eligibleProvider = providers.stream()
                 .filter(it -> it.isAvailable(conversionQuery))
-                .collect(Collectors.toList());
+                .toList();
         assertThat(eligibleProvider, hasSize(greaterThan(0)));
 
         eligibleProvider.forEach(provider -> {

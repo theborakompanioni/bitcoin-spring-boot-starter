@@ -50,7 +50,7 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
                             .filter(val -> !exchangeRate.equals(val))
                             .map(ExchangeRateImpl::toDto)
                             .map(ExchangeRateImplBuilder::build)
-                            .collect(Collectors.toList()))
+                            .toList())
                     .meta(ContextUtil.toMap(exchangeRate.getContext()))
                     .date(exchangeRate.getContext().get(LocalDate.class));
         }

@@ -98,7 +98,7 @@ public class FeeCtrl {
     public ResponseEntity<ProviderResponse> provider() {
         List<ProviderInfo> providerInfos = feeProviders.stream()
                 .map(FeeProvider::info)
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(ProviderResponse.builder()
                 .primaryProvider(primaryFeeProvider.info())

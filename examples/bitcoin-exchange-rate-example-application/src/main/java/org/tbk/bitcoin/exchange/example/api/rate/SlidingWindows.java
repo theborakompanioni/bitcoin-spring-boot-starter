@@ -3,7 +3,6 @@ package org.tbk.bitcoin.exchange.example.api.rate;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -24,6 +23,6 @@ final class SlidingWindows {
                 .boxed()
                 .map(localDate::minusDays)
                 .sorted(Comparator.<LocalDate>naturalOrder().reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 }

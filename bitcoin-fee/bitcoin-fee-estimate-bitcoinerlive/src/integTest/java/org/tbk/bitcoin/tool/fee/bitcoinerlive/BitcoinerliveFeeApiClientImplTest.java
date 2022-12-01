@@ -7,7 +7,6 @@ import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimat
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -28,13 +27,13 @@ class BitcoinerliveFeeApiClientImplTest {
     void itShouldGetFeeEstimatesLatest() {
         List<Confidence> confidences = Arrays.stream(Confidence.values())
                 .filter(val -> val != Confidence.UNRECOGNIZED)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         List<FeeEstimatesLatestRequest> requests = confidences.stream()
                 .map(val -> FeeEstimatesLatestRequest.newBuilder()
                         .setConfidenceType(val)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat("sanity check - requests is not empty", requests, hasSize(greaterThan(0)));
 

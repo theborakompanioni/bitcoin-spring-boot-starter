@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -83,9 +82,9 @@ public class MempoolspaceFeeApiClientImpl implements MempoolspaceFeeApiClient {
                         .setMedianFee(it.getFieldsOrThrow("medianFee").getNumberValue())
                         .addAllFeeRange(it.getFieldsOrThrow("feeRange").getListValue().getValuesList().stream()
                                 .map(Value::getNumberValue)
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         return ProjectedMempoolBlocks.newBuilder()
                 .addAllBlocks(projectedBlocks)

@@ -155,11 +155,11 @@ public class FeeTableCtrl {
                                                                 .findFirst().orElse(0d))
                                                         .setProviderName(r.getProviderInfo().getName())
                                                         .build())
-                                                .collect(Collectors.toList())
+                                                .toList()
                                         )
                                         .build())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 
@@ -171,13 +171,13 @@ public class FeeTableCtrl {
                 .map(RowEntry::getFeeRecommendationList)
                 .flatMap(Collection::stream)
                 .map(FeeRecommendation::getProviderName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
 
         List<FeeTableResponse.Column> columns = providerNames.stream()
                 .map(val -> FeeTableResponse.Column.newBuilder()
                         .setText(val)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         RowEntry missingEstimationRowEntry = RowEntry.newBuilder()
                 .setText("-")
@@ -198,14 +198,14 @@ public class FeeTableCtrl {
                                                     .build()
                                             )
                                             .orElse(missingEstimationRowEntry)))
-                            .collect(Collectors.toList());
+                            .toList();
 
                     return FeeTableResponse.Row.newBuilder()
                             .setHeader(row.getHeader())
                             .addAllEntry(rowEntries)
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         return FeeTableResponse.newBuilder()
                 .addAllColumn(columns)

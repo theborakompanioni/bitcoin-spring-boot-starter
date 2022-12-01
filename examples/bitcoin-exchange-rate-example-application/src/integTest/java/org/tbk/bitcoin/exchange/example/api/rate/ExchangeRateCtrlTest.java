@@ -38,7 +38,7 @@ class ExchangeRateCtrlTest {
         RequestEntity<Void> requestEntity = RequestEntity.get(uriComponents.toUri())
                 .build();
 
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
+        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {
         });
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));

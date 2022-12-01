@@ -14,7 +14,6 @@ import org.tbk.electrum.model.Utxos;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.tbk.electrum.bitcoinj.BitcoinjHelper.toBitcoinjBalance;
@@ -49,7 +48,7 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
 
         return addresses.stream()
                 .map(it -> Address.fromString(this.network, it))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     @Override
@@ -58,7 +57,7 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
 
         return addresses.stream()
                 .map(it -> Address.fromString(this.network, it))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     @Override
@@ -67,7 +66,7 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
 
         return addresses.stream()
                 .map(it -> Address.fromString(this.network, it))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     @Override
@@ -76,7 +75,7 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
 
         return addresses.stream()
                 .map(it -> Address.fromString(this.network, it))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -89,7 +88,7 @@ class BitcoinContainerWithZeroMqClientTest {
 
         List<Sha256Hash> receivedBlockHashes = receivedBlocks.stream()
                 .map(Block::getHash)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         // check that all blocks are received - block might not be received in order
         assertThat("all generated blocks are received via zeromq", receivedBlockHashes, containsInAnyOrder(generatedBlockHashes.toArray()));

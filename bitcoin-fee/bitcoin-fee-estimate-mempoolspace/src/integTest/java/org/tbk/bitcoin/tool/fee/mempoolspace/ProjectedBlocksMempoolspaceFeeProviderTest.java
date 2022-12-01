@@ -8,7 +8,6 @@ import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,13 +44,13 @@ class ProjectedBlocksMempoolspaceFeeProviderTest {
         // have more than 1 block -> so at least just ensure that first block estimates are present
         List<Duration> durations = IntStream.range(0, 10)
                 .mapToObj(Duration::ofMinutes)
-                .collect(Collectors.toList());
+                .toList();
 
         List<FeeRecommendationRequestImpl> requests = durations.stream()
                 .map(it -> FeeRecommendationRequestImpl.builder()
                         .durationTarget(it)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         for (FeeRecommendationRequest request : requests) {
             FeeRecommendationResponse response = this.sut.request(request)

@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -40,7 +39,7 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
     public List<Integer> getHiddenServiceHostPorts() {
         return getHiddenServices().values().stream()
                 .map(HiddenServiceDefinition::getHostPort)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

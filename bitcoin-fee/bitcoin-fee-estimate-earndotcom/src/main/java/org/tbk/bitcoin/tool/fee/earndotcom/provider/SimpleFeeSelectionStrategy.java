@@ -7,7 +7,6 @@ import org.tbk.bitcoin.tool.fee.earndotcom.client.TransactionFeesSummary;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class SimpleFeeSelectionStrategy implements FeeSelectionStrategy {
 
@@ -37,7 +36,7 @@ public class SimpleFeeSelectionStrategy implements FeeSelectionStrategy {
 
         List<FeesSummaryEntry> eligibleEntries = feeList.stream()
                 .filter(val -> val.getMaxMinutes() <= minutes)
-                .collect(Collectors.toList());
+                .toList();
 
         final Optional<FeesSummaryEntry> summaryEntryOrEmpty;
         if (request.isTargetDurationZeroOrLess()) {

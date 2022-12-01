@@ -17,7 +17,6 @@ import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRate;
 import javax.money.convert.ExchangeRateProvider;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootApplication
@@ -61,7 +60,7 @@ public class BitcoinExchangeRateExampleApplication {
 
             List<ExchangeRateProvider> eligibleProvider = xChangeExchangeRateProviders.stream()
                     .filter(it -> it.isAvailable(conversionQuery))
-                    .collect(Collectors.toList());
+                    .toList();
 
             log.info("Eligible provider count: {}", eligibleProvider.size());
 

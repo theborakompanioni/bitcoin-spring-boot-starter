@@ -3,7 +3,6 @@ package org.tbk.bitcoin.exchange.example.api.rate;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -61,7 +59,7 @@ public class ExchangeRateCtrl {
         List<ExchangeRateProvider> exchangeRateProviders = Optional.ofNullable(providerParamOrNull).stream()
                 .flatMap(Collection::stream)
                 .map(MonetaryConversions::getExchangeRateProvider)
-                .collect(Collectors.toList());
+                .toList();
 
         ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
                 .setBaseCurrency(baseCurrency);

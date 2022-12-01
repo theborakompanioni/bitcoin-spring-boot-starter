@@ -14,7 +14,6 @@ import javax.money.CurrencyQueryBuilder;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/currency", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,7 +35,7 @@ public class CurrencyUnitCtrl {
 
         List<CurrencyUnit> sortedCurrencies = currencies.stream()
                 .sorted()
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(sortedCurrencies);
     }

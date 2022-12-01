@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -136,7 +135,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
         List<String> electrumServers = Optional.ofNullable(this.properties.getElectrumx())
                 .map(it -> String.format("%s://%s:%d", "tcp", it.getRpchost(), it.getTcpport()))
                 .stream()
-                .collect(Collectors.toList());
+                .toList();
 
         Map<String, String> environment = createEnvironment(bitcoindHost, bitcoindPort, electrumServers);
 
@@ -154,7 +153,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
                 .build();
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
-                Integer.toHexString(System.identityHashCode(this)))
+                        Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
         BtcRpcExplorerContainer<?> btcRpcExplorerContainer = new BtcRpcExplorerContainer<>(dockerImageName)

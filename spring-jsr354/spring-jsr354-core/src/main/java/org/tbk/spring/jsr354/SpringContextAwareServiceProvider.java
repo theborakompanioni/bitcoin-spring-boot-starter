@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.money.spi.ServiceProvider;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SpringContextAwareServiceProvider implements ApplicationContextAware, ServiceProvider {
@@ -44,8 +43,7 @@ public class SpringContextAwareServiceProvider implements ApplicationContextAwar
         Collection<T> servicesFromSpring = getServicesFromSpringContext(serviceType);
         Collection<T> servicesFromDelegate = getServicesFromDelegate(serviceType);
 
-        return Stream.concat(servicesFromSpring.stream(), servicesFromDelegate.stream())
-                .collect(Collectors.toUnmodifiableList());
+        return Stream.concat(servicesFromSpring.stream(), servicesFromDelegate.stream()).toList();
     }
 
     @Override

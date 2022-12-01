@@ -14,7 +14,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,7 +47,7 @@ public class BlockstreamInfoFeeApiClientImpl implements BlockstreamInfoFeeApiCli
                         .setEstimatedFeerateInSatPerVbyte(val.getValue().getNumberValue())
                         .build())
                 .sorted(Comparator.comparingLong(FeeEstimates.Entry::getNumberOfBlocks))
-                .collect(Collectors.toList());
+                .toList();
 
         return FeeEstimates.newBuilder()
                 .addAllEntry(entries)

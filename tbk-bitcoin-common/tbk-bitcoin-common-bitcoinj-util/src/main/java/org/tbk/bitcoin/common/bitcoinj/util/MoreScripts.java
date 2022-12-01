@@ -11,7 +11,6 @@ import org.bitcoinj.script.ScriptPattern;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 public final class MoreScripts {
@@ -28,7 +27,7 @@ public final class MoreScripts {
         return tx.getOutputs().stream()
                 .map(val -> MoreScripts.extractAddress(tx.getParams(), val.getScriptPubKey()))
                 .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static Optional<Address> extractAddress(NetworkParameters networkParameters, Script script) {

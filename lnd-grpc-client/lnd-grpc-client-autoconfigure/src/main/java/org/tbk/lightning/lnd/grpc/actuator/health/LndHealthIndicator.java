@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;
@@ -96,31 +95,31 @@ public class LndHealthIndicator extends AbstractHealthIndicator {
                                 .put("isKnown", it.getValue().getIsKnown())
                                 .put("isRequired", it.getValue().getIsRequired())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .put("chains", Optional.of(info).map(it -> {
-                    try {
-                        return it.getChains();
-                    } catch (ClientSideException e) {
-                        log.warn("Exception occurred while constructing chains: {}", e.getMessage());
-                        return Collections.<Chain>emptyList();
-                    }
-                }).stream()
+                            try {
+                                return it.getChains();
+                            } catch (ClientSideException e) {
+                                log.warn("Exception occurred while constructing chains: {}", e.getMessage());
+                                return Collections.<Chain>emptyList();
+                            }
+                        }).stream()
                         .flatMap(Collection::stream)
                         .map(it -> ImmutableMap.<String, Object>builder()
                                 .put("network", firstNonNull(it.getNetwork(), "<empty>"))
                                 .put("chain", firstNonNull(it.getChain(), "<empty>"))
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .put("uris", Optional.of(info).map(it -> {
-                    try {
-                        return it.getUris();
-                    } catch (ClientSideException e) {
-                        log.warn("Exception occurred while constructing uris: {}", e.getMessage());
-                        return Collections.<String>emptyList();
-                    }
-                }).stream()
+                            try {
+                                return it.getUris();
+                            } catch (ClientSideException e) {
+                                log.warn("Exception occurred while constructing uris: {}", e.getMessage());
+                                return Collections.<String>emptyList();
+                            }
+                        }).stream()
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 }

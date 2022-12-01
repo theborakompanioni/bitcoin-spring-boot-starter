@@ -219,7 +219,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                         .txPos(val.getTxPos())
                         .value(SimpleTxoValue.of(val.getValue()))
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
 
         return SimpleUtxos.builder()
                 .utxos(utxos)
@@ -233,7 +233,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                         .height(it.getHeight())
                         .txHash(it.getTxHash())
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
@@ -263,7 +263,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                                     .txHash(input.getPrevoutHash())
                                                     .outputIndex(input.getPrevoutN())
                                                     .build())
-                                            .collect(Collectors.toList()))
+                                            .toList())
                                     .orElseGet(Collections::emptyList);
 
                             List<SimpleHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
@@ -272,7 +272,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                                     .value(BtcTxoValues.fromBtcString(output.getValue()))
                                                     .address(output.getAddress())
                                                     .build())
-                                            .collect(Collectors.toList()))
+                                            .toList())
                                     .orElseGet(Collections::emptyList);
 
                             Instant timestampOrNull = Optional.ofNullable(it.getTimestamp())
@@ -293,7 +293,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                     .outputs(outputsOrEmpty)
                                     .build();
                         })
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 
@@ -334,7 +334,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                 .unlockingScript(it.getScriptSig())
                                 .witness(it.getWitness())
                                 .build())
-                        .collect(Collectors.toList())
+                        .toList()
                 )
                 .outputs(outputs.stream()
                         .map(it -> SimpleTx.SimpleTxOutput.builder()
@@ -342,7 +342,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                 .lockingScript(it.getScriptPubKey())
                                 .address(it.getAddress())
                                 .build())
-                        .collect(Collectors.toList())
+                        .toList()
                 )
                 .build();
     }

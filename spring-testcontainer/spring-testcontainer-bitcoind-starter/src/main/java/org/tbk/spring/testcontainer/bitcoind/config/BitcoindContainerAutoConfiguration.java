@@ -19,7 +19,6 @@ import org.testcontainers.utility.DockerImageName;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -91,7 +90,7 @@ public class BitcoindContainerAutoConfiguration {
                 .orElse(defaultDockerImageName);
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
-                Integer.toHexString(System.identityHashCode(this)))
+                        Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
         BitcoindContainer<?> bitcoindContainer = new BitcoindContainer<>(dockerImageName)
@@ -153,7 +152,7 @@ public class BitcoindContainerAutoConfiguration {
                 .map(BitcoindConfigEntry::valueOf)
                 .flatMap(Optional::stream)
                 .map(BitcoindConfigEntry::getName)
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> userGivenCommands = this.properties.getCommands();
         List<String> allowedUserGivenCommands = userGivenCommands.stream()
@@ -161,7 +160,7 @@ public class BitcoindContainerAutoConfiguration {
                 .flatMap(Optional::stream)
                 .filter(it -> !predefinedKeys.contains(it.getName()))
                 .map(BitcoindConfigEntry::toCommandString)
-                .collect(Collectors.toList());
+                .toList();
 
         return commandsBuilder
                 .addAll(allowedUserGivenCommands)

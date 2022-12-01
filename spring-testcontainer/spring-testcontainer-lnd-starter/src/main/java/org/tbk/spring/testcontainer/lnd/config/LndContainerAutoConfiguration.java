@@ -23,7 +23,6 @@ import org.testcontainers.utility.DockerImageName;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
@@ -78,7 +77,7 @@ public class LndContainerAutoConfiguration {
                 .withStrategy(Wait.forLogMessage(".*Opened wallet.*", 1));
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
-                Integer.toHexString(System.identityHashCode(this)))
+                        Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
         return new LndContainer<>(dockerImageName)
@@ -134,7 +133,7 @@ public class LndContainerAutoConfiguration {
                 .map(LndConfigEntry::valueOf)
                 .flatMap(Optional::stream)
                 .map(LndConfigEntry::getName)
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> userGivenCommands = this.properties.getCommands();
         List<String> allowedUserGivenCommands = userGivenCommands.stream()
@@ -142,7 +141,7 @@ public class LndContainerAutoConfiguration {
                 .flatMap(Optional::stream)
                 .filter(it -> !predefinedKeys.contains(it.getName()))
                 .map(LndConfigEntry::toCommandString)
-                .collect(Collectors.toList());
+                .toList();
 
         return commandsBuilder
                 .addAll(allowedUserGivenCommands)

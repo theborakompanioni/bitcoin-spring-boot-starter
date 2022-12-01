@@ -52,7 +52,7 @@ public final class HiddenServiceHostnames implements HiddenServiceHostnameResolv
 
         return Arrays.stream(execResult.getStdout().split("\n"))
                 .filter(val -> !val.isBlank())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Container.ExecResult execOrThrow(String[] command) {

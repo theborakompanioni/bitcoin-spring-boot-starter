@@ -6,7 +6,6 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.HDPath;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,7 +41,7 @@ public final class MoreHdKeyDerivation {
         ChildNumber first = childNumbers.get(0);
         DeterministicKey childKey = HDKeyDerivation.deriveChildKey(parent, first);
 
-        List<ChildNumber> newChildNumbers = childNumbers.stream().skip(1).collect(Collectors.toList());
+        List<ChildNumber> newChildNumbers = childNumbers.stream().skip(1).toList();
 
         return deriveChildKeyRecursive(childKey, newChildNumbers);
     }

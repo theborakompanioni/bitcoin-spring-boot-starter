@@ -17,7 +17,6 @@ import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -48,7 +47,7 @@ public class BitcoinFeeExampleApplication {
             log.info("=====================");
             List<Duration> durations = IntStream.range(0, 12)
                     .mapToObj(val -> Duration.ofMinutes(val * 30L))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Duration duration : durations) {
                 FeeRecommendationRequest request = FeeRecommendationRequestImpl.builder()
