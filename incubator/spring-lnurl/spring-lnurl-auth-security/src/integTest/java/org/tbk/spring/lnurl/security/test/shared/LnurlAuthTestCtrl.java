@@ -24,10 +24,10 @@ public class LnurlAuthTestCtrl {
     private final LnurlAuthFactory lnurlAuthFactory;
 
     /**
-     * Simple endpoint returning an lnurl-auth string.
+     * Simple endpoint returning a lnurl-auth string.
      * This method creates a session linking the user to a specific 'k1' value.
      *
-     * @return lnurl-auth string to login the user (with an external wallet software)
+     * @return lnurl-auth string to log in the user (with an external wallet software)
      */
     @GetMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> initLogin(HttpSession session) {
@@ -39,7 +39,7 @@ public class LnurlAuthTestCtrl {
     }
 
     /**
-     * Simple endpoint returning the name of the logged in user.
+     * Simple endpoint returning the name of the logged-in user.
      * This method will throw an exception if the principal is unauthenticated.
      *
      * @return the name of the authenticated user

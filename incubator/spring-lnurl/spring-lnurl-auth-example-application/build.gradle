@@ -11,6 +11,7 @@ byteBuddy {
 
 dependencies {
     implementation project(':incubator:lnurl-java:lnurl-simple')
+    testImplementation project(':incubator:lnurl-java:lnurl-test')
 
     implementation project(':incubator:spring-lnurl:spring-lnurl-auth-starter')
     implementation "io.github.theborakompanioni:spring-tor-starter:${torSpringBootStarterVersion}"

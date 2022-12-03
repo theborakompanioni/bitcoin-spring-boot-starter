@@ -12,7 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.tbk.lnurl.auth.*;
+import org.tbk.lnurl.auth.K1Manager;
+import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
 @Slf4j

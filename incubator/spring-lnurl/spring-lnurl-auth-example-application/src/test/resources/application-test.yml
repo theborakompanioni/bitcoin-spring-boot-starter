@@ -12,4 +12,8 @@ management.server.port: 9001
 
 spring.datasource.url: 'jdbc:sqlite::memory:'
 
+app:
+  lnurl-auth-base-url: http://localhost:8080
 
+org.tbk.tor:
+  enabled: false  # default is `true`

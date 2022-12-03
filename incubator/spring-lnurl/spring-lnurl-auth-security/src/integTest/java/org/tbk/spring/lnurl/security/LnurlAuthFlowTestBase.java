@@ -27,7 +27,7 @@ class LnurlAuthFlowTestBase {
          * STEP 1: Create a session for web user (containing a newly created 'k1' value)
          *
          * Create a session with k1 value and return a bech32 encoded lnurl-auth string.
-         * Only the browser knowing the session ID can login after a wallet signed the k1 value.
+         * Only the browser knowing the session ID can log in after a wallet signed the k1 value.
          *
          * This is done in a browser.
          * A login page can, e.g. display a qr-code for wallets to scan.
