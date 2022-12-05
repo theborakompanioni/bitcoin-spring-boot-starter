@@ -1,11 +1,14 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
 import com.google.common.base.Strings;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -17,11 +20,12 @@ import java.util.Optional;
  * "rpcpassword": "correct horse battery staple"
  * }
  */
-@Data
 @ConfigurationProperties(
         prefix = "org.tbk.bitcoin.jsonrpc",
         ignoreUnknownFields = false
 )
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
 
     public enum Network {
@@ -61,8 +65,7 @@ public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
 
 
     public Network getNetwork() {
-        return Optional.ofNullable(network)
-                .orElse(Network.mainnet);
+        return Objects.requireNonNullElse(network, Network.mainnet);
     }
 
     @Override

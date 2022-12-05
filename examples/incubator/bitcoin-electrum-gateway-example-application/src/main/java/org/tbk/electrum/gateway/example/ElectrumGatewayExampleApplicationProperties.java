@@ -1,22 +1,38 @@
 package org.tbk.electrum.gateway.example;
 
 import com.google.common.base.Strings;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.time.Duration;
+import java.util.Objects;
 
-@Data
 @ConfigurationProperties(prefix = "my.application")
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class ElectrumGatewayExampleApplicationProperties implements Validator {
+
+    private static final Duration DEFAULT_INITIAL_DELAY = Duration.ZERO;
+
+    private static final Duration DEFAULT_DELAY = Duration.ofMinutes(30);
 
     private String destinationAddress;
 
-    private Duration initialDelay = Duration.ZERO;
+    private Duration initialDelay;
 
-    private Duration delay = Duration.ofMinutes(30);
+    private Duration delay;
+
+    public Duration getInitialDelay() {
+        return Objects.requireNonNullElse(initialDelay, DEFAULT_INITIAL_DELAY);
+    }
+
+    public Duration getDelay() {
+        return Objects.requireNonNullElse(delay, DEFAULT_DELAY);
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {

@@ -74,16 +74,15 @@ public class XChangeAutoConfiguration {
                 // trigger early creation of exchanges!
                 // this is a hack to make them injectable in other beans.
                 // otherwise users must have taken them from the application context - which is not a nice
-                // good developer experience. Since the classes wont need any beans themselves
-                // this should be okay. Maybe it is a little bit expensive to create them always so shortly
+                // good developer experience. Since the classes won't need any beans themselves
+                // this should be okay. Maybe it is a bit expensive to create them always so shortly
                 // after application startup - because there might be initial http requests for some
                 // exchange implementations - but since the user defined it via a properties file,
                 // this is probably what is wanted in the first place.
                 shouldInitializeNow.set(true);
             }
 
-            if (bean instanceof XChangeAutoConfigProperties) {
-                XChangeAutoConfigProperties xChangeProperties = (XChangeAutoConfigProperties) bean;
+            if (bean instanceof XChangeAutoConfigProperties xChangeProperties) {
                 registerExchangeBeans(xChangeProperties);
             }
 

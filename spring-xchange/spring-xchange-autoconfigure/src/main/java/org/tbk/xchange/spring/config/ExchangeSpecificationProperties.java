@@ -22,7 +22,7 @@ public class ExchangeSpecificationProperties implements Validator {
     private static final String USE_SANDBOX_PARAM_NAME = "Use_Sandbox";
 
     /**
-     * The the fully-qualified class name of the exchange.
+     * The fully-qualified class name of the exchange.
      * e.g. org.knowm.xchange.kraken.KrakenExchange
      */
     private String exchangeClass;

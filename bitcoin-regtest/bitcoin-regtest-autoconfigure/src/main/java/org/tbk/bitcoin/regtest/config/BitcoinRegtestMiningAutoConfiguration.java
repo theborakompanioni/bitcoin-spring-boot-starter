@@ -38,7 +38,8 @@ public class BitcoinRegtestMiningAutoConfiguration {
     private final BitcoinRegtestMiningProperties properties;
 
     public BitcoinRegtestMiningAutoConfiguration(BitcoinRegtestAutoConfigProperties properties) {
-        this.properties = requireNonNull(properties.getMining());
+        this.properties = properties.getMining()
+                .orElseThrow(() -> new IllegalArgumentException("Mining properties must not be null."));
     }
 
     @Bean

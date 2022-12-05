@@ -1,21 +1,25 @@
 package org.tbk.bitcoin.autodca.example;
 
 import com.google.common.base.Strings;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.knowm.xchange.currency.Currency;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.Optional;
 
-@Data
 @ConfigurationProperties(
         prefix = "org.tbk.bitcoin.autodca",
         ignoreUnknownFields = false
 )
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinAutoDcaExampleProperties implements Validator {
     private static final BigDecimal MAXIMUM_MAX_FEE_VALUE = new BigDecimal("5");
 
@@ -55,7 +59,7 @@ public class BitcoinAutoDcaExampleProperties implements Validator {
     private Boolean dry;
 
     public boolean getDry() {
-        return dry != null ? dry : false;
+        return Objects.requireNonNullElse(dry, false);
     }
 
     @Override

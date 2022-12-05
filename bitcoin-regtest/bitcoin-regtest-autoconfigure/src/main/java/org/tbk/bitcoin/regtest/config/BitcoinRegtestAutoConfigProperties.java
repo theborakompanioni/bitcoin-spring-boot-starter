@@ -1,16 +1,21 @@
 package org.tbk.bitcoin.regtest.config;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-@Data
+import java.util.Optional;
+
 @ConfigurationProperties(
         prefix = "org.tbk.bitcoin.regtest",
         ignoreUnknownFields = false
 )
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinRegtestAutoConfigProperties implements Validator {
 
     /**
@@ -19,6 +24,10 @@ public class BitcoinRegtestAutoConfigProperties implements Validator {
     private boolean enabled;
 
     private BitcoinRegtestMiningProperties mining;
+
+    public Optional<BitcoinRegtestMiningProperties> getMining() {
+        return Optional.ofNullable(mining);
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {

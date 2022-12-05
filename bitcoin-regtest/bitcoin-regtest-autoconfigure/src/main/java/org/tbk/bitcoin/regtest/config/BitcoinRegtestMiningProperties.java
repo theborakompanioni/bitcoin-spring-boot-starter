@@ -1,13 +1,19 @@
 package org.tbk.bitcoin.regtest.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 
-@Data
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinRegtestMiningProperties implements Validator {
     /**
      * Whether mining should be enabled.
@@ -31,8 +37,7 @@ public class BitcoinRegtestMiningProperties implements Validator {
     }
 
     public NextBlockDurationProperties getNextBlockDuration() {
-        return Optional.ofNullable(nextBlockDuration)
-                .orElseGet(NextBlockDurationProperties::new);
+        return nextBlockDuration != null ? nextBlockDuration : new NextBlockDurationProperties(null, null);
     }
 
     @Override
@@ -50,7 +55,8 @@ public class BitcoinRegtestMiningProperties implements Validator {
         }
     }
 
-    @Data
+    @Getter
+    @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
     public static class NextBlockDurationProperties {
         private static final Duration DEFAULT_MIN_DURATION = Duration.ofSeconds(1);
         private static final Duration DEFAULT_MAX_DURATION = Duration.ofSeconds(60);
@@ -59,8 +65,7 @@ public class BitcoinRegtestMiningProperties implements Validator {
         private Duration maxDuration;
 
         public Duration getMinDuration() {
-            return Optional.ofNullable(minDuration)
-                    .orElse(DEFAULT_MIN_DURATION);
+            return Objects.requireNonNullElse(minDuration, DEFAULT_MIN_DURATION);
         }
 
         public Duration getMaxDuration() {

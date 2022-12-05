@@ -1,15 +1,18 @@
 package org.tbk.lightning.lnurl.example;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
 import java.util.Optional;
 
-@Data
 @ConfigurationProperties(
         prefix = "app",
         ignoreUnknownFields = false
 )
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 class LnurlAuthExampleApplicationProperties {
 
     private String name;

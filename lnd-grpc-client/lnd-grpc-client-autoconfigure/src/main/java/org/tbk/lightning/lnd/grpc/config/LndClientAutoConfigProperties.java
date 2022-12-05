@@ -1,17 +1,21 @@
 package org.tbk.lightning.lnd.grpc.config;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Objects;
 import java.util.Optional;
 
-@Data
 @ConfigurationProperties(
         prefix = "org.tbk.lightning.lnd.grpc",
         ignoreUnknownFields = false
 )
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class LndClientAutoConfigProperties implements Validator {
 
     public enum Network {
@@ -49,8 +53,7 @@ public class LndClientAutoConfigProperties implements Validator {
     private String macaroonFilePath;
 
     public Network getNetwork() {
-        return Optional.ofNullable(network)
-                .orElse(Network.mainnet);
+        return Objects.requireNonNullElse(network, Network.mainnet);
     }
 
     @Override

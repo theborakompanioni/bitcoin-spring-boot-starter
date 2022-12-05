@@ -1,8 +1,11 @@
 package org.tbk.electrum.config;
 
 import com.google.common.base.Strings;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -18,8 +21,9 @@ import org.springframework.validation.Validator;
  * "rpcpassword": "correct horse battery staple"
  * }
  */
-@Data
 @ConfigurationProperties(prefix = "org.tbk.bitcoin.electrum-daemon.jsonrpc")
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class ElectrumDaemonJsonrpcClientProperties implements Validator {
 
     /**
