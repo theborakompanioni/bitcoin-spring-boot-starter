@@ -21,18 +21,18 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinExchangeRateExampleApplicationTest {
+class BitcoinExchangeRateExampleApplicationTest {
 
     @Autowired(required = false)
     private ApplicationContext applicationContext;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(applicationContext, is(notNullValue()));
     }
 
     @Test
-    public void dollarsCanBeExchangedForBitcoin() {
+    void dollarsCanBeExchangedForBitcoin() {
         CurrencyConversion btcToUsdConversion = MonetaryConversions.getConversion(ConversionQueryBuilder.of()
                 .setBaseCurrency(Monetary.getCurrency("USD"))
                 .setTermCurrency(Monetary.getCurrency("BTC"))
@@ -46,7 +46,7 @@ public class BitcoinExchangeRateExampleApplicationTest {
     }
 
     @Test
-    public void bitcoinCanBeExchangeToDollars() {
+    void bitcoinCanBeExchangeToDollars() {
         CurrencyConversion btcToUsdConversion = MonetaryConversions.getConversion(ConversionQueryBuilder.of()
                 .setBaseCurrency(Monetary.getCurrency("BTC"))
                 .setTermCurrency(Monetary.getCurrency("USD"))
@@ -60,7 +60,7 @@ public class BitcoinExchangeRateExampleApplicationTest {
     }
 
     @Test
-    public void canFetchAllExchangeRatesForBitcoin() {
+    void canFetchAllExchangeRatesForBitcoin() {
         Map<String, ExchangeRateProvider> beansOfType = applicationContext.getBeansOfType(ExchangeRateProvider.class);
 
         Collection<ExchangeRateProvider> providers = beansOfType.values();

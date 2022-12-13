@@ -1,5 +1,6 @@
 package org.tbk.spring.lnurl.security.test.shared;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.tbk.lnurl.auth.LnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 @Slf4j

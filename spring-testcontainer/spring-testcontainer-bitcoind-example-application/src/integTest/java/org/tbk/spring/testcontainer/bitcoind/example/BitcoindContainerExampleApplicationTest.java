@@ -7,10 +7,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoindContainerExampleApplicationTest {
+class BitcoindContainerExampleApplicationTest {
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
     }
 
 }

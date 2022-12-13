@@ -1,5 +1,6 @@
 package org.tbk.lightning.lnurl.example;
 
+import jakarta.servlet.ServletContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.utils.URIBuilder;
@@ -17,7 +18,6 @@ import org.tbk.lightning.lnurl.example.security.UserDetailsServiceImpl;
 import org.tbk.lnurl.auth.*;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
-import javax.servlet.ServletContext;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;

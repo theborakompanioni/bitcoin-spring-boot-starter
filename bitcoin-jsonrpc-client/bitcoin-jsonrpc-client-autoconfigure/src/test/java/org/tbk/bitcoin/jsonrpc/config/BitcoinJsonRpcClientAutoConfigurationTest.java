@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BitcoinJsonRpcClientAutoConfigurationTest {
+class BitcoinJsonRpcClientAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
@@ -36,7 +36,7 @@ public class BitcoinJsonRpcClientAutoConfigurationTest {
 
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.jsonrpc.enabled=false"
@@ -52,7 +52,7 @@ public class BitcoinJsonRpcClientAutoConfigurationTest {
 
 
     @Test
-    public void onlyFactoryIsCreated() {
+    void onlyFactoryIsCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.jsonrpc.enabled=true"

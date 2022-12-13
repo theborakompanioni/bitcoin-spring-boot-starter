@@ -2,14 +2,16 @@ package org.tbk.lightning.lnurl.example.domain;
 
 import org.jmolecules.spring.AssociationResolver;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.tbk.lightning.lnurl.example.domain.WalletUser.WalletUserId;
 import org.tbk.lnurl.auth.K1;
 
 import java.util.Optional;
 
-interface WalletUsers extends PagingAndSortingRepository<WalletUser, WalletUserId>, AssociationResolver<WalletUser, WalletUserId> {
+interface WalletUsers extends CrudRepository<WalletUser, WalletUser.WalletUserId>,
+        PagingAndSortingRepository<WalletUser, WalletUser.WalletUserId>,
+        AssociationResolver<WalletUser, WalletUser.WalletUserId> {
 
     default Optional<WalletUser> findByLinkingKey(AuthLinkingKey linkingKey) {
         return this.findByLinkingKey(linkingKey.getLinkingKey());

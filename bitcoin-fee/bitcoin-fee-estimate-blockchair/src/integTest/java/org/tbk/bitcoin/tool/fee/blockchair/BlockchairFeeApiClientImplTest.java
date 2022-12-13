@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class BlockchairFeeApiClientImplTest {
+class BlockchairFeeApiClientImplTest {
     private static final String BASE_URL = "https://api.blockchair.com";
     private static final String API_TOKEN = null;
 
     private BlockchairFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BlockchairFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetBitcoinStatsFeesOnly() {
+    void itShouldGetBitcoinStatsFeesOnly() {
         BitcoinStatsFeesOnly bitcoinStatsFeesOnly = this.sut.bitcoinStatsFeesOnly();
 
         assertThat(bitcoinStatsFeesOnly, is(notNullValue()));

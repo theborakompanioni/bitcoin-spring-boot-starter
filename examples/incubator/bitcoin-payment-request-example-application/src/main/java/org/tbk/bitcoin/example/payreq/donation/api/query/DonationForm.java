@@ -1,12 +1,11 @@
 package org.tbk.bitcoin.example.payreq.donation.api.query;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.tbk.bitcoin.example.payreq.common.Network;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -21,15 +20,12 @@ public class DonationForm {
     @NotNull
     private String currency;
 
-    @Nullable
     @Pattern(regexp = "(mainnet|testnet|regtest)")
     private String network;
 
-    @Nullable
     @Pattern(regexp = "(onchain|lightning)")
     private String paymentMethod;
 
-    @Nullable
     @Size(max = 255)
     private String comment;
 

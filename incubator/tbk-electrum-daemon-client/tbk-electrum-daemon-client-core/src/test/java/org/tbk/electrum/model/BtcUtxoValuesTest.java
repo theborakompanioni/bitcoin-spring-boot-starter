@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class BtcUtxoValuesTest {
+class BtcUtxoValuesTest {
 
     @Test
-    public void toBtc() {
+    void toBtc() {
         TxoValue value = SimpleTxoValue.of(1337L);
 
         assertThat(value.isZero(), is(false));
@@ -21,7 +21,7 @@ public class BtcUtxoValuesTest {
     }
 
     @Test
-    public void fromBtcString() {
+    void fromBtcString() {
         TxoValue value = BtcTxoValues.fromBtcString("0.00000042");
 
         assertThat(value.getValue(), is(42L));
@@ -34,7 +34,7 @@ public class BtcUtxoValuesTest {
     }
 
     @Test
-    public void fromBtcStringWithTrailingDot() {
+    void fromBtcStringWithTrailingDot() {
         TxoValue value = BtcTxoValues.fromBtcString("0.");
 
         assertThat(value, is(SimpleTxoValue.zero()));

@@ -7,10 +7,10 @@ import java.nio.charset.StandardCharsets;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class HexTest {
+class HexTest {
 
     @Test
-    public void itShouldDecodeBase16_0() {
+    void itShouldDecodeBase16_0() {
         byte[] bytes = Hex.decode("cafebabe");
         assertThat(bytes, is(new byte[]{-54, -2, -70, -66}));
 
@@ -19,7 +19,7 @@ public class HexTest {
     }
 
     @Test
-    public void itShouldDecodeBase16_1() {
+    void itShouldDecodeBase16_1() {
         byte[] bytes = Hex.decode("5468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73");
         assertThat(bytes, is(new byte[]{84, 104, 101, 32, 84, 105, 109, 101, 115, 32, 48, 51, 47, 74, 97, 110, 47, 50, 48, 48, 57, 32, 67, 104, 97, 110, 99, 101, 108, 108, 111, 114, 32, 111, 110, 32, 98, 114, 105, 110, 107, 32, 111, 102, 32, 115, 101, 99, 111, 110, 100, 32, 98, 97, 105, 108, 111, 117, 116, 32, 102, 111, 114, 32, 98, 97, 110, 107, 115}));
 
@@ -28,7 +28,7 @@ public class HexTest {
     }
 
     @Test
-    public void itShouldDecodeBase16CaseInsensitive() {
+    void itShouldDecodeBase16CaseInsensitive() {
         byte[] bytes = Hex.decode("CaFeBaBe");
         assertThat(bytes, is(new byte[]{-54, -2, -70, -66}));
 
@@ -42,7 +42,7 @@ public class HexTest {
     }
 
     @Test
-    public void itShouldEncodeBase16_1() {
+    void itShouldEncodeBase16_1() {
         String hex = Hex.encode(new byte[]{-54, -2, -70, -66});
         assertThat(hex, is("cafebabe"));
 
@@ -51,7 +51,7 @@ public class HexTest {
     }
 
     @Test
-    public void itShouldEncodeBase16_2() {
+    void itShouldEncodeBase16_2() {
         String hex = Hex.encode(GenesisMessage.message().getBytes(StandardCharsets.US_ASCII));
 
         assertThat(hex, is("5468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73"));

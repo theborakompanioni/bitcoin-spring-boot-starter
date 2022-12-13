@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-public class EnabledLndHealthIndicatorIntegrationTest {
+class EnabledLndHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
     public static class LndHealthIndicatorTestApplication {
@@ -52,7 +52,7 @@ public class EnabledLndHealthIndicatorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldCheckHealthEndpoint() throws Exception {
+    void itShouldCheckHealthEndpoint() throws Exception {
         // here we just check if the response is well-formed
         // as no lnd is running, we will end up with 503 DOWN
         mockMvc.perform(get("/actuator/health/lndApi"))
@@ -67,7 +67,7 @@ public class EnabledLndHealthIndicatorIntegrationTest {
     }
 
     @Test
-    public void itShouldAddInformationToHealthEndpoint() throws Exception {
+    void itShouldAddInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andDo(print())
                 .andExpect(jsonPath("status").value(Status.DOWN.getCode()))

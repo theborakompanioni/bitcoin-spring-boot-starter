@@ -10,22 +10,22 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.tbk.electrum.model.SimpleSemanticVersion.tryParse;
 
-public class SimpleSemanticVersionTest {
+class SimpleSemanticVersionTest {
 
     @Test
-    public void itShouldNotCreateObjectOnEmptyString() {
+    void itShouldNotCreateObjectOnEmptyString() {
         Optional<SemanticVersion> semanticVersion = tryParse("");
         assertThat(semanticVersion.isPresent(), is(false));
     }
 
     @Test
-    public void itShouldNotCreateObjectOnInvalidString() {
+    void itShouldNotCreateObjectOnInvalidString() {
         Optional<SemanticVersion> semanticVersion = tryParse("not_a_version");
         assertThat(semanticVersion.isPresent(), is(false));
     }
 
     @Test
-    public void itShouldParseFromSimpleString() {
+    void itShouldParseFromSimpleString() {
         SemanticVersion semanticVersion = tryParseOrThrow("1.2.3");
 
         assertThat(semanticVersion.getMajor(), is(1));
@@ -34,7 +34,7 @@ public class SimpleSemanticVersionTest {
     }
 
     @Test
-    public void itShouldParseFromStringAllZeros() {
+    void itShouldParseFromStringAllZeros() {
         SemanticVersion semanticVersion = tryParseOrThrow("0.0.0");
 
         assertThat(semanticVersion.getMajor(), is(0));
@@ -43,7 +43,7 @@ public class SimpleSemanticVersionTest {
     }
 
     @Test
-    public void itShouldParseFromStringWithSingleNumber() {
+    void itShouldParseFromStringWithSingleNumber() {
         SemanticVersion semanticVersion = tryParseOrThrow("42");
 
         assertThat(semanticVersion.getMajor(), is(42));
@@ -52,12 +52,12 @@ public class SimpleSemanticVersionTest {
     }
 
     @Test
-    public void itShouldThrowWhenParsingFromStringWithNegativeNumber() {
+    void itShouldThrowWhenParsingFromStringWithNegativeNumber() {
         assertThrows(IllegalStateException.class, () -> tryParseOrThrow("-42"));
     }
 
     @Test
-    public void itShouldParseFromStringWithTwoNumbers() {
+    void itShouldParseFromStringWithTwoNumbers() {
         SemanticVersion semanticVersion = tryParseOrThrow("13.1337");
 
         assertThat(semanticVersion.getMajor(), is(13));
@@ -66,7 +66,7 @@ public class SimpleSemanticVersionTest {
     }
 
     @Test
-    public void itShouldParseFromStringWithPostfix() {
+    void itShouldParseFromStringWithPostfix() {
         SemanticVersion semanticVersion = tryParseOrThrow("3.3.8-snapshot.123+devel.uncommited.#c0ffee42");
 
         assertThat(semanticVersion.getMajor(), is(3));
@@ -75,7 +75,7 @@ public class SimpleSemanticVersionTest {
     }
 
     @Test
-    public void itShouldParseFromRandomVersionString() {
+    void itShouldParseFromRandomVersionString() {
         SecureRandom secureRandom = new SecureRandom();
         int randomMajor = secureRandom.nextInt(Integer.MAX_VALUE);
         int randomMinor = secureRandom.nextInt(Integer.MAX_VALUE);

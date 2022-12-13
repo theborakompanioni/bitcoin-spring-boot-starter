@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-public class LndMetricsIntegrationTest {
+class LndMetricsIntegrationTest {
 
     @SpringBootApplication
     public static class LndMetricsIntegrationTestApplication {
@@ -50,7 +50,7 @@ public class LndMetricsIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldAddMetricsEndpoints() throws Exception {
+    void itShouldAddMetricsEndpoints() throws Exception {
         List<String> metricNames = ImmutableList.<String>builder()
                 .add("lnd.blocks.height")
                 .add("lnd.channels.active")

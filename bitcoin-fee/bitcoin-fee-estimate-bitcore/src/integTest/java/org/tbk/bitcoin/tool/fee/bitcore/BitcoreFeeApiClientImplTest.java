@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class BitcoreFeeApiClientImplTest {
+class BitcoreFeeApiClientImplTest {
     private static final String BASE_URL = "https://api.bitcore.io";
     private static final String API_TOKEN = null;
 
     private BitcoreFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BitcoreFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetBitcoinMainnetFeeBlock1() {
+    void itShouldGetBitcoinMainnetFeeBlock1() {
         FeeEstimationRequest request = FeeEstimationRequest.newBuilder().setBlocks(1).build();
         FeeEstimationResponse response = this.sut.bitcoinMainnetFee(request);
 
@@ -28,7 +28,7 @@ public class BitcoreFeeApiClientImplTest {
     }
 
     @Test
-    public void itShouldGetBitcoinMainnetFeeBlock6() {
+    void itShouldGetBitcoinMainnetFeeBlock6() {
         FeeEstimationRequest request = FeeEstimationRequest.newBuilder().setBlocks(6).build();
         FeeEstimationResponse response = this.sut.bitcoinMainnetFee(request);
 
@@ -38,7 +38,7 @@ public class BitcoreFeeApiClientImplTest {
     }
 
     @Test
-    public void itShouldGetBitcoinMainnetFeeBlock100() {
+    void itShouldGetBitcoinMainnetFeeBlock100() {
         FeeEstimationRequest request = FeeEstimationRequest.newBuilder().setBlocks(100).build();
         FeeEstimationResponse response = this.sut.bitcoinMainnetFee(request);
 

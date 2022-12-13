@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.bitcoin.jsonrpc.rpcuser=test",
         "org.tbk.bitcoin.jsonrpc.rpcpassword=test"
 })
-public class BitcoinJsonRpcClientMetricsIntegrationTest {
+class BitcoinJsonRpcClientMetricsIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {
@@ -51,7 +51,7 @@ public class BitcoinJsonRpcClientMetricsIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldAddMetricsEndpoints() throws Exception {
+    void itShouldAddMetricsEndpoints() throws Exception {
         List<String> metricNames = ImmutableList.<String>builder()
                 .add("bitcoin.blockchain.blocks")
                 .add("bitcoin.blockchain.difficulty")

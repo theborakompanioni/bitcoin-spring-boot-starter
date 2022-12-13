@@ -24,7 +24,7 @@ import java.util.List;
  * See https://github.com/JavaMoney/jsr354-tck/blob/master/src/main/asciidoc/userguide.adoc
  * for a complete user guide on how to use the technical compatibility kit.
  */
-public class Jsr354TechnicalCompatibilityKitTest {
+class Jsr354TechnicalCompatibilityKitTest {
     private static final Path targetPath = Path.of("build/reports/tck-target");
 
     @BeforeEach

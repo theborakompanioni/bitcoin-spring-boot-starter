@@ -3,7 +3,7 @@ package org.tbk.bitcoin.zeromq.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import java.util.Objects;
 import java.util.Optional;

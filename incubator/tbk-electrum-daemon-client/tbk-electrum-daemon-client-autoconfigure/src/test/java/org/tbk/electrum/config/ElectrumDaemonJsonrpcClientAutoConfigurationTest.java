@@ -12,12 +12,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ElectrumDaemonJsonrpcClientAutoConfigurationTest {
+class ElectrumDaemonJsonrpcClientAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(ElectrumDaemonJsonrpcClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.electrum-daemon.jsonrpc.enabled=true",
@@ -37,7 +37,7 @@ public class ElectrumDaemonJsonrpcClientAutoConfigurationTest {
 
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(ElectrumDaemonJsonrpcClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.electrum-daemon.jsonrpc.enabled=false"

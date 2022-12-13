@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
+import com.google.common.io.BaseEncoding;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
@@ -28,7 +29,6 @@ import org.tbk.spring.testcontainer.lnd.LndContainer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
-import javax.xml.bind.DatatypeConverter;
 import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -73,7 +73,8 @@ class LndContainerApplicationTest {
                                                          LndContainer<?> lndContainer) {
                 return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
                     byte[] bytes = IOUtils.toByteArray(inputStream);
-                    String hex = DatatypeConverter.printHexBinary(bytes);
+                    //String hex = DatatypeConverter.printHexBinary(bytes);
+                    String hex = BaseEncoding.base16().lowerCase().encode(bytes);
                     return () -> hex;
                 });
             }

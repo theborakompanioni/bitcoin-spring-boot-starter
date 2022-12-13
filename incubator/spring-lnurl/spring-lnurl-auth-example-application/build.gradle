@@ -27,7 +27,7 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
-    implementation 'com.github.gwenn:sqlite-dialect:0.1.2'
+    implementation "org.hibernate.orm:hibernate-community-dialects:${hibernateCommunityDialectsVersion}"
 
     implementation "org.jmolecules:jmolecules-ddd"
     implementation "org.jmolecules:jmolecules-events"

@@ -14,10 +14,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Slf4j
 @EnableWebSecurity
@@ -106,20 +109,23 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                         .logoutSuccessUrl("/")
                 )
                 .headers(headers -> headers
-                        .xssProtection()
-                        .xssProtectionEnabled(true)
-                        .block(true)
-                        .and()
+                        .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
                                 + "script-src 'self'; "
                                 + "img-src 'self' data: https://robohash.org"))
                 )
-                .authorizeRequests(authorize -> authorize
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .antMatchers("/").permitAll()
-                        .antMatchers("/index.html").permitAll()
-                        .antMatchers("/authenticated.html").authenticated()
-                        .antMatchers("/api/v1/demo/**").permitAll()
+                        .requestMatchers(
+                                antMatcher("/"),
+                                antMatcher("/index.html")
+                        ).permitAll()
+                        .requestMatchers(
+                                antMatcher("/authenticated.html")
+                        ).authenticated()
+                        .requestMatchers(
+                                antMatcher("/api/v1/demo/**")
+                        ).permitAll()
                         .anyRequest().authenticated()
                 );
 

@@ -13,12 +13,12 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CompositeFeeProviderTest {
+class CompositeFeeProviderTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void itShouldVerifyThatCompositeProviderHasProviders() {
+    void itShouldVerifyThatCompositeProviderHasProviders() {
         this.contextRunner.withUserConfiguration(BitcoinFeeClientAutoConfiguration.class).run(context -> {
             CompositeFeeProvider compositeFeeProvider = context.getBean(CompositeFeeProvider.class);
             assertThat(compositeFeeProvider, is(notNullValue()));
@@ -50,7 +50,7 @@ public class CompositeFeeProviderTest {
     }
 
     @Test
-    public void itShouldRequestFeeRecommendationSuccessfully() {
+    void itShouldRequestFeeRecommendationSuccessfully() {
         this.contextRunner.withUserConfiguration(
                 BitcoinFeeClientAutoConfiguration.class,
                 EarndotcomFeeClientAutoConfiguration.class,

@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.bitcoin.jsonrpc.rpcuser=test",
         "org.tbk.bitcoin.jsonrpc.rpcpassword=test"
 })
-public class DisabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
+class DisabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {
@@ -48,13 +48,13 @@ public class DisabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldCheckHiddenServiceHealthEndpointDoesNotExist() throws Exception {
+    void itShouldCheckHiddenServiceHealthEndpointDoesNotExist() throws Exception {
         mockMvc.perform(get("/actuator/health/bitcoinJsonRpc"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
+    void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andExpect(jsonPath("status").value("UP"))
                 .andExpect(jsonPath("components.bitcoinJsonRpc").doesNotExist())

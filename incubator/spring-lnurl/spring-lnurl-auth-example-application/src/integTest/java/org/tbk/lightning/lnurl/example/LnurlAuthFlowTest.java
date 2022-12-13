@@ -115,7 +115,7 @@ class LnurlAuthFlowTest {
          * - etc.
          *
          * This request "prefers" application/json content.
-         * That's why it will response with 200 OK (instead of 3xx with 'Location' header).
+         * That's why it will respond with 200 OK (instead of 3xx with 'Location' header).
          */
         RequestEntity<Void> sessionMigrateRequest = RequestEntity.get(LnurlAuthExampleApplicationSecurityConfig.lnurlAuthSessionLoginPath())
                 .header(HttpHeaders.COOKIE, "SESSION=" + sessionId)

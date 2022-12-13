@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.notNullValue;
         ElectrumGatewayExampleApplicationTest.TestConfig.class
 })
 @ActiveProfiles("test")
-public class ElectrumGatewayExampleApplicationTest {
+class ElectrumGatewayExampleApplicationTest {
 
     @Autowired(required = false)
     private ElectrumxContainer<?> electrumxContainer;

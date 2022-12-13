@@ -18,10 +18,10 @@ import org.tbk.bitcoin.example.payreq.exchangerate.ExchangeRate;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import javax.persistence.JoinColumn;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;

@@ -9,19 +9,19 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class BtcdotcomFeeApiClientImplTest {
+class BtcdotcomFeeApiClientImplTest {
     private static final String BASE_URL = "https://btc.com";
     private static final String API_TOKEN = null;
 
     private BtcdotcomFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BtcdotcomFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetFeeDistribution() {
+    void itShouldGetFeeDistribution() {
         FeeDistribution feeDistribution = this.sut.feeDistribution();
 
         assertThat(feeDistribution, is(notNullValue()));

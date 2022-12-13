@@ -14,13 +14,13 @@ import static org.hamcrest.Matchers.notNullValue;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinDuckDcaApplicationTest {
+class BitcoinDuckDcaApplicationTest {
 
     @Autowired(required = false)
     private ApplicationContext applicationContext;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(applicationContext, is(notNullValue()));
     }
 

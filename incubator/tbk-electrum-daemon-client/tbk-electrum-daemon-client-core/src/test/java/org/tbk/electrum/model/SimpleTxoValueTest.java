@@ -7,10 +7,10 @@ import java.security.SecureRandom;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SimpleTxoValueTest {
+class SimpleTxoValueTest {
 
     @Test
-    public void zero() {
+    void zero() {
         TxoValue zero = SimpleTxoValue.zero();
         assertThat(zero.getValue(), is(0L));
         assertThat(zero.isZero(), is(true));
@@ -22,7 +22,7 @@ public class SimpleTxoValueTest {
     }
 
     @Test
-    public void canHavePositiveValue() {
+    void canHavePositiveValue() {
         long value = Math.abs(new SecureRandom().nextLong() + 1L);
 
         TxoValue txValue = SimpleTxoValue.of(value);
@@ -31,7 +31,7 @@ public class SimpleTxoValueTest {
     }
 
     @Test
-    public void canHaveNegativeValue() {
+    void canHaveNegativeValue() {
         long value = -1L * Math.abs(new SecureRandom().nextLong() + 1L);
 
         TxoValue txValue = SimpleTxoValue.of(value);

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class BlockchainInfoFeeApiClientImplTest {
+class BlockchainInfoFeeApiClientImplTest {
 
     private static final String BASE_URL = "https://api.blockchain.info";
     private static final String API_TOKEN = "test";
@@ -14,12 +14,12 @@ public class BlockchainInfoFeeApiClientImplTest {
     private BlockchainInfoFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BlockchainInfoFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetRecommendedTransactionFees() {
+    void itShouldGetRecommendedTransactionFees() {
         MempoolFees mempoolFees = this.sut.mempoolFees();
 
         assertThat(mempoolFees, is(notNullValue()));

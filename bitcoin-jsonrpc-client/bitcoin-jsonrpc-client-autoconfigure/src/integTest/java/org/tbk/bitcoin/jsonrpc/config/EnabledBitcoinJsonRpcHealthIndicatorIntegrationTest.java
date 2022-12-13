@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.bitcoin.jsonrpc.rpcuser=test",
         "org.tbk.bitcoin.jsonrpc.rpcpassword=test"
 })
-public class EnabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
+class EnabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcTestApplication {
@@ -53,7 +53,7 @@ public class EnabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldCheckHealthEndpoint() throws Exception {
+    void itShouldCheckHealthEndpoint() throws Exception {
         // here we just check if the response is well-formed
         // as no bitcoind is running, we will end up with 503 DOWN
         mockMvc.perform(get("/actuator/health/bitcoinJsonRpc"))
@@ -68,7 +68,7 @@ public class EnabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
     }
 
     @Test
-    public void itShouldAddInformationToHealthEndpoint() throws Exception {
+    void itShouldAddInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andDo(print())
                 .andExpect(jsonPath("status").value(Status.DOWN.getCode()))

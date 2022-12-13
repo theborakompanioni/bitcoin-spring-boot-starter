@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinJsonRpcFeeApiClientImplTest {
+class BitcoinJsonRpcFeeApiClientImplTest {
 
     @SpringBootApplication
     public static class BitcoinJsonRpcFeeApiClientImplTestApplication {
@@ -37,7 +37,7 @@ public class BitcoinJsonRpcFeeApiClientImplTest {
     private BitcoinJsonRpcFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BitcoinJsonRpcFeeApiClientImpl(bitcoinJsonRpcClient);
     }
 
@@ -46,7 +46,7 @@ public class BitcoinJsonRpcFeeApiClientImplTest {
      * bitcoin core cannot estimate fee.
      */
     @Test
-    public void itShouldGetSmartFeeEstimateError() {
+    void itShouldGetSmartFeeEstimateError() {
         EstimateSmartFeeResponse response = this.sut.estimatesmartfee(EstimateSmartFeeRequest.newBuilder()
                 .setConfTarget(2)
                 .build());

@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.payment.api.query;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -8,7 +9,6 @@ import org.bitcoinj.params.MainNetParams;
 import org.tbk.bitcoin.example.payreq.common.Network;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 

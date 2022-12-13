@@ -10,12 +10,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BitcoinFeeClientAutoConfigurationTest {
+class BitcoinFeeClientAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinFeeClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.tool.fee.enabled=true"
@@ -28,7 +28,7 @@ public class BitcoinFeeClientAutoConfigurationTest {
 
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinFeeClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.tool.fee.enabled=false"

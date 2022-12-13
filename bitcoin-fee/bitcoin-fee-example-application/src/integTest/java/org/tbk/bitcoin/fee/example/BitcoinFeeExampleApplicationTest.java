@@ -14,15 +14,14 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinFeeExampleApplicationTest {
+class BitcoinFeeExampleApplicationTest {
 
     @Autowired(required = false)
     private FeeProvider feeProvider;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(feeProvider, is(notNullValue()));
         assertThat(feeProvider, is(instanceOf(CompositeFeeProvider.class)));
     }
-
 }

@@ -1,15 +1,15 @@
 package org.tbk.bitcoin.example.payreq.order;
 
 import org.jmolecules.spring.AssociationResolver;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.tbk.bitcoin.example.payreq.payment.PaymentRequest;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface Orders extends AssociationResolver<Order, Order.OrderId>, PagingAndSortingRepository<Order, Order.OrderId> {
+public interface Orders extends CrudRepository<Order, Order.OrderId>,
+        PagingAndSortingRepository<Order, Order.OrderId>,
+        AssociationResolver<Order, Order.OrderId> {
 
     /**
      * Returns all {@link Order}s with the given {@link Order.Status}.

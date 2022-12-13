@@ -11,9 +11,9 @@ import org.jmolecules.ddd.types.Identifier;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.UUID;
 

@@ -8,19 +8,19 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class BitgoFeeApiClientImplTest {
+class BitgoFeeApiClientImplTest {
     private static final String BASE_URL = "https://www.bitgo.com";
     private static final String API_TOKEN = null;
 
     private BitgoFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BitgoFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetBtcTxFee() {
+    void itShouldGetBtcTxFee() {
         BtcTxFeeRequest request = BtcTxFeeRequest.newBuilder()
                 .build();
 
@@ -42,7 +42,7 @@ public class BitgoFeeApiClientImplTest {
     }
 
     @Test
-    public void itShouldGetBtcTxFeeWitCustomBlockNums() {
+    void itShouldGetBtcTxFeeWitCustomBlockNums() {
         BtcTxFeeRequest request = BtcTxFeeRequest.newBuilder()
                 .setNumBlocks(10)
                 .build();

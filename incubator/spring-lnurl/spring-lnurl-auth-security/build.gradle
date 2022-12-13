@@ -14,7 +14,7 @@ dependencies {
     implementation "com.google.zxing:core:${zxingVersion}"
     implementation "com.google.zxing:javase:${zxingVersion}"
 
-    compileOnly 'javax.servlet:javax.servlet-api'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
     compileOnly 'org.springframework:spring-web'
     compileOnly 'org.springframework.security:spring-security-core'
     compileOnly 'org.springframework.security:spring-security-web'

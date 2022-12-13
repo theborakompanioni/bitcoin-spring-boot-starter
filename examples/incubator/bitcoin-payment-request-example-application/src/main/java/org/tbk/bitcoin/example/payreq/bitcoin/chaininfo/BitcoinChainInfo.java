@@ -10,7 +10,7 @@ import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
 
-import javax.persistence.Table;
+import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 

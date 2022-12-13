@@ -178,6 +178,7 @@ subprojects {
             exclude('**/*.proto')
 
             includeEmptyDirs false
+            duplicatesStrategy DuplicatesStrategy.WARN
         }
 
         bootRun {

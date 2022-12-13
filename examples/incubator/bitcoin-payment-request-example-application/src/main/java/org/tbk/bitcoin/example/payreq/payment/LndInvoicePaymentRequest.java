@@ -2,6 +2,7 @@ package org.tbk.bitcoin.example.payreq.payment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Value;
 import org.bitcoinj.core.NetworkParameters;
@@ -9,7 +10,6 @@ import org.springframework.security.crypto.codec.Hex;
 import org.tbk.bitcoin.example.payreq.common.Network;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
-import javax.persistence.Column;
 import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;

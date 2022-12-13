@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.exchange.example;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -18,14 +21,11 @@ class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomiz
     public void customize(WebSecurity web) {
         web
                 .ignoring()
-                .antMatchers("/webjars/**")
-                .antMatchers("/index.html")
-                .antMatchers("/favicon.png")
-                .antMatchers("/favicon.ico")
-                .antMatchers("/css/**")
-                .antMatchers("/fonts/**")
-                .antMatchers("/images/**")
-                .antMatchers("/js/**");
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .requestMatchers(
+                        antMatcher("/index.html"),
+                        antMatcher("/fonts/**")
+                );
     }
 
     @Bean
@@ -33,7 +33,7 @@ class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomiz
         http
                 .cors().and()
                 .csrf().disable()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .anyRequest().permitAll();
 
         return http.build();

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })
-public class DisabledLndHealthIndicatorIntegrationTest {
+class DisabledLndHealthIndicatorIntegrationTest {
 
     @SpringBootApplication
     public static class LndHealthIndicatorTestApplication {
@@ -47,13 +47,13 @@ public class DisabledLndHealthIndicatorIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void itShouldCheckHealthEndpointDoesNotExist() throws Exception {
+    void itShouldCheckHealthEndpointDoesNotExist() throws Exception {
         mockMvc.perform(get("/actuator/health/lndAPI"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
+    void itShouldNotAddHiddenServiceInformationToHealthEndpoint() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andExpect(jsonPath("status").value("UP"))
                 .andExpect(jsonPath("components.lndAPI").doesNotExist())

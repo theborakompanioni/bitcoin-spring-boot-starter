@@ -11,9 +11,9 @@ import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

@@ -2,13 +2,15 @@ package org.tbk.bitcoin.example.payreq.payment;
 
 import org.bitcoinj.core.Address;
 import org.jmolecules.ddd.types.Association;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
 import java.util.List;
 import java.util.Optional;
 
-interface BitcoinOnchainPaymentRequests extends PagingAndSortingRepository<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestId> {
+interface BitcoinOnchainPaymentRequests extends CrudRepository<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestId>,
+        PagingAndSortingRepository<BitcoinOnchainPaymentRequest, PaymentRequest.PaymentRequestId> {
 
     /**
      * Returns the payment registered for the given {@link Order}.

@@ -27,6 +27,7 @@ dependencies {
     // compileOnly "org.knowm.xchange:xchange-coinbase:${xChangeVersion}"
     // ================================================================
 
+    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'

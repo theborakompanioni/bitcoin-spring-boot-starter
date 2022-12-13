@@ -9,15 +9,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.is;
 
-public class MoreBitcoinTest {
+class MoreBitcoinTest {
 
     @Test
-    public void itShouldReturnAverageBlockDuration() {
+    void itShouldReturnAverageBlockDuration() {
         assertThat("average block duration is 10 minutes", MoreBitcoin.averageBlockDuration(), is(Duration.ofMinutes(10)));
     }
 
     @Test
-    public void itShouldReturnBtcToSatFactor() {
+    void itShouldReturnBtcToSatFactor() {
         assertThat("the btc to sat factor is correct", MoreBitcoin.btcToSatFactor(), comparesEqualTo(BigDecimal.valueOf(100_000_000L)));
     }
 

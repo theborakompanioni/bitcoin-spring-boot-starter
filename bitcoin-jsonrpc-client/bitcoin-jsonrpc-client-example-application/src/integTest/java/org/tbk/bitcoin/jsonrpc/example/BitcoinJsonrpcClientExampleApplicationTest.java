@@ -12,13 +12,13 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinJsonrpcClientExampleApplicationTest {
+class BitcoinJsonrpcClientExampleApplicationTest {
 
     @Autowired(required = false)
     private BitcoinClient bitcoinClient;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(bitcoinClient, is(notNullValue()));
     }
 }

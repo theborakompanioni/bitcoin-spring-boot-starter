@@ -13,6 +13,8 @@ dependencies {
     // must be exposed because of e.g. class Exchange
     api "org.knowm.xchange:xchange-core:${xChangeVersion}"
 
+    testImplementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+
     // import "BTC" as jsr354 CurrencyUnit
     testImplementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
 

@@ -25,10 +25,17 @@
          </trusted-key>
          <trusted-key id="06d34ed6ff73de368a772a781063fe98bcecb758" group="com.puppycrawl.tools" name="checkstyle" version="10.3.4"/>
          <trusted-key id="0785b3eff60b1b1bea94e0bb7c25280eae63ebe5" group="^org[.]apache[.]httpcomponents($|([.].*))" regex="true"/>
-         <trusted-key id="07e20f0103d9dfc697c490d0368557390486f2c5" group="io.rest-assured" name="rest-assured-bom" version="4.5.1"/>
+         <trusted-key id="07e20f0103d9dfc697c490d0368557390486f2c5">
+            <trusting group="io.rest-assured" name="rest-assured-bom" version="4.5.1"/>
+            <trusting group="io.rest-assured" name="rest-assured-bom" version="5.2.1"/>
+         </trusted-key>
          <trusted-key id="08f0aab4d0c1a4bdde340765b341ddb020fcb6ab" group="org.bouncycastle" name="bcprov-jdk15to18" version="1.69"/>
          <trusted-key id="0a60b3f1fcb211175300ec206e50bb68cc1699a6" group="com.github.jai-imageio" name="jai-imageio-core" version="1.4.0"/>
-         <trusted-key id="0b743a794876d3c78ab542a118d239b1cbcd2236" group="org.glassfish.jersey" name="jersey-bom" version="2.35"/>
+         <trusted-key id="0b1b71e813c226033b16d8c5f0d228d8ff31b515" group="^io[.]zipkin($|([.].*))" regex="true"/>
+         <trusted-key id="0b743a794876d3c78ab542a118d239b1cbcd2236">
+            <trusting group="org.glassfish.jersey" name="jersey-bom" version="2.35"/>
+            <trusting group="org.glassfish.jersey" name="jersey-bom" version="3.1.0"/>
+         </trusted-key>
          <trusted-key id="0cc641c3a62453ab390066c4a41f13c999945293">
             <trusting group="commons-collections"/>
             <trusting group="commons-logging"/>
@@ -38,7 +45,10 @@
          <trusted-key id="0f07d1201bddab67cfb84eb479752db6c966f0b8" group="com.google.android" name="annotations" version="4.1.1.4"/>
          <trusted-key id="0f638d5993f3e8a4f2ef826a3d90e51eff5966b7" group="com.perforce" name="p4java" version="2015.2.1365273"/>
          <trusted-key id="10f3c7a02eca55e502badcf3991efb94db91127d" group="org.ow2" name="ow2" version="1.5.1"/>
-         <trusted-key id="120d6f34e627ed3a772ebbfe55c7e5e701832382" group="org.yaml" name="snakeyaml" version="1.30"/>
+         <trusted-key id="120d6f34e627ed3a772ebbfe55c7e5e701832382">
+            <trusting group="org.yaml" name="snakeyaml" version="1.30"/>
+            <trusting group="org.yaml" name="snakeyaml" version="1.33"/>
+         </trusted-key>
          <trusted-key id="124dac8350968ec2a8260584ee8ecbbbc188fd5d" group="org.ajoberstar.grgit" name="grgit-core" version="4.1.1"/>
          <trusted-key id="136d34a0583e164fac36868d521a9c06820d5c1d" group="org.aspectj" name="aspectjweaver" version="1.9.7"/>
          <trusted-key id="144219b604dde6a2383fa0ee9c6404ebce3e4464" group="com.github.zafarkhaja" name="java-semver" version="0.9.0"/>
@@ -51,7 +61,10 @@
          <trusted-key id="2518174f4111f02779592a6f9757d7e7e06dd2ac" group="io.prometheus"/>
          <trusted-key id="264b9ee9c35b105db1abcea835341680d17a378c" group="org.axonframework"/>
          <trusted-key id="2655176f748fd83725b4805ff2a01147d830c125" group="org.testcontainers"/>
-         <trusted-key id="28118c070cb22a0175a2e8d43d12ca2ac19f3181" group="^com[.]fasterxml[.]jackson($|([.].*))" regex="true"/>
+         <trusted-key id="28118c070cb22a0175a2e8d43d12ca2ac19f3181">
+            <trusting group="com.fasterxml" name="oss-parent" version="48"/>
+            <trusting group="^com[.]fasterxml[.]jackson($|([.].*))" regex="true"/>
+         </trusted-key>
          <trusted-key id="2bcbdd0f23ea1cafcc11d4860374cf2e8dd1bdfd" group="net.java"/>
          <trusted-key id="2db4f1ef0fa761ecc4ea935c86fdc7e2a11262cb">
             <trusting group="commons-codec"/>
@@ -59,16 +72,23 @@
             <trusting group="org.apache.commons"/>
             <trusting group="xml-apis"/>
          </trusted-key>
-         <trusted-key id="2dc48cbb4352b4953af6f803d433b437192a0fd1" group="com.datastax.oss" name="java-driver-bom" version="4.14.1"/>
+         <trusted-key id="2dc48cbb4352b4953af6f803d433b437192a0fd1">
+            <trusting group="com.datastax.oss" name="java-driver-bom" version="4.14.1"/>
+            <trusting group="com.datastax.oss" name="java-driver-bom" version="4.15.0"/>
+         </trusted-key>
          <trusted-key id="2e3a1affe42b5f53af19f780bcf4173966770193" group="org.jetbrains" name="annotations" version="13.0"/>
          <trusted-key id="2e5b73c6efd2eb453104c2eae6ec76b4c6d3ae8e" group="com.google.protobuf"/>
          <trusted-key id="2f8b75551baf4a693c1a7f9a8c7b8f00e43f742e" group="eu.neilalexander" name="jnacl" version="1.0.0"/>
          <trusted-key id="32367341f8fa8f7d97ae36b9c9aca61e87a79929" group="org.mongodb"/>
-         <trusted-key id="34441e504a937f43eb0daef96a65176a0fb1cd0b" group="org.codehaus.groovy" name="groovy-bom" version="3.0.13"/>
+         <trusted-key id="34441e504a937f43eb0daef96a65176a0fb1cd0b">
+            <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.6"/>
+            <trusting group="org.codehaus.groovy" name="groovy-bom" version="3.0.13"/>
+         </trusted-key>
          <trusted-key id="34d6ff19930adf43ac127792a50569c7ca7fa1f0" group="com.jcraft"/>
          <trusted-key id="355022257551eab126d75616e8070af0053aac0d" group="io.github.theborakompanioni"/>
          <trusted-key id="3690c240ce51b4670d30ad1c38ee757d69184620" group="org.tukaani" name="xz" version="1.6"/>
          <trusted-key id="3e61d8c230332482009d7f0edb901b24cad38bc4" group="io.swagger.core.v3"/>
+         <trusted-key id="3f05dda9f317301e927136d417a27ce7a60ff5f0" group="io.opentelemetry" name="opentelemetry-bom" version="1.19.0"/>
          <trusted-key id="3f2a008a91d11a7fac4a0786f13d3e721d56bd54" group="org.reflections" name="reflections" version="0.10.2"/>
          <trusted-key id="4021eeeaff5de8404dcd0a270aa3e5c3d232e79b" group="jakarta.inject" name="jakarta.inject-api" version="2.0.0"/>
          <trusted-key id="40fba4accfbfe7a8f057d00596a2ceea5cf8c945">
@@ -84,7 +104,10 @@
             <trusting group="ch.qos.logback"/>
             <trusting group="org.slf4j"/>
          </trusted-key>
-         <trusted-key id="477e62a656ad5475a1882855c809ca3c41ba6e96" group="jakarta.validation" name="jakarta.validation-api" version="2.0.2"/>
+         <trusted-key id="477e62a656ad5475a1882855c809ca3c41ba6e96">
+            <trusting group="jakarta.validation" name="jakarta.validation-api" version="2.0.2"/>
+            <trusting group="jakarta.validation" name="jakarta.validation-api" version="3.0.2"/>
+         </trusted-key>
          <trusted-key id="47ef0ec60c210bc6dfaa5819b7ae15c15c321c44" group="jakarta.transaction" name="jakarta.transaction-api"/>
          <trusted-key id="48f8e69f6390c9f25cfedcd268248959359e722b" group="org.apache.tomcat.embed"/>
          <trusted-key id="4c5f68d09d42ba7fac888df9a929ea2321fdbf8f">
@@ -109,8 +132,12 @@
          <trusted-key id="57312c37b064ee0fdab0130490d5ce79e1de6a2c" group="com.querydsl" name="querydsl-bom" version="5.0.0"/>
          <trusted-key id="59a8e169739301fd48139ca00e325becb6962a24" group="jakarta.annotation"/>
          <trusted-key id="5a30b8aa009e39b9289dba3da3f9322595482dc1" group="org.knowm.xchange"/>
-         <trusted-key id="60200ac4ae761f1614d6c46766d68daa073be985" group="org.slf4j"/>
+         <trusted-key id="60200ac4ae761f1614d6c46766d68daa073be985">
+            <trusting group="ch.qos.logback"/>
+            <trusting group="org.slf4j"/>
+         </trusted-key>
          <trusted-key id="6214760097dc5cfad0175ac2c9fbaa83a8753994" group="^com[.]fasterxml($|([.].*))" regex="true"/>
+         <trusted-key id="666a4692ce11b7b3f4eb7b3410066a9707090cf9" group="org.javassist" name="javassist" version="3.20.0-GA"/>
          <trusted-key id="67497e9d680ce8e95bd6b8f85ad66315fc018797" group="com.beust" name="jcommander" version="1.72"/>
          <trusted-key id="679fb0162abe057603e69e4527869a59af13ca69" group="com.netflix.nebula"/>
          <trusted-key id="694621a7227d8d5289699830abe9f3126bb741c1" group="com.google.guava"/>
@@ -129,6 +156,7 @@
             <trusting group="^org[.]glassfish($|([.].*))" regex="true"/>
          </trusted-key>
          <trusted-key id="71ebf1ca4125b10aab1e17cdb7dc526c17e3608b" group="jakarta.persistence" name="jakarta.persistence-api"/>
+         <trusted-key id="7464550a61c90ba385fc97a76d9567281201e5e3" group="jakarta.servlet" name="jakarta.servlet-api" version="6.0.0"/>
          <trusted-key id="7615ad56144df2376f49d98b1669c4bb543e0445" group="com.google.errorprone"/>
          <trusted-key id="7616eb882daf57a11477aaf559a252fb1199d873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
          <trusted-key id="7795d734c5d1202b9436d0841261358604ae1a0f" group="org.zalando" name="jackson-datatype-money" version="1.2.2"/>
@@ -151,6 +179,7 @@
          <trusted-key id="894f14d98d7f20d5e82645e3dfe102108bf9381f" group="^org[.]hibernate($|([.].*))" regex="true"/>
          <trusted-key id="8a10792983023d5d14c93b488d7f1bec1e2ecae7" group="^com[.]fasterxml($|([.].*))" regex="true"/>
          <trusted-key id="8f9a3c6d105b9f57844a721d79e193516be7998f" group="org.dom4j" name="dom4j" version="2.1.3"/>
+         <trusted-key id="9625d62fc3e307d3ed7684cbf30bb7a3b5f2734b" group="com.electronwill.night-config"/>
          <trusted-key id="982c26a0c156d986cc2ad19e3fba8e8e719022d7" group="org.jboss" name="jboss-parent" version="39"/>
          <trusted-key id="9857c388d7d1d9d031274cd0a5def5a76f94a471" group="com.github.spotbugs"/>
          <trusted-key id="9b32cbc0f3f6ba4c13d611fc21871d2a9ab66a31" group="io.rsocket" name="rsocket-bom" version="1.1.3"/>
@@ -162,6 +191,7 @@
          <trusted-key id="a5bd02b93e7a40482eb1d66a5f69ad087600b22c" group="org.ow2.asm"/>
          <trusted-key id="a6d6c97108b8585f91b158748671a8df71296252" group="^com[.]squareup($|([.].*))" regex="true"/>
          <trusted-key id="a7892505cf1a58076453e52d7999befba1039e8b" group="net.bytebuddy"/>
+         <trusted-key id="a9c5df4d22e99998d9875a5110c01c5a2f6059e7" group="org.apache.tomcat.embed"/>
          <trusted-key id="aa417737bd805456db3cbdde6601e5c08dccbb96" group="info.picocli" name="picocli" version="4.6.3"/>
          <trusted-key id="aa70c7c433d501636392ec02153e7a3c2b4e5118" group="org.eclipse.ee4j" name="project"/>
          <trusted-key id="b02137d875d833d9b23392ecae5a7fb608a0221c" group="org.apache.maven" name="maven" version="3.6.3"/>
@@ -177,6 +207,7 @@
             <trusting group="commons-codec"/>
             <trusting group="org.apache.commons"/>
          </trusted-key>
+         <trusted-key id="bca1f17506af088f3a964a9c0459a2b383ed8c11" group="org.eclipse.angus"/>
          <trusted-key id="bdb5fa4fe719d787fb3d3197f6d4a1d411e9d1ae" group="com.google.guava"/>
          <trusted-key id="be685132afd2740d9095f9040cc0b712fee75827" group="org.assertj"/>
          <trusted-key id="be6b997eb563f4898c3c406b8db9fa0b0718bbf9" group="javax.cache" name="cache-api" version="1.1.1"/>
@@ -206,6 +237,8 @@
             <trusting group="org.testcontainers"/>
          </trusted-key>
          <trusted-key id="d6f1bc78607808ec8e9f69437a8860944fad5f62" group="org.apache.commons" name="commons-parent"/>
+         <trusted-key id="dbd744ace7ade6aa50dd591f66b50994442d2d40" group="com.squareup.okio"/>
+         <trusted-key id="dbfbff8da2f1571acc6f63ab905cf8fc70cc1444" group="org.aspectj" name="aspectjweaver" version="1.9.9.1"/>
          <trusted-key id="dc057bc7f1115d8301c0c0e906e21faaf25a2c7a" group="com.lmax" name="disruptor" version="3.4.4"/>
          <trusted-key id="dddee87612e9fb95f5c8d91e411063a3a0ffd119" group="org.apache-extras.beanshell" name="bsh" version="2.0b6"/>
          <trusted-key id="e113159331a1f87bfc2a93d0960d2e8635a91268" group="org.hdrhistogram" name="HdrHistogram" version="2.1.12"/>
@@ -240,14 +273,17 @@
          <trusted-key id="f5a85fe6d924157ce7e23ee41c2bc336c3945ea7" group="org.mutabilitydetector" name="MutabilityDetector" version="0.10.3"/>
          <trusted-key id="f5feba84eb26c56457b2cf819e31ab27445478db" group="org.infinispan"/>
          <trusted-key id="f79157db93697aa32cd4c46cc485c5a843fadb15" group="org.flywaydb"/>
-         <trusted-key id="f9395d8bbad9ad666079f1673572a15746f96a2f" group="com.github.gwenn" name="sqlite-dialect" version="0.1.2"/>
+         <trusted-key id="fa1703b1d287caea3a60f931e0130a3ed5a2079e" group="org.webjars"/>
          <trusted-key id="fa77dcfef2ee6eb2debedd2c012579464d01c06a">
             <trusting group="org.codehaus.plexus"/>
             <trusting group="^org[.]apache($|([.].*))" regex="true"/>
          </trusted-key>
          <trusted-key id="fa7929f83ad44c4590f6cc6815c71c0a4e0b8edd" group="net.java.dev.jna"/>
          <trusted-key id="fc411cd3cb7dcb0abc9801058118b3bcdb1a5000" group="jakarta.xml.bind"/>
-         <trusted-key id="fe72f1bfe9632b1fe049ac3e5bcd80b78acd3a37" group="com.oracle.database.jdbc" name="ojdbc-bom" version="21.5.0.0"/>
+         <trusted-key id="fe72f1bfe9632b1fe049ac3e5bcd80b78acd3a37">
+            <trusting group="com.oracle.database.jdbc" name="ojdbc-bom" version="21.5.0.0"/>
+            <trusting group="com.oracle.database.jdbc" name="ojdbc-bom" version="21.7.0.0"/>
+         </trusted-key>
          <trusted-key id="ff6e2c001948c5f2f38b0cc385911f425ec61b51">
             <trusting group="junit"/>
             <trusting group="org.apiguardian"/>
@@ -256,7 +292,11 @@
             <trusting group="org.junit.platform"/>
             <trusting group="org.opentest4j"/>
          </trusted-key>
-         <trusted-key id="ffd433e89fcb22c79a8dd011b4bf94f677caa76f" group="jakarta.ws.rs" name="jakarta.ws.rs-api" version="2.1.6"/>
+         <trusted-key id="ffd433e89fcb22c79a8dd011b4bf94f677caa76f">
+            <trusting group="jakarta.ws.rs"/>
+            <trusting group="jakarta.ws.rs" name="jakarta.ws.rs-api" version="2.1.6"/>
+            <trusting group="javax.ws.rs" name="javax.ws.rs-api" version="2.1.1"/>
+         </trusted-key>
       </trusted-keys>
    </configuration>
    <components>
@@ -414,6 +454,14 @@
             <sha256 value="5159ce7ad7da092bc35a1a9d0477214956a38f3df08489338175c9c197bd7b14" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
+      <component group="dom4j" name="dom4j" version="1.6.1">
+         <artifact name="dom4j-1.6.1.jar">
+            <sha256 value="593552ffea3c5823c6602478b5002a7c525fd904a3c44f1abe4065c22edfac73" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="dom4j-1.6.1.pom">
+            <sha256 value="447738ca5342da1ab2e0c835f70683e0c93818c22a494c2e5161656f86906c16" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
       <component group="io.franzbecker" name="gradle-lombok" version="5.0.0">
          <artifact name="gradle-lombok-5.0.0.jar">
             <sha256 value="b4a6bd02d5085d2f865ebec2f2a4546ce9c29b0eec13b8b0b5d5311456c3fe52" origin="Generated by Gradle because artifact wasn't signed"/>
@@ -433,6 +481,11 @@
          </artifact>
          <artifact name="javax.inject-1.pom">
             <sha256 value="943e12b100627804638fa285805a0ab788a680266531e650921ebfe4621a8bfa" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="javax.ws.rs" name="javax.ws.rs-api" version="2.1.1">
+         <artifact name="javax.ws.rs-api-2.1.1.${packaging.type}">
+            <sha256 value="2c309eb2c9455ffee9da8518c70a3b6d46be2a269b2e2a101c806a537efe79a4" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
       <component group="nebula.lint" name="nebula.lint.gradle.plugin" version="17.7.1">
@@ -504,6 +557,14 @@
             <pgp value="d433f9c895710db8ab087fa6b7c3b43d18eaa8b7"/>
          </artifact>
       </component>
+      <component group="org.hibernate" name="hibernate-core" version="5.2.12.Final">
+         <artifact name="hibernate-core-5.2.12.Final.jar">
+            <sha256 value="8d1bad130c331df1c1a21d8bc5ab69418b93fafa5c2e244c74b6395522c7aa49" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="hibernate-core-5.2.12.Final.pom">
+            <sha256 value="0323a02664473bd28ff04d4034fa489c33d1c9adf8001ad61551b27cd3887564" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
       <component group="org.hibernate" name="hibernate-core" version="5.6.12.Final">
          <artifact name="hibernate-core-5.6.12.Final.jar">
             <sha256 value="5395eb2a7e2f1ff18495dced2d50817f39504ebc0145fbc7340a025e863f383d" origin="Generated by Gradle because artifact wasn't signed"/>
@@ -518,6 +579,14 @@
          </artifact>
          <artifact name="hibernate-core-5.6.14.Final.pom">
             <sha256 value="11a6baba7b2028a0f7dc6074afb0fb0bc08abe0b4d7c645ad721aad8479ba322" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.hibernate.common" name="hibernate-commons-annotations" version="5.0.1.Final">
+         <artifact name="hibernate-commons-annotations-5.0.1.Final.jar">
+            <sha256 value="9431ca05c335f9b6ec550f5d65ad56047a5f336e2d41cce4067591d20c4e51df" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="hibernate-commons-annotations-5.0.1.Final.pom">
+            <sha256 value="532b830a121c66a12bf7cc6cf4743dd2da8fffed2793d5cd4b669d182d2a268e" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
       <component group="org.hibernate.common" name="hibernate-commons-annotations" version="5.1.2.Final">
@@ -535,6 +604,25 @@
          <artifact name="hibernate-commons-annotations-6.0.2.Final.module">
             <sha256 value="c4c0345c15535c18963684f0233be462cebd73aa4f84e8ce3942d29e4002f9f8" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
+         <artifact name="hibernate-commons-annotations-6.0.2.Final.pom">
+            <sha256 value="23a960cae479d952e133d615b5e7a5d20462e5064304111fd2e22542dd2ce211" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.hibernate.javax.persistence" name="hibernate-jpa-2.1-api" version="1.0.0.Final">
+         <artifact name="hibernate-jpa-2.1-api-1.0.0.Final.jar">
+            <sha256 value="ab46597e3a057f99c8339fffe14c1d27f9dbd2409ae840c62121b00d983c78bd" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="hibernate-jpa-2.1-api-1.0.0.Final.pom">
+            <sha256 value="0a1f32d628675ddef83d7e09dda993c8809102984c64cd2d4115c20828c31dc2" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.jboss" name="jandex" version="2.0.3.Final">
+         <artifact name="jandex-2.0.3.Final.jar">
+            <sha256 value="a3a65250cf954f102e74bab23df12540780878231195b585a7a86f4364a53727" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="jandex-2.0.3.Final.pom">
+            <sha256 value="1b75470b73dcc11df67dcc6c54e92084b13f2b05ffc3d0293e6b11a2e7527bb1" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
       </component>
       <component group="org.jboss" name="jandex" version="2.4.2.Final">
          <artifact name="jandex-2.4.2.Final.jar">
@@ -547,6 +635,11 @@
       <component group="org.jboss" name="jboss-parent" version="12">
          <artifact name="jboss-parent-12.pom">
             <sha256 value="9e56f5b21898a6e711e857621ac1efb6cf3c3de165a4aa307db998826ad4ffdf" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.jboss" name="jboss-parent" version="20">
+         <artifact name="jboss-parent-20.pom">
+            <sha256 value="10f0cfc3d2048782585d0db25a4378d0102f9f4850cbfe6fd6c59fe2d23a81bf" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
       <component group="org.jboss" name="jboss-parent" version="25">
@@ -564,12 +657,25 @@
             <sha256 value="f128c48b62470bc27047d2abdd95539c43f68701a1553dcdc647950066712962" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
+      <component group="org.jboss.arquillian" name="arquillian-bom" version="1.7.0.Alpha10">
+         <artifact name="arquillian-bom-1.7.0.Alpha10.pom">
+            <sha256 value="0bf2ce391957e3ae82305a4ccdcdec047cc3127af94eae8073073bd819ec1e1d" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
       <component group="org.jboss.logging" name="jboss-logging" version="3.4.3.Final">
          <artifact name="jboss-logging-3.4.3.Final.jar">
             <sha256 value="0b324cca4d550060e51e70cc0045a6cce62f264278ec1f5082aafeb670fcac49" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
          <artifact name="jboss-logging-3.4.3.Final.pom">
             <sha256 value="f7639433422e8bf1f397db7575f2ab954cc20f7d1581b33f6d978db30943afec" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.jboss.logging" name="jboss-logging" version="3.5.0.Final">
+         <artifact name="jboss-logging-3.5.0.Final.jar">
+            <sha256 value="7bb135b081952f6d32d83374619ae5201b05ca3bf862a28dd111016ce19b2c07" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="jboss-logging-3.5.0.Final.pom">
+            <sha256 value="4b68e3b46d9dc22d99d7819352fcbb43767d31d8ebd22a8e13f10e11867c468e" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
       <component group="org.jboss.shrinkwrap" name="shrinkwrap-bom" version="1.2.6">
@@ -585,6 +691,14 @@
       <component group="org.jboss.shrinkwrap.resolver" name="shrinkwrap-resolver-bom" version="3.1.4">
          <artifact name="shrinkwrap-resolver-bom-3.1.4.pom">
             <sha256 value="53d45df757388b693a37493b74e0d7a938c5734c15f82629d40a29dea9ceb74f" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+      </component>
+      <component group="org.jboss.spec.javax.transaction" name="jboss-transaction-api_1.2_spec" version="1.0.1.Final">
+         <artifact name="jboss-transaction-api_1.2_spec-1.0.1.Final.jar">
+            <sha256 value="d35b340768f11e683045d0b3b8c2cf0554a0495a675ae8aab5680b34e5d2a69c" origin="Generated by Gradle because artifact wasn't signed"/>
+         </artifact>
+         <artifact name="jboss-transaction-api_1.2_spec-1.0.1.Final.pom">
+            <sha256 value="d744f51180e8f7c023dcdc5108c2883d5ad98d076462606e0a604ae41c39f715" origin="Generated by Gradle because artifact wasn't signed"/>
          </artifact>
       </component>
       <component group="org.jboss.spec.javax.transaction" name="jboss-transaction-api_1.2_spec" version="1.1.1.Final">
@@ -685,6 +799,13 @@
             </sha256>
          </artifact>
       </component>
+      <component group="org.springframework.boot" name="org.springframework.boot.gradle.plugin" version="3.0.0">
+         <artifact name="org.springframework.boot.gradle.plugin-3.0.0.pom">
+            <sha256 value="56a717a95955e091b05fe0e3738623ec846464ac9a1578689b0bad605ee600f9" origin="Generated by Gradle because artifact wasn't signed">
+               <also-trust value="4a0b94822b570a79a9b61296e494a8d9e3f08643acd76f00cedbbebb93ffa186"/>
+            </sha256>
+         </artifact>
+      </component>
       <component group="org.testcontainers" name="testcontainers-bom" version="1.16.3">
          <artifact name="testcontainers-bom-1.16.3.pom">
             <pgp value="d022218dcc08aad6ef3af876b3de72e647d35161"/>
@@ -698,12 +819,12 @@
             <sha256 value="b211871aa3bc531480c271074303417fba82f61ddaeb0d4732324a1cab2c5bc0" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
-      <component group="org.webjars" name="webjars-locator-core" version="0.50">
-         <artifact name="webjars-locator-core-0.50.jar">
-            <sha256 value="f83ec9bea3ac8eef21fd725523e6551dd4cb03e52da2cde6621154565d2887ef" origin="Generated by Gradle because a key couldn't be downloaded"/>
+      <component group="org.webjars" name="webjars-locator-core" version="0.52">
+         <artifact name="webjars-locator-core-0.52.jar">
+            <sha256 value="67c83f3678411a7085a0d1e1ad3d82d0adb23376579b3f127b8c6b433d2a6d4f" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
-         <artifact name="webjars-locator-core-0.50.pom">
-            <sha256 value="cb5aa76ada543ae5014885ab04825a3b1fdcf890b782a274fa4015fe65e2c699" origin="Generated by Gradle because a key couldn't be downloaded"/>
+         <artifact name="webjars-locator-core-0.52.pom">
+            <sha256 value="777344d8cc9ea2758b7395611e9012db870e511eda4eaacce192e26b279584e3" origin="Generated by Gradle because a key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="xmlpull" name="xmlpull" version="1.1.3.1">

@@ -3,7 +3,7 @@ package org.tbk.bitcoin.jsonrpc.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 @ConfigurationProperties(
         prefix = "org.tbk.bitcoin.jsonrpc.cache",

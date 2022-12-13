@@ -24,12 +24,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LndClientAutoConfigurationTest {
+class LndClientAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.lightning.lnd.grpc.rpchost=localhost",
@@ -60,7 +60,7 @@ public class LndClientAutoConfigurationTest {
     }
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.lightning.lnd.grpc.enabled=false"
@@ -72,7 +72,7 @@ public class LndClientAutoConfigurationTest {
     }
 
     @Test
-    public void errorIfCertFileIsMissing() {
+    void errorIfCertFileIsMissing() {
         this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.lightning.lnd.grpc.rpchost=localhost",
@@ -87,5 +87,4 @@ public class LndClientAutoConfigurationTest {
             assertThat(rootCause.getMessage(), is("'certFile' must exist"));
         });
     }
-
 }

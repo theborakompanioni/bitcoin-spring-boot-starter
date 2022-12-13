@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.donation;
 
+import jakarta.validation.ValidationException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bitcoinj.core.Coin;
@@ -20,7 +21,6 @@ import javax.money.Monetary;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.CurrencyConversion;
 import javax.money.convert.MonetaryConversions;
-import javax.validation.ValidationException;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.ZoneOffset;

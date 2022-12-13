@@ -15,12 +15,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XChangeAutoConfigurationTest {
+class XChangeAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void noBeansAreAutoCreated() {
+    void noBeansAreAutoCreated() {
         this.contextRunner.withUserConfiguration(XChangeAutoConfiguration.class)
                 .run(context -> {
                     Map<String, Exchange> beans = context.getBeansOfType(Exchange.class);
@@ -29,7 +29,7 @@ public class XChangeAutoConfigurationTest {
     }
 
     @Test
-    public void beansAreAutoCreatedMinimalProperties() {
+    void beansAreAutoCreatedMinimalProperties() {
         this.contextRunner.withUserConfiguration(XChangeAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.xchange.enabled=true",
@@ -48,7 +48,7 @@ public class XChangeAutoConfigurationTest {
     }
 
     @Test
-    public void beansAreCreatedWithCommonProperties() {
+    void beansAreCreatedWithCommonProperties() {
         this.contextRunner.withUserConfiguration(XChangeAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.xchange.enabled=true",
@@ -90,7 +90,7 @@ public class XChangeAutoConfigurationTest {
     }
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(XChangeAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.xchange.enabled=false"
@@ -106,7 +106,7 @@ public class XChangeAutoConfigurationTest {
 
 
     @Test
-    public void propertiesAreParsedSuccessfully() {
+    void propertiesAreParsedSuccessfully() {
         this.contextRunner.withUserConfiguration(XChangeAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.xchange.enabled=true",

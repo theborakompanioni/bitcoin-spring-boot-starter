@@ -43,7 +43,7 @@ spring.datasource.hikari.idle-timeout: 45000 #maximum idle time for connection
 spring.datasource.hikari.max-lifetime: 60000 # maximum lifetime in milliseconds of a connection in the pool after it is closed.
 spring.datasource.hikari.auto-commit: true #default auto-commit behavior.
 
-spring.jpa.properties.hibernate.dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+spring.jpa.properties.hibernate.dialect: org.hibernate.community.dialect.SQLiteDialect
 spring.jpa.properties.hibernate.jdbc.time_zone: UTC
 
 

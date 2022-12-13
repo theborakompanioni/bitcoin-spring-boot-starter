@@ -13,7 +13,7 @@ import org.tbk.bitcoin.example.payreq.invoice.Invoice;
 import javax.money.CurrencyUnit;
 import javax.money.NumberValue;
 import javax.money.convert.RateType;
-import javax.persistence.Table;
+import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 

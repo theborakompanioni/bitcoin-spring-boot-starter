@@ -13,10 +13,10 @@ import org.tbk.bitcoin.example.payreq.order.Order;
 import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import javax.money.NumberValue;
-import javax.persistence.Column;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 

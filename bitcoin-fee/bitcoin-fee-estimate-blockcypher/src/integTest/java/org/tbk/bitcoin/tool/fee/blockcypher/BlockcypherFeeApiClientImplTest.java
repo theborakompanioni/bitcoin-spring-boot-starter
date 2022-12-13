@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class BlockcypherFeeApiClientImplTest {
+class BlockcypherFeeApiClientImplTest {
     private static final String BASE_URL = "https://api.blockcypher.com";
     private static final String API_TOKEN = null;
 
     private BlockcypherFeeApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new BlockcypherFeeApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetBtcMainnet() {
+    void itShouldGetBtcMainnet() {
         ChainInfo chainInfo = this.sut.btcMain();
 
         assertThat(chainInfo, is(notNullValue()));
@@ -37,7 +37,7 @@ public class BlockcypherFeeApiClientImplTest {
     }
 
     @Test
-    public void itShouldGetBtcTestnet() {
+    void itShouldGetBtcTestnet() {
         ChainInfo chainInfo = this.sut.btcTestnet3();
 
         assertThat(chainInfo, is(notNullValue()));

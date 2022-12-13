@@ -13,13 +13,13 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BitcoinZeroMqClientExampleApplicationTest {
+class BitcoinZeroMqClientExampleApplicationTest {
 
     @Autowired(required = false)
     private MessagePublishService<Transaction> bitcoinjTransactionPublishService;
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         assertThat(bitcoinjTransactionPublishService, is(notNullValue()));
     }
 

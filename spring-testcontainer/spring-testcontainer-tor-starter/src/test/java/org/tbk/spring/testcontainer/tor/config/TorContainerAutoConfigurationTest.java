@@ -11,12 +11,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TorContainerAutoConfigurationTest {
+class TorContainerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(
                 TorContainerAutoConfiguration.class
         ).withPropertyValues(
@@ -28,7 +28,7 @@ public class TorContainerAutoConfigurationTest {
     }
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(
                 TorContainerAutoConfiguration.class
         ).withPropertyValues(
@@ -40,7 +40,7 @@ public class TorContainerAutoConfigurationTest {
     }
 
     @Test
-    public void onionAddressesAreGenerated() {
+    void onionAddressesAreGenerated() {
         String serviceName = RandomStringUtils.randomAlphabetic(10);
 
         this.contextRunner.withUserConfiguration(

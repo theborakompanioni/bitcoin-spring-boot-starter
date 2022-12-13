@@ -11,12 +11,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BitcoinRegtestAutoConfigurationTest {
+class BitcoinRegtestAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class,
                 BitcoinRegtestAutoConfiguration.class)
                 .withPropertyValues(
@@ -35,7 +35,7 @@ public class BitcoinRegtestAutoConfigurationTest {
 
 
     @Test
-    public void noBeansAreCreated() {
+    void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class,
                 BitcoinRegtestAutoConfiguration.class)
                 .withPropertyValues(

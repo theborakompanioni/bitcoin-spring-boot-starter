@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class EarndotcomApiClientImplTest {
+class EarndotcomApiClientImplTest {
     private static final String BASE_URL = "https://bitcoinfees.earn.com";
     private static final String API_TOKEN = "test";
 
     private EarndotcomApiClientImpl sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sut = new EarndotcomApiClientImpl(BASE_URL, API_TOKEN);
     }
 
     @Test
-    public void itShouldGetRecommendedTransactionFees() {
+    void itShouldGetRecommendedTransactionFees() {
         RecommendedTransactionFees recommendedTransactionFees = this.sut.recommendedTransactionFees();
 
         assertThat(recommendedTransactionFees, is(notNullValue()));
@@ -28,7 +28,7 @@ public class EarndotcomApiClientImplTest {
     }
 
     @Test
-    public void itShouldGetTransactionFeesSummary() {
+    void itShouldGetTransactionFeesSummary() {
         TransactionFeesSummary transactionFeesSummary = this.sut.transactionFeesSummary();
 
         assertThat(transactionFeesSummary, is(notNullValue()));

@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class MoreSatPerVbyteTest {
+class MoreSatPerVbyteTest {
 
     @Test
-    public void itShouldCalculateSatPerKbyteToSatPerVbyte() {
+    void itShouldCalculateSatPerKbyteToSatPerVbyte() {
         assertThat(MoreSatPerVbyte.fromSatPerKVbyte(new BigDecimal("0.00000001")), is(new BigDecimal("0.00000000001")));
         assertThat(MoreSatPerVbyte.fromSatPerKVbyte(new BigDecimal("0.99999999")), is(new BigDecimal("0.00099999999")));
         assertThat(MoreSatPerVbyte.fromSatPerKVbyte(new BigDecimal("1")), is(new BigDecimal("0.001")));
@@ -21,7 +21,7 @@ public class MoreSatPerVbyteTest {
     }
 
     @Test
-    public void itShouldCalculateBtcPerVbyteToSatPerVbyte() {
+    void itShouldCalculateBtcPerVbyteToSatPerVbyte() {
         assertThat(MoreSatPerVbyte.fromBtcPerVbyte(new BigDecimal("0.00000001")), is(new BigDecimal("1.00000000")));
         assertThat(MoreSatPerVbyte.fromBtcPerVbyte(new BigDecimal("0.99999999")), is(new BigDecimal("99999999.00000000")));
         assertThat(MoreSatPerVbyte.fromBtcPerVbyte(new BigDecimal("1")), is(new BigDecimal("100000000")));
@@ -32,7 +32,7 @@ public class MoreSatPerVbyteTest {
     }
 
     @Test
-    public void itShouldCalculateBtcPerKVbyteToSatPerVbyte() {
+    void itShouldCalculateBtcPerKVbyteToSatPerVbyte() {
         assertThat(MoreSatPerVbyte.fromBtcPerKVbyte(new BigDecimal("0.00000001")), is(new BigDecimal("0.00100000")));
         assertThat(MoreSatPerVbyte.fromBtcPerKVbyte(new BigDecimal("0.00001000")), is(new BigDecimal("1.00000000")));
         assertThat(MoreSatPerVbyte.fromBtcPerKVbyte(new BigDecimal("0.99999999")), is(new BigDecimal("99999.99900000")));

@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-public class XChangeAutoConfigurationIntegrationTest {
+class XChangeAutoConfigurationIntegrationTest {
 
     @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
@@ -54,11 +54,11 @@ public class XChangeAutoConfigurationIntegrationTest {
 
     /**
      * this should just fail if the exchange could not be autowired.
-     * creating beans dynamically is not that straightforward so we have to make
-     * sure its still works when we make substantial changes to the code.
+     * creating beans dynamically is not that straightforward, so we have to make
+     * sure it's still works when we make substantial changes to the code.
      */
     @Test
-    public void itShouldBePossibleToInjectDynamicallyCreatedExchangeBeans() {
+    void itShouldBePossibleToInjectDynamicallyCreatedExchangeBeans() {
         assertThat(aBeanInjectedWithDynamicallyCreatedExchangeBean, is(notNullValue()));
 
         Exchange autowiredExchange = aBeanInjectedWithDynamicallyCreatedExchangeBean.get();
@@ -71,9 +71,8 @@ public class XChangeAutoConfigurationIntegrationTest {
         assertThat(sandboxEnabled, is(Boolean.TRUE));
     }
 
-
     @Test
-    public void itShouldVerifyThatDynamicallyCreatedExchangeBeansAreSingletons() {
+    void itShouldVerifyThatDynamicallyCreatedExchangeBeansAreSingletons() {
         assertThat(aBeanInjectedWithDynamicallyCreatedExchangeBean, is(notNullValue()));
         assertThat(anotherBeanInjectedWithDynamicallyCreatedExchangeBean, is(notNullValue()));
 
