@@ -141,6 +141,7 @@
          <trusted-key id="67497e9d680ce8e95bd6b8f85ad66315fc018797" group="com.beust" name="jcommander" version="1.72"/>
          <trusted-key id="679fb0162abe057603e69e4527869a59af13ca69" group="com.netflix.nebula"/>
          <trusted-key id="694621a7227d8d5289699830abe9f3126bb741c1" group="com.google.guava"/>
+         <trusted-key id="6a2faf8bb1bce8caebbf052140510eb4f61c4c9e" group="org.zeromq" name="jeromq" version="0.5.3"/>
          <trusted-key id="6a814b1f869c2bbeab7cb7271a2a1c94bde89688" group="^org[.]apache($|([.].*))" regex="true"/>
          <trusted-key id="6dd3b8c64ef75253beb2c53ad908a43fb7ec07ac">
             <trusting group="com.sun.activation"/>

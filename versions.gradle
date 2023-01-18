@@ -6,7 +6,7 @@ ext {
     lightningjVersion = '0.15.3-Beta'
     consensusJVersion = '0.6.4'
     guavaVersion = '30.1-jre'
-    jeroMqVersion = '0.5.2'
+    jeroMqVersion = '0.5.3'
     testcontainersVersion = '1.17.5'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
