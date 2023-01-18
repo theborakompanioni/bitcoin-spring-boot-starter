@@ -114,7 +114,7 @@ class LndContainerApplicationTest {
     void itShouldBeCompatibleWithLightningJ() throws StatusException, ValidationException {
         GetInfoResponse info = lndSyncApi.getInfo();
         assertThat(info, is(notNullValue()));
-        assertThat(info.getVersion(), startsWith("0.15.3-beta"));
+        assertThat(info.getVersion(), startsWith("0.15.5-beta"));
         assertThat(info.getAlias(), is("tbk-lnd-starter-test"));
 
         assertThat(info.getChains(), hasSize(1));
@@ -140,7 +140,7 @@ class LndContainerApplicationTest {
         GetInfoResponse info = infoResponseFlux.blockFirst(Duration.ofSeconds(15));
 
         assertThat(info, is(notNullValue()));
-        assertThat(info.getVersion(), startsWith("0.15.3-beta"));
+        assertThat(info.getVersion(), startsWith("0.15.5-beta"));
         assertThat(info.getAlias(), is("tbk-lnd-starter-test"));
     }
 

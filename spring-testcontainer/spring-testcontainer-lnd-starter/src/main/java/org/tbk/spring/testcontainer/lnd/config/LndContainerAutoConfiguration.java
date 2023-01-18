@@ -35,7 +35,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
 
-    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.15.3-beta";
+    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.15.5-beta";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -65,12 +65,12 @@ public class LndContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        // only wait for rpc ports - zeromq ports wont work (we can live with that for now)
+        // only wait for rpc ports - zeromq ports won't work (we can live with that for now)
         WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(hardcodedStandardPorts)
                 .build()
-                // lnd sometimes takes more than 120 seconds to start..
-                .withStartupTimeout(Duration.ofSeconds(180));
+                // lnd sometimes takes more than 120 seconds to start...
+                .withStartupTimeout(Duration.ofSeconds(240));
 
         WaitStrategy waitStrategy = new WaitAllStrategy()
                 .withStrategy(portWaitStrategy)
