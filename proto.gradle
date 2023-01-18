@@ -5,7 +5,6 @@ sourceSets {
         proto {
             // In addition to the default 'src/main/proto'
             srcDir file('src/main/java')
-            include '*.proto'
         }
         java {
             srcDir new File(buildDir, 'generated/source/proto/main/java')

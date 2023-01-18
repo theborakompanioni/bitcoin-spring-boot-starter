@@ -9,6 +9,11 @@ byteBuddy {
     }
 }
 
+bootJar {
+    // prevent failing because of duplicate"BOOT-INF/lib/jaxb-core-4.0.1.jar"
+    duplicatesStrategy DuplicatesStrategy.WARN
+}
+
 dependencies {
     implementation "com.google.zxing:core:${zxingVersion}"
     implementation "com.google.zxing:javase:${zxingVersion}"
