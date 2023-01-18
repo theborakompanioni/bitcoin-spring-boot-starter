@@ -182,6 +182,8 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
 - Tor: https://www.torproject.org/
 - Protocol Buffers: https://developers.google.com/protocol-buffers
+- springdoc-openapi (GitHub): https://github.com/springdoc/springdoc-openapi
+- sqlite (GitHub): https://github.com/xerial/sqlite-jdbc
 
 
 ## License

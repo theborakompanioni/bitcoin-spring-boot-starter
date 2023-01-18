@@ -19,7 +19,7 @@ dependencies {
     implementation project(':bitcoin-fee:bitcoin-fee-estimate-earndotcom')
     implementation project(':bitcoin-fee:bitcoin-fee-estimate-mempoolspace')
 
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenApiVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

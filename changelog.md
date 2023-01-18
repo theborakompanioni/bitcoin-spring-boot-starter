@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - upgrade: update spring-boot from v2.7.6 to v3.0.0
 - upgrade: update spring-tor from v0.6.0 to v0.7.0
+- upgrade: update springdoc-openapi from v1.6.13 to v2.0.2
 
 ### Changed
 - upgrade: update jeromq from v0.5.2 to v0.5.3
-- 
+
 ## [0.5.0] - 2022-11-29
 ### Breaking
 - upgrade: update java from v11 to v17

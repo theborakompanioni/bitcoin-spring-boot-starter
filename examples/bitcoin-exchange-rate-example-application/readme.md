@@ -9,8 +9,11 @@ Start the application with
 ./gradlew -p examples/bitcoin-exchange-rate-example-application bootRun
 ```
 
-... and open the following url in your browser:
-`http://localhost:8080/api/v1/exchange/latest?base=BTC&target=USD&provider=KRAKEN`
+... and open the following url in your browser: 
+http://localhost:8080/swagger-ui/index.html
+
+### Example API request
+Request: `http://localhost:8080/api/v1/exchange/latest?base=BTC&target=USD&provider=KRAKEN`
 
 Example output (2020-11-08):
 ```json

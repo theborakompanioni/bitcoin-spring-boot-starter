@@ -21,7 +21,7 @@ ext {
     sqliteVersion = '3.40.0.0'
     hibernateCommunityDialectsVersion = '6.1.5.Final'
     lombokVersion = '1.18.20'
-    springdocOpenApiVersion = '1.6.13'
+    springdocOpenApiVersion = '2.0.2'
     mockserverVersion = '5.11.2'
     checkstyleVersion = '10.3.4'
     findsecbugsPluginVersion = '1.12.0'
