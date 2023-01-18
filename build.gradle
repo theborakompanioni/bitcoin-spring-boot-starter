@@ -148,6 +148,12 @@ subprojects {
         includeEmptyDirs false
     }
 
+    sourceJar {
+        // needed till duplicate bug in protobuf gradle plugin is resolved.
+        // see https://github.com/google/protobuf-gradle-plugin/issues/522 (last checked 2023-01-18)
+        duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    }
+
     task sourcesJar(type: Jar) {
         archiveClassifier.set('sources')
         from sourceSets.main.java
