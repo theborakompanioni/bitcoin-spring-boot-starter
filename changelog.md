@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking
+- upgrade: update spring-boot from v2.7.6 to v3.0.0
+- upgrade: update spring-tor from v0.6.0 to v0.7.0
+
 ## [0.5.0] - 2022-11-29
 ### Breaking
 - upgrade: update java from v11 to v17
