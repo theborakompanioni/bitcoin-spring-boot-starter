@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - upgrade: update jeromq from v0.5.2 to v0.5.3
+- upgrade: update lightningj from v0.15.3-Beta to v0.15.5-Beta
 
 ## [0.5.0] - 2022-11-29
 ### Breaking

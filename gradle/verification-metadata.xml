@@ -129,7 +129,10 @@
          <trusted-key id="7795d734c5d1202b9436d0841261358604ae1a0f" group="org.zalando" name="jackson-datatype-money" version="1.2.2"/>
          <trusted-key id="798e2da37e70dae0ea9e498ca388c395aafb80f8" group="io.dropwizard.metrics"/>
          <trusted-key id="7a1d848e7c2af85eeba69c99e7bf252cf360097e" group="org.latencyutils" name="LatencyUtils" version="2.0.3"/>
-         <trusted-key id="7c0f80b8bd9fe3b813884ba19515b31ddd9bbccd" group="org.lightningj" name="lightningj" version="0.15.3-Beta"/>
+         <trusted-key id="7c0f80b8bd9fe3b813884ba19515b31ddd9bbccd">
+            <trusting group="org.lightningj" name="lightningj" version="0.15.3-Beta"/>
+            <trusting group="org.lightningj" name="lightningj" version="0.15.5-Beta"/>
+         </trusted-key>
          <trusted-key id="7c669810892cbd3148fa92995b05ccde140c2876" group="org.eclipse.jgit"/>
          <trusted-key id="7e22d50a7ebd9d2cd269b2d4056aca74d46000bf" group="io.netty"/>
          <trusted-key id="808d78b17a5a2d7c3668e31fbffc9b54721244ad" group="org.apache.commons" name="commons-parent" version="39"/>
