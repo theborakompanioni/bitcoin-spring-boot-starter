@@ -10,7 +10,7 @@ A module containing a spring boot starter for a [ConsensusJ](https://github.com/
 The starter will automatically create an injectable `BitcoinClient` bean:
 
 ```yaml
-org.tbk.bitcoin.jsonrpc.client:
+org.tbk.bitcoin.jsonrpc:
   enabled: true
   network: mainnet
   rpchost: http://localhost
