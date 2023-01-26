@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update grpc from v1.49.2 to v1.50.0
 - upgrade: update protobuf from v3.21.7 to v3.21.12
 - upgrade: update docker lightninglabs/lnd from v0.15.3-beta to v0.15.5-beta
+- upgrade: update testcontainers from v1.17.5 to v1.17.6
 
 ## [0.5.0] - 2022-11-29
 ### Breaking
