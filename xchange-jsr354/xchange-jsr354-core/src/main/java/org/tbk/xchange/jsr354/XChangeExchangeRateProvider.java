@@ -101,7 +101,7 @@ public class XChangeExchangeRateProvider extends AbstractRateProvider {
 
     private boolean isCurrencyPairAvailable(CurrencyPair currencyPair) {
         try {
-            return exchange.getExchangeSymbols().contains(currencyPair);
+            return exchange.getExchangeInstruments().contains(currencyPair);
         } catch (Exception e) {
             log.warn("currency pair {} is not available on exchange {}: {}", currencyPair, exchange, e.getMessage());
             return false;

@@ -54,7 +54,7 @@ public class KrakenStackCommandRunner extends ConditionalOnNonOptionApplicationR
         BigDecimal fiatAmount = properties.getFiatAmount();
 
         CurrencyPair currencyPair = new CurrencyPair(bitcoin, fiatCurrency);
-        boolean supportedCurrencyPair = exchange.getExchangeSymbols().contains(currencyPair);
+        boolean supportedCurrencyPair = exchange.getExchangeInstruments().contains(currencyPair);
         if (!supportedCurrencyPair) {
             throw new IllegalStateException("Currency pair is not supported: " + currencyPair);
         }

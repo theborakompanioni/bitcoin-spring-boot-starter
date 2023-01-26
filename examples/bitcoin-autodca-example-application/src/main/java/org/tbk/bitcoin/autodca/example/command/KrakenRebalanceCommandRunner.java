@@ -75,7 +75,7 @@ public class KrakenRebalanceCommandRunner extends ConditionalOnNonOptionApplicat
         Currency fiatCurrency = Currency.getInstance(properties.getFiatCurrency());
 
         CurrencyPair currencyPair = new CurrencyPair(bitcoin, fiatCurrency);
-        boolean supportedCurrencyPair = exchange.getExchangeSymbols().contains(currencyPair);
+        boolean supportedCurrencyPair = exchange.getExchangeInstruments().contains(currencyPair);
         if (!supportedCurrencyPair) {
             throw new IllegalStateException("Currency pair is not supported: " + currencyPair);
         }

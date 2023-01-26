@@ -40,13 +40,15 @@ public class TickerCommandRunner extends ConditionalOnNonOptionApplicationRunner
         Currency fiatCurrency = Currency.getInstance(properties.getFiatCurrency());
         CurrencyPair currencyPair = new CurrencyPair(cryptoCurrency, fiatCurrency);
 
-        boolean supportedCurrencyPair = exchange.getExchangeSymbols().contains(currencyPair);
+        boolean supportedCurrencyPair = exchange.getExchangeInstruments().contains(currencyPair);
         if (!supportedCurrencyPair) {
             throw new IllegalStateException("Currency pair is not supported: " + currencyPair);
         }
 
         CurrencyPairsParam currencyPairsParam = () -> Collections.singletonList(currencyPair);
-        List<Ticker> tickers = exchange.getMarketDataService().getTickers(currencyPairsParam);
+        List<Ticker> tickers = exchange.getMarketDataService().getTickers(currencyPairsParam).stream()
+                .filter(it -> currencyPair.equals(it.getInstrument()))
+                .toList();
 
         tickers.forEach(ticker -> {
             BigDecimal spreadAskBid = calcSpreadToAskPrice(ticker, ticker.getBid());
@@ -66,9 +68,12 @@ public class TickerCommandRunner extends ConditionalOnNonOptionApplicationRunner
     }
 
     private BigDecimal calcSpreadToAskPrice(Ticker ticker, BigDecimal val) {
+        if (ticker.getAsk().signum() == 0) {
+            return BigDecimal.ZERO;
+        }
         return ticker.getAsk().subtract(val)
                 .multiply(BigDecimal.valueOf(100L))
-                .divide(ticker.getAsk(), RoundingMode.HALF_DOWN);
+                .divide(ticker.getAsk(), 4, RoundingMode.HALF_DOWN);
     }
 
     private String displayValue(BigDecimal val) {
