@@ -5,6 +5,7 @@ import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.trade.TradeService;
@@ -44,12 +45,17 @@ public class DummyExchange extends BaseExchange implements Exchange {
     public static class DummyMarketDataService implements MarketDataService {
         @Override
         public Ticker getTicker(CurrencyPair currencyPair, Object... args) {
+            return this.getTicker((Instrument) currencyPair);
+        }
+
+        @Override
+        public Ticker getTicker(Instrument currencyPair, Object... args) {
             return new Ticker.Builder()
+                    .instrument(currencyPair)
                     .ask(new BigDecimal("0.12"))
                     .askSize(new BigDecimal("0.13"))
                     .bid(new BigDecimal("0.14"))
                     .bidSize(new BigDecimal("0.14"))
-                    .instrument(currencyPair)
                     .high(new BigDecimal("0.15"))
                     .last(new BigDecimal("0.16"))
                     .low(new BigDecimal("0.17"))

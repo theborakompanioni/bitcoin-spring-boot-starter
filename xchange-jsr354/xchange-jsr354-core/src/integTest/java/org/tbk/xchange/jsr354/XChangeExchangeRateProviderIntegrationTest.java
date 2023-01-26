@@ -19,14 +19,14 @@ class XChangeExchangeRateProviderIntegrationTest {
     private XChangeExchangeRateProvider sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Exchange exchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class);
         ProviderContext providerContext = MoreProviderContexts.createSimpleProviderContextBuilder(exchange).build();
         this.sut = new XChangeExchangeRateProvider(providerContext, exchange);
     }
 
     @Test
-    public void itShouldFetchSupportedExchangeRateSuccessfully() {
+    void itShouldFetchSupportedExchangeRateSuccessfully() {
         ExchangeRate exchangeRate = this.sut.getExchangeRate("BTC", "USD");
 
         assertThat(exchangeRate, is(notNullValue()));
@@ -36,13 +36,13 @@ class XChangeExchangeRateProviderIntegrationTest {
     }
 
     @Test
-    public void itShouldNotFetchUnsupportedExchangeRate() {
+    void itShouldNotFetchUnsupportedExchangeRate() {
         // hopefully kraken will never return factor "1" for btc/btc pair :D
         assertThrows(CurrencyConversionException.class, () -> this.sut.getExchangeRate("BTC", "BTC"));
     }
 
     @Test
-    public void itShouldFetchSupportedCurrencyConversion() {
+    void itShouldFetchSupportedCurrencyConversion() {
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency("BTC")
                 .setTermCurrency("USD")
@@ -65,7 +65,7 @@ class XChangeExchangeRateProviderIntegrationTest {
     }
 
     @Test
-    public void itShouldNotFetchUnsupportedCurrencyConversion() {
+    void itShouldNotFetchUnsupportedCurrencyConversion() {
         // hopefully kraken will never return factor "1" for btc/btc pair :D
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency("BTC")

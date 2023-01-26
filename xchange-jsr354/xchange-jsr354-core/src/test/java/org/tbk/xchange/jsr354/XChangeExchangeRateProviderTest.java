@@ -18,14 +18,14 @@ class XChangeExchangeRateProviderTest {
     private XChangeExchangeRateProvider sut;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Exchange exchange = ExchangeFactory.INSTANCE.createExchange(DummyExchange.class);
         ProviderContext providerContext = MoreProviderContexts.createSimpleProviderContextBuilder(exchange).build();
         this.sut = new XChangeExchangeRateProvider(providerContext, exchange);
     }
 
     @Test
-    public void itShouldFetchSupportedExchangeRateSuccessfully() {
+    void itShouldFetchSupportedExchangeRateSuccessfully() {
         ExchangeRate exchangeRate = this.sut.getExchangeRate("BTC", "USD");
 
         assertThat(exchangeRate, is(notNullValue()));
@@ -35,12 +35,12 @@ class XChangeExchangeRateProviderTest {
     }
 
     @Test
-    public void itShouldNotFetchUnsupportedExchangeRate() {
+    void itShouldNotFetchUnsupportedExchangeRate() {
         assertThrows(CurrencyConversionException.class, () -> this.sut.getExchangeRate("BTC", "BTC"));
     }
 
     @Test
-    public void itShouldFetchSupportedCurrencyConversion() {
+    void itShouldFetchSupportedCurrencyConversion() {
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency("BTC")
                 .setTermCurrency("USD")
@@ -63,7 +63,7 @@ class XChangeExchangeRateProviderTest {
     }
 
     @Test
-    public void itShouldNotFetchUnsupportedCurrencyConversion() {
+    void itShouldNotFetchUnsupportedCurrencyConversion() {
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency("BTC")
                 .setTermCurrency("BTC")

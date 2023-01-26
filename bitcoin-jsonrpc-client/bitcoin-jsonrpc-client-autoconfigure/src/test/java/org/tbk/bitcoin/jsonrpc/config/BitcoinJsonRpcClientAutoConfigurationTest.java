@@ -16,7 +16,7 @@ class BitcoinJsonRpcClientAutoConfigurationTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    public void beansAreCreated() {
+    void beansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.jsonrpc.network=mainnet",
