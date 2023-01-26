@@ -91,7 +91,7 @@ public class ElectrumxContainerAutoConfiguration {
         // only listen for rpc port as other ports might not be opened because of the initial sync!
         // from the docs (https://electrumx-spesmilo.readthedocs.io/en/latest/HOWTO.html#sync-progress):
         // > ElectrumX will not serve normal client connections until it has fully synchronized and caught up with
-        // > your daemon. However LocalRPC connections are served at all times.
+        // > your daemon. However, LocalRPC connections are served at all times.
         return CustomHostPortWaitStrategy.builder()
                 .addPort(hardcodedRpcPort)
                 .build();

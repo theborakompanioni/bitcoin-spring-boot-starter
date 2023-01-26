@@ -33,7 +33,7 @@ org.tbk.spring.testcontainer.btcrpcexplorer:
     BTCEXP_SLOW_DEVICE_MODE: false
     BTCEXP_NO_INMEMORY_RPC_CACHE: true
     BTCEXP_NO_RATES: true
-    BTCEXP_BASIC_AUTH_PASSWORD: moneyprintergobrrr
+    BTCEXP_BASIC_AUTH_PASSWORD: moneyprintergobrrr #username AND password
     BTCEXP_RPC_ALLOWALL: false
     BTCEXP_UI_SHOW_TOOLS_SUBHEADER: true
     BTCEXP_DEMO: true
