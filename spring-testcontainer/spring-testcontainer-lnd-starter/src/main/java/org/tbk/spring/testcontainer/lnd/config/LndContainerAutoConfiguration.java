@@ -20,7 +20,6 @@ import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,19 +67,19 @@ public class LndContainerAutoConfiguration {
         // only wait for rpc ports - zeromq ports won't work (we can live with that for now)
         WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(hardcodedStandardPorts)
-                .build()
-                // lnd sometimes takes more than 120 seconds to start...
-                .withStartupTimeout(Duration.ofSeconds(240));
+                .build();
 
-        WaitStrategy waitStrategy = new WaitAllStrategy()
+        WaitStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
                 .withStrategy(portWaitStrategy)
-                .withStrategy(Wait.forLogMessage(".*Opened wallet.*", 1));
+                .withStrategy(Wait.forLogMessage(".*Opened wallet.*", 1))
+                .withStartupTimeout(LndContainerProperties.DEFAULT_STARTUP_TIMEOUT);
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 
         return new LndContainer<>(dockerImageName)
+                .dependsOn(bitcoindContainer)
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))

@@ -76,7 +76,7 @@ public class BitcoindContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        // only wait for rpc ports - p2p ports might be disabled (networkactive=0); zeromq ports wont work (we can live with that for now)
+        // only wait for rpc ports - p2p ports might be disabled (networkactive=0); zeromq ports won't work (we can live with that for now)
         CustomHostPortWaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(ImmutableList.<Integer>builder()
                         .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332) : Collections.emptyList())

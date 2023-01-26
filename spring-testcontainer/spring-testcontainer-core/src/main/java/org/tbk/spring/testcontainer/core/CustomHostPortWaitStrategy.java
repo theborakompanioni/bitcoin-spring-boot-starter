@@ -11,12 +11,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Use this class if you only want certain exposed ports to be checked, an not all of them.
+ * Use this class if you only want certain exposed ports to be checked, and not all of them.
  *
  * <p>Default HostPortWaitStrategy would ask the waitStrategyTarget
- * for all "liveness check ports" and use all exposed ports of the container.
+ * for all "liveliness check ports" and use all exposed ports of the container.
  * This is sometimes unwanted as e.g. in case of zeromq, ports must be exposed,
- * but will fail during dockers liveness check.
+ * but will fail during dockers liveliness check.
  */
 @Value
 @Builder
