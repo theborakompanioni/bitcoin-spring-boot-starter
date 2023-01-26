@@ -11,6 +11,7 @@ import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnable
 import org.springframework.boot.actuate.autoconfigure.info.ConditionalOnEnabledInfoContributor;
 import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.info.InfoContributor;
+import org.springframework.boot.actuate.ldap.LdapHealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +45,10 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
     // cannot be an inner static class - would not be picked up by spring correctly
     public class BitcoinJsonRpcClientHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<BitcoinJsonRpcHealthIndicator, BitcoinClient> {
+
+        public BitcoinJsonRpcClientHealthContributorAutoConfiguration() {
+            super(BitcoinJsonRpcHealthIndicator::new);
+        }
 
         @Override
         protected BitcoinJsonRpcHealthIndicator createIndicator(BitcoinClient bean) {

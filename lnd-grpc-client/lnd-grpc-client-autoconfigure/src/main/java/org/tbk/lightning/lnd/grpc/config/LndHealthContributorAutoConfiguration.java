@@ -38,6 +38,10 @@ public class LndHealthContributorAutoConfiguration {
     public class LndApiHealthContributorAutoConfiguration extends
             CompositeHealthContributorConfiguration<LndHealthIndicator, SynchronousLndAPI> {
 
+        public LndApiHealthContributorAutoConfiguration() {
+            super(LndHealthIndicator::new);
+        }
+
         @Override
         protected LndHealthIndicator createIndicator(SynchronousLndAPI bean) {
             return new LndHealthIndicator(bean);
