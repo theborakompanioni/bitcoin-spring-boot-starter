@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.regtest;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
-import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Sha256Hash;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,7 +50,7 @@ class ScheduledRegtestMinerTest {
         @Bean(destroyMethod = "stopAsync")
         public ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
                                                            @Qualifier("regtestMinerScheduler")
-                                                                   AbstractScheduledService.Scheduler scheduler) {
+                                                           AbstractScheduledService.Scheduler scheduler) {
             ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
             scheduledregtestMiner.startAsync();
             return scheduledregtestMiner;
@@ -64,7 +64,7 @@ class ScheduledRegtestMinerTest {
         private static class RegtestMinerScheduler extends AbstractScheduledService.CustomScheduler {
             private static final Duration MIN_BLOCK_DURATION = Duration.ofMillis(1000);
             private static final Duration MAX_BLOCK_DURATION = Duration.ofMillis(3000);
-            
+
             private final SecureRandom random = new SecureRandom();
 
             @Override

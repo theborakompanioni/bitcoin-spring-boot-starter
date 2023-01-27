@@ -1,9 +1,9 @@
 package org.tbk.bitcoin.regtest.example;
 
 import com.google.common.base.Stopwatch;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
-import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bitcoinj.core.NetworkParameters;
+import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 
 import java.net.URI;
 

@@ -41,7 +41,7 @@ class LnurlAuthTestSecurityDeprecatedConfig implements WebSecurityCustomizer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-         http
+        http
                 .userDetailsService(userDetailsService)
                 .apply(LnurlAuthConfigurer.create(k1Manager, pairingService))
                 .and()

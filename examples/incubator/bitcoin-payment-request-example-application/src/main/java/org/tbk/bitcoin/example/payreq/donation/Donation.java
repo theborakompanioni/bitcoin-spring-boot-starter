@@ -1,6 +1,9 @@
 package org.tbk.bitcoin.example.payreq.donation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,9 +15,6 @@ import org.springframework.data.domain.AfterDomainEventPublication;
 import org.tbk.bitcoin.example.payreq.order.Order;
 import org.tbk.bitcoin.example.payreq.payment.PaymentRequest;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.UUID;
 

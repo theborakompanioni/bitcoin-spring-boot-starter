@@ -8,7 +8,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @ConfigurationProperties(
         prefix = "org.tbk.lightning.lnd.grpc",
@@ -21,7 +20,7 @@ public class LndClientAutoConfigProperties implements Validator {
     public enum Network {
         mainnet,
         testnet,
-        regtest;
+        regtest
     }
 
     /**

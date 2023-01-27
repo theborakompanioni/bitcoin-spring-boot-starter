@@ -132,9 +132,9 @@ class LnurlWalletAuthenticationFilterTest {
         SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
 
         mockMvc.perform(get(loginUri)
-                .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, "00".repeat(32))
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
+                        .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, "00".repeat(32))
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status", is("ERROR")))
                 .andExpect(jsonPath("$.reason", is("Request could not be authenticated.")));
@@ -165,9 +165,9 @@ class LnurlWalletAuthenticationFilterTest {
         SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
 
         mockMvc.perform(get(loginUri)
-                .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, realK1.toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
+                        .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, realK1.toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status", is("ERROR")))
                 .andExpect(jsonPath("$.reason", is("Request could not be authenticated.")));
@@ -198,9 +198,9 @@ class LnurlWalletAuthenticationFilterTest {
         String invalidKeyHex = signedLnurlAuth.getLinkingKey().toHex().replaceAll("[0-9a-fA-F]", "0");
 
         mockMvc.perform(get(loginUri)
-                .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, invalidKeyHex))
+                        .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, invalidKeyHex))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status", is("ERROR")))
                 .andExpect(jsonPath("$.reason", is("Request could not be authenticated.")));
@@ -232,9 +232,9 @@ class LnurlWalletAuthenticationFilterTest {
         LinkingKey mismatchingKey = SimpleLnurlWallet.fromSeed(Hex.decode("00".repeat(256))).deriveLinkingPublicKey(loginUri);
 
         mockMvc.perform(get(loginUri)
-                .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
-                .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, mismatchingKey.toHex()))
+                        .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, mismatchingKey.toHex()))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status", is("ERROR")))
                 .andExpect(jsonPath("$.reason", is("Request could not be authenticated.")));

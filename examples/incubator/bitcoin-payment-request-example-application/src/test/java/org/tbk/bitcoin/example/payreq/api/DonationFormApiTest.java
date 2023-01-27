@@ -17,7 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,13 +42,13 @@ class DonationFormApiTest {
     @Test
     void itShouldCreateDonationSuccessfully() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/api/v1/donation/form")
-                .accept(MediaType.TEXT_HTML)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("network", "regtest")
-                .param("amount", "1")
-                .param("currency", "USD")
-                .param("paymentMethod", "onchain")
-                .param("comment", "hello world."))
+                        .accept(MediaType.TEXT_HTML)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("network", "regtest")
+                        .param("amount", "1")
+                        .param("currency", "USD")
+                        .param("paymentMethod", "onchain")
+                        .param("comment", "hello world."))
                 .andDo(print())
                 .andExpect(status().isFound())
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("/donation.html?donation_id=*"))
@@ -59,7 +60,7 @@ class DonationFormApiTest {
         String donationId = matcher.group(1);
 
         mockMvc.perform(get("/api/v1/donation/{id}", donationId)
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(donationId)))
@@ -75,24 +76,24 @@ class DonationFormApiTest {
     @Test
     void itShouldReturnErrorOnInvalidRequests() throws Exception {
         mockMvc.perform(post("/api/v1/donation/form")
-                .accept(MediaType.TEXT_HTML)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                        .accept(MediaType.TEXT_HTML)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isBadRequest());
 
         // missing "amount"
         mockMvc.perform(post("/api/v1/donation/form")
-                .accept(MediaType.TEXT_HTML)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("network", "regtest")
-                .param("currency", "USD"))
+                        .accept(MediaType.TEXT_HTML)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("network", "regtest")
+                        .param("currency", "USD"))
                 .andExpect(status().isBadRequest());
 
         // missing "currency"
         mockMvc.perform(post("/api/v1/donation/form")
-                .accept(MediaType.TEXT_HTML)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("network", "regtest")
-                .param("amount", "1"))
+                        .accept(MediaType.TEXT_HTML)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("network", "regtest")
+                        .param("amount", "1"))
                 .andExpect(status().isBadRequest());
     }
 

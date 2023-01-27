@@ -1,11 +1,11 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.annotation.Service;
 import org.lightningj.lnd.proto.LightningApi;
@@ -111,13 +111,11 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 
     @Override
     public PaymentRequest reevaluatePaymentRequest(PaymentRequest paymentRequest) {
-        if (paymentRequest instanceof BitcoinOnchainPaymentRequest) {
-            BitcoinOnchainPaymentRequest onchainPaymentRequest = (BitcoinOnchainPaymentRequest) paymentRequest;
+        if (paymentRequest instanceof BitcoinOnchainPaymentRequest onchainPaymentRequest) {
             return reevaluateOnchainBitcoinPaymentRequest(onchainPaymentRequest);
         }
 
-        if (paymentRequest instanceof LndInvoicePaymentRequest) {
-            LndInvoicePaymentRequest lightningPaymentRequest = (LndInvoicePaymentRequest) paymentRequest;
+        if (paymentRequest instanceof LndInvoicePaymentRequest lightningPaymentRequest) {
             return reevaluateLightningPaymentRequest(lightningPaymentRequest);
         }
 

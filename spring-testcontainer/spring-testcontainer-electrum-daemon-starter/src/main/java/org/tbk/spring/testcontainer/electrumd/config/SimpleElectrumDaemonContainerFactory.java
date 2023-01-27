@@ -128,8 +128,8 @@ public final class SimpleElectrumDaemonContainerFactory {
 
     private String dockerContainerName() {
         return String.format("%s-%s-%d", dockerImageName.getUnversionedPart(),
-                Integer.toHexString(System.identityHashCode(this)),
-                containerNameIdCounter.getAndIncrement())
+                        Integer.toHexString(System.identityHashCode(this)),
+                        containerNameIdCounter.getAndIncrement())
                 .replace("/", "-");
     }
 

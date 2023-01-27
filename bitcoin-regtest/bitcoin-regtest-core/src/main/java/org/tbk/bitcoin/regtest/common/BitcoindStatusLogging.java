@@ -1,11 +1,11 @@
 package org.tbk.bitcoin.regtest.common;
 
+import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.Block;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
 import org.consensusj.bitcoin.json.pojo.TxOutSetInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
-import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Block;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;

@@ -38,9 +38,9 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest {
      * Creates a new {@link BitcoinOnchainPaymentRequest} referring to the given {@link Order}.
      * Using {@code DEFAULT_MIN_CONFIRMATIONS} as minimum amount of confirmations.
      *
-     * @param order must not be {@literal null}.
+     * @param order      must not be {@literal null}.
      * @param validUntil must not be {@literal null}.
-     * @param address must not be {@literal null}.
+     * @param address    must not be {@literal null}.
      */
     BitcoinOnchainPaymentRequest(Order order, Instant validUntil, Address address) {
         this(order, validUntil, address, DEFAULT_MIN_CONFIRMATIONS);
@@ -49,9 +49,9 @@ public class BitcoinOnchainPaymentRequest extends PaymentRequest {
     /**
      * Creates a new {@link BitcoinOnchainPaymentRequest} referring to the given {@link Order}.
      *
-     * @param order must not be {@literal null}.
-     * @param validUntil must not be {@literal null}.
-     * @param address must not be {@literal null}.
+     * @param order            must not be {@literal null}.
+     * @param validUntil       must not be {@literal null}.
+     * @param address          must not be {@literal null}.
      * @param minConfirmations must not be negative.
      */
     BitcoinOnchainPaymentRequest(Order order, Instant validUntil, Address address, int minConfirmations) {

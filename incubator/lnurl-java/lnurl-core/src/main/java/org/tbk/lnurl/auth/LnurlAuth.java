@@ -2,7 +2,6 @@ package org.tbk.lnurl.auth;
 
 import org.tbk.lnurl.Lnurl;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 

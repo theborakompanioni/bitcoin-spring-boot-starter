@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.regtest.mining;
 
 import com.google.common.collect.Lists;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Sha256Hash;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 
 import java.io.IOException;
 import java.util.List;

@@ -69,8 +69,7 @@ public class XChangeJsr354AutoConfiguration {
 
         @Override
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-            if (bean instanceof Exchange) {
-                Exchange exchange = (Exchange) bean;
+            if (bean instanceof Exchange exchange) {
                 registerJsr354ExchangeRateProviderBean(exchange, beanName);
             }
 

@@ -102,7 +102,7 @@ public class DeserializeResponse {
 
         @JsonProperty("scriptPubKey")
         String scriptPubKey;
-        
+
         @JsonProperty("prevout_n")
         int prevoutN;
     }

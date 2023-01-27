@@ -1,9 +1,9 @@
 package org.tbk.lightning.lnd.playground.example;
 
-import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;

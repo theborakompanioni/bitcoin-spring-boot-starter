@@ -80,11 +80,11 @@ class LndClientAutoConfigurationTest {
                         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
                         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test-missing.cert"
                 ).run(context -> {
-            Throwable startupFailure = context.getStartupFailure();
-            assertThat(startupFailure, is(notNullValue()));
+                    Throwable startupFailure = context.getStartupFailure();
+                    assertThat(startupFailure, is(notNullValue()));
 
-            Throwable rootCause = Throwables.getRootCause(startupFailure);
-            assertThat(rootCause.getMessage(), is("'certFile' must exist"));
-        });
+                    Throwable rootCause = Throwables.getRootCause(startupFailure);
+                    assertThat(rootCause.getMessage(), is("'certFile' must exist"));
+                });
     }
 }

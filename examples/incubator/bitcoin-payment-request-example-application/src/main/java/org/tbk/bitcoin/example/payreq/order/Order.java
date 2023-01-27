@@ -2,6 +2,10 @@ package org.tbk.bitcoin.example.payreq.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -14,14 +18,9 @@ import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.tbk.bitcoin.example.payreq.common.Currencies;
 import org.tbk.bitcoin.example.payreq.common.MonetaryAmountFormats;
-import org.tbk.bitcoin.example.payreq.exchangerate.ExchangeRate;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OrderColumn;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;

@@ -5,10 +5,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.tbk.lnurl.auth.LnurlAuth;
-import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionToken;
-import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletActionEvent;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletToken;
 
 @Slf4j

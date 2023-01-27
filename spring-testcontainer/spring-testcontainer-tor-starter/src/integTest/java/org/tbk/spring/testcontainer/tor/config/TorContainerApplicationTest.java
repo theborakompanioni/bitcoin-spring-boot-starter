@@ -54,7 +54,8 @@ class TorContainerApplicationTest {
     }
 
     @Test
-    @SuppressFBWarnings("URLCONNECTION_SSRF_FD") // we are in control of the request
+    @SuppressFBWarnings("URLCONNECTION_SSRF_FD")
+        // we are in control of the request
     void fetchPageWithTor() throws IOException {
         SocketAddress sockAddr = new InetSocketAddress("localhost", container.getMappedPort(9050));
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, sockAddr);

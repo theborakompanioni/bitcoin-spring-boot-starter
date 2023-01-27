@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.example.payreq.exchangerate;
 
 import com.google.common.base.MoreObjects;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +14,6 @@ import org.tbk.bitcoin.example.payreq.invoice.Invoice;
 import javax.money.CurrencyUnit;
 import javax.money.NumberValue;
 import javax.money.convert.RateType;
-import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 

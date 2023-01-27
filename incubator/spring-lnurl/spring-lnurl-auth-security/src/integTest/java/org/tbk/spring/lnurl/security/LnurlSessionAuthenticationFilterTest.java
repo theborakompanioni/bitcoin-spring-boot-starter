@@ -95,7 +95,7 @@ class LnurlSessionAuthenticationFilterTest {
         pairingService.pairK1WithLinkingKey(k1, linkingKey);
 
         mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
-                .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex()))
+                        .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex()))
                 .andDo(print())
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/"))
@@ -123,8 +123,8 @@ class LnurlSessionAuthenticationFilterTest {
         pairingService.pairK1WithLinkingKey(k1, linkingKey);
 
         mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
-                .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex())
-                .accept(MediaType.APPLICATION_JSON))
+                        .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex())
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", is("OK")))
                 .andExpect(jsonPath("$.headers").exists())
@@ -148,7 +148,7 @@ class LnurlSessionAuthenticationFilterTest {
         K1 k1 = k1Manager.create();
 
         mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
-                .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex()))
+                        .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex()))
                 .andExpect(status().isUnauthorized());
 
         // EXPECTED: verifying current behaviour: generates no `AuthorizationFailureEvent` as success/failure events as an

@@ -81,7 +81,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
                     .filter(it -> it)
                     .blockFirst(Duration.ofSeconds(3));
 
-            assertThat("wallet is loaded",walletIsLoaded, is(true));
+            assertThat("wallet is loaded", walletIsLoaded, is(true));
         }
     }
 

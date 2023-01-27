@@ -42,7 +42,7 @@ class PaymentRequestApiTest {
     @Test
     void paymentRequestJsonMissingAddressParamError() throws Exception {
         mockMvc.perform(get("/api/v1/payment/request")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -50,9 +50,9 @@ class PaymentRequestApiTest {
     @Test
     void paymentRequestJsonSuccess() throws Exception {
         mockMvc.perform(get("/api/v1/payment/request")
-                .queryParam("network", "regtest")
-                .queryParam("address", address.toString())
-                .accept(MediaType.APPLICATION_JSON))
+                        .queryParam("network", "regtest")
+                        .queryParam("address", address.toString())
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.paymentUrl", is("bitcoin:" + address)));
@@ -66,9 +66,9 @@ class PaymentRequestApiTest {
         String expectedImgElement = String.format("<img src=\"/api/v1/payment/request/qrcode?network=regtest&address=%s\" alt=\"bitcoin:%s\" />", address, address);
 
         mockMvc.perform(get("/api/v1/payment/request")
-                .queryParam("network", "regtest")
-                .queryParam("address", address.toString())
-                .accept(MediaType.TEXT_HTML))
+                        .queryParam("network", "regtest")
+                        .queryParam("address", address.toString())
+                        .accept(MediaType.TEXT_HTML))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expectedImgElement)));
@@ -77,9 +77,9 @@ class PaymentRequestApiTest {
     @Test
     void paymentRequestQrCodeSuccess() throws Exception {
         mockMvc.perform(get("/api/v1/payment/request/qrcode")
-                .queryParam("network", "regtest")
-                .queryParam("address", address.toString())
-                .accept(MediaType.IMAGE_PNG))
+                        .queryParam("network", "regtest")
+                        .queryParam("address", address.toString())
+                        .accept(MediaType.IMAGE_PNG))
                 .andExpect(status().isOk());
     }
 }

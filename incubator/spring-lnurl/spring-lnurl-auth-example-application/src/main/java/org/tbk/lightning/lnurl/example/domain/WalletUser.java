@@ -1,6 +1,9 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.AggregateRoot;
@@ -11,9 +14,6 @@ import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,6 @@
 package org.tbk.lnurl.simple.auth;
 
 import org.junit.jupiter.api.Test;
-import org.tbk.lnurl.simple.auth.SimpleK1;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

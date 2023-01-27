@@ -15,7 +15,7 @@ public final class BitcoinStandardExchangeRateProvider extends AbstractStandardE
             .set("providerDescription", "Exchange Rate Provider using BTC as base currency.")
             .build();
 
-    private static CurrencyUnit bitcoinCurrencyUnit = Monetary.getCurrency("BTC");
+    private static final CurrencyUnit bitcoinCurrencyUnit = Monetary.getCurrency("BTC");
 
     public BitcoinStandardExchangeRateProvider() {
         super(providerContext);

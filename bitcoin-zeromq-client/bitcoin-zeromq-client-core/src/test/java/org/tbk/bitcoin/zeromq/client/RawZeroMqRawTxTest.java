@@ -27,7 +27,7 @@ public class RawZeroMqRawTxTest {
      * @param args application arguments
      */
     public static void main(String[] args) {
-        Flux<byte[]> objectFlux = Flux.<byte[]>create(emitter -> {
+        Flux<byte[]> objectFlux = Flux.create(emitter -> {
             try (ZContext context = new ZContext()) {
                 try (ZMQ.Socket socket = context.createSocket(SocketType.SUB)) {
                     boolean connected = socket.connect("tcp://localhost:28333");

@@ -1,6 +1,8 @@
 package org.tbk.bitcoin.example.payreq.order;
 
 import com.google.common.base.MoreObjects;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,8 +15,6 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import javax.money.NumberValue;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
 import java.util.UUID;
 
 @Getter

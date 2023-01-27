@@ -81,7 +81,7 @@ class DonationServiceImpl implements DonationService {
 
         PaymentRequest paymentRequest = null;
         if ("onchain".equals(paymentMethod)) {
-            paymentRequest =  paymentRequestService.createOnchainPayment(order, network, paymentRequestValidUntil, 0);
+            paymentRequest = paymentRequestService.createOnchainPayment(order, network, paymentRequestValidUntil, 0);
         } else {
             paymentRequest = paymentRequestService.createLightningPayment(order, network, paymentRequestValidUntil);
         }

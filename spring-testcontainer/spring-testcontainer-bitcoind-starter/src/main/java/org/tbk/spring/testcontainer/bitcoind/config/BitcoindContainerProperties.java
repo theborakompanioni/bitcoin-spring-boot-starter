@@ -61,7 +61,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     public enum Chain {
         mainnet,
         testnet,
-        regtest;
+        regtest
     }
 
     public BitcoindContainerProperties() {

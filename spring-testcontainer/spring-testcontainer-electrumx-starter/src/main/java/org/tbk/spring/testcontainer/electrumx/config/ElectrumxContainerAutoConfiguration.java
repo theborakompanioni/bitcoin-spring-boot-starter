@@ -127,7 +127,7 @@ public class ElectrumxContainerAutoConfiguration {
 
     private String dockerContainerName() {
         return String.format("%s-%s", dockerImageName.getUnversionedPart(),
-                Integer.toHexString(System.identityHashCode(this)))
+                        Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
     }
 

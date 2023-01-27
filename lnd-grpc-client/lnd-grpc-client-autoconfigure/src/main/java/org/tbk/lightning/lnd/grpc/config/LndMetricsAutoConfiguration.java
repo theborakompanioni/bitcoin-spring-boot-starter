@@ -1,13 +1,13 @@
 package org.tbk.lightning.lnd.grpc.config;
 
 import com.google.common.base.Suppliers;
+import io.micrometer.common.lang.NonNullApi;
+import io.micrometer.common.lang.NonNullFields;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import io.micrometer.common.lang.NonNullApi;
-import io.micrometer.common.lang.NonNullFields;
 import lombok.extern.slf4j.Slf4j;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
@@ -64,36 +64,36 @@ public class LndMetricsAutoConfiguration {
         @Override
         public void bindTo(MeterRegistry registry) {
             Gauge.builder("lnd.blocks.height", client, client -> infoSupplier.get()
-                    .map(GetInfoResponse::getBlockHeight)
-                    .orElse(-1))
+                            .map(GetInfoResponse::getBlockHeight)
+                            .orElse(-1))
                     .tags(tags)
                     .description("Number of all blocks in the chain")
                     .register(registry);
 
             Gauge.builder("lnd.channels.active", client, client -> infoSupplier.get()
-                    .map(GetInfoResponse::getNumActiveChannels)
-                    .orElse(-1))
+                            .map(GetInfoResponse::getNumActiveChannels)
+                            .orElse(-1))
                     .tags(tags)
                     .description("Number of active channels")
                     .register(registry);
 
             Gauge.builder("lnd.channels.inactive", client, client -> infoSupplier.get()
-                    .map(GetInfoResponse::getNumInactiveChannels)
-                    .orElse(-1))
+                            .map(GetInfoResponse::getNumInactiveChannels)
+                            .orElse(-1))
                     .tags(tags)
                     .description("Number of inactive channels")
                     .register(registry);
 
             Gauge.builder("lnd.channels.pending", client, client -> infoSupplier.get()
-                    .map(GetInfoResponse::getNumPendingChannels)
-                    .orElse(-1))
+                            .map(GetInfoResponse::getNumPendingChannels)
+                            .orElse(-1))
                     .tags(tags)
                     .description("Number of pending channels")
                     .register(registry);
 
             Gauge.builder("lnd.peers", client, client -> infoSupplier.get()
-                    .map(GetInfoResponse::getNumPeers)
-                    .orElse(-1))
+                            .map(GetInfoResponse::getNumPeers)
+                            .orElse(-1))
                     .tags(tags)
                     .description("Number of peers")
                     .register(registry);

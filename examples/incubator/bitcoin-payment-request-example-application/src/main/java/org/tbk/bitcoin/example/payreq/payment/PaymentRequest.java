@@ -1,5 +1,9 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,10 +17,6 @@ import org.tbk.bitcoin.example.payreq.order.Order;
 import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import javax.money.NumberValue;
-import jakarta.persistence.Column;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -158,7 +158,7 @@ public abstract class PaymentRequest
         /**
          * {@link PaymentRequest} was expired. No changes allowed to it anymore.
          */
-        EXPIRED;
+        EXPIRED
     }
 
     @Value(staticConstructor = "of")

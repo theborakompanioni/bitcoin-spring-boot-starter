@@ -1,11 +1,11 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
-import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.params.TestNet3Params;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
+import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

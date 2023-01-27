@@ -1,9 +1,10 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.PublicKey;
-import fr.acinq.secp256k1.Hex;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.types.Entity;
@@ -11,9 +12,6 @@ import org.jmolecules.ddd.types.Identifier;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.UUID;
 

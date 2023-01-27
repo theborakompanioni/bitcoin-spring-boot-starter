@@ -52,8 +52,7 @@ public final class BitcoinCurrencyUnit implements CurrencyUnit, Serializable, Co
         if (obj == this) {
             return true;
         }
-        if (obj instanceof CurrencyUnit) {
-            CurrencyUnit other = (CurrencyUnit) obj;
+        if (obj instanceof CurrencyUnit other) {
             return getCurrencyCode().equals(other.getCurrencyCode());
         }
         return false;

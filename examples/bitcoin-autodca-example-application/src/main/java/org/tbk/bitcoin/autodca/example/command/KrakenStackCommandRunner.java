@@ -106,10 +106,10 @@ public class KrakenStackCommandRunner extends ConditionalOnNonOptionApplicationR
         boolean validateOnly = dryRun.isEnabled();
 
         KrakenOrderBuilder krakenLimitOrderBuilder = KrakenStandardOrder.getLimitOrderBuilder(
-                currencyPair,
-                KrakenType.BUY,
-                buyingPrice.toPlainString(),
-                cryptoAmount)
+                        currencyPair,
+                        KrakenType.BUY,
+                        buyingPrice.toPlainString(),
+                        cryptoAmount)
                 .withValidateOnly(validateOnly);
 
         KrakenStandardOrder buyLimitOrder = krakenLimitOrderBuilder.buildOrder();

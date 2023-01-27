@@ -2,7 +2,6 @@ package org.tbk.lightning.lnurl.example.security;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lnurl.auth.K1;

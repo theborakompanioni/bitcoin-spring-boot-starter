@@ -111,7 +111,7 @@ public class BitcoindContainerAutoConfiguration {
     }
 
     private List<String> buildCommandList() {
-        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder();
+        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.builder();
 
         Optional.of(this.properties.getChain())
                 .filter(it -> it != Chain.mainnet)
@@ -135,7 +135,7 @@ public class BitcoindContainerAutoConfiguration {
                 .add("-rpcallowip=" + this.properties.getCommandValueByKey("rpcallowip").orElse("0.0.0.0/0"))
                 .build();
 
-        ImmutableList.Builder<String> optionalCommandsBuilder = ImmutableList.<String>builder();
+        ImmutableList.Builder<String> optionalCommandsBuilder = ImmutableList.builder();
         this.properties.getRpcuser()
                 .map(val -> String.format("-rpcuser=%s", val))
                 .ifPresent(optionalCommandsBuilder::add);

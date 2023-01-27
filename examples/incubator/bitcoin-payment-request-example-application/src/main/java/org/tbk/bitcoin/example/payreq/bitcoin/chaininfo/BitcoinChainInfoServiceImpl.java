@@ -1,11 +1,11 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.chaininfo;
 
 import com.google.common.base.MoreObjects;
-import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Utils;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;

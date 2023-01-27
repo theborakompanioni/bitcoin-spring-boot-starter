@@ -1,11 +1,11 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.block;
 
-import org.consensusj.bitcoin.json.pojo.BlockInfo;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
+import org.consensusj.bitcoin.json.pojo.BlockInfo;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;

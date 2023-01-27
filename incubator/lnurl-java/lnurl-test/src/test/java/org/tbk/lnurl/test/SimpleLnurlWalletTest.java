@@ -1,12 +1,11 @@
 package org.tbk.lnurl.test;
 
 import fr.acinq.bitcoin.Crypto;
-import fr.acinq.bitcoin.PublicKey;
 import fr.acinq.secp256k1.Hex;
 import org.junit.jupiter.api.Test;
 import org.tbk.lnurl.auth.LinkingKey;
-import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.auth.SignedLnurlAuth;
 
 import java.net.URI;
 import java.security.SecureRandom;

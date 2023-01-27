@@ -1,9 +1,10 @@
 package org.tbk.bitcoin.example.payreq.common.db.jsr354;
 
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 /**
  * JPA {@link AttributeConverter} to serialize {@link CurrencyUnit} instances into a {@link String}. Auto-applied to

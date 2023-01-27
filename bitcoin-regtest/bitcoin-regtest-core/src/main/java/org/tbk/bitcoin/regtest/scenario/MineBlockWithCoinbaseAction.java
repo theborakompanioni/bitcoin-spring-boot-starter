@@ -17,7 +17,7 @@ public final class MineBlockWithCoinbaseAction implements RegtestAction<List<Sha
 
     private final RegtestMiner regtestMiner;
     private final CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier;
-    private int blocks;
+    private final int blocks;
 
     public MineBlockWithCoinbaseAction(RegtestMiner regtestMiner,
                                        CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {

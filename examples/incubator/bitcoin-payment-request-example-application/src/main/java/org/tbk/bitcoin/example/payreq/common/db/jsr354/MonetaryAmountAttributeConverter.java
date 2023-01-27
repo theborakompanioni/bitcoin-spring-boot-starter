@@ -1,12 +1,12 @@
 package org.tbk.bitcoin.example.payreq.common.db.jsr354;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import org.javamoney.moneta.Money;
 
 import javax.money.MonetaryAmount;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.format.MonetaryFormats;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 import java.util.Locale;
 
 /**

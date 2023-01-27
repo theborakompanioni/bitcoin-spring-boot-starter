@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.chaininfo;
 
 import com.google.common.base.MoreObjects;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Sha256Hash;
@@ -10,7 +11,6 @@ import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
 
-import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 

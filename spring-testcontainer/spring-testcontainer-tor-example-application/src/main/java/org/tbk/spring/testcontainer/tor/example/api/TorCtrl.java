@@ -13,7 +13,7 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/tor")
 @RequiredArgsConstructor
 public class TorCtrl {
-    
+
     @GetMapping(path = "/info")
     public ResponseEntity<? extends Map<String, Object>> provider() {
         Map<String, Object> result = ImmutableMap.<String, Object>builder()

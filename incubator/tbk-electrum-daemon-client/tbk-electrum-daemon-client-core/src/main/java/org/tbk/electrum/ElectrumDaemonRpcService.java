@@ -211,7 +211,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Set a configuration variable. 'value' may be a string or a Python expression.
      *
-     * @param key the config key
+     * @param key   the config key
      * @param value the config value
      * @return will always return true or errors (in v3.3.8)
      */
@@ -254,7 +254,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * password is optional (if you have an unencrypted wallet - which is highly discouraged).
      *
-     * @param tx a raw transaction (hexadecimal)
+     * @param tx       a raw transaction (hexadecimal)
      * @param password the wallet passphrase (null if unencrypted).
      * @return a signed transaction
      */
@@ -266,7 +266,7 @@ public interface ElectrumDaemonRpcService {
      * Watch an address. Everytime the address changes, a http POST is sent to the URL.
      *
      * @param address the address being watched
-     * @param url the url to POST to when address balances changes
+     * @param url     the url to POST to when address balances changes
      * @return will always return true or errors (in v3.3.8)
      */
     @JsonRpcMethod("notify")
@@ -275,7 +275,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Encrypt a message with a public key. Use quotes if the message contains whitespaces.
      *
-     * @param pubkey the pubkey
+     * @param pubkey  the pubkey
      * @param message the plaintext message
      * @return an encrypted message
      */
@@ -285,9 +285,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Decrypt a message encrypted with a public key.
      *
-     * @param pubkey the pubkey
+     * @param pubkey    the pubkey
      * @param encrypted the encrypted message
-     * @param password the wallet password
+     * @param password  the wallet password
      * @return a decrypted message
      */
     @JsonRpcMethod("decrypt")
@@ -307,8 +307,8 @@ public interface ElectrumDaemonRpcService {
     /**
      * Sign a message with a key. Use quotes if your message contains whitespaces
      *
-     * @param address the wallet address
-     * @param message the message
+     * @param address  the wallet address
+     * @param message  the message
      * @param password the wallet password
      * @return signature base64
      */
@@ -320,9 +320,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Verify a signature.
      *
-     * @param address the wallet address
+     * @param address   the wallet address
      * @param signature signature in base64
-     * @param message the message
+     * @param message   the message
      * @return true if the signature is valid
      */
     @JsonRpcMethod("verifymessage")

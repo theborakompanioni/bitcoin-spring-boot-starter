@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.regtest.electrum;
 
 import com.google.common.base.Stopwatch;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

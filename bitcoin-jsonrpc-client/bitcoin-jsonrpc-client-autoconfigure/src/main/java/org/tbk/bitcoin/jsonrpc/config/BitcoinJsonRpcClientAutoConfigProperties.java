@@ -9,7 +9,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * {
@@ -31,7 +30,7 @@ public class BitcoinJsonRpcClientAutoConfigProperties implements Validator {
     public enum Network {
         mainnet,
         testnet,
-        regtest;
+        regtest
     }
 
     /**

@@ -18,7 +18,7 @@ class BitcoinRegtestAutoConfigurationTest {
     @Test
     void beansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class,
-                BitcoinRegtestAutoConfiguration.class)
+                        BitcoinRegtestAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.regtest.enabled=true",
                         "org.tbk.bitcoin.jsonrpc.network=regtest",
@@ -37,7 +37,7 @@ class BitcoinRegtestAutoConfigurationTest {
     @Test
     void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class,
-                BitcoinRegtestAutoConfiguration.class)
+                        BitcoinRegtestAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.regtest.enabled=false",
                         "org.tbk.bitcoin.jsonrpc.network=regtest",

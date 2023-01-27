@@ -32,8 +32,8 @@ class Jsr354TechnicalCompatibilityKitTest {
         FileSystemUtils.deleteRecursively(targetPath);
         Path directory = Files.createDirectory(targetPath);
 
-        System.setProperty("outputDir", directory.toString() + "/tck-output");
-        System.setProperty("reportFile", directory.toString() + "/tck-results.txt");
+        System.setProperty("outputDir", directory + "/tck-output");
+        System.setProperty("reportFile", directory + "/tck-results.txt");
     }
 
     @Test

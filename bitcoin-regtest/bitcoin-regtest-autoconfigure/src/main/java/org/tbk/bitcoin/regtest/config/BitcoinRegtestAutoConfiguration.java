@@ -1,8 +1,8 @@
 package org.tbk.bitcoin.regtest.config;
 
+import org.bitcoinj.core.NetworkParameters;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.consensusj.bitcoin.jsonrpc.RpcConfig;
-import org.bitcoinj.core.NetworkParameters;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

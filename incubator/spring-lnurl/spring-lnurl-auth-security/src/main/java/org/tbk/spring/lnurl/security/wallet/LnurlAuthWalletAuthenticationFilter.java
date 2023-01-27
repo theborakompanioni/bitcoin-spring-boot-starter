@@ -1,6 +1,10 @@
 package org.tbk.spring.lnurl.security.wallet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -19,10 +23,6 @@ import org.tbk.lnurl.simple.auth.SimpleSignature;
 import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
@@ -74,8 +74,7 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         super.successfulAuthentication(request, response, chain, authResult);
 
-        if (authResult instanceof LnurlAuthWalletToken && this.eventPublisher != null) {
-            LnurlAuthWalletToken walletToken = (LnurlAuthWalletToken) authResult;
+        if (authResult instanceof LnurlAuthWalletToken walletToken && this.eventPublisher != null) {
 
             URI requestUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request)).build().toUri();
             SignedLnurlAuth signedLnurlAuth = SimpleSignedLnurlAuth.from(requestUri);

@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.chaininfo;
 
-import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.event.TransactionalEventListener;

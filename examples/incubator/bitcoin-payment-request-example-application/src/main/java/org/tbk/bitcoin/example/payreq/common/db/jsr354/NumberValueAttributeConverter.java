@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.example.payreq.common.db.jsr354;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import org.javamoney.moneta.spi.DefaultNumberValue;
 
 import javax.money.NumberValue;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 import java.math.BigDecimal;
 
 /**

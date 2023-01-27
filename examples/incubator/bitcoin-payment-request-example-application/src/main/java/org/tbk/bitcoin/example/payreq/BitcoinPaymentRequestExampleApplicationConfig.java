@@ -1,10 +1,10 @@
 package org.tbk.bitcoin.example.payreq;
 
 import com.google.common.io.CharStreams;
-import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
+import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.springframework.beans.factory.InitializingBean;

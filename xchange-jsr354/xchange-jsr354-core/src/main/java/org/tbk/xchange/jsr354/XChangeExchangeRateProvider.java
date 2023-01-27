@@ -9,7 +9,6 @@ import org.javamoney.moneta.spi.LazyBoundCurrencyConversion;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
-import org.knowm.xchange.instrument.Instrument;
 
 import javax.money.CurrencyUnit;
 import javax.money.NumberValue;
