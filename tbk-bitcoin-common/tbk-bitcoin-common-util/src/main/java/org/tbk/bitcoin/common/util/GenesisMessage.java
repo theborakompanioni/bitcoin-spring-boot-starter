@@ -10,6 +10,8 @@ public final class GenesisMessage {
 
     private static final GenesisMessage INSTANCE = new GenesisMessage();
 
+
+
     public static String message() {
         return MESSAGE;
     }

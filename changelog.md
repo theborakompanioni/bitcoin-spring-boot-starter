@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- module: initial version of module `bitcoin-zeromq-client-bitcoin-kmp`
 
 ### Breaking
 - upgrade: update spring-boot from v2.7.6 to v3.0.2
@@ -21,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update xchange from v5.0.13 to v5.1.0
 - upgrade: update docker lightninglabs/lnd from v0.15.3-beta to v0.15.5-beta
 - upgrade: update docker getumbrel/btc-rpc-explorer from v2.1.0 to v3.3.0
-
 
 ## [0.5.0] - 2022-11-29
 ### Breaking
