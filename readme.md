@@ -42,6 +42,20 @@ This project is under active development. Pull requests and issues are welcome.
 
 ### Gradle
 ```groovy
+repositories {
+    mavenCentral()
+    maven {
+        // needed for netlayer packages
+        url "https://jitpack.io"
+    }
+    maven {
+        // needed for consensusj
+        url "https://gitlab.com/api/v4/projects/8482916/packages/maven"
+    }
+}
+```
+
+```groovy
 implementation "io.github.theborakompanioni:bitcoin-jsonrpc-client-starter:${bitcoinSpringBootStarterVersion}"
 ```
 
@@ -111,7 +125,7 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
  
 ### Test
 ```shell script
-./gradlew test integrationTest
+./gradlew test integrationTest --rerun-tasks
 ```
 
 Tests in example application modules or modules that start a lot of docker containers 
@@ -140,7 +154,7 @@ is used for checking Java source code for adherence to a Code Standard.
 
 ```shell script
 # check for code standard violations with checkstyle
-./gradlew checkstyleMain
+./gradlew checkstyleMain --rerun-tasks
 ```
 
 ### SpotBugs
@@ -148,7 +162,7 @@ is used for checking Java source code for adherence to a Code Standard.
 
 ```shell script
 # invoke static code analysis with spotbugs
-./gradlew spotbugsMain
+./gradlew spotbugsMain --rerun-tasks
 ```
 
 
