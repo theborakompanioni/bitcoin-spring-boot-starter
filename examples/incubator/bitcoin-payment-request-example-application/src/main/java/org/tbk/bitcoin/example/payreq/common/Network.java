@@ -13,16 +13,11 @@ public enum Network {
     regtest;
 
     public NetworkParameters toNetworkParameters() {
-        switch (this) {
-            case mainnet:
-                return MainNetParams.get();
-            case testnet:
-                return TestNet3Params.get();
-            case regtest:
-                return RegTestParams.get();
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (this) {
+            case mainnet -> MainNetParams.get();
+            case testnet -> TestNet3Params.get();
+            case regtest -> RegTestParams.get();
+        };
     }
 
     public static Network fromNetworkParameters(NetworkParameters params) {

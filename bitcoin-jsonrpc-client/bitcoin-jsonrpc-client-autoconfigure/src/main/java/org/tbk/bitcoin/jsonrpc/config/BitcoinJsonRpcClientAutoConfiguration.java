@@ -40,16 +40,11 @@ public class BitcoinJsonRpcClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public NetworkParameters bitcoinJsonRpcNetworkParameters() {
-        switch (properties.getNetwork()) {
-            case mainnet:
-                return MainNetParams.get();
-            case testnet:
-                return TestNet3Params.get();
-            case regtest:
-                return RegTestParams.get();
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (properties.getNetwork()) {
+            case mainnet -> MainNetParams.get();
+            case testnet -> TestNet3Params.get();
+            case regtest -> RegTestParams.get();
+        };
     }
 
     @Bean

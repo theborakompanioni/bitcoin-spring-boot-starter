@@ -75,13 +75,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IllegalStateException("Could not find PaymentRequest for Order"));
 
         switch (paymentRequest.getStatus()) {
-            case COMPLETED:
-                order = order.markCompleted();
-                break;
-            case CANCELLED:
-            case EXPIRED:
-                order = order.markError();
-                break;
+            case COMPLETED -> order = order.markCompleted();
+            case CANCELLED, EXPIRED -> order = order.markError();
         }
 
         log.debug("Reevaluating order {} finished in state {}.", order.getId(), order.getStatus());

@@ -31,16 +31,11 @@ import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 public class BitcoinjZeroMqClientAutoConfiguration {
 
     private static NetworkParameters networkFromProperties(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
-        switch (bitcoinZmqClientConfig.getNetwork()) {
-            case mainnet:
-                return MainNetParams.get();
-            case testnet:
-                return TestNet3Params.get();
-            case regtest:
-                return RegTestParams.get();
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (bitcoinZmqClientConfig.getNetwork()) {
+            case mainnet -> MainNetParams.get();
+            case testnet -> TestNet3Params.get();
+            case regtest -> RegTestParams.get();
+        };
     }
 
     @Bean
