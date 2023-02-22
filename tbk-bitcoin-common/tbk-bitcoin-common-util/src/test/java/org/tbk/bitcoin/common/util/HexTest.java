@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.common.util;
 
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.common.genesis.GenesisMessage;
 
 import java.nio.charset.StandardCharsets;
 
@@ -52,7 +53,7 @@ class HexTest {
 
     @Test
     void itShouldEncodeBase16_2() {
-        String hex = Hex.encode(GenesisMessage.message().getBytes(StandardCharsets.US_ASCII));
+        String hex = Hex.encode(GenesisMessage.get().text().getBytes(StandardCharsets.US_ASCII));
 
         assertThat(hex, is("5468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73"));
     }

@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * zmqpubrawtx=tcp://127.0.0.1:28333
  */
 @Slf4j
-public class KmpTransactionPublishServiceManualTest {
+public class KmpTransactionPublisherFactoryManualTest {
     public static void main(String[] args) throws TimeoutException {
         ZeroMqMessagePublisherFactory zmqRawTxPublisherFactory = ZeroMqMessagePublisherFactory.builder()
                 .topic(BitcoinZeroMqTopics.rawtx())
