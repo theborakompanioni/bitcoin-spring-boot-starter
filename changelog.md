@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - module: initial version of module `bitcoin-zeromq-client-bitcoin-kmp`
+- ability to disable library specific zmq auto configuration
 
 ### Breaking
 - upgrade: update spring-boot from v2.7.6 to v3.0.2

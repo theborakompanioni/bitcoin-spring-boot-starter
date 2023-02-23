@@ -40,13 +40,38 @@ class BitcoinjZeroMqClientAutoConfigurationTest {
     }
 
     @Test
-    void noBeansAreCreated() {
+    void noBeansAreCreated1() {
         this.contextRunner.withUserConfiguration(
                         BitcoinZeroMqClientAutoConfiguration.class,
                         BitcoinjZeroMqClientAutoConfiguration.class
                 )
                 .withPropertyValues(
                         "org.tbk.bitcoin.zeromq.enabled=false"
+                )
+                .run(context -> {
+                    assertThat(context.containsBean("bitcoinjBlockPublisherFactory"), is(false));
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoinjBlockPublisherFactory.class));
+                    assertThat(context.containsBean("bitcoinjBlockPublishService"), is(false));
+
+                    assertThat(context.containsBean("bitcoinjTransactionPublisherFactory"), is(false));
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitcoinjTransactionPublisherFactory.class));
+                    assertThat(context.containsBean("bitcoinjTransactionPublishService"), is(false));
+                });
+    }
+
+    @Test
+    void noBeansAreCreated2() {
+        this.contextRunner.withUserConfiguration(
+                        BitcoinZeroMqClientAutoConfiguration.class,
+                        BitcoinjZeroMqClientAutoConfiguration.class
+                )
+                .withPropertyValues(
+                        "org.tbk.bitcoin.zeromq.bitcoinj.enabled=false",
+                        "org.tbk.bitcoin.zeromq.network=mainnet",
+                        "org.tbk.bitcoin.zeromq.zmqpubrawblock=tcp://localhost:28332",
+                        "org.tbk.bitcoin.zeromq.zmqpubrawtx=tcp://localhost:28333",
+                        "org.tbk.bitcoin.zeromq.zmqpubhashblock=tcp://localhost:28334",
+                        "org.tbk.bitcoin.zeromq.zmqpubhashtx=tcp://localhost:28335"
                 )
                 .run(context -> {
                     assertThat(context.containsBean("bitcoinjBlockPublisherFactory"), is(false));

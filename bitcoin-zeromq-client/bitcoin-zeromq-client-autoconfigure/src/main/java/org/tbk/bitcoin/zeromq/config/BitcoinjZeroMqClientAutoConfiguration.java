@@ -24,7 +24,10 @@ import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @AutoConfigureAfter(BitcoinZeroMqClientAutoConfiguration.class)
-@ConditionalOnProperty(value = "org.tbk.bitcoin.zeromq.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = {
+        "org.tbk.bitcoin.zeromq.enabled",
+        "org.tbk.bitcoin.zeromq.bitcoinj.enabled"
+}, havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass(BitcoinjBlockPublisherFactory.class)
 public class BitcoinjZeroMqClientAutoConfiguration {
 

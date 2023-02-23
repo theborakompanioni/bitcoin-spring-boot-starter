@@ -17,7 +17,18 @@ import static java.util.Objects.requireNonNullElse;
 @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinZeroMqClientAutoConfigurationProperties {
 
+    public record BitcoinKmpConfig(boolean enabled) {
+    }
+
+    public record BitcoinjConfig(boolean enabled) {
+    }
+
     private boolean enabled;
+
+    private BitcoinKmpConfig bitcoinKmp;
+
+
+    private BitcoinjConfig bitcoinj;
 
     private Network network;
 

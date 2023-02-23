@@ -19,7 +19,10 @@ import org.tbk.bitcoin.zeromq.kmp.KmpTransactionPublisherFactory;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @AutoConfigureAfter(BitcoinZeroMqClientAutoConfiguration.class)
-@ConditionalOnProperty(value = "org.tbk.bitcoin.zeromq.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = {
+        "org.tbk.bitcoin.zeromq.enabled",
+        "org.tbk.bitcoin.zeromq.bitcoin-kmp.enabled"
+}, havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass(KmpBlockPublisherFactory.class)
 public class KmpZeroMqClientAutoConfiguration {
 
