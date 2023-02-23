@@ -41,11 +41,9 @@ public final class MessagePublishService<T> extends AbstractIdleService implemen
         this.bitcoinMessagePublisher = requireNonNull(bitcoinMessagePublisher);
     }
 
-
     @Override
     public void subscribe(Subscriber<? super T> s) {
         publisher.subscribe(FlowAdapters.toFlowSubscriber(s));
-
     }
 
     @Override

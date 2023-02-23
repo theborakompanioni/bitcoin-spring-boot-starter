@@ -10,4 +10,7 @@ dependencies {
     implementation "com.google.guava:guava:${guavaVersion}"
 
     implementation "org.zeromq:jeromq:${jeroMqVersion}"
+
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-test')
+    testImplementation project(':tbk-bitcoin-common:tbk-bitcoin-common-util')
 }
