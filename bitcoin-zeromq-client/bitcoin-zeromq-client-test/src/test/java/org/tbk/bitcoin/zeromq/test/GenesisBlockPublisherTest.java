@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 class GenesisBlockPublisherTest {
 
-    private final static MessagePublisherFactory<byte[]> sut = new GenesisBlockPublisher();
+    private static final MessagePublisherFactory<byte[]> sut = new GenesisBlockPublisher();
 
     @Test
     void itShouldPublishGenesisBlock() {

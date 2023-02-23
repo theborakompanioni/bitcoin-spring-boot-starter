@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 class KmpTransactionPublisherFactoryTest {
-    private final static MessagePublisherFactory<byte[]> genesisTxPublisher = new GenesisBlockTxPublisher();
+    private static final MessagePublisherFactory<byte[]> genesisTxPublisher = new GenesisBlockTxPublisher();
 
     @Test
     void create() {

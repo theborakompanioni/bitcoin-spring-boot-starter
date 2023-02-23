@@ -40,9 +40,9 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
 
-    private final static String HTML_CONTENT_TYPE = new MediaType("text", "html", StandardCharsets.UTF_8).toString();
-    private final static String STYLESHEET_CONTENT_TYPE = new MediaType("text", "css", StandardCharsets.UTF_8).toString();
-    private final static String JAVASCRIPT_CONTENT_TYPE = new MediaType("application", "javascript", StandardCharsets.UTF_8).toString();
+    private static final String HTML_CONTENT_TYPE = new MediaType("text", "html", StandardCharsets.UTF_8).toString();
+    private static final String STYLESHEET_CONTENT_TYPE = new MediaType("text", "css", StandardCharsets.UTF_8).toString();
+    private static final String JAVASCRIPT_CONTENT_TYPE = new MediaType("application", "javascript", StandardCharsets.UTF_8).toString();
 
     @Setter
     @Getter

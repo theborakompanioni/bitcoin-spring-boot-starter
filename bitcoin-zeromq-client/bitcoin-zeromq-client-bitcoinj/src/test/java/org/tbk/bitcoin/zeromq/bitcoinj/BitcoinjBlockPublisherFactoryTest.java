@@ -17,11 +17,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 class BitcoinjBlockPublisherFactoryTest {
-    private final static MessagePublisherFactory<byte[]> genesisBlockPublisher = new GenesisBlockPublisher();
+    private static final MessagePublisherFactory<byte[]> genesisBlockPublisher = new GenesisBlockPublisher();
 
-    private final static Context bitcoinjContext = Context.getOrCreate(MainNetParams.get());
+    private static final Context bitcoinjContext = Context.getOrCreate(MainNetParams.get());
 
-    private final static BitcoinSerializer mainnetSerializer  = new BitcoinSerializer(bitcoinjContext.getParams(), false);
+    private static final BitcoinSerializer mainnetSerializer  = new BitcoinSerializer(bitcoinjContext.getParams(), false);
 
     @Test
     void create() {
