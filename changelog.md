@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update springdoc-openapi from v1.6.13 to v2.0.2
 
 ### Changed
+- upgrade: update bitcoin-kmp from v0.10.0 to v0.11.0
+- upgrade: update secp256k1-kmp from v0.7.0 to v0.7.1
 - upgrade: update jeromq from v0.5.2 to v0.5.3
 - upgrade: update lightningj from v0.15.3-Beta to v0.15.5-Beta
 - upgrade: update protobuf-gradle-plugin from v0.8.17 to v0.9.2
