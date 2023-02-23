@@ -3,7 +3,7 @@ package org.tbk.bitcoin.zeromq.kmp;
 import fr.acinq.bitcoin.*;
 import org.junit.jupiter.api.Test;
 import org.tbk.bitcoin.zeromq.client.MessagePublisherFactory;
-import org.tbk.bitcoin.zeromq.kmp.util.GenesisBlockTxPublisher;
+import org.tbk.bitcoin.zeromq.test.GenesisBlockTxPublisher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

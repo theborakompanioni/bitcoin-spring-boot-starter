@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public class MessagePublisherFactoryManualTest {
     public static void main(String[] args) {
-
         Flux<byte[]> rawtx = ZeroMqMessagePublisherFactory.builder()
                 .topic(BitcoinZeroMqTopics.rawtx())
                 .address("tcp://localhost:28332")

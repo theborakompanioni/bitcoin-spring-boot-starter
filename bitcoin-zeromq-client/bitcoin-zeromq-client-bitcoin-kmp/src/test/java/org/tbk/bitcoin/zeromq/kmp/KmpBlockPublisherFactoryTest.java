@@ -2,10 +2,8 @@ package org.tbk.bitcoin.zeromq.kmp;
 
 import fr.acinq.bitcoin.*;
 import org.junit.jupiter.api.Test;
-import org.tbk.bitcoin.common.util.GenesisBlock;
 import org.tbk.bitcoin.zeromq.client.MessagePublisherFactory;
-import org.tbk.bitcoin.zeromq.kmp.util.GenesisBlockPublisher;
-import reactor.core.publisher.Flux;
+import org.tbk.bitcoin.zeromq.test.GenesisBlockPublisher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
