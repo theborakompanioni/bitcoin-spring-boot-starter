@@ -30,6 +30,7 @@ public class BitcoinjTransactionPublishServiceManualTest {
                 .topic(BitcoinZeroMqTopics.rawtx())
                 .address("tcp://localhost:28333")
                 .build();
+
         BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(MainNetParams.get(), false);
         BitcoinjTransactionPublisherFactory txPublisherFactory = new BitcoinjTransactionPublisherFactory(bitcoinSerializer, zmqRawTxPublisherFactory);
 
