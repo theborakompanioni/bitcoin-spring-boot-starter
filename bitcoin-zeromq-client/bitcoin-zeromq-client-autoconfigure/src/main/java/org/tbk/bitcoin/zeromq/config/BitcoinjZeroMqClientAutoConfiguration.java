@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.zeromq.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.NetworkParameters;
@@ -22,7 +21,6 @@ import org.tbk.bitcoin.zeromq.bitcoinj.BitcoinjTransactionPublisherFactory;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 
-@Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @AutoConfigureAfter(BitcoinZeroMqClientAutoConfiguration.class)
@@ -55,7 +53,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
         return new BitcoinjTransactionPublisherFactory(bitcoinSerializer, bitcoinRawTxZeroMqMessagePublisherFactory);
     }
 
-    @Bean(name = "bitcoinjTransactionPublishService", initMethod = "startAsync", destroyMethod = "stopAsync")
+    @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
     @ConditionalOnMissingBean(value = Transaction.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(BitcoinjTransactionPublisherFactory.class)
     public MessagePublishService<Transaction> bitcoinjTransactionPublishService(

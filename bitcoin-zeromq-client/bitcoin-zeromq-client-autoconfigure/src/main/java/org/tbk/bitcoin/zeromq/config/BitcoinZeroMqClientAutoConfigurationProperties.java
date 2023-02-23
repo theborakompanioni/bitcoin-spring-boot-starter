@@ -5,8 +5,9 @@ import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
-import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNullElse;
 
 @ConfigurationProperties(
         prefix = "org.tbk.bitcoin.zeromq",
@@ -45,6 +46,6 @@ public class BitcoinZeroMqClientAutoConfigurationProperties {
     }
 
     public Network getNetwork() {
-        return Objects.requireNonNullElse(network, Network.mainnet);
+        return requireNonNullElse(network, Network.mainnet);
     }
 }

@@ -6,10 +6,15 @@ description = 'bitcoin zeromq autoconfigure package'
 
 dependencies {
     compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
+    compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoin-kmp')
     compileOnly project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoin-kmp')
+    testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
 }

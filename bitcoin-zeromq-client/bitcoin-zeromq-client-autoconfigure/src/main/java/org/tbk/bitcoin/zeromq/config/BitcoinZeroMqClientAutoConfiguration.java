@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.zeromq.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,7 +13,6 @@ import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig.BitcoinZmqClientConf
 
 import static java.util.Objects.requireNonNull;
 
-@Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.zeromq.enabled", havingValue = "true", matchIfMissing = true)
@@ -45,17 +43,6 @@ public class BitcoinZeroMqClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubrawtx")
-    public ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
-        return bitcoinZmqClientConfig.getZmqpubrawtx()
-                .map(val -> ZeroMqMessagePublisherFactory.builder()
-                        .topic(BitcoinZeroMqTopics.rawtx())
-                        .address(val)
-                        .build())
-                .orElseThrow(() -> new IllegalStateException("Could not create bean from 'zmqpubrawtx'"));
-    }
-
-    @Bean
     @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubrawblock")
     public ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         return bitcoinZmqClientConfig.getZmqpubrawblock()
@@ -64,6 +51,17 @@ public class BitcoinZeroMqClientAutoConfiguration {
                         .address(val)
                         .build())
                 .orElseThrow(() -> new IllegalStateException("Could not create bean from 'zmqpubrawblock'"));
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubrawtx")
+    public ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
+        return bitcoinZmqClientConfig.getZmqpubrawtx()
+                .map(val -> ZeroMqMessagePublisherFactory.builder()
+                        .topic(BitcoinZeroMqTopics.rawtx())
+                        .address(val)
+                        .build())
+                .orElseThrow(() -> new IllegalStateException("Could not create bean from 'zmqpubrawtx'"));
     }
 
     @Bean
