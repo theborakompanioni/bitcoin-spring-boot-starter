@@ -7,6 +7,7 @@ description = 'bitcoin zeromq client starter package'
 dependencies {
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoinj')
+    api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-bitcoin-kmp')
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
