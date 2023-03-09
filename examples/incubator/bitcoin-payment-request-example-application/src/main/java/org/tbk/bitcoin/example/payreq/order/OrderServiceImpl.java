@@ -34,8 +34,8 @@ public class OrderServiceImpl implements OrderService {
     @Async
     @Transactional
     @TransactionalEventListener
-    void on(OrderCreated event) {
-        Order order = orders.findById(event.getOrderId())
+    void on(OrderEvents.CreatedEvent event) {
+        Order order = orders.findById(event.orderId())
                 .orElseThrow(() -> new IllegalStateException("Could not find Order from OrderCreated event"));
 
         orders.save(order.markReady());
@@ -44,8 +44,8 @@ public class OrderServiceImpl implements OrderService {
     @Async
     @Transactional
     @TransactionalEventListener
-    void on(OrderReady event) {
-        Order order = orders.findById(event.getOrderId())
+    void on(OrderEvents.ReadyEvent event) {
+        Order order = orders.findById(event.orderId())
                 .orElseThrow(() -> new IllegalStateException("Could not find Order from OrderReady event"));
 
         this.reevaluateOrder(order);

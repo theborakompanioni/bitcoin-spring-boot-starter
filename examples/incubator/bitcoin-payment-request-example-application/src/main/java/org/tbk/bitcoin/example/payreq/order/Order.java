@@ -61,7 +61,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
         this.status = Status.CREATED;
         this.lineItems.addAll(lineItems);
 
-        registerEvent(OrderCreated.of(this.id));
+        registerEvent(new OrderEvents.CreatedEvent(this.id));
     }
 
     /**
@@ -87,7 +87,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      */
     public Order markReady() {
         this.status = this.status.transitTo(Status.READY);
-        registerEvent(OrderReady.of(id));
+        registerEvent(new OrderEvents.ReadyEvent(id));
         return this;
     }
 
@@ -96,31 +96,31 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      */
     public Order markInProgress() {
         this.status = this.status.transitTo(Status.IN_PROGRESS);
-        registerEvent(OrderInProgress.of(id));
+        registerEvent(new OrderEvents.InProgressEvent(id));
         return this;
     }
 
     /**
-     * Marks the {@link Order} as prepared.
+     * Marks the {@link Order} as completed.
      */
     public Order markCompleted() {
         this.status = this.status.transitTo(Status.COMPLETED);
-        registerEvent(OrderCompleted.of(id));
+        registerEvent(new OrderEvents.CompletedEvent(id));
         return this;
     }
 
     /**
-     * Marks the {@link Order} as prepared.
+     * Marks the {@link Order} as erroneous.
      */
     public Order markError() {
         this.status = this.status.transitTo(Status.ERROR);
-        registerEvent(OrderError.of(id));
+        registerEvent(new OrderEvents.ErrorEvent(id));
         return this;
     }
 
     public Order markCancelled() {
         this.status = this.status.transitTo(Status.CANCELLED);
-        registerEvent(OrderCancelled.of(id));
+        registerEvent(new OrderEvents.CancelledEvent(id));
         return this;
     }
 
@@ -157,7 +157,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      */
     public enum Status {
         /**
-         * Placed, but not payed yet. Still changeable.
+         * Placed, but not paid yet. Still changeable.
          */
         CREATED,
 
@@ -186,7 +186,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
          */
         ERROR;
 
-        static Map<Status, Set<Status>> transitions = ImmutableMap.<Status, Set<Status>>builder()
+        static final Map<Status, Set<Status>> transitions = ImmutableMap.<Status, Set<Status>>builder()
                 .put(CREATED, Set.of(READY, CANCELLED))
                 .put(READY, Set.of(CANCELLED, IN_PROGRESS))
                 .put(IN_PROGRESS, Set.of(COMPLETED, ERROR))
