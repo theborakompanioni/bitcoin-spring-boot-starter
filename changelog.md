@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - fix: import module `bitcoin-zeromq-client-bitcoin-kmp` in autoconfigure module
 
+### Changed
+- deprecation: scheduled `org.tbk.bitcoin.common.util.Hex` for removal
+
 ## [0.6.0] - 2023-02-23
 ### Added
 - module: initial version of module `bitcoin-zeromq-client-bitcoin-kmp`

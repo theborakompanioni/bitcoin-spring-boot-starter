@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.example.payreq.lnd;
 
-import com.google.common.io.BaseEncoding;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
@@ -14,6 +13,8 @@ import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 import org.tbk.lightning.lnd.grpc.config.LndClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
+
+import java.util.HexFormat;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -40,8 +41,7 @@ public class CustomTestcontainerLndRpcConfig {
                                                  LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            //String hex = DatatypeConverter.printHexBinary(bytes);
-            String hex = BaseEncoding.base16().lowerCase().encode(bytes);
+            String hex = HexFormat.of().formatHex(bytes);
             return () -> hex;
         });
     }

@@ -1,6 +1,5 @@
 package org.tbk.electrum.bitcoinj;
 
-import com.google.common.io.BaseEncoding;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
@@ -12,6 +11,7 @@ import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.Utxos;
 
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,6 @@ import static org.tbk.electrum.bitcoinj.BitcoinjHelper.toBitcoinjBalance;
 import static org.tbk.electrum.bitcoinj.BitcoinjHelper.toBitcoinjUtxos;
 
 public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
-    private static final BaseEncoding hexEncoding = BaseEncoding.base16().lowerCase();
 
     private final NetworkParameters network;
     private final ElectrumClient delegate;
@@ -110,7 +109,7 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     @Override
     public Transaction getTransaction(Sha256Hash txHash) {
         RawTx rawTransaction = this.delegate.getRawTransaction(txHash.toString());
-        byte[] raw = hexEncoding.decode(rawTransaction.getHex().toLowerCase());
+        byte[] raw = HexFormat.of().parseHex(rawTransaction.getHex().toLowerCase());
         return new Transaction(this.network, raw);
     }
 }

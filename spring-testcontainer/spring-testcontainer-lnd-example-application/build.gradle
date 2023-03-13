@@ -4,7 +4,6 @@ description = 'lnd testcontainer example application package'
 
 dependencies {
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
-    implementation project(':tbk-bitcoin-common:tbk-bitcoin-common-util')
 
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
     implementation project(':lnd-grpc-client:lnd-grpc-client-starter')

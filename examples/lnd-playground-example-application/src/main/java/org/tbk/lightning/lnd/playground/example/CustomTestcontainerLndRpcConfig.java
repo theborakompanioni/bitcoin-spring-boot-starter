@@ -9,11 +9,12 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.lightningj.lnd.wrapper.MacaroonContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.tbk.bitcoin.common.util.Hex;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 import org.tbk.lightning.lnd.grpc.config.LndClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
+
+import java.util.HexFormat;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -40,7 +41,7 @@ public class CustomTestcontainerLndRpcConfig {
                                                  LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            String hex = Hex.encode(bytes);
+            String hex = HexFormat.of().formatHex(bytes);
             return () -> hex;
         });
     }

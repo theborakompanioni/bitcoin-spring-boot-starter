@@ -1,8 +1,7 @@
 package org.tbk.bitcoin.common.genesis;
 
-import org.tbk.bitcoin.common.util.Hex;
-
 import java.util.Arrays;
+import java.util.HexFormat;
 
 public final class GenesisTx {
 
@@ -29,7 +28,7 @@ public final class GenesisTx {
 
     @Override
     public String toString() {
-        return Hex.encode(raw);
+        return HexFormat.of().formatHex(raw);
     }
 }
 
