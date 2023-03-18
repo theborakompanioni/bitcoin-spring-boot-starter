@@ -1,0 +1,14 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'lnd testcontainer example application package'
+
+dependencies {
+    implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+
+    implementation project(':spring-testcontainer:spring-testcontainer-cln-starter')
+
+    implementation "io.projectreactor:reactor-core"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
