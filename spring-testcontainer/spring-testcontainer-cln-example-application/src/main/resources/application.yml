@@ -1,0 +1,70 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
+spring.http.log-request-details: false
+
+server.port: 8080
+server.use-forward-headers: true
+server.compression.enabled: true
+
+management.server.port: 9001
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+#logging.level.web: DEBUG
+
+org.tbk.spring.testcontainer.cln:
+  enabled: true
+  port: 19735
+  rpcport: 19835
+  commands:
+    - '--alias=tbk-cln-starter-test'
+    - '--bitcoin-rpcuser=this-is-my-rpc-user99'
+    - '--bitcoin-rpcpassword=correct_horse_battery_staple_99'
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-spring-lnd-testcontainer-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  mining:
+    enabled: true
+    # secret to address: across distance search gym explain fruit sense tiny decrease ribbon day course
+    coinbase-reward-address: bcrt1q0lhr8js5rrhjl7hf6e80ns3pgk5tjswgg9um9t
+    mine-initial-amount-of-blocks: 101 # cln needs at least some blocks to be mined
+    next-block-duration:
+      min-duration: PT1S
+      max-duration: PT10S
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99

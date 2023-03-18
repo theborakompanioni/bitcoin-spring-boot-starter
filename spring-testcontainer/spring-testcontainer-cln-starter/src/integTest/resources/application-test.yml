@@ -1,0 +1,43 @@
+org.tbk.spring.testcontainer.cln:
+  enabled: true
+  port: 19735
+  rpcport: 19835
+  commands:
+    - '--alias=tbk-cln-starter-test'
+    - '--bitcoin-rpcuser=this-is-my-rpc-user99'
+    - '--bitcoin-rpcpassword=correct_horse_battery_staple_99'
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  mining:
+    enabled: true
+    # secret to address: across distance search gym explain fruit sense tiny decrease ribbon day course
+    coinbase-reward-address: bcrt1q0lhr8js5rrhjl7hf6e80ns3pgk5tjswgg9um9t
+    mine-initial-amount-of-blocks: 101 # cln needs at least some blocks to be mined
+    next-block-duration:
+      min-duration: PT1S
+      max-duration: PT10S
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99
+  exposed-ports:
+    - 28332
+    - 28333
+    - 28334
+    - 28335
+  commands:
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc'
+    # cln does not need zeromq to be enabled
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    # - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    # - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # Enable publishing of block hashes to <address>.
+    # - '-zmqpubhashblock=tcp://0.0.0.0:28334'
+    # Enable publishing of transaction hashes to <address>.
+    # - '-zmqpubhashtx=tcp://0.0.0.0:28335'
