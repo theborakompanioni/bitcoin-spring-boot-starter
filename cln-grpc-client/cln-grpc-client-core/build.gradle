@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+description = 'cln grpc client package'
+
+dependencies {
+    api "io.github.clightning4j:jrpclightning:${jrpclightningVersion}"
+
+}

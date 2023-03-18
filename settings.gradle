@@ -24,6 +24,10 @@ include 'lnd-grpc-client:lnd-grpc-client-core'
 include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
 include 'lnd-grpc-client:lnd-grpc-client-starter'
 
+include 'cln-grpc-client:cln-grpc-client-core'
+include 'cln-grpc-client:cln-grpc-client-autoconfigure'
+include 'cln-grpc-client:cln-grpc-client-starter'
+
 include 'spring-testcontainer:spring-testcontainer-core'
 include 'spring-testcontainer:spring-testcontainer-test'
 include 'spring-testcontainer:spring-testcontainer-bitcoind-starter'

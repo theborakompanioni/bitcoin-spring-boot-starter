@@ -189,6 +189,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - bitcoin-kmp (GitHub): https://github.com/ACINQ/bitcoin-kmp
 - bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - LightningJ (GitHub): https://github.com/lightningj-org/lightningj
+- JRPClightning (GitHub): https://github.com/clightning4j/JRPClightning
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
 - Project Reactor (GitHub): https://github.com/reactor/reactor-core
