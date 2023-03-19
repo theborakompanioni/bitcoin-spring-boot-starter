@@ -117,7 +117,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
             }
         }
 
-        // alias must not be longer than 32, otherwise lnd errors with e.g. "max is 32, got 41"
+        // lnd enforced a 32 char limit on alias. let's do the same for cln.
         properties.getCommandValueByKey("alias").ifPresent(it -> {
             if (it.length() > 32) {
                 String errorMessage = "'alias' must not be longer than 32 chars";
