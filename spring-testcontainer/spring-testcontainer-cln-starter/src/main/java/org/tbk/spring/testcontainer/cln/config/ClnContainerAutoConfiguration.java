@@ -22,6 +22,7 @@ import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +49,6 @@ public class ClnContainerAutoConfiguration {
     public ClnContainer<?> clnContainer(BitcoindContainer<?> bitcoindContainer) {
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
-                // TODO: https://github.com/ElementsProject/lightning/issues/5845#issuecomment-1368448120
-                // --bitcoin-rpcconnect=ip.address.of.bitcoind, --bitcoin-rpcuser and --bitcoin-rpcpassword
                 .add("--bitcoin-rpcconnect=" + MoreTestcontainers.testcontainersInternalHost())
                 .add("--bitcoin-rpcport=" + bitcoindContainer.getMappedPort(18443))
                 .build();
@@ -64,9 +63,11 @@ public class ClnContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        // only wait for rpc ports
+        // TODO: wait for rpc port
+        // passing env var EXPOSE_TCP does not work..
+        // this will only work once https://github.com/ElementsProject/lightning/pull/6101 is merged.
         WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
-                .ports(hardcodedStandardPorts)
+                .ports(Collections.singletonList(this.properties.getRpcport()))
                 .build();
 
         WaitStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
@@ -85,6 +86,7 @@ public class ClnContainerAutoConfiguration {
                         .put("LIGHTNINGD_PORT", String.valueOf(this.properties.getPort()))
                         .put("LIGHTNINGD_RPC_PORT", String.valueOf(this.properties.getRpcport()))
                         .put("LIGHTNINGD_NETWORK", "regtest")
+                        .put("EXPOSE_TCP", "false")
                         .build())
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
@@ -102,32 +104,22 @@ public class ClnContainerAutoConfiguration {
 
         List<String> requiredCommands = ImmutableList.<String>builder()
                 .add("--disable-dns")
-                //.add("--noseedbackup") // so no create/unlock wallet is needed ("lncli unlock")
-                //.add("--listen=9735")
-                //.add("--externalip=127.0.0.1:9735")
-                //.add("--restlisten=0.0.0.0:" + this.properties.getRestport())
-                //.add("--rpclisten=0.0.0.0:" + this.properties.getRpcport())
                 .build();
 
         List<String> optionalCommands = ImmutableList.<String>builder()
-                //.add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-lnd-testcontainer-regtest"))
+                .add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-cln-testcontainer-regtest"))
                 .add("--rgb=" + this.properties.getCommandValueByKey("rgb").orElse("cccccc"))
                 .add("--log-level=" + this.properties.getCommandValueByKey("log-level").orElse("debug"))
-                //.add("--trickledelay=" + this.properties.getCommandValueByKey("trickledelay").orElse("1000"))
                 .build();
 
         List<String> overridingDefaultsCommands = ImmutableList.<String>builder()
-                //.add("--maxpendingchannels=" + this.properties.getCommandValueByKey("maxpendingchannels").orElse("10"))
-                //.add("--autopilot.active=false") <-- fails with "bool flag `--autopilot.active' cannot have an argument"
-                //.add("protocol.wumbo-channels=1")
+                // catch potential problems early by disallowing deprecated apis (users can override this on demand)
+                .add("--allow-deprecated-apis=false")
+                .add("--large-channels")
                 .build();
 
         List<String> bitcoinCommands = ImmutableList.<String>builder()
                 .add("--bitcoin-retry-timeout=" + Duration.ofSeconds(60).toSeconds())
-                //.add("--bitcoin.active")
-                //.add("--bitcoin.regtest")
-                //.add("--bitcoin.node=bitcoind")
-                //.add("--bitcoin.defaultchanconfs=" + this.properties.getCommandValueByKey("bitcoin.defaultchanconfs").orElse("1"))
                 .build();
 
         ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
