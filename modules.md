@@ -125,12 +125,13 @@ docker containers programmatically directly from your application.
 Please note, that **these modules are intended to be used in regtest mode only**.
 
 Start and run:
-- [x] [Bitcoin Core](https://github.com/bitcoin/bitcoin) with spring-testcontainer-bitcoind-starter
-- [x] [lnd](https://github.com/bitcoin/bitcoin) with spring-testcontainer-lnd-starter
-- [x] [ElectrumX](https://github.com/spesmilo/electrumx) with spring-testcontainer-electrumx-starter
-- [x] [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) with spring-testcontainer-electrum-personal-server-starter
-- [x] [Electrum](https://github.com/spesmilo/electrum) with spring-testcontainer-electrum-daemon-starter
-- [x] [Tor](https://www.torproject.org/) with [spring-testcontainer-tor-starter](spring-testcontainer/spring-testcontainer-tor-starter)
+- [x] [Bitcoin Core](https://github.com/bitcoin/bitcoin) with `spring-testcontainer-bitcoind-starter`
+- [x] [cln](https://github.com/ElementsProject/lightning) with `spring-testcontainer-cln-starter`
+- [x] [lnd](https://github.com/LightningNetwork/lnd) with `spring-testcontainer-lnd-starter`
+- [x] [ElectrumX](https://github.com/spesmilo/electrumx) with `spring-testcontainer-electrumx-starter`
+- [x] [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) with `spring-testcontainer-electrum-personal-server-starter`
+- [x] [Electrum](https://github.com/spesmilo/electrum) with `spring-testcontainer-electrum-daemon-starter`
+- [x] [Tor](https://www.torproject.org/) with [`spring-testcontainer-tor-starter`](spring-testcontainer/spring-testcontainer-tor-starter)
 
 Most of these spring boot starter modules contain a simple example application. 
 They can be used in combination with other modules like [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client), 
