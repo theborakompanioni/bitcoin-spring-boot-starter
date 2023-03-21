@@ -6,6 +6,7 @@ org.tbk.spring.testcontainer.cln:
     - '--alias=tbk-cln-starter-test'
     - '--bitcoin-rpcuser=this-is-my-rpc-user99'
     - '--bitcoin-rpcpassword=correct_horse_battery_staple_99'
+    - '--grpc-port=19935'
 
 org.tbk.bitcoin.regtest:
   enabled: true

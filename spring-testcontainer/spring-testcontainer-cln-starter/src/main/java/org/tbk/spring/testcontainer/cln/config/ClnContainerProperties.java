@@ -39,12 +39,12 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
         super(reservedCommands);
     }
 
+    private Integer port;
+
     /**
      * Specify the port to listen on for RPC connections.
      */
     private Integer rpcport;
-
-    private Integer port;
 
     public int getRpcport() {
         return rpcport != null ? rpcport : DEFAULT_RPC_PORT;
@@ -54,12 +54,17 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
         return port != null ? port : DEFAULT_PORT;
     }
 
-    public Optional<String> getRpcuser() {
+    public Optional<String> getBitcoinRpcUser() {
         return getCommandValueByKey("bitcoin-rpcuser");
     }
 
-    public Optional<String> getRpcpass() {
+    public Optional<String> getBitcoinRpcPassword() {
         return getCommandValueByKey("bitcoin-rpcpassword");
+    }
+
+    public Optional<Integer> getGrpcPort() {
+        return getCommandValueByKey("grpc-port")
+                .map(Integer::parseUnsignedInt);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
     public void validate(Object target, Errors errors) {
         ClnContainerProperties properties = (ClnContainerProperties) target;
 
-        String rpcuserValue = properties.getRpcuser().orElse(null);
+        String rpcuserValue = properties.getBitcoinRpcUser().orElse(null);
         if (rpcuserValue != null) {
             if (rpcuserValue.isBlank()) {
                 String errorMessage = "'rpcuser' must not be empty";
@@ -106,7 +111,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
             }
         }
 
-        String rpcpasswordValue = properties.getRpcpass().orElse(null);
+        String rpcpasswordValue = properties.getBitcoinRpcPassword().orElse(null);
         if (rpcpasswordValue != null) {
             if (rpcpasswordValue.isBlank()) {
                 String errorMessage = "'rpcpass' must not be empty";
