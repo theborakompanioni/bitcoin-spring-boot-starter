@@ -65,11 +65,11 @@ public class LndContainerProperties extends AbstractContainerProperties implemen
         return restport != null ? restport : DEFAULT_REST_PORT;
     }
 
-    public Optional<String> getRpcuser() {
+    public Optional<String> getBitcoinRpcUser() {
         return getCommandValueByKey("bitcoind.rpcuser");
     }
 
-    public Optional<String> getRpcpass() {
+    public Optional<String> getBitcoinRpcPassword() {
         return getCommandValueByKey("bitcoind.rpcpass");
     }
 
@@ -106,7 +106,7 @@ public class LndContainerProperties extends AbstractContainerProperties implemen
     public void validate(Object target, Errors errors) {
         LndContainerProperties properties = (LndContainerProperties) target;
 
-        String rpcuserValue = properties.getRpcuser().orElse(null);
+        String rpcuserValue = properties.getBitcoinRpcUser().orElse(null);
         if (rpcuserValue != null) {
             if (rpcuserValue.isBlank()) {
                 String errorMessage = "'rpcuser' must not be empty";
@@ -117,7 +117,7 @@ public class LndContainerProperties extends AbstractContainerProperties implemen
             }
         }
 
-        String rpcpasswordValue = properties.getRpcpass().orElse(null);
+        String rpcpasswordValue = properties.getBitcoinRpcPassword().orElse(null);
         if (rpcpasswordValue != null) {
             if (rpcpasswordValue.isBlank()) {
                 String errorMessage = "'rpcpass' must not be empty";
