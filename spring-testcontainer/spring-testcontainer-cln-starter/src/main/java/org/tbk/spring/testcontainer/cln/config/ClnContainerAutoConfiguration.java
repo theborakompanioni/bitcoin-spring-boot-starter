@@ -22,7 +22,6 @@ import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,11 +50,15 @@ public class ClnContainerAutoConfiguration {
                 .addAll(buildCommandList())
                 .add("--bitcoin-rpcconnect=" + MoreTestcontainers.testcontainersInternalHost())
                 .add("--bitcoin-rpcport=" + bitcoindContainer.getMappedPort(18443))
+                .addAll(this.properties.getGrpcPort().stream()
+                        .map(it -> "--grpc-port=" + it)
+                        .toList())
                 .build();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
                 .add(this.properties.getRpcport())
                 .add(this.properties.getPort())
+                .addAll(this.properties.getGrpcPort().stream().toList())
                 .build();
 
         List<Integer> exposedPorts = ImmutableList.<Integer>builder()
@@ -63,15 +66,18 @@ public class ClnContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        // TODO: wait for rpc port
-        // passing env var EXPOSE_TCP does not work..
-        // this will only work once https://github.com/ElementsProject/lightning/pull/6101 is merged.
         WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
-                .ports(Collections.singletonList(this.properties.getRpcport()))
+                .ports(ImmutableList.<Integer>builder()
+                        .addAll(this.properties.getGrpcPort().stream().toList())
+                        // TODO: wait for rpc port too
+                        // passing env var EXPOSE_TCP=true does not work..
+                        // this will only work once https://github.com/ElementsProject/lightning/pull/6101 is merged.
+                        //.add(this.properties.getRpcport())
+                        .build())
                 .build();
 
         WaitStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
-                //.withStrategy(portWaitStrategy)
+                .withStrategy(portWaitStrategy)
                 .withStrategy(Wait.forLogMessage(".*Server started with public key.*", 1))
                 .withStartupTimeout(ClnContainerProperties.DEFAULT_STARTUP_TIMEOUT);
 
