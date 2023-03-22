@@ -7,6 +7,9 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.Duration;
+import java.util.Objects;
+
 @ConfigurationProperties(
         prefix = "org.tbk.lightning.cln.grpc",
         ignoreUnknownFields = false
@@ -14,6 +17,7 @@ import org.springframework.validation.Validator;
 @Getter
 @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class ClnClientAutoConfigProperties implements Validator {
+    private static final Duration DEFAULT_SHUTDOWN_TIMEOUT = Duration.ofSeconds(10);
 
     /**
      * Whether the client should be enabled.
@@ -30,6 +34,13 @@ public class ClnClientAutoConfigProperties implements Validator {
      * Port where cln grpc api is listening.
      */
     private int port;
+
+
+    private Duration shutdownTimeout;
+
+    public Duration getShutdownTimeout() {
+        return Objects.requireNonNullElse(shutdownTimeout, DEFAULT_SHUTDOWN_TIMEOUT);
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {
