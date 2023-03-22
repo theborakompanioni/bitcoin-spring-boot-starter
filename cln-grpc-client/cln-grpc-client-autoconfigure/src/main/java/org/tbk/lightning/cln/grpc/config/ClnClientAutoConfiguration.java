@@ -5,6 +5,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -52,11 +53,15 @@ public class ClnClientAutoConfiguration {
     @Bean(name = "clnChannelBuilder")
     @ConditionalOnMissingBean(name = "clnChannelBuilder")
     @ConditionalOnBean(ClnRpcConfig.class)
-    public ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig) {
+    public ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig,
+                                                      ObjectProvider<ManagedChannelBuilderCustomizer> managedChannelBuilderCustomizer) {
         ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(
                 rpcConfig.getHost(),
                 rpcConfig.getPort()
         );
+
+        managedChannelBuilderCustomizer.orderedStream().forEach(customizer -> customizer.customize(managedChannelBuilder));
+
         return managedChannelBuilder;
     }
 
