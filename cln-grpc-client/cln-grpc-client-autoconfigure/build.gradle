@@ -13,6 +13,8 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    testImplementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
 
