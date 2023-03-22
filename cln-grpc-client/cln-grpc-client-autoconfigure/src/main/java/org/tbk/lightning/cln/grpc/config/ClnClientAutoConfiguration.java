@@ -75,18 +75,18 @@ public class ClnClientAutoConfiguration {
     @Order(value = Ordered.LOWEST_PRECEDENCE)
     public DisposableBean clnChannelShutdownHook(@Qualifier("clnChannel") ManagedChannel clnChannel) {
         return () -> {
-            Duration gracePeriod = Duration.ofSeconds(5);
+            Duration timeout = properties.getShutdownTimeout();
             try {
                 log.debug("Closing grpc managed channel {} ...", clnChannel);
                 try {
-                    clnChannel.shutdown().awaitTermination(gracePeriod.toMillis(), TimeUnit.MILLISECONDS);
+                    clnChannel.shutdown().awaitTermination(timeout.toMillis(), TimeUnit.MILLISECONDS);
                     log.debug("Closed grpc managed channel {}", clnChannel);
                 } catch (io.grpc.StatusRuntimeException e) {
                     log.error("Error occurred closing managed grpc channel: " + e.getStatus(), e);
-                    clnChannel.shutdownNow().awaitTermination(gracePeriod.toMillis(), TimeUnit.MILLISECONDS);
+                    clnChannel.shutdownNow().awaitTermination(timeout.toMillis(), TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
                     log.error("Thread interrupted: " + e.getMessage(), e);
-                    clnChannel.shutdownNow().awaitTermination(gracePeriod.toMillis(), TimeUnit.MILLISECONDS);
+                    clnChannel.shutdownNow().awaitTermination(timeout.toMillis(), TimeUnit.MILLISECONDS);
                 }
             } catch (Exception e) {
                 log.error("Grpc managed channel did not shutdown cleanly", e);
