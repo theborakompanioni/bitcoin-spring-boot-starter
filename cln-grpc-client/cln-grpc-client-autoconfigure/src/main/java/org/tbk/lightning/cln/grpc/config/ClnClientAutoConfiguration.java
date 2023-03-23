@@ -1,6 +1,5 @@
 package org.tbk.lightning.cln.grpc.config;
 
-import cln.NodeGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.tbk.lightning.cln.grpc.ClnRpcConfig;
 import org.tbk.lightning.cln.grpc.ClnRpcConfigImpl;
+import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

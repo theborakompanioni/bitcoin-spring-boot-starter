@@ -1,6 +1,5 @@
 package org.tbk.lightning.cln.grpc.config;
 
-import cln.NodeGrpc;
 import com.google.common.collect.ImmutableMap;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.lightning.cln.grpc.ClnRpcConfig;
+import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
 import java.util.Map;
 
