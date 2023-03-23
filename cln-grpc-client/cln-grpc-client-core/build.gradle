@@ -8,26 +8,59 @@ description = 'cln grpc client package'
 
 dependencies {
     api "io.grpc:grpc-protobuf:${grpcVersion}"
-    api "io.grpc:grpc-stub:$grpcVersion"
+    api "io.grpc:grpc-stub:${grpcVersion}"
+
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
 }
 
-/*
-task cloneClnGitRoot(type: Exec) {
-    workingDir "${buildDir}/tmp"
-    commandLine 'git', 'clone', '--depth=1', '--filter=blob:none', '--sparse', 'https://github.com/ElementsProject/lightning.git'
-    doLast {
-        println "Executed!"
-    }
-}*/
+def protoOriginalTarget = layout.projectDirectory.dir("src/main/resources/cln/cln-grpc/proto")
+def protoProcessedTarget = layout.projectDirectory.dir("src/main/java/org/tbk/lightning/cln/grpc/client")
 
-/*
-task checkoutClnProtoFiles(type: Exec) {
-    //dependsOn 'cloneClnGitRoot'
-    workingDir "${buildDir()}/tmp"
-    commandLine 'git', 'clone', '--depth=1', '--filter=blob:none', '--sparse', 'https://github.com/ElementsProject/lightning.git'
-    //commandLine 'git', 'sparse-checkout', 'set', 'cln-grpc/proto'
+def clnProtoFiles = [
+        'node.proto',
+        'primitives.proto'
+]
+
+task prepareDirs {
+    mustRunAfter clean
+    outputs.upToDateWhen { protoOriginalTarget.asFile.exists() && protoProcessedTarget.asFile.exists() }
+
     doLast {
-        println "Executed!"
+        mkdir("${protoOriginalTarget.asFile}")
+        mkdir("${protoProcessedTarget.asFile}")
     }
-}*/
+}
+
+task fetchClnProtoFiles() {
+    dependsOn prepareDirs
+
+    outputs.upToDateWhen {
+        clnProtoFiles
+                .collect { protoOriginalTarget.file(it).asFile }
+                .collect { it.exists() }
+                .every()
+    }
+
+    def base = "https://raw.githubusercontent.com/ElementsProject/lightning/master/cln-grpc/proto"
+
+    doLast {
+        clnProtoFiles
+                .collect { protoOriginalTarget.file(it).asFile }
+                .findAll { !it.exists() }
+                .each {
+                    new URL("${base}/${it.name}").withInputStream { i -> it.withOutputStream { it << i } }
+                }
+    }
+}
+
+task processClnProtoFiles(type: Copy) {
+    dependsOn prepareDirs, fetchClnProtoFiles, processResources
+
+    from protoOriginalTarget
+    into protoProcessedTarget
+    filter(line -> line
+            .replaceAll("package cln;", "package org.tbk.lightning.cln.grpc.client;")
+            .replaceAll("import \"primitives.proto\";", "import \"org/tbk/lightning/cln/grpc/client/primitives.proto\";"))
+}
+
+generateProto.dependsOn(processClnProtoFiles)
