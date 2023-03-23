@@ -25,8 +25,8 @@ public class ClnClientAutoConfigProperties implements Validator {
     private boolean enabled;
 
     /**
-     * IP address or hostname including http:// or https:// where cln grpc api is reachable.
-     * e.g. http://localhost, https://192.168.0.2, etc.
+     * IP address or hostname where cln grpc api is reachable.
+     * e.g. localhost, 192.168.0.2, etc.
      */
     private String host;
 
