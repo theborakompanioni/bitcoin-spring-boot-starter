@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- module: initial version of module `cln-grpc-client`
 - module: initial version of module `spring-testcontainer-cln-starter`
 
 ### Fixed
