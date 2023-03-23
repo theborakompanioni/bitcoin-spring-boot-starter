@@ -1,7 +1,6 @@
 package org.tbk.lightning.cln.grpc.config;
 
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectProvider;
@@ -49,6 +48,7 @@ public class ClnClientAutoConfiguration {
                 .port(properties.getPort())
                 .build();
     }
+
 
     @Bean(name = "clnChannelBuilder")
     @ConditionalOnMissingBean(name = "clnChannelBuilder")

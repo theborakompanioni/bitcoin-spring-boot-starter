@@ -35,7 +35,6 @@ public class ClnClientAutoConfigProperties implements Validator {
      */
     private int port;
 
-
     private Duration shutdownTimeout;
 
     public Duration getShutdownTimeout() {
