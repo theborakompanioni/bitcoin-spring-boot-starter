@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package cln;
 option java_package = "org.tbk.lightning.cln.grpc.client";
-// option java_outer_classname = "ClnProtos";
 option java_multiple_files = true;
             
 

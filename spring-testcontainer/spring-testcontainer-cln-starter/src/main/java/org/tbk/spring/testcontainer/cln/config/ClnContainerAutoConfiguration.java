@@ -125,7 +125,7 @@ public class ClnContainerAutoConfiguration {
                 .build();
 
         List<String> bitcoinCommands = ImmutableList.<String>builder()
-                .add("--bitcoin-retry-timeout=" + Duration.ofSeconds(60).toSeconds())
+                .add("--bitcoin-retry-timeout=" + Duration.ofSeconds(10).toSeconds())
                 .build();
 
         ImmutableList.Builder<String> commandsBuilder = ImmutableList.<String>builder()
