@@ -3,8 +3,8 @@ package org.tbk.lightning.cln.grpc.config;
 import io.grpc.ManagedChannelBuilder;
 
 /**
- * Callback interface that can be implemented by beans wishing to customize CLN grpc channel
- * {@link io.grpc.ManagedChannelBuilder} before it is used.
+ * Callback interface that can be implemented by beans wishing to customize {@link io.grpc.ManagedChannelBuilder}
+ * before it is used to create CLN grpc channels.
  */
 @FunctionalInterface
 public interface ManagedChannelBuilderCustomizer {
