@@ -28,6 +28,14 @@ org.tbk.spring.testcontainer.cln:
     - '--bitcoin-rpcpassword=correct_horse_battery_staple_99'
     - '--grpc-port=19935'
 
+org.tbk.lightning.cln.grpc:
+  enabled: true
+  host: localhost
+  port: 19935
+  shutdown-timeout: PT3S
+  # path to the tls cert file within the container!
+  # caCertFilePath: '/root/.lightning/regtest/client.pem'
+
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: this-is-my-rpc-user99
@@ -36,6 +44,11 @@ org.tbk.spring.testcontainer.bitcoind:
     - 28332
     - 28333
   commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
     # [rpc]
     # Number of seconds after which an uncompleted RPC call will time out
     - '-rpcservertimeout=10' # default is 30
@@ -67,5 +80,10 @@ org.tbk.bitcoin.jsonrpc:
   network: regtest
   rpchost: http://localhost
   rpcport: 18443
-  rpcuser: this-is-my-rpc-user99
-  rpcpassword: correct_horse_battery_staple_99
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
+
+org.tbk.bitcoin.zeromq:
+  network: regtest
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333
