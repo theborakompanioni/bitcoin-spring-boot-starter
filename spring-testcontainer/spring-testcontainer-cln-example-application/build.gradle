@@ -3,9 +3,11 @@ apply plugin: 'org.springframework.boot'
 description = 'lnd testcontainer example application package'
 
 dependencies {
-    implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+    implementation project(':cln-grpc-client:cln-grpc-client-starter')
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     implementation project(':spring-testcontainer:spring-testcontainer-cln-starter')
+    implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
     implementation "io.projectreactor:reactor-core"
 
