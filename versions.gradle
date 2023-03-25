@@ -11,6 +11,7 @@ ext {
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
     grpcVersion = '1.50.0' // use same as lightningj
+    ldkVersion = '0.0.114.0'
     protobufVersion = '3.21.12'
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2022.2.2'

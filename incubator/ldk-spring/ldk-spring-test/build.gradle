@@ -1,0 +1,9 @@
+plugins {
+    id 'java'
+}
+
+description = 'ldk test package'
+
+dependencies {
+    implementation "org.lightningdevkit:ldk-java:${ldkVersion}"
+}

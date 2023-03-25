@@ -74,6 +74,8 @@ include 'spring-xchange:spring-xchange-starter'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-util'
 include 'tbk-bitcoin-common:tbk-bitcoin-common-bitcoinj-util'
 
+include 'incubator:ldk-spring:ldk-spring-test'
+
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoinj'
 include 'incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure'
