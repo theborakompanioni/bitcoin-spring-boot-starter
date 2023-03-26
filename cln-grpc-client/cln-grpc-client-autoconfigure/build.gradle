@@ -16,6 +16,4 @@ dependencies {
     testImplementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
-    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
-
 }
