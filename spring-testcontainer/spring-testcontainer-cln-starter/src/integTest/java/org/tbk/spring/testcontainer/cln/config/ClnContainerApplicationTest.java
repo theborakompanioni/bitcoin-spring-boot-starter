@@ -71,17 +71,9 @@ class ClnContainerApplicationTest {
             @Bean
             public SslContext clnRpcSslContext(ClnClientAutoConfigProperties properties,
                                                ClnContainer<?> clnContainer) {
-                /*String key = clnContainer.copyFileFromContainer("/root/.lightning/regtest/client-key.pem", inputStream -> {
-                    return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                });
-
-                String cert = clnContainer.copyFileFromContainer("/root/.lightning/regtest/client.pem", inputStream -> {
-                    return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                });*/
-                // properties.getCertFilePath()
-                return clnContainer.copyFileFromContainer("/root/.lightning/regtest/client.pem", certStream -> {
-                    return clnContainer.copyFileFromContainer("/root/.lightning/regtest/client-key.pem", keyStream -> {
-                        return clnContainer.copyFileFromContainer("/root/.lightning/regtest/ca.pem", caStream -> {
+                return clnContainer.copyFileFromContainer(properties.getClientCertFilePath(), certStream -> {
+                    return clnContainer.copyFileFromContainer(properties.getClientKeyFilePath(), keyStream -> {
+                        return clnContainer.copyFileFromContainer(properties.getCaCertFilePath(), caStream -> {
                             return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                                     .keyManager(certStream, keyStream)
                                     .trustManager(caStream)

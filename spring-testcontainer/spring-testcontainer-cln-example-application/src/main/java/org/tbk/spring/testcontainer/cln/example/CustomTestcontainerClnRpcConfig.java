@@ -31,10 +31,13 @@ public class CustomTestcontainerClnRpcConfig {
 
     @Bean
     public SslContext clnRpcSslContext(ClnClientAutoConfigProperties properties, ClnContainer<?> clnContainer) {
-        return clnContainer.copyFileFromContainer("/root/.lightning/regtest/client.pem", certStream -> {
-            return clnContainer.copyFileFromContainer("/root/.lightning/regtest/client-key.pem", keyStream -> {
-                return clnContainer.copyFileFromContainer("/root/.lightning/regtest/ca.pem", caStream -> {
-                    return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL).keyManager(certStream, keyStream).trustManager(caStream).build();
+        return clnContainer.copyFileFromContainer(properties.getClientCertFilePath(), certStream -> {
+            return clnContainer.copyFileFromContainer(properties.getClientKeyFilePath(), keyStream -> {
+                return clnContainer.copyFileFromContainer(properties.getCaCertFilePath(), caStream -> {
+                    return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
+                            .keyManager(certStream, keyStream)
+                            .trustManager(caStream)
+                            .build();
                 });
             });
         });
