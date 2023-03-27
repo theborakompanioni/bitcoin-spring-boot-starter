@@ -36,8 +36,8 @@ org.tbk.spring.testcontainer.lnd:
 
 org.tbk.lightning.lnd.grpc:
   enabled: true
-  rpchost: localhost
-  rpcport: 20009
+  host: localhost
+  port: ${org.tbk.spring.testcontainer.lnd.rpcport}
   # path to the admin macaroon file within the container!
   macaroonFilePath: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!
@@ -85,10 +85,10 @@ org.tbk.bitcoin.jsonrpc:
   network: regtest
   rpchost: http://localhost
   rpcport: 18443
-  rpcuser: myoneandonlyrpcuser
-  rpcpassword: correcthorsebatterystaple123
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
 
 org.tbk.bitcoin.zeromq:
-  network: regtest
+  network: ${org.tbk.bitcoin.jsonrpc.network}
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333

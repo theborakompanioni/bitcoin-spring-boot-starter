@@ -44,8 +44,8 @@ The starter will automatically create injectable `AsynchronousLndAPI` and `Synch
 ```yaml
 org.tbk.lightning.lnd.grpc:
   enabled: true
-  rpchost: localhost
-  rpcport: 10009
+  host: localhost
+  port: 10009
   macaroon-file-path: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   cert-file-path: '/root/.lnd/tls.cert'
 ```

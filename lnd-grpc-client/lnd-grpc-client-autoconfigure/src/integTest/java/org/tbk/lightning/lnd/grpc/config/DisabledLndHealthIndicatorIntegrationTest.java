@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.server.port=13337",
         "management.endpoint.health.show-details=always",
         "management.health.lndApi.enabled=false",
-        "org.tbk.lightning.lnd.grpc.rpchost=localhost",
-        "org.tbk.lightning.lnd.grpc.rpcport=13337",
+        "org.tbk.lightning.lnd.grpc.host=localhost",
+        "org.tbk.lightning.lnd.grpc.port=13337",
         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
 })

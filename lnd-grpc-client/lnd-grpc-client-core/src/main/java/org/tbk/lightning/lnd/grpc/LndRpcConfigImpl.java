@@ -11,23 +11,23 @@ import org.lightningj.lnd.wrapper.MacaroonContext;
 public class LndRpcConfigImpl implements LndRpcConfig {
 
     /**
-     * IP address or hostname including http:// or https:// where lnd daemon is reachable.
-     * e.g. https://localhost:10001
+     * IP address or hostname where lnd daemon is reachable.
+     * e.g. localhost, 192.168.0.1
      *
-     * @param rpchost IP address or hostname including http:// or https:// where lnd daemon is reachable.
-     * @return IP address or hostname including http:// or https:// where lnd daemon is reachable.
+     * @param host IP address or hostname where lnd daemon is reachable.
+     * @return IP address or hostname where lnd daemon is reachable.
      */
     @NonNull
-    String rpchost;
+    String host;
 
     /**
      * Port where lnd daemon is listening.
      *
-     * @param rpcport Port where lnd daemon is listening.
+     * @param port Port where lnd daemon is listening.
      * @return Port where lnd daemon is listening.
      */
     @NonNull
-    Integer rpcport;
+    Integer port;
 
     /**
      * The {@link MacaroonContext} to access the lnd api.

@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
+import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.command.DaemonStatusResponse;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
@@ -22,6 +24,26 @@ import java.time.Duration;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 public class ElectrumDaemonExampleApplicationConfig {
+
+    @Bean
+    @Profile("!test")
+    public ApplicationRunner electrumDaemonStatusLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+                                                        ElectrumClient electrumClient) {
+        return args -> {
+            bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
+
+            Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
+                try {
+                    DaemonStatusResponse daemonStatus = electrumClient.daemonStatus();
+                    log.info("[electrum] blockchain height: {} (server height: {})", daemonStatus.getBlockchainHeight(), daemonStatus.getServerHeight());
+                } catch (Exception e) {
+                    log.error("", e);
+                }
+            });
+
+            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
+        };
+    }
 
     @Bean
     @Profile("!test")
