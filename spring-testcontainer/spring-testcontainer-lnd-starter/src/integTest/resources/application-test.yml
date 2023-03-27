@@ -9,8 +9,8 @@ org.tbk.spring.testcontainer.lnd:
 
 org.tbk.lightning.lnd.grpc:
   enabled: true
-  rpchost: localhost
-  rpcport: 19009
+  host: localhost
+  port: ${org.tbk.spring.testcontainer.lnd.rpcport}
   # path to the admin macaroon file within the container!
   macaroonFilePath: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!

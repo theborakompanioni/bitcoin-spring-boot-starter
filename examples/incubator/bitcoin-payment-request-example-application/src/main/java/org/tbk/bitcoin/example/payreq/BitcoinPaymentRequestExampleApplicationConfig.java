@@ -1,9 +1,7 @@
 package org.tbk.bitcoin.example.payreq;
 
-import com.google.common.io.CharStreams;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.IOUtils;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
@@ -73,14 +71,14 @@ public class BitcoinPaymentRequestExampleApplicationConfig {
             String macaroon = macaroonFromContainer(properties, lndContainer);
 
             String ip = "127.0.0.1";
-            Integer port = lndContainer.getMappedPort(properties.getRpcport());
+            Integer port = lndContainer.getMappedPort(properties.getPort());
             return String.format("lndconnect://%s:%d?cert=%s&macaroon=%s", ip, port, cert, macaroon);
         }
 
         private static String macaroonFromContainer(LndClientAutoConfigProperties properties,
                                                     LndContainer<?> lndContainer) {
             return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
-                byte[] macaroon = IOUtils.toByteArray(inputStream);
+                byte[] macaroon = inputStream.readAllBytes();
                 return Base64.getUrlEncoder().encodeToString(macaroon);
             });
         }
@@ -89,7 +87,7 @@ public class BitcoinPaymentRequestExampleApplicationConfig {
                                                 LndContainer<?> lndContainer) {
             return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                    List<String> lines = CharStreams.readLines(reader);
+                    List<String> lines = reader.lines().toList();
 
                     // remove '-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----' and line breaks
                     String certBase64 = lines.stream()

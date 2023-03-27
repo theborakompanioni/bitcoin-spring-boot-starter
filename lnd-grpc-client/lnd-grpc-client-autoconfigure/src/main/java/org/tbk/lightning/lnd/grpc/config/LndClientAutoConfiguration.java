@@ -100,16 +100,16 @@ public class LndClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.grpc.rpchost",
-            "org.tbk.lightning.lnd.grpc.rpcport"
+            "org.tbk.lightning.lnd.grpc.host",
+            "org.tbk.lightning.lnd.grpc.port"
     })
     @ConditionalOnBean({MacaroonContext.class, SslContext.class})
     public LndRpcConfig lndRpcConfig(
             @Qualifier("lndMacaroonContext") MacaroonContext lndMacaroonContext,
             @Qualifier("lndSslContext") SslContext lndSslContext) {
         return LndRpcConfigImpl.builder()
-                .rpchost(properties.getRpchost())
-                .rpcport(properties.getRpcport())
+                .host(properties.getHost())
+                .port(properties.getPort())
                 .macaroonContext(lndMacaroonContext)
                 .sslContext(lndSslContext)
                 .build();
@@ -124,8 +124,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousLndAPI synchronousLndAPI(LndRpcConfig rpcConfig) {
         return new SynchronousLndAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -135,8 +135,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousLndAPI lndAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousLndAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -147,8 +147,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousWalletUnlockerAPI synchronousLndWalletUnlockerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWalletUnlockerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -158,8 +158,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousWalletUnlockerAPI lndWalletUnlockerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWalletUnlockerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -170,8 +170,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousAutopilotAPI synchronousLndAutopilotAPI(LndRpcConfig rpcConfig) {
         return new SynchronousAutopilotAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -181,8 +181,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousAutopilotAPI lndAutopilotAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousAutopilotAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -193,8 +193,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousChainNotifierAPI synchronousLndChainNotifierAPI(LndRpcConfig rpcConfig) {
         return new SynchronousChainNotifierAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -204,8 +204,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousChainNotifierAPI lndChainNotifierAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousChainNotifierAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -216,8 +216,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousInvoicesAPI synchronousLndInvoiceAPI(LndRpcConfig rpcConfig) {
         return new SynchronousInvoicesAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -227,8 +227,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousInvoicesAPI lndInvoiceAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousInvoicesAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -239,8 +239,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousRouterAPI synchronousLndRouterAPI(LndRpcConfig rpcConfig) {
         return new SynchronousRouterAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -250,8 +250,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousRouterAPI lndRouterAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousRouterAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -262,8 +262,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousSignerAPI synchronousLndSignerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousSignerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -273,8 +273,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousSignerAPI lndSignerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousSignerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -285,8 +285,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousWalletKitAPI synchronousLndWalletKitAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWalletKitAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -296,8 +296,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousWalletKitAPI lndWalletKitAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWalletKitAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -308,8 +308,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousWatchtowerAPI synchronousLndWatchtowerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWatchtowerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -319,8 +319,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousWatchtowerAPI lndWatchtowerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWatchtowerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -331,8 +331,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousWatchtowerClientAPI synchronousLndWatchtowerClientAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWatchtowerClientAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -342,8 +342,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousWatchtowerClientAPI lndWatchtowerClientAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWatchtowerClientAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -354,8 +354,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public SynchronousVersionerAPI synchronousLndVersionerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousVersionerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }
@@ -365,8 +365,8 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     public AsynchronousVersionerAPI lndVersionerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousVersionerAPI(
-                rpcConfig.getRpchost(),
-                rpcConfig.getRpcport(),
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
     }

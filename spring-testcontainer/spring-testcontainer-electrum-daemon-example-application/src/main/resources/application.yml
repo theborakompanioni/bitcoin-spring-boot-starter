@@ -22,7 +22,7 @@ org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   default-wallet: electrum/wallets/regtest/default_wallet
   environment:
-    ELECTRUM_NETWORK: regtest
+    ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
     ELECTRUM_USER: electrum
     ELECTRUM_PASSWORD: correct_horse_battery_staple_20210508
 
@@ -30,17 +30,17 @@ org.tbk.bitcoin.electrum-daemon.jsonrpc:
   enabled: true
   rpchost: http://localhost
   rpcport: 7000
-  rpcuser: electrum
-  rpcpassword: correct_horse_battery_staple_20210508
+  rpcuser: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_USER}
+  rpcpassword: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_PASSWORD}
 
 org.tbk.spring.testcontainer.electrumx:
   enabled: true
-  rpcuser: this-is-my-rpc-user99
-  rpcpass: correct_horse_battery_staple_99
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpass: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
   rpchost: localhost
   rpcport: 18443
   environment:
-    NET: regtest
+    NET: ${org.tbk.bitcoin.jsonrpc.network}
     COIN: BitcoinSegwit
     PEER_DISCOVERY: self
     PEER_ANNOUNCE: ''
@@ -57,8 +57,8 @@ org.tbk.spring.testcontainer.lnd:
 
 org.tbk.lightning.lnd.grpc:
   enabled: true
-  rpchost: localhost
-  rpcport: 19009
+  host: localhost
+  port: ${org.tbk.spring.testcontainer.lnd.rpcport}
   # path to the admin macaroon file within the container!
   macaroonFilePath: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!
@@ -106,12 +106,12 @@ org.tbk.bitcoin.regtest:
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest
-  rpcuser: this-is-my-rpc-user99
-  rpcpassword: correct_horse_battery_staple_99
   rpchost: http://localhost
   rpcport: 18443
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
 
 org.tbk.bitcoin.zeromq:
-  network: regtest
+  network: ${org.tbk.bitcoin.jsonrpc.network}
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333

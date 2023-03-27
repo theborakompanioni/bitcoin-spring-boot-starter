@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.lightningj.lnd.wrapper.*;
 import org.lightningj.lnd.wrapper.message.Chain;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
+import org.lightningj.lnd.wrapper.message.NetworkInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -58,11 +59,11 @@ class LndContainerApplicationTest {
                                              MacaroonContext lndRpcMacaroonContext,
                                              SslContext lndRpcSslContext) {
                 String host = lndContainer.getHost();
-                Integer mappedPort = lndContainer.getMappedPort(properties.getRpcport());
+                Integer mappedPort = lndContainer.getMappedPort(properties.getPort());
 
                 return LndRpcConfigImpl.builder()
-                        .rpchost(host)
-                        .rpcport(mappedPort)
+                        .host(host)
+                        .port(mappedPort)
                         .macaroonContext(lndRpcMacaroonContext)
                         .sslContext(lndRpcSslContext)
                         .build();
@@ -72,8 +73,7 @@ class LndContainerApplicationTest {
             public MacaroonContext lndRpcMacaroonContext(LndClientAutoConfigProperties properties,
                                                          LndContainer<?> lndContainer) {
                 return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
-                    byte[] bytes = IOUtils.toByteArray(inputStream);
-                    String hex = HexFormat.of().formatHex(bytes);
+                    String hex = HexFormat.of().formatHex(inputStream.readAllBytes());
                     return () -> hex;
                 });
             }
@@ -120,10 +120,9 @@ class LndContainerApplicationTest {
         Chain chain = info.getChains().stream().findFirst().orElseThrow();
         assertThat(chain.getNetwork(), is("regtest"));
 
-        // TODO: wait till https://github.com/lightningj-org/lightningj/issues/79 is resolved
-        //NetworkInfo networkInfo = lndSyncApi.getNetworkInfo();
-        //assertThat(networkInfo, is(notNullValue()));
-        //assertThat("node is running alone in the network", networkInfo.getNumNodes(), is(1));
+        NetworkInfo networkInfo = lndSyncApi.getNetworkInfo();
+        assertThat(networkInfo, is(notNullValue()));
+        assertThat("node is running alone in the network", networkInfo.getNumNodes(), is(0));
     }
 
     @Test

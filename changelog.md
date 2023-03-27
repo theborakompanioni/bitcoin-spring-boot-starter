@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - deprecation: scheduled `org.tbk.bitcoin.common.util.Hex` for removal
 - upgrade: update spring-boot from v3.0.2 to v3.0.4
 
+### Breaking
+- lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
+
 ## [0.6.0] - 2023-02-23
 ### Added
 - module: initial version of module `bitcoin-zeromq-client-bitcoin-kmp`

@@ -31,7 +31,6 @@ logging.level.org.springframework: INFO
 #logging.level.web: DEBUG
 logging.level.org.javamoney.moneta.Money: WARN
 
-
 spring.datasource.url: 'jdbc:sqlite:bitcoin_payment_request_example_application.db'
 spring.datasource.driver-class-name: org.sqlite.JDBC
 spring.datasource.hikari.pool-name: SQLitePool
@@ -46,7 +45,6 @@ spring.datasource.hikari.auto-commit: true #default auto-commit behavior.
 spring.jpa.properties.hibernate.dialect: org.hibernate.community.dialect.SQLiteDialect
 spring.jpa.properties.hibernate.jdbc.time_zone: UTC
 
-
 org.tbk.spring.testcontainer.lnd:
   enabled: true
   restport: 20080
@@ -58,8 +56,8 @@ org.tbk.spring.testcontainer.lnd:
 
 org.tbk.lightning.lnd.grpc:
   enabled: true
-  rpchost: localhost
-  rpcport: 20009
+  host: localhost
+  port: ${org.tbk.spring.testcontainer.lnd.rpcport}
   # path to the admin macaroon file within the container!
   macaroonFilePath: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!
@@ -100,8 +98,8 @@ org.tbk.spring.testcontainer.electrumx:
   enabled: true # disable if you do not need this functionality
   rpchost: localhost
   rpcport: 18443
-  rpcuser: myoneandonlyrpcuser
-  rpcpass: correcthorsebatterystaple123
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpass: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
   environment:
     NET: regtest
     COIN: BitcoinSegwit
@@ -126,11 +124,11 @@ org.tbk.bitcoin.jsonrpc:
   network: regtest
   rpchost: http://localhost
   rpcport: 18443
-  rpcuser: myoneandonlyrpcuser
-  rpcpassword: correcthorsebatterystaple123
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
 
 org.tbk.bitcoin.zeromq:
-  network: regtest
+  network: ${org.tbk.bitcoin.jsonrpc.network}
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333
 

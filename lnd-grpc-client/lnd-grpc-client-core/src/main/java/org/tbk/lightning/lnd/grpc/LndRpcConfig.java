@@ -11,14 +11,14 @@ public interface LndRpcConfig {
      *
      * @return IP address or hostname including http:// or https:// where lnd daemon is reachable.
      */
-    String getRpchost();
+    String getHost();
 
     /**
      * Port where lnd daemon is listening.
      *
      * @return Port where lnd daemon is listening.
      */
-    Integer getRpcport();
+    Integer getPort();
 
     /**
      * The {@link MacaroonContext} to access the lnd api.

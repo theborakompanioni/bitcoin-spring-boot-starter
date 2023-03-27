@@ -32,8 +32,8 @@ class LndClientAutoConfigurationTest {
     void beansAreCreated() {
         this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.lightning.lnd.grpc.rpchost=localhost",
-                        "org.tbk.lightning.lnd.grpc.rpcport=10001",
+                        "org.tbk.lightning.lnd.grpc.host=localhost",
+                        "org.tbk.lightning.lnd.grpc.port=10001",
                         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
                         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
                 )
@@ -75,8 +75,8 @@ class LndClientAutoConfigurationTest {
     void errorIfCertFileIsMissing() {
         this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
                 .withPropertyValues(
-                        "org.tbk.lightning.lnd.grpc.rpchost=localhost",
-                        "org.tbk.lightning.lnd.grpc.rpcport=10001",
+                        "org.tbk.lightning.lnd.grpc.host=localhost",
+                        "org.tbk.lightning.lnd.grpc.port=10001",
                         "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
                         "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test-missing.cert"
                 ).run(context -> {

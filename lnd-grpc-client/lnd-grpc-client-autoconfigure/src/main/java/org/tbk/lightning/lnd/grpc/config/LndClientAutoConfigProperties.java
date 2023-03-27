@@ -1,5 +1,6 @@
 package org.tbk.lightning.lnd.grpc.config;
 
+import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -31,15 +32,15 @@ public class LndClientAutoConfigProperties implements Validator {
     private Network network;
 
     /**
-     * IP address or hostname including http:// or https:// where lnd daemon is reachable.
-     * e.g. http://localhost, https://192.168.0.2, etc.
+     * IP address or hostname where lnd daemon is reachable.
+     * e.g. localhost, 192.168.0.2, etc.
      */
-    private String rpchost;
+    private String host;
 
     /**
      * Port where lnd daemon is listening.
      */
-    private int rpcport;
+    private int port;
 
     /**
      * Path to the cert file (e.g. /home/lnd/.lnd/tls.cert).
@@ -64,21 +65,14 @@ public class LndClientAutoConfigProperties implements Validator {
     public void validate(Object target, Errors errors) {
         LndClientAutoConfigProperties properties = (LndClientAutoConfigProperties) target;
 
-        if (properties.getRpcport() < 0) {
-            String errorMessage = String.format("Port must not be negative - invalid value: %d", properties.getRpcport());
-            errors.rejectValue("rpcport", "rpcport.invalid", errorMessage);
+        if (properties.getPort() <= 0) {
+            String errorMessage = String.format("Invalid 'port' value: %d", properties.getPort());
+            errors.rejectValue("port", "port.invalid", errorMessage);
         }
 
-        /*String rpchost = properties.getRpchost();
-        if (!Strings.isNullOrEmpty(rpchost)) {
-            boolean isHttp = rpchost.startsWith("http://");
-            boolean isHttps = rpchost.startsWith("https://");
-
-            boolean validProtocol = isHttp || isHttps;
-            if (!validProtocol) {
-                String errorMessage = String.format("Host must either start with 'http://' or 'https://' - invalid value: %s", rpchost);
-                errors.rejectValue("rpchost", "rpchost.invalid", errorMessage);
-            }
-        }*/
+        if (Strings.isNullOrEmpty(properties.getHost())) {
+            String errorMessage = String.format("Invalid `host` value: '%s'", properties.getHost());
+            errors.rejectValue("host", "host.invalid", errorMessage);
+        }
     }
 }

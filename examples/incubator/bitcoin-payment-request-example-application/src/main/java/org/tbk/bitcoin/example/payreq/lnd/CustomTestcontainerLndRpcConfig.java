@@ -5,7 +5,6 @@ import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.IOUtils;
 import org.lightningj.lnd.wrapper.MacaroonContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,11 +25,11 @@ public class CustomTestcontainerLndRpcConfig {
                                      MacaroonContext lndRpcMacaroonContext,
                                      SslContext lndRpcSslContext) {
         String host = lndContainer.getHost();
-        Integer mappedPort = lndContainer.getMappedPort(properties.getRpcport());
+        Integer mappedPort = lndContainer.getMappedPort(properties.getPort());
 
         return LndRpcConfigImpl.builder()
-                .rpchost(host)
-                .rpcport(mappedPort)
+                .host(host)
+                .port(mappedPort)
                 .macaroonContext(lndRpcMacaroonContext)
                 .sslContext(lndRpcSslContext)
                 .build();
@@ -40,8 +39,7 @@ public class CustomTestcontainerLndRpcConfig {
     public MacaroonContext lndRpcMacaroonContext(LndClientAutoConfigProperties properties,
                                                  LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            String hex = HexFormat.of().formatHex(bytes);
+            String hex = HexFormat.of().formatHex(inputStream.readAllBytes());
             return () -> hex;
         });
     }
