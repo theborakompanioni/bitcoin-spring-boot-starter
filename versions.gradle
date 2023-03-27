@@ -19,7 +19,7 @@ ext {
     acinqBitcoinKmpVersion = '0.11.0'
     acinqSecp256k1KmpVersion = '0.7.1'
     sqliteVersion = '3.40.0.0'
-    hibernateCommunityDialectsVersion = '6.1.5.Final'
+    hibernateCommunityDialectsVersion = '6.1.7.Final'
     lombokVersion = '1.18.20'
     springdocOpenApiVersion = '2.0.2'
     mockserverVersion = '5.11.2'

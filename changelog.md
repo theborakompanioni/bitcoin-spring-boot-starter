@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - deprecation: scheduled `org.tbk.bitcoin.common.util.Hex` for removal
 - upgrade: update spring-boot from v3.0.2 to v3.0.4
+- upgrade: update hibernate-community-dialects from v6.1.5.Final to v6.1.7.Final
 
 ### Breaking
 - lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
