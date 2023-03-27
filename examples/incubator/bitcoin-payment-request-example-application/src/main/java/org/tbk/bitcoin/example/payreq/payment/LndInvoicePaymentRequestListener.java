@@ -44,7 +44,8 @@ class LndInvoicePaymentRequestListener {
                     try {
                         String rHash = String.valueOf(Hex.encode(value.getRHash()));
                         lightningPaymentRequests.findByRhash(rHash)
-                                .ifPresent(paymentRequestService::reevaluatePaymentRequest);
+                                .map(PaymentRequest::getId)
+                                .ifPresent(paymentRequestService::reevaluatePaymentRequestById);
                     } catch (Exception e) {
                         log.error("", e);
                     }
