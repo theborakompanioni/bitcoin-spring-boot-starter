@@ -22,5 +22,5 @@ public interface PaymentRequestService {
 
     Optional<PaymentRequest> findPaymentRequestBy(PaymentRequest.PaymentRequestId paymentRequestId);
 
-    PaymentRequest reevaluatePaymentRequest(PaymentRequest paymentRequest);
+    PaymentRequest reevaluatePaymentRequestById(PaymentRequest.PaymentRequestId paymentRequestId);
 }

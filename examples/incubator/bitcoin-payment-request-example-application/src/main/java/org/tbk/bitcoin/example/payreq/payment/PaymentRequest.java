@@ -1,9 +1,7 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -49,6 +47,10 @@ public abstract class PaymentRequest
 
     @UpdateTimestamp
     private Instant updatedAt;
+
+    @JsonIgnore
+    @Version
+    private Long version;
 
     @Column(name = "order_id")
     private final Association<Order, Order.OrderId> order;

@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.lightningj.lnd.wrapper.message.AddInvoiceResponse;
 import org.lightningj.lnd.wrapper.message.Invoice;
 import org.lightningj.lnd.wrapper.message.PaymentHash;
 import org.springframework.security.crypto.codec.Hex;
+import org.springframework.transaction.annotation.Transactional;
 import org.tbk.bitcoin.example.payreq.common.Network;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
@@ -30,6 +32,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PaymentRequestServiceImpl implements PaymentRequestService {
     private static final CurrencyUnit bitcoin = Monetary.getCurrency("BTC");
@@ -110,7 +113,12 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
     }
 
     @Override
-    public PaymentRequest reevaluatePaymentRequest(PaymentRequest paymentRequest) {
+    public PaymentRequest reevaluatePaymentRequestById(PaymentRequest.PaymentRequestId paymentRequestId) {
+        PaymentRequest paymentRequest = findPaymentRequestBy(paymentRequestId).orElseThrow(() -> {
+            String errorMessage = String.format("Payment request not found by id: %s", paymentRequestId);
+            return new EntityNotFoundException(errorMessage);
+        });
+
         if (paymentRequest instanceof BitcoinOnchainPaymentRequest onchainPaymentRequest) {
             return reevaluateOnchainBitcoinPaymentRequest(onchainPaymentRequest);
         }

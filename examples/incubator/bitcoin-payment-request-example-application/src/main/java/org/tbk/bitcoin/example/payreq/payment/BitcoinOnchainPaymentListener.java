@@ -31,7 +31,7 @@ class BitcoinOnchainPaymentListener {
 
         for (BitcoinOnchainPaymentRequest paymentRequest : paymentRequests) {
             try {
-                paymentRequestService.reevaluatePaymentRequest(paymentRequest);
+                paymentRequestService.reevaluatePaymentRequestById(paymentRequest.getId());
             } catch (Exception e) {
                 log.error("Error while reevaluating payment request in loop - continue with next item", e);
             }
