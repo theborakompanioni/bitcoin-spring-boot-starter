@@ -18,6 +18,7 @@ ext {
     zxingVersion = '3.5.0'
     acinqBitcoinKmpVersion = '0.11.0'
     acinqSecp256k1KmpVersion = '0.7.1'
+    acinqLightningKmpVersion = '1.4.1'
     sqliteVersion = '3.41.2.1'
     hibernateCommunityDialectsVersion = '6.1.7.Final'
     lombokVersion = '1.18.20'

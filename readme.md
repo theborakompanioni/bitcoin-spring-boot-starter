@@ -189,6 +189,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - lnd (GitHub): https://github.com/LightningNetwork/lnd ([Docker](https://hub.docker.com/r/lightninglabs/lnd))
 - lnurl (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - LightningJ (GitHub): https://github.com/lightningj-org/lightningj
+- lightning-kmp (GitHub): https://github.com/ACINQ/lightning-kmp
 - ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx ([Docker](https://hub.docker.com/r/lukechilds/electrumx))
 - Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server ([Docker](https://hub.docker.com/r/btcpayserver/eps))
 - Electrum Client (GitHub): https://github.com/spesmilo/electrum ([Docker](https://hub.docker.com/r/osminogin/electrum-daemon))
