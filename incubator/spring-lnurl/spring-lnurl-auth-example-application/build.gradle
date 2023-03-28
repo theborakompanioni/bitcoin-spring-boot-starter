@@ -32,6 +32,7 @@ dependencies {
     implementation "org.jmolecules:jmolecules-ddd"
     implementation "org.jmolecules:jmolecules-events"
     implementation "org.jmolecules.integrations:jmolecules-jpa"
+    implementation "org.jmolecules.integrations:jmolecules-ddd-integration"
     implementation "org.jmolecules.integrations:jmolecules-spring"
     implementation "org.jmolecules.integrations:jmolecules-jackson"
 
