@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.example.payreq.order;
 
-import org.jmolecules.spring.AssociationResolver;
+import org.jmolecules.ddd.integration.AssociationResolver;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
