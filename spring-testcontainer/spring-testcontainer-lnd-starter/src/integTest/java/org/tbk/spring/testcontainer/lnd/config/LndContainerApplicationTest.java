@@ -105,7 +105,6 @@ class LndContainerApplicationTest {
         assertThat(lndContainer.isRunning(), is(true));
 
         assertThat(lndSyncApi, is(notNullValue()));
-
         assertThat(lndAsyncApi, is(notNullValue()));
     }
 
