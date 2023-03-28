@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update hibernate-community-dialects from v6.1.5.Final to v6.1.7.Final
 - upgrade: update bitcoin-kmp from v0.11.0 to 0.11.1
 - upgrade: update secp256k1-kmp from v0.7.1 to v0.8.0
+- upgrade: update springdoc-openapi from v2.0.2 to v2.0.4
 
 ### Breaking
 - lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
