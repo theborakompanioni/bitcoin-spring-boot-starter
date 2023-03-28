@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.playground.example.api;
+package org.tbk.lightning.playground.example.api;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -98,7 +98,7 @@ include 'incubator:spring-lnurl:spring-lnurl-auth-example-application'
 
 include 'examples:bitcoin-autodca-example-application'
 include 'examples:bitcoin-exchange-rate-example-application'
-include 'examples:lnd-playground-example-application'
+include 'examples:ln-playground-example-application'
 include 'examples:incubator:bitcoin-duckdca-example-application'
 include 'examples:incubator:bitcoin-electrum-gateway-example-application'
 include 'examples:incubator:bitcoin-payment-request-example-application'

@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.playground.example;
+package org.tbk.lightning.playground.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.WebApplicationType;
@@ -10,11 +10,11 @@ import org.springframework.context.ApplicationListener;
 
 @Slf4j
 @SpringBootApplication
-public class LndPlaygroundExampleApplication {
+public class LnPlaygroundExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .sources(LndPlaygroundExampleApplication.class)
+                .sources(LnPlaygroundExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
                 .profiles("development", "local")
