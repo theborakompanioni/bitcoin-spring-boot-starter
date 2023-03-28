@@ -1,5 +1,7 @@
 package org.tbk.lightning.playground.example.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/api/v1/lnd", produces = "application/json")
 @RequiredArgsConstructor
+@Tags({
+        @Tag(name = "lnd")
+})
 public class LndApi {
 
     @NonNull
