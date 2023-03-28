@@ -100,7 +100,7 @@ example applications showing basic usage of the functionality provided by these 
 
 - [x] bitcoin-autodca: [Stacking Sats on Kraken: Auto DCA example application](examples/bitcoin-autodca-example-application)
 - [x] bitcoin-exchange-rate: [Currency Conversion API example application](examples/bitcoin-exchange-rate-example-application)
-- [x] lnd-playground: [Lightning Network Playground example application](examples/lnd-playground-example-application) (using lnd)
+- [x] ln-playground: [Lightning Network Playground example application](examples/ln-playground-example-application)
 - [x] lnurl-auth: [Spring Security Authentication with `lnurl-auth` example application](incubator/spring-lnurl/spring-lnurl-auth-example-application)
 
 Example apps can be started with a single command, e.g.:

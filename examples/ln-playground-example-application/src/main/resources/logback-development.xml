@@ -5,5 +5,5 @@
     <logger name="org.tbk.spring.testcontainer.bitcoind" level="DEBUG"/>
     <logger name="org.tbk.spring.testcontainer.lnd" level="DEBUG"/>
 
-    <logger name="org.tbk.lightning.lnd.playground.bitcoind" level="DEBUG"/>
+    <logger name="org.tbk.lightning.playground" level="DEBUG"/>
 </configuration>

@@ -1,12 +1,15 @@
 apply plugin: 'org.springframework.boot'
 
-description = 'lnd testcontainer example application package'
+description = 'lightning playground example application package'
 
 dependencies {
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
     implementation project(':lnd-grpc-client:lnd-grpc-client-starter')
+
+    implementation project(':spring-testcontainer:spring-testcontainer-cln-starter')
+    implementation project(':cln-grpc-client:cln-grpc-client-starter')
 
     implementation "io.projectreactor:reactor-core"
 

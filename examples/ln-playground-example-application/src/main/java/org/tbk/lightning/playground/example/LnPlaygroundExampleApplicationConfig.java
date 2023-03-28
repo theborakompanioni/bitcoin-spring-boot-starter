@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.playground.example;
+package org.tbk.lightning.playground.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
@@ -25,7 +25,7 @@ import java.time.Duration;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class LndPlaygroundExampleApplicationConfig {
+public class LnPlaygroundExampleApplicationConfig {
 
     /**
      * We must have access to a wallet for "getnewaddress" command to work.

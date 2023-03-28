@@ -1,4 +1,4 @@
-package org.tbk.lightning.lnd.playground.example;
+package org.tbk.lightning.playground.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration(proxyBeanMethods = false)
-public class LndPlaygroundExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
+public class LnPlaygroundExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",
