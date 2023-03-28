@@ -3,6 +3,10 @@ apply plugin: 'org.springframework.boot'
 description = 'lightning playground example application package'
 
 dependencies {
+    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"
+    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
+    implementation "fr.acinq.lightning:lightning-kmp-jvm:${acinqLightningKmpVersion}"
+
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
@@ -15,6 +19,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 }
