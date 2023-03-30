@@ -15,18 +15,19 @@ import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.message.*;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.tbk.lightning.playground.example.api.dto.CreateInvoiceRequestDto;
 import org.tbk.lightning.playground.example.api.dto.CreateInvoiceResponseDto;
 import org.tbk.lightning.playground.example.api.dto.NodeInfoDto;
-import org.testcontainers.shaded.com.google.common.primitives.Longs;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/v1/lnd", produces = "application/json")
+@RequestMapping(value = "/api/v1/lnd", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tags({
         @Tag(name = "lnd")
@@ -57,17 +58,15 @@ public class LndApi {
             summary = "Create invoice"
     )
     @PostMapping(value = "/invoice")
-    public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
+    public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@Validated @RequestBody CreateInvoiceRequestDto body) throws StatusException, ValidationException {
 
-        String memo = Optional.ofNullable(body.get("memo"))
+        String memo = Optional.ofNullable(body.getMemo())
                 .map(Object::toString)
                 .orElse("");
 
-        long msats = Optional.ofNullable(body.get("msats"))
-                .map(Object::toString)
-                .map(it -> Longs.tryParse(it, 10))
+        long msats = Optional.ofNullable(body.getMsats())
                 .filter(it -> it > 0)
-                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive integer"));
+                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive number"));
 
         LightningApi.Invoice invoice = LightningApi.Invoice.newBuilder()
                 .setValueMsat(msats)
