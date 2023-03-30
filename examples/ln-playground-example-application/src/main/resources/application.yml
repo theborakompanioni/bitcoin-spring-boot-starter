@@ -25,6 +25,27 @@ management.info.lndApi.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
 management.health.lndApi.enabled: true
 
+
+org.tbk.spring.testcontainer.cln:
+  enabled: true
+  port: 20735
+  rpcport: 20835
+  commands:
+    - '--alias=tbk-cln-starter-test'
+    - '--bitcoin-rpcuser=myoneandonlyrpcuser'
+    - '--bitcoin-rpcpassword=correcthorsebatterystaple123'
+    - '--grpc-port=20935'
+
+org.tbk.lightning.cln.grpc:
+  enabled: true
+  host: localhost
+  port: 20935
+  shutdown-timeout: PT3S
+  # path to the tls files within the container!
+  clientCertFilePath: '/root/.lightning/regtest/client.pem'
+  clientKeyFilePath: '/root/.lightning/regtest/client-key.pem'
+  caCertFilePath: '/root/.lightning/regtest/ca.pem'
+
 org.tbk.spring.testcontainer.lnd:
   enabled: true
   restport: 20080
