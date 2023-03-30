@@ -3,6 +3,7 @@ package org.tbk.lightning.playground.example.lnd.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import lombok.NonNull;
@@ -16,6 +17,8 @@ import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.message.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.tbk.lightning.playground.example.api.dto.CreateInvoiceResponseDto;
+import org.tbk.lightning.playground.example.api.dto.NodeInfoDto;
 import org.testcontainers.shaded.com.google.common.primitives.Longs;
 
 import java.util.Map;
@@ -36,10 +39,57 @@ public class LndApi {
     @NonNull
     private final ObjectMapper objectMapper;
 
+    @Operation(
+            summary = "Fetch node info"
+    )
     @GetMapping(value = "/info")
-    public ResponseEntity<JsonNode> getInfo() throws StatusException, ValidationException {
+    public ResponseEntity<NodeInfoDto> getInfo() throws StatusException, ValidationException {
         GetInfoResponse info = lndApi.getInfo();
-        return ResponseEntity.ok(toJson(info));
+        return ResponseEntity.ok(NodeInfoDto.builder()
+                .id(info.getIdentityPubkey())
+                .alias(info.getAlias())
+                .version(info.getVersion())
+                .raw(toJson(info))
+                .build());
+    }
+
+    @Operation(
+            summary = "Create invoice"
+    )
+    @PostMapping(value = "/invoice")
+    public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
+
+        String memo = Optional.ofNullable(body.get("memo"))
+                .map(Object::toString)
+                .orElse("");
+
+        long msats = Optional.ofNullable(body.get("msats"))
+                .map(Object::toString)
+                .map(it -> Longs.tryParse(it, 10))
+                .filter(it -> it > 0)
+                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive integer"));
+
+        LightningApi.Invoice invoice = LightningApi.Invoice.newBuilder()
+                .setValueMsat(msats)
+                .setMemo(memo)
+                .build();
+
+        AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(invoice));
+
+        return ResponseEntity.ok(CreateInvoiceResponseDto.builder()
+                .bolt11(addInvoiceResponse.getPaymentRequest())
+                .raw(toJson(addInvoiceResponse))
+                .build());
+    }
+
+    @GetMapping(value = "/invoice/{hash}")
+    public ResponseEntity<JsonNode> lookupInvoice(String paymentHash) throws StatusException, ValidationException {
+        PaymentHash request = new PaymentHash();
+        request.setRHashStr(paymentHash);
+
+        Invoice invoice = lndApi.lookupInvoice(request);
+
+        return ResponseEntity.ok(toJson(invoice));
     }
 
     @GetMapping(value = "/network/info")
@@ -70,38 +120,6 @@ public class LndApi {
     public ResponseEntity<JsonNode> walletBalance() throws StatusException, ValidationException {
         WalletBalanceResponse walletBalance = lndApi.walletBalance();
         return ResponseEntity.ok(toJson(walletBalance));
-    }
-
-    @GetMapping(value = "/invoice/{hash}")
-    public ResponseEntity<JsonNode> lookupInvoice(String paymentHash) throws StatusException, ValidationException {
-        PaymentHash request = new PaymentHash();
-        request.setRHashStr(paymentHash);
-
-        Invoice invoice = lndApi.lookupInvoice(request);
-
-        return ResponseEntity.ok(toJson(invoice));
-    }
-
-    @PostMapping(value = "/invoice")
-    public ResponseEntity<JsonNode> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
-
-        String memo = Optional.ofNullable(body.get("memo"))
-                .map(Object::toString)
-                .orElse("");
-
-        long value = Optional.ofNullable(body.get("value"))
-                .map(Object::toString)
-                .map(it -> Longs.tryParse(it, 10))
-                .filter(it -> it > 0)
-                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive integer"));
-
-        LightningApi.Invoice invoice = LightningApi.Invoice.newBuilder()
-                .setValue(value)
-                .setMemo(memo)
-                .build();
-
-        AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(invoice));
-        return ResponseEntity.ok(toJson(addInvoiceResponse));
     }
 
     private JsonNode toJson(Message<?> message) {
