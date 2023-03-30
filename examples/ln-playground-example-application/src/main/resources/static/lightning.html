@@ -6,8 +6,6 @@
 
     <link rel="stylesheet" href="/mvp.css">
 
-    <script src="/vanilla-qrcode.js"></script>
-
     <style>
         .width-100p {
             width: 100%;
@@ -19,144 +17,9 @@
     <h1>Bitcoin Lightning Network ⚡</h1>
 </header>
 <main>
-    <div id="loading-indicator">
-    </div>
-
-    <div id="lnd-info-container" hidden>
-<pre>alias:      <b id="lnd-alias"></b>
-pubkey:     <b id="lnd-pubkey"></b>
-version:    <b id="lnd-version"></b></pre>
-
-        <div id="lnd-info-identity-pub-key-qrcode">
-        </div>
-    </div>
-
-    <div id="lnd-send-payment-container" hidden>
-        <h2>Send a tip via Lightning</h2>
-        <input id="input-lnd-amount" name="lnd-amount"
-               type="number" min="0" step="1" placeholder="Amount in satoshi" />
-        <textarea id="input-lnd-message" name="lnd-message" placeholder="A message you want to add"
-                  rows="4" cols="50"></textarea>
-
-        <button id="btn-lnd-add-invoice">Show payment QR code</button>
-
-        <input id="input-lnd-invoice" class="width-100p"
-               type="text" value="" readonly="" hidden>
-
-        <div id="lnd-invoice-qrcode-container">
-        </div>
-    </div>
-
-    <div id="log-container">
-        <pre id="json"></pre>
-    </div>
+    <a href="create_invoice.html?node=lnd">LND</a>
+    <a href="create_invoice.html?node=cln">CLN</a>
 </main>
 </body>
 
-<script>
-    const onLatestResponseData = (json) => {
-        const logContainerElement = document.getElementById("json");
-        logContainerElement.textContent = JSON.stringify(json, null, 2);
-    };
-
-    const httpGetAsync = (url, onSuccess, onError) => {
-        const xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
-            if (xmlHttp.readyState === 4) {
-                if (xmlHttp.status === 200) {
-                    onSuccess(xmlHttp.responseText);
-                } else {
-                    onError(xmlHttp);
-                }
-            }
-        }
-
-        xmlHttp.open("GET", url, true); // true for asynchronous
-        xmlHttp.send(null);
-    };
-
-    const httpPostAsync = (url, payload) => {
-        return fetch(url, {
-            method:"POST",
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-    };
-
-    const loadingIndicatorElement = document.getElementById("loading-indicator");
-    loadingIndicatorElement.textContent = "loading...";
-
-    const inputLndInvoice = document.getElementById("input-lnd-invoice");
-    const btnLndAddInvoice = document.getElementById("btn-lnd-add-invoice");
-    btnLndAddInvoice.addEventListener("click", () => {
-        inputLndInvoice.setAttribute("hidden", "hidden");
-        btnLndAddInvoice.setAttribute("disabled", "disabled");
-
-        console.log("btn clicked");
-
-        const payload = {
-            value: 1,
-            memo: "test"
-        };
-
-        httpPostAsync("/api/v1/lnd/invoice", payload).then(async response => {
-            const body = await response.json();
-            onLatestResponseData(body);
-
-            const paymentRequest = body.paymentRequest.string;
-
-            // add plain payment request to input element
-            inputLndInvoice.value = paymentRequest;
-
-            // generate qr code from the plain payment request
-            var qr = new VanillaQR({
-                url: paymentRequest
-            });
-
-            const elemInvoiceQrCodeContainer = document.getElementById("lnd-invoice-qrcode-container");
-
-            // remove all previous generated payment request qrcodes
-            while (elemInvoiceQrCodeContainer.firstChild) {
-                elemInvoiceQrCodeContainer.removeChild(elemInvoiceQrCodeContainer.lastChild);
-            }
-
-            // add plain payment request as qrcode
-            elemInvoiceQrCodeContainer.prepend(qr.domElement);
-        }).catch(error => {
-            inputLndInvoice.value = "An error occurred";
-        }).finally(() => {
-            inputLndInvoice.removeAttribute("hidden");
-            setTimeout(() => {
-                btnLndAddInvoice.removeAttribute("disabled");
-            }, 133);
-        });
-    });
-
-    httpGetAsync("/api/v1/lnd/info", (infoJson) => {
-        loadingIndicatorElement.textContent = "";
-
-        const infoMap = JSON.parse(infoJson);
-        onLatestResponseData(infoMap);
-
-        let alias = infoMap.alias.string;
-        let identityPubKey = infoMap.identityPubkey.string;
-        let blockHash = infoMap.blockHash.string;
-        let version = infoMap.version.string;
-
-        document.getElementById("lnd-alias").textContent = alias;
-        document.getElementById("lnd-pubkey").textContent = identityPubKey;
-        document.getElementById("lnd-version").textContent = version;
-        document.getElementById("lnd-info-container").removeAttribute("hidden");
-
-        var qr = new VanillaQR({
-            url: identityPubKey
-        });
-        document.getElementById("lnd-info-identity-pub-key-qrcode").appendChild(qr.domElement);
-
-        document.getElementById("lnd-send-payment-container").removeAttribute("hidden");
-    });
-
-</script>
 </html>

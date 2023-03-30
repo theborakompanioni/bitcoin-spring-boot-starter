@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>lightning - create invoice</title>
+
+    <link rel="stylesheet" href="/mvp.css">
+
+    <script src="/vanilla-qrcode.js"></script>
+
+    <style>
+        .width-100p {
+            width: 100%;
+        }
+
+        #node-heading {
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1><span id="node-heading">...</span> ⚡</h1>
+</header>
+<main>
+    <div id="loading-indicator">
+    </div>
+
+    <div id="node-info-container" hidden>
+<pre>alias:      <b id="node-alias"></b>
+pubkey:     <b id="node-pubkey"></b>
+version:    <b id="node-version"></b></pre>
+
+        <div id="node-info-identity-pub-key-qrcode">
+        </div>
+    </div>
+
+    <div id="node-send-payment-container" hidden>
+        <h2>Send a tip via Lightning</h2>
+        <input id="input-node-amount" name="node-amount"
+               type="number" min="0" step="1000" placeholder="Amount in millisatoshi" />
+        <textarea id="input-node-message" name="node-message" placeholder="A message you want to add"
+                  rows="4" cols="50"></textarea>
+
+        <button id="btn-node-add-invoice">Show payment QR code</button>
+
+        <input id="input-node-invoice" class="width-100p"
+               type="text" value="" readonly="" hidden>
+
+        <div id="node-invoice-qrcode-container">
+        </div>
+    </div>
+
+    <div id="log-container">
+        <pre id="json"></pre>
+    </div>
+</main>
+</body>
+
+<script>
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const urlParams = Object.fromEntries(urlSearchParams.entries());
+    const nodeImpl = urlParams.node || 'lnd';
+
+    const nodeHeadingElement = document.getElementById("node-heading");
+    nodeHeadingElement.textContent = `${nodeImpl}`;
+
+    const onLatestResponseData = (json) => {
+        const logContainerElement = document.getElementById("json");
+        logContainerElement.textContent = JSON.stringify(json, null, 2);
+    };
+
+    const httpGetAsync = (url, onSuccess, onError) => {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4) {
+                if (xmlHttp.status === 200) {
+                    onSuccess(xmlHttp.responseText);
+                } else {
+                    onError(xmlHttp);
+                }
+            }
+        }
+
+        xmlHttp.open("GET", url, true); // true for asynchronous
+        xmlHttp.send(null);
+    };
+
+    const httpPostAsync = (url, payload) => {
+        return fetch(url, {
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+    };
+
+    const loadingIndicatorElement = document.getElementById("loading-indicator");
+    loadingIndicatorElement.textContent = "loading...";
+
+    const inputNodeInvoice = document.getElementById("input-node-invoice");
+    const btnNodeAddInvoice = document.getElementById("btn-node-add-invoice");
+    btnNodeAddInvoice.addEventListener("click", () => {
+        inputNodeInvoice.setAttribute("hidden", "hidden");
+        btnNodeAddInvoice.setAttribute("disabled", "disabled");
+
+        console.log("btn clicked");
+
+        const payload = {
+            msats: parseInt(document.getElementById("input-node-amount").value, 10),
+            memo: document.getElementById("input-node-message").value || ""
+        };
+
+        httpPostAsync(`/api/v1/${nodeImpl}/invoice`, payload).then(async response => {
+            const body = await response.json();
+            onLatestResponseData(body);
+
+            const paymentRequest = body.bolt11;
+
+            // add plain payment request to input element
+            inputNodeInvoice.value = paymentRequest;
+
+            // generate qr code from the plain payment request
+            const qr = new VanillaQR({
+                url: paymentRequest
+            });
+
+            const elemInvoiceQrCodeContainer = document.getElementById("node-invoice-qrcode-container");
+
+            // remove all previous generated payment request qrcodes
+            while (elemInvoiceQrCodeContainer.firstChild) {
+                elemInvoiceQrCodeContainer.removeChild(elemInvoiceQrCodeContainer.lastChild);
+            }
+
+            // add plain payment request as qrcode
+            elemInvoiceQrCodeContainer.prepend(qr.domElement);
+        }).catch(error => {
+            inputNodeInvoice.value = "An error occurred";
+        }).finally(() => {
+            inputNodeInvoice.removeAttribute("hidden");
+            setTimeout(() => {
+                btnNodeAddInvoice.removeAttribute("disabled");
+            }, 133);
+        });
+    });
+
+    httpGetAsync(`/api/v1/${nodeImpl}/info`, (infoJson) => {
+        loadingIndicatorElement.textContent = "";
+
+        const infoMap = JSON.parse(infoJson);
+        onLatestResponseData(infoMap);
+
+        const identityPubKey = infoMap.id;
+        const alias = infoMap.alias;
+        const version = infoMap.version;
+
+        document.getElementById("node-alias").textContent = alias;
+        document.getElementById("node-pubkey").textContent = identityPubKey;
+        document.getElementById("node-version").textContent = version;
+        document.getElementById("node-info-container").removeAttribute("hidden");
+
+        const qr = new VanillaQR({
+            url: identityPubKey
+        });
+        document.getElementById("node-info-identity-pub-key-qrcode").appendChild(qr.domElement);
+
+        document.getElementById("node-send-payment-container").removeAttribute("hidden");
+    });
+
+</script>
+</html>
