@@ -7,6 +7,8 @@ dependencies {
     implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
     implementation "fr.acinq.lightning:lightning-kmp-jvm:${acinqLightningKmpVersion}"
 
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
     implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')

@@ -1,4 +1,4 @@
-package org.tbk.lightning.playground.example;
+package org.tbk.lightning.playground.example.cln;
 
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
