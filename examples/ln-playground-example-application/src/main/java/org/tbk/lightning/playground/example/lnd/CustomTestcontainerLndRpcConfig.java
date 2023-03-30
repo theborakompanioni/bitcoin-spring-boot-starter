@@ -1,4 +1,4 @@
-package org.tbk.lightning.playground.example;
+package org.tbk.lightning.playground.example.lnd;
 
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
