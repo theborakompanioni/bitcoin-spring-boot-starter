@@ -9,6 +9,7 @@ import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.autopilot.SynchronousAutopilotAPI;
 import org.lightningj.lnd.wrapper.autopilot.message.StatusResponse;
+import org.lightningj.lnd.wrapper.message.Chain;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.ApplicationRunner;
@@ -17,11 +18,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
+import org.tbk.lightning.cln.grpc.client.GetinfoRequest;
+import org.tbk.lightning.cln.grpc.client.GetinfoResponse;
+import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HexFormat;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -40,39 +49,32 @@ public class LnPlaygroundExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner mainRunner(SynchronousLndAPI lndApi,
-                                        SynchronousAutopilotAPI autopilotApi) {
+    public ApplicationRunner clnPrintInfoRunner(NodeGrpc.NodeFutureStub clnNodeFutureStub) {
         return args -> {
-            GetInfoResponse info = lndApi.getInfo();
-            StatusResponse autopilotStatus = autopilotApi.status();
+            GetinfoResponse info = clnNodeFutureStub.getinfo(GetinfoRequest.newBuilder().build())
+                    .get(10, TimeUnit.SECONDS);
             log.info("=================================================");
-            log.info("[lnd] identity_pubkey: {}", info.getIdentityPubkey());
-            log.info("[lnd] alias: {}", info.getAlias());
-            log.info("[lnd] version: {}", info.getVersion());
-            log.info("[lnd] autopilot active: {}", autopilotStatus.getActive());
+            log.info("[cln] id: {}", HexFormat.of().formatHex(info.getId().toByteArray()));
+            log.info("[cln] alias: {}", info.getAlias());
+            log.info("[cln] version: {}", info.getVersion());
+            log.info("[cln] network: {}", info.getNetwork());
         };
     }
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner lndBestBlockLogger(SynchronousLndAPI lndApi,
-
-                                                MessagePublishService<Block> bitcoinBlockPublishService) {
+    public ApplicationRunner lndPrintInfoRunner(SynchronousLndAPI lndApi,
+                                                SynchronousAutopilotAPI autopilotApi) {
         return args -> {
-            bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
-            Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
-                try {
-                    GetInfoResponse info = lndApi.getInfo();
-                    log.info("=================================================");
-                    log.info("[lnd] block height: {}", info.getBlockHeight());
-                    log.info("[lnd] block hash: {}", info.getBlockHash());
-                    log.info("[lnd] best header timestamp: {}", info.getBestHeaderTimestamp());
-                } catch (StatusException | ValidationException e) {
-                    log.error("", e);
-                }
-            });
-
-            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
+            GetInfoResponse info = lndApi.getInfo();
+            StatusResponse autopilotStatus = autopilotApi.status();
+            log.info("=================================================");
+            log.info("[lnd] id: {}", info.getIdentityPubkey());
+            log.info("[lnd] alias: {}", info.getAlias());
+            log.info("[lnd] version: {}", info.getVersion());
+            log.info("[lnd] network: {}", info.getChains().stream()
+                    .map(Chain::getNetwork)
+                    .collect(Collectors.joining(",")));
         };
     }
 
@@ -94,4 +96,44 @@ public class LnPlaygroundExampleApplicationConfig {
             Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
         };
     }
+
+    @Bean
+    @Profile("!test")
+    public ApplicationRunner clnBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+                                                NodeGrpc.NodeFutureStub clnNodeFutureStub) {
+        return args -> {
+            bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
+            Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
+                try {
+                    GetinfoResponse info = clnNodeFutureStub.getinfo(GetinfoRequest.newBuilder().build())
+                            .get(10, TimeUnit.SECONDS);
+                    log.info("[cln] block height: {}", info.getBlockheight());
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    log.error("", e);
+                }
+            });
+
+            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
+        };
+    }
+
+    @Bean
+    @Profile("!test")
+    public ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+                                                SynchronousLndAPI lndApi) {
+        return args -> {
+            bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
+            Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
+                try {
+                    GetInfoResponse info = lndApi.getInfo();
+                    log.info("[lnd] block height: {}", info.getBlockHeight());
+                } catch (StatusException | ValidationException e) {
+                    log.error("", e);
+                }
+            });
+
+            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
+        };
+    }
+
 }
