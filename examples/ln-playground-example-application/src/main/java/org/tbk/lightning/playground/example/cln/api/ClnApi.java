@@ -10,23 +10,24 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.tbk.lightning.cln.grpc.client.*;
+import org.tbk.lightning.playground.example.api.dto.CreateInvoiceRequestDto;
 import org.tbk.lightning.playground.example.api.dto.CreateInvoiceResponseDto;
 import org.tbk.lightning.playground.example.api.dto.NodeInfoDto;
-import org.testcontainers.shaded.com.google.common.primitives.Longs;
 
 import java.security.SecureRandom;
 import java.util.HexFormat;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.tbk.lightning.playground.example.util.MoreJsonFormat.protoToJson;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/v1/cln", produces = "application/json")
+@RequestMapping(value = "/api/v1/cln", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tags({
         @Tag(name = "cln")
@@ -67,17 +68,15 @@ public class ClnApi {
             summary = "Create invoice"
     )
     @PostMapping(value = "/invoice")
-    public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@Validated @RequestBody CreateInvoiceRequestDto body) {
 
-        String memo = Optional.ofNullable(body.get("memo"))
+        String memo = Optional.ofNullable(body.getMemo())
                 .map(Object::toString)
                 .orElse("");
 
-        long msats = Optional.ofNullable(body.get("msats"))
-                .map(Object::toString)
-                .map(it -> Longs.tryParse(it, 10))
+        long msats = Optional.ofNullable(body.getMsats())
                 .filter(it -> it > 0)
-                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive integer"));
+                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive number"));
 
         InvoiceResponse addInvoiceResponse = clnApi.invoice(InvoiceRequest.newBuilder()
                 .setAmountMsat(AmountOrAny.newBuilder()

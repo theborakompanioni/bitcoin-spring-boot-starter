@@ -98,6 +98,9 @@ org.tbk.bitcoin.regtest:
   # mine blocks every 1 - 10 seconds
   mining:
     enabled: true
+    # secret to address: truth fever mom transfer steak immense lake jacket glide bring fancy electric
+    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+    mine-initial-amount-of-blocks: 101
     next-block-duration:
       min-duration: PT1S
       max-duration: PT10S
