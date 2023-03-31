@@ -9,10 +9,11 @@ import lombok.Value;
 public class ClnRpcConfigImpl implements ClnRpcConfig {
 
     /**
-     * IP address or hostname including http:// or https:// where cln grpc api is reachable.
-     * e.g. https://localhost:10001
+     * IP address or hostname where cln grpc api is reachable.
+     * e.g. localhost, 192.168.0.1, etc.
      *
-     * @return IP address or hostname including http:// or https:// where cln grpc api is reachable.
+     * @param host IP address or hostname where cln grpc api is reachable.
+     * @return IP address or hostname where cln grpc api is reachable.
      */
     @NonNull
     String host;
@@ -20,6 +21,7 @@ public class ClnRpcConfigImpl implements ClnRpcConfig {
     /**
      * Port where cln grpc api is listening.
      *
+     * @param port Port where cln grpc api is listening.
      * @return Port where cln grpc api is listening.
      */
     @NonNull

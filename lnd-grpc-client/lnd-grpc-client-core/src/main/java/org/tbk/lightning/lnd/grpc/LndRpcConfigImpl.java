@@ -12,7 +12,7 @@ public class LndRpcConfigImpl implements LndRpcConfig {
 
     /**
      * IP address or hostname where lnd daemon is reachable.
-     * e.g. localhost, 192.168.0.1
+     * e.g. localhost, 192.168.0.1, etc.
      *
      * @param host IP address or hostname where lnd daemon is reachable.
      * @return IP address or hostname where lnd daemon is reachable.
