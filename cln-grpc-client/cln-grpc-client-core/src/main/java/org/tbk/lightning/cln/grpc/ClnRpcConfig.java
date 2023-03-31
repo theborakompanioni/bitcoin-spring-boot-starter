@@ -1,5 +1,7 @@
 package org.tbk.lightning.cln.grpc;
 
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+
 public interface ClnRpcConfig {
 
     /**
@@ -16,4 +18,11 @@ public interface ClnRpcConfig {
      * @return Port where cln grpc api is listening.
      */
     Integer getPort();
+
+    /**
+     * The {@link SslContext} to access the cln api.
+     *
+     * @return The {@link SslContext} to access the cln api.
+     */
+    SslContext getSslContext();
 }

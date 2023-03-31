@@ -1,8 +1,6 @@
 package org.tbk.spring.testcontainer.cln.config;
 
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
@@ -12,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -56,21 +55,8 @@ class ClnContainerApplicationTest {
         @Configuration(proxyBeanMethods = false)
         public static class CustomTestcontainerClnRpcConfiguration {
 
-            @Bean
-            public ClnRpcConfig clnRpcConfig(ClnClientAutoConfigProperties properties,
-                                             ClnContainer<?> clnContainer) {
-                String host = clnContainer.getHost();
-                Integer mappedPort = clnContainer.getMappedPort(properties.getPort());
-
-                return ClnRpcConfigImpl.builder()
-                        .host(host)
-                        .port(mappedPort)
-                        .build();
-            }
-
-            @Bean
-            public SslContext clnRpcSslContext(ClnClientAutoConfigProperties properties,
-                                               ClnContainer<?> clnContainer) {
+            @Bean("clnRpcSslContext")
+            public SslContext clnRpcSslContext(ClnClientAutoConfigProperties properties, ClnContainer<?> clnContainer) {
                 return clnContainer.copyFileFromContainer(properties.getClientCertFilePath(), certStream -> {
                     return clnContainer.copyFileFromContainer(properties.getClientKeyFilePath(), keyStream -> {
                         return clnContainer.copyFileFromContainer(properties.getCaCertFilePath(), caStream -> {
@@ -83,15 +69,19 @@ class ClnContainerApplicationTest {
                 });
             }
 
-            @Bean(name = "clnChannelBuilder")
-            public ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig,
-                                                              SslContext clnRpcSslContext) {
-                NettyChannelBuilder nettyChannelBuilder = NettyChannelBuilder
-                        .forAddress(rpcConfig.getHost(), rpcConfig.getPort())
-                        .sslContext(clnRpcSslContext);
-                return nettyChannelBuilder;
-            }
+            @Bean
+            public ClnRpcConfig clnRpcConfig(ClnClientAutoConfigProperties properties,
+                                             ClnContainer<?> clnContainer,
+                                             @Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
+                String host = clnContainer.getHost();
+                Integer mappedPort = clnContainer.getMappedPort(properties.getPort());
 
+                return ClnRpcConfigImpl.builder()
+                        .host(host)
+                        .port(mappedPort)
+                        .sslContext(clnRpcSslContext)
+                        .build();
+            }
         }
     }
 

@@ -59,14 +59,14 @@ public class LndClientAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
-    @Bean("lndMacaroonContext")
-    @ConditionalOnMissingBean
+    @Bean("lndRpcMacaroonContext")
+    @ConditionalOnMissingBean(name = {"lndRpcMacaroonContext"})
     @ConditionalOnProperty({
             "org.tbk.lightning.lnd.grpc.macaroonFilePath"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    public MacaroonContext lndMacaroonContext() {
+    public MacaroonContext lndRpcMacaroonContext() {
         requireNonNull(properties.getMacaroonFilePath(), "'macaroonFilePath' must not be null");
 
         File macaroonFile = new File(properties.getMacaroonFilePath());
@@ -78,14 +78,14 @@ public class LndClientAutoConfiguration {
         return () -> hex;
     }
 
-    @Bean("lndSslContext")
-    @ConditionalOnMissingBean
+    @Bean("lndRpcSslContext")
+    @ConditionalOnMissingBean(name = {"lndRpcSslContext"})
     @ConditionalOnProperty({
             "org.tbk.lightning.lnd.grpc.certFilePath"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    public SslContext lndSslContext() {
+    public SslContext lndRpcSslContext() {
         requireNonNull(properties.getCertFilePath(), "'certFilePath' must not be null");
 
         File certFile = new File(properties.getCertFilePath());
@@ -103,15 +103,15 @@ public class LndClientAutoConfiguration {
             "org.tbk.lightning.lnd.grpc.host",
             "org.tbk.lightning.lnd.grpc.port"
     })
-    @ConditionalOnBean({MacaroonContext.class, SslContext.class})
+    @ConditionalOnBean(name = {"lndRpcMacaroonContext", "lndRpcSslContext"})
     public LndRpcConfig lndRpcConfig(
-            @Qualifier("lndMacaroonContext") MacaroonContext lndMacaroonContext,
-            @Qualifier("lndSslContext") SslContext lndSslContext) {
+            @Qualifier("lndRpcMacaroonContext") MacaroonContext lndRpcMacaroonContext,
+            @Qualifier("lndRpcSslContext") SslContext lndRpcSslContext) {
         return LndRpcConfigImpl.builder()
                 .host(properties.getHost())
                 .port(properties.getPort())
-                .macaroonContext(lndMacaroonContext)
-                .sslContext(lndSslContext)
+                .macaroonContext(lndRpcMacaroonContext)
+                .sslContext(lndRpcSslContext)
                 .build();
     }
 

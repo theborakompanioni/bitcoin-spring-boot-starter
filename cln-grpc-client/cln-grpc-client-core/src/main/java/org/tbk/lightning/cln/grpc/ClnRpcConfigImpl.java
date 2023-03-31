@@ -1,5 +1,6 @@
 package org.tbk.lightning.cln.grpc;
 
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -27,4 +28,12 @@ public class ClnRpcConfigImpl implements ClnRpcConfig {
     @NonNull
     Integer port;
 
+    /**
+     * The {@link SslContext} to access the cln api.
+     *
+     * @param sslContext The {@link SslContext} to access the cln api.
+     * @return The {@link SslContext} to access the cln api.
+     */
+    @NonNull
+    SslContext sslContext;
 }

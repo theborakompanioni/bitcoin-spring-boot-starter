@@ -3,6 +3,7 @@ package org.tbk.lightning.cln.grpc.config;
 import com.google.common.collect.ImmutableMap;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -26,10 +27,14 @@ class ClnClientAutoConfigurationTest {
         this.contextRunner.withUserConfiguration(ClnClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.lightning.cln.grpc.host=localhost",
-                        "org.tbk.lightning.cln.grpc.port=10001"
+                        "org.tbk.lightning.cln.grpc.port=10001",
+                        "org.tbk.lightning.cln.grpc.caCertFilePath=src/test/resources/cln/test-ca.pem",
+                        "org.tbk.lightning.cln.grpc.clientCertFilePath=src/test/resources/cln/test-client.pem",
+                        "org.tbk.lightning.cln.grpc.clientKeyFilePath=src/test/resources/cln/test-client-key.pem"
                 )
                 .run(context -> {
                     Map<String, Class<?>> beanNamesAndClasses = ImmutableMap.<String, Class<?>>builder()
+                            .put("clnRpcSslContext", SslContext.class)
                             .put("clnRpcConfig", ClnRpcConfig.class)
                             .put("clnChannelBuilder", ManagedChannelBuilder.class)
                             .put("clnChannel", ManagedChannel.class)
@@ -53,6 +58,7 @@ class ClnClientAutoConfigurationTest {
                         "org.tbk.lightning.cln.grpc.enabled=false"
                 )
                 .run(context -> {
+                    assertThat(context.containsBean("clnRpcConfig"), is(false));
                     assertThat(context.containsBean("clnNodeStub"), is(false));
                     assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(NodeGrpc.NodeStub.class));
                 });

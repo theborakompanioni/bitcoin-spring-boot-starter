@@ -1,6 +1,14 @@
 package org.tbk.lightning.cln.grpc.config;
 
-import io.grpc.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectProvider;
@@ -18,9 +26,11 @@ import org.tbk.lightning.cln.grpc.ClnRpcConfig;
 import org.tbk.lightning.cln.grpc.ClnRpcConfigImpl;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -36,29 +46,60 @@ public class ClnClientAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
+    @Bean("clnRpcSslContext")
+    @ConditionalOnMissingBean(name = "clnRpcSslContext")
+    @ConditionalOnProperty({
+            "org.tbk.lightning.cln.grpc.caCertFilePath",
+            "org.tbk.lightning.cln.grpc.clientCertFilePath",
+            "org.tbk.lightning.cln.grpc.clientKeyFilePath"
+    })
+    @SneakyThrows
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
+    public SslContext clnRpcSslContext() {
+        requireNonNull(properties.getCaCertFilePath(), "'caCertFilePath' must not be null");
+        requireNonNull(properties.getClientCertFilePath(), "'clientCertFilePath' must not be null");
+        requireNonNull(properties.getClientKeyFilePath(), "'clientKeyFilePath' must not be null");
+
+        File caCertFile = new File(properties.getCaCertFilePath());
+        checkArgument(caCertFile.exists(), "'caCertFile' must exist");
+        checkArgument(caCertFile.canRead(), "'caCertFile' must be readable");
+
+        File clientCertFile = new File(properties.getClientCertFilePath());
+        checkArgument(clientCertFile.exists(), "'clientCertFile' must exist");
+        checkArgument(clientCertFile.canRead(), "'clientCertFile' must be readable");
+
+        File clientKeyFile = new File(properties.getClientKeyFilePath());
+        checkArgument(clientKeyFile.exists(), "'clientKeyFile' must exist");
+        checkArgument(clientKeyFile.canRead(), "'clientKeyFile' must be readable");
+
+        return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
+                .keyManager(clientCertFile, clientKeyFile)
+                .trustManager(caCertFile)
+                .build();
+    }
+
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty({
             "org.tbk.lightning.cln.grpc.host",
             "org.tbk.lightning.cln.grpc.port"
     })
-    public ClnRpcConfig clnRpcConfig() {
+    @ConditionalOnBean(name = {"clnRpcSslContext"})
+    public ClnRpcConfig clnRpcConfig(@Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
         return ClnRpcConfigImpl.builder()
                 .host(properties.getHost())
                 .port(properties.getPort())
+                .sslContext(clnRpcSslContext)
                 .build();
     }
-
 
     @Bean(name = "clnChannelBuilder")
     @ConditionalOnMissingBean(name = "clnChannelBuilder")
     @ConditionalOnBean(ClnRpcConfig.class)
     public ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig,
                                                       ObjectProvider<ManagedChannelBuilderCustomizer> managedChannelBuilderCustomizer) {
-        ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(
-                rpcConfig.getHost(),
-                rpcConfig.getPort()
-        );
+        ManagedChannelBuilder<?> managedChannelBuilder = NettyChannelBuilder.forAddress(rpcConfig.getHost(), rpcConfig.getPort())
+                .sslContext(rpcConfig.getSslContext());
 
         managedChannelBuilderCustomizer.orderedStream().forEach(customizer -> customizer.customize(managedChannelBuilder));
 

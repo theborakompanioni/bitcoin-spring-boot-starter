@@ -19,7 +19,6 @@ dependencies {
 
     testImplementation "io.projectreactor:reactor-core"
 
-    integTestImplementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
     integTestImplementation project(':cln-grpc-client:cln-grpc-client-starter')
     integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 }

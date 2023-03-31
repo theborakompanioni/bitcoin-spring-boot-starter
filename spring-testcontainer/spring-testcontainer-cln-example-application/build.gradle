@@ -4,7 +4,6 @@ description = 'lnd testcontainer example application package'
 
 dependencies {
     implementation project(':cln-grpc-client:cln-grpc-client-starter')
-    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     implementation project(':spring-testcontainer:spring-testcontainer-cln-starter')
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
