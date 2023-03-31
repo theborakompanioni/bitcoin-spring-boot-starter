@@ -44,44 +44,11 @@ class ClnContainerApplicationTest {
 
     @SpringBootApplication
     public static class ClnContainerTestApplication {
-
         public static void main(String[] args) {
             new SpringApplicationBuilder()
                     .sources(ClnContainerTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
-        }
-
-        @Configuration(proxyBeanMethods = false)
-        public static class CustomTestcontainerClnRpcConfiguration {
-
-            @Bean("clnRpcSslContext")
-            public SslContext clnRpcSslContext(ClnClientAutoConfigProperties properties, ClnContainer<?> clnContainer) {
-                return clnContainer.copyFileFromContainer(properties.getClientCertFilePath(), certStream -> {
-                    return clnContainer.copyFileFromContainer(properties.getClientKeyFilePath(), keyStream -> {
-                        return clnContainer.copyFileFromContainer(properties.getCaCertFilePath(), caStream -> {
-                            return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
-                                    .keyManager(certStream, keyStream)
-                                    .trustManager(caStream)
-                                    .build();
-                        });
-                    });
-                });
-            }
-
-            @Bean
-            public ClnRpcConfig clnRpcConfig(ClnClientAutoConfigProperties properties,
-                                             ClnContainer<?> clnContainer,
-                                             @Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
-                String host = clnContainer.getHost();
-                Integer mappedPort = clnContainer.getMappedPort(properties.getPort());
-
-                return ClnRpcConfigImpl.builder()
-                        .host(host)
-                        .port(mappedPort)
-                        .sslContext(clnRpcSslContext)
-                        .build();
-            }
         }
     }
 
