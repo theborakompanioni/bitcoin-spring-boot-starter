@@ -1,16 +1,14 @@
 package org.tbk.spring.testcontainer.lnd.config;
 
-import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
 import io.grpc.stub.StreamObserver;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.lightningj.lnd.wrapper.*;
+import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
+import org.lightningj.lnd.wrapper.StatusException;
+import org.lightningj.lnd.wrapper.SynchronousLndAPI;
+import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.message.Chain;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.lightningj.lnd.wrapper.message.NetworkInfo;
@@ -19,18 +17,12 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.lightning.lnd.grpc.LndRpcConfig;
-import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
-import org.tbk.lightning.lnd.grpc.config.LndClientAutoConfigProperties;
 import org.tbk.spring.testcontainer.lnd.LndContainer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
 import java.time.Duration;
-import java.util.HexFormat;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -42,51 +34,11 @@ class LndContainerApplicationTest {
 
     @SpringBootApplication
     public static class LndContainerTestApplication {
-
         public static void main(String[] args) {
             new SpringApplicationBuilder()
                     .sources(LndContainerTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
-        }
-
-        @Configuration(proxyBeanMethods = false)
-        public static class CustomTestcontainerLndRpcConfiguration {
-
-            @Bean
-            public LndRpcConfig lndRpcConfig(LndClientAutoConfigProperties properties,
-                                             LndContainer<?> lndContainer,
-                                             MacaroonContext lndRpcMacaroonContext,
-                                             SslContext lndRpcSslContext) {
-                String host = lndContainer.getHost();
-                Integer mappedPort = lndContainer.getMappedPort(properties.getPort());
-
-                return LndRpcConfigImpl.builder()
-                        .host(host)
-                        .port(mappedPort)
-                        .macaroonContext(lndRpcMacaroonContext)
-                        .sslContext(lndRpcSslContext)
-                        .build();
-            }
-
-            @Bean
-            public MacaroonContext lndRpcMacaroonContext(LndClientAutoConfigProperties properties,
-                                                         LndContainer<?> lndContainer) {
-                return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
-                    String hex = HexFormat.of().formatHex(inputStream.readAllBytes());
-                    return () -> hex;
-                });
-            }
-
-            @Bean
-            public SslContext lndRpcSslContext(LndClientAutoConfigProperties properties,
-                                               LndContainer<?> lndContainer) {
-                return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
-                    return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
-                            .trustManager(inputStream)
-                            .build();
-                });
-            }
         }
     }
 
