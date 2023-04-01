@@ -152,6 +152,7 @@
          <trusted-key id="7c0f80b8bd9fe3b813884ba19515b31ddd9bbccd">
             <trusting group="org.lightningj" name="lightningj" version="0.15.3-Beta"/>
             <trusting group="org.lightningj" name="lightningj" version="0.15.5-Beta"/>
+            <trusting group="org.lightningj" name="lightningj" version="0.16.0-Beta"/>
          </trusted-key>
          <trusted-key id="7c669810892cbd3148fa92995b05ccde140c2876" group="org.eclipse.jgit"/>
          <trusted-key id="7e22d50a7ebd9d2cd269b2d4056aca74d46000bf" group="io.netty"/>

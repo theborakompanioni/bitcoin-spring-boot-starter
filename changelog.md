@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 - lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
+- upgrade: update docker lightninglabs/lnd from v0.15.5-beta to v0.16.0-beta
+- upgrade: update lightningj from v0.15.5-Beta to v0.16.0-Beta
 
 ## [0.6.0] - 2023-02-23
 ### Added
