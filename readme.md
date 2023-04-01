@@ -18,8 +18,10 @@ Spring boot starter projects with convenient dependency descriptors for multiple
 include in your application. Strong focus on integration and regression testing your own application or module.
 Included are features for representing, transporting, and performing comprehensive calculations and tests with 
 Bitcoin in financial applications and computations.
+
+**Hint**: Of course you can make use of the libraries even if you are not working with Spring!
  
-**Note**: Most code is still experimental - **do not use in production**.
+**Note**: Most code is still experimental - **use with caution**.
 This project is under active development. Pull requests and issues are welcome.
 [Look at the changelog](changelog.md) to track notable changes.
 <a id="fun"></a>Also, [developing this project is fun](docs/FALSEHOODS.md).
@@ -79,17 +81,17 @@ You can find a small selection in the following table. But there is much more to
 
 
 <!-- there are external links on the anchor #spring-lnurl - so please do not remove it -->
-| Module                                                          | Description                                                                                                          |
------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| [bitcoin-jsonrpc-client](modules.md#bitcoin-jsonrpc-client)     | Connect to Bitcoin Core via [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client. |
-| [bitcoin-zeromq-client](modules.md#bitcoin-zeromq-client)       | Connect to Bitcoin Core via zmq.                                                                                     |
-| [bitcoin-regtest](modules.md#bitcoin-regtest)                   | Integration and regression testing your own application.                                                             |
-| [cln-grpc-client](modules.md#cln-grpc-client)                   | Connect to cln via gRPC.                                                                                             |
-| [lnd-grpc-client](modules.md#lnd-grpc-client)                   | Connect to lnd via gRPC using [LightningJ](https://www.lightningj.org/).                                             |
-| [xchange-jsr354](modules.md#xchange-jsr354)                     | Exchange rates from popular Bitcoin exchanges for your application.                                                  |
-| [spring-xchange](modules.md#spring-xchange)                     | Automatically create and configure [XChange]( https://github.com/knowm/XChange) beans.                               |
-| [spring-tor](modules.md#spring-tor)                             | Automatically expose your application as [Tor Hidden Service](https://www.torproject.org/).                          |
-| <a id="spring-lnurl"></a>[spring-lnurl](incubator/spring-lnurl) | Spring Security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).           |
+| Module                                                          | Description                                                                                                                                  |
+|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| [bitcoin-jsonrpc-client](modules.md#bitcoin-jsonrpc-client)     | Connect to Bitcoin Core via [ConsensusJ](https://github.com/ConsensusJ/consensusj) Bitcoin Core JSON-RPC API client.                         |
+| [bitcoin-zeromq-client](modules.md#bitcoin-zeromq-client)       | Connect to Bitcoin Core via zmq.                                                                                                             |
+| [bitcoin-regtest](modules.md#bitcoin-regtest)                   | Integration and regression testing your own application.                                                                                     |
+| [cln-grpc-client](modules.md#cln-grpc-client)                   | Connect to cln via gRPC.                                                                                                                     |
+| [lnd-grpc-client](modules.md#lnd-grpc-client)                   | Connect to lnd via gRPC using [LightningJ](https://www.lightningj.org/).                                                                     |
+| [xchange-jsr354](modules.md#xchange-jsr354)                     | Exchange rates from Bitcoin exchanges for your application.                                                                                  |
+| [spring-xchange](modules.md#spring-xchange)                     | Automatically create and configure [XChange](https://github.com/knowm/XChange) beans. <br />Remember to **get your coins off of exchanges**! |
+| [spring-tor](modules.md#spring-tor)                             | Automatically expose your application as [Tor Hidden Service](https://www.torproject.org/).                                                  |
+| <a id="spring-lnurl"></a>[spring-lnurl](incubator/spring-lnurl) | Spring Security configurations for authentication with [lnurl-auth](https://github.com/fiatjaf/lnurl-rfc).                                   |
 
 [See modules.md for general information](modules.md) about specific modules.
 
@@ -176,11 +178,11 @@ Before you start, please read the [contributing guidelines](contributing.md).
 ## Resources
 
 - Bitcoin: https://bitcoin.org/en/getting-started
-- Lightning Network: https://lightning.network/
+- Lightning Network: https://lightning.network
 - JSR354 (GitHub): https://github.com/JavaMoney/jsr354-api
 - Spring Boot (GitHub): https://github.com/spring-projects/spring-boot
-- Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java/
-- Tor: https://www.torproject.org/
+- Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java
+- Tor: https://www.torproject.org
 ---
 - Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin ([Docker](https://hub.docker.com/r/ruimarinho/bitcoin-core))
 - bitcoin-kmp (GitHub): https://github.com/ACINQ/bitcoin-kmp
