@@ -38,7 +38,7 @@ of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory
 
 
 ## cln-grpc-client
-A module containing a spring boot starter for a cln gRPC API client.
+A module containing a spring boot starter for a CLN gRPC API client.
 The starter will automatically create injectable `NodeStub`, `NodeFutureStub` and `NodeBlockingStub` beans:
 
 ```yaml
@@ -46,14 +46,14 @@ org.tbk.lightning.cln.grpc:
   enabled: true
   host: localhost
   port: 19935
-  ca-cert-file-path: '/root/.lightning/regtest/ca.pem'
-  client-cert-file-path: '/root/.lightning/regtest/client.pem'
-  client-key-file-path: '/root/.lightning/regtest/client-key.pem'
+  ca-cert-file-path: '/home/user/.lightning/regtest/ca.pem'
+  client-cert-file-path: '/home/user/.lightning/regtest/client.pem'
+  client-key-file-path: '/home/user/.lightning/regtest/client-key.pem'
 ```
 
 
 ### lnd-grpc-client
-A module containing a spring boot starter for a [LightningJ](https://www.lightningj.org/) lnd gRPC API client.
+A module containing a spring boot starter for a [LightningJ](https://www.lightningj.org/) LND gRPC API client.
 The starter will automatically create injectable `AsynchronousLndAPI` and `SynchronousLndAPI` beans:
 
 ```yaml
@@ -61,8 +61,8 @@ org.tbk.lightning.lnd.grpc:
   enabled: true
   host: localhost
   port: 10009
-  macaroon-file-path: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
-  cert-file-path: '/root/.lnd/tls.cert'
+  macaroon-file-path: '/home/user/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  cert-file-path: '/home/user/.lnd/tls.cert'
 ```
 
 
