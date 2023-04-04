@@ -10,9 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - module: initial version of module `spring-testcontainer-cln-starter`
 - autoconfiguration for compatibility of grpc clients with lightning testcontainers
 
-### Fixed
-- fix: import module `bitcoin-zeromq-client-bitcoin-kmp` in autoconfigure module
-
 ### Changed
 - deprecation: scheduled `org.tbk.bitcoin.common.util.Hex` for removal
 - upgrade: update spring-boot from v3.0.2 to v3.0.4
