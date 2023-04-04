@@ -153,7 +153,15 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **Fees are a specified explicitly in a transaction.**
 
-1. **If I make a RBF marked transaction I can always replace it by a different one, as long as it is still unconfirmed.**
+No, the transaction fee is the difference between the amount being spent and the amount being received.
+It is not explicitly specified in a transaction, instead it must be calculated with `sum(inputs) - sum(outputs)`.
+
+1. **Okay, but every transaction must pay a fee, right?**
+
+No, the only rule is that transaction fees must be greater than or equal to zero.
+For example: [See this transaction where input and output amounts are equal](https://mempool.space/tx/0301e0480b374b32851a9462db29dc19fe830a7f7d7a88b81612b9d42099c0ae), which means: No fees were paid (at least not on-chain).
+
+1. **If I make an RBF marked transaction I can always replace it by a different one, as long as it is still unconfirmed.**
 
 1. **If I see a none-RBF marked transaction with enough fee, I can be pretty sure it will end up in the blockchain as it is.**
 
@@ -162,12 +170,8 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **If the transaction ID of an unconfirmed payment has changed, it was clearly a malicious double-spend attempt.**
 
 
-## Wallets
-1. **All wallets support p2pkh transactions.**
-   
+## Wallets   
 1. **All wallets use standardized derivation paths.**
-   
-1. **Brain wallets are secure.**
 
 1. **The 12 (or 15, 18, 21, 24) words of my seed phrase are everything I need to recover my wallet.**
 
@@ -203,7 +207,7 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **It is possible to convert an existing Bitcoin private key to a BIP39 mnemonic seed (12/24 words seed).**
 
-1. **It is safe to handout the single private key of an address which was (non hardly) derived from an extended key (xpub/xprv) to a person who also knows the xpub (not the xprv) from which the address was derived from.**
+1. **It is safe to hand out the single private key of an address which was (non hardly) derived from an extended key (xpub/xprv) to a person who also knows the xpub (not the xprv) from which the address was derived from.**
 
 
 ### Addresses
@@ -230,7 +234,9 @@ here is a list of mistaken perspectives on Bitcoin.
 1. **All coins spent within a single transaction (inputs) are controlled by the same entity (owned by the same person).**
 
 
-## Exchanges 
+## Exchanges
+Always remember: Get your coins off of exchanges.
+
 1. **Exchanges will always allow withdrawal of funds.**
 
 1. **The coins in my exchange account are mine.**
@@ -245,7 +251,7 @@ here is a list of mistaken perspectives on Bitcoin.
 ## Total supply
 1. **There are exactly 21 million bitcoin to ever exist.**
 
-   The total number of bitcoins has an asymptote at 21 million, due to a side-effect of the data structure of the blockchain – 
+   The total number of bitcoins has an asymptote at 21 million, due to a side effect of the data structure of the blockchain – 
    specifically the integer storage type of the transaction output – [the exact value would be 20,999,999.9769 bitcoin](https://en.bitcoin.it/wiki/Controlled_supply#Projected_Bitcoins_Long_Term).
    However, due to miner underpayment, the total number is even less.
    
