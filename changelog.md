@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - deprecated class `org.tbk.bitcoin.common.util.Hex`
 
+### Fixed
+- fix: use canonical form for property conditions
+
 ## [0.7.0] - 2023-04-04
 ### Added
 - module: initial version of module `cln-grpc-client`
