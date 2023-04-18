@@ -19,7 +19,7 @@ org.tbk.spring.testcontainer.lnd:
   restport: 19080
   rpcport: 19009
   commands:
-    - '--alias=tbk-lnd-example-application'
+    - '--alias=tbk-lnd-example'
     - '--bitcoind.rpcuser=myrpcuser'
     - '--bitcoind.rpcpass=myrpcpassword'
 ```

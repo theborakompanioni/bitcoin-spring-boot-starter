@@ -113,7 +113,7 @@ public class ClnContainerAutoConfiguration {
                 .build();
 
         List<String> optionalCommands = ImmutableList.<String>builder()
-                .add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-cln-testcontainer-regtest"))
+                .add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-cln-regtest"))
                 .add("--rgb=" + this.properties.getCommandValueByKey("rgb").orElse("cccccc"))
                 .add("--log-level=" + this.properties.getCommandValueByKey("log-level").orElse("debug"))
                 .build();

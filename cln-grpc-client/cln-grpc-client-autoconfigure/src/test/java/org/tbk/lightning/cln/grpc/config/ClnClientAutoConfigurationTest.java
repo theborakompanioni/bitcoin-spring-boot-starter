@@ -28,9 +28,9 @@ class ClnClientAutoConfigurationTest {
                 .withPropertyValues(
                         "org.tbk.lightning.cln.grpc.host=localhost",
                         "org.tbk.lightning.cln.grpc.port=10001",
-                        "org.tbk.lightning.cln.grpc.caCertFilePath=src/test/resources/cln/test-ca.pem",
-                        "org.tbk.lightning.cln.grpc.clientCertFilePath=src/test/resources/cln/test-client.pem",
-                        "org.tbk.lightning.cln.grpc.clientKeyFilePath=src/test/resources/cln/test-client-key.pem"
+                        "org.tbk.lightning.cln.grpc.ca-cert-file-path=src/test/resources/cln/test-ca.pem",
+                        "org.tbk.lightning.cln.grpc.client-cert-file-path=src/test/resources/cln/test-client.pem",
+                        "org.tbk.lightning.cln.grpc.client-key-file-path=src/test/resources/cln/test-client-key.pem"
                 )
                 .run(context -> {
                     Map<String, Class<?>> beanNamesAndClasses = ImmutableMap.<String, Class<?>>builder()

@@ -103,7 +103,7 @@ public class LndContainerAutoConfiguration {
                 .build();
 
         List<String> optionalCommands = ImmutableList.<String>builder()
-                .add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-lnd-testcontainer-regtest"))
+                .add("--alias=" + this.properties.getCommandValueByKey("alias").orElse("tbk-lnd-regtest"))
                 .add("--color=" + this.properties.getCommandValueByKey("color").orElse("#eeeeee"))
                 .add("--debuglevel=" + this.properties.getCommandValueByKey("debuglevel").orElse("debug"))
                 .add("--trickledelay=" + this.properties.getCommandValueByKey("trickledelay").orElse("1000"))

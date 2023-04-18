@@ -16,9 +16,9 @@ org.tbk.lightning.cln.grpc:
   port: 19935
   shutdown-timeout: PT3S
   # path to the tls files within the container!
-  clientCertFilePath: '/root/.lightning/regtest/client.pem'
-  clientKeyFilePath: '/root/.lightning/regtest/client-key.pem'
-  caCertFilePath: '/root/.lightning/regtest/ca.pem'
+  client-cert-file-path: '/root/.lightning/regtest/client.pem'
+  client-key-file-path: '/root/.lightning/regtest/client-key.pem'
+  ca-cert-file-path: '/root/.lightning/regtest/ca.pem'
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true

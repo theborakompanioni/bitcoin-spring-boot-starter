@@ -3,7 +3,7 @@ version: "3"
 # Currently config "network_mode='host'" is still needed.
 # Otherwise electrumx cannot connect to bitcoind
 # (which should theoretically work, but does not on fedora 33 with docker 19.03.13).
-# This is just an example application so it might not ever be a problem.
+# This is just an example application, so it might not ever be a problem.
 
 services:
   bitcoind_regtest:

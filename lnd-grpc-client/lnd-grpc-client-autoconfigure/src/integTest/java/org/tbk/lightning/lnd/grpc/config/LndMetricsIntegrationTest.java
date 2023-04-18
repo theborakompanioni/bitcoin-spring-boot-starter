@@ -30,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.endpoints.web.exposure.include=metrics",
         "org.tbk.lightning.lnd.grpc.host=localhost",
         "org.tbk.lightning.lnd.grpc.port=13337",
-        "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
-        "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
+        "org.tbk.lightning.lnd.grpc.macaroon-file-path=/dev/null",
+        "org.tbk.lightning.lnd.grpc.cert-file-path=src/test/resources/lnd/tls-test.cert"
 })
 class LndMetricsIntegrationTest {
 

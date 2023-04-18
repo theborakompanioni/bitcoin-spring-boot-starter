@@ -19,7 +19,7 @@ org.tbk.spring.testcontainer.cln:
   port: 19735
   rpcport: 19835
   commands:
-    - '--alias=tbk-cln-example-application'
+    - '--alias=tbk-cln-example'
     - '--bitcoin-rpcuser=myrpcuser'
     - '--bitcoin-rpcpassword=myrpcpassword'
     - '--grpc-port=19935'

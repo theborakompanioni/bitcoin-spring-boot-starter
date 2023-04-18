@@ -34,8 +34,8 @@ class LndClientAutoConfigurationTest {
                 .withPropertyValues(
                         "org.tbk.lightning.lnd.grpc.host=localhost",
                         "org.tbk.lightning.lnd.grpc.port=10001",
-                        "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
-                        "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test.cert"
+                        "org.tbk.lightning.lnd.grpc.macaroon-file-path=/dev/null",
+                        "org.tbk.lightning.lnd.grpc.cert-file-path=src/test/resources/lnd/tls-test.cert"
                 )
                 .run(context -> {
                     Map<String, Class<?>> beanNamesAndClasses = ImmutableMap.<String, Class<?>>builder()
@@ -77,8 +77,8 @@ class LndClientAutoConfigurationTest {
                 .withPropertyValues(
                         "org.tbk.lightning.lnd.grpc.host=localhost",
                         "org.tbk.lightning.lnd.grpc.port=10001",
-                        "org.tbk.lightning.lnd.grpc.macaroonFilePath=/dev/null",
-                        "org.tbk.lightning.lnd.grpc.certFilePath=src/test/resources/lnd/tls-test-missing.cert"
+                        "org.tbk.lightning.lnd.grpc.macaroon-file-path=/dev/null",
+                        "org.tbk.lightning.lnd.grpc.cert-file-path=src/test/resources/lnd/tls-test-missing.cert"
                 ).run(context -> {
                     Throwable startupFailure = context.getStartupFailure();
                     assertThat(startupFailure, is(notNullValue()));

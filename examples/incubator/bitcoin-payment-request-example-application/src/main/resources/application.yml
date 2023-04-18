@@ -50,7 +50,7 @@ org.tbk.spring.testcontainer.lnd:
   restport: 20080
   rpcport: 20009
   commands:
-    - '--alias=tbk-lnd-example-application'
+    - '--alias=tbk-lnd-example'
     - '--bitcoind.rpcuser=myoneandonlyrpcuser'
     - '--bitcoind.rpcpass=correcthorsebatterystaple123'
 
@@ -59,9 +59,9 @@ org.tbk.lightning.lnd.grpc:
   host: localhost
   port: ${org.tbk.spring.testcontainer.lnd.rpcport}
   # path to the admin macaroon file within the container!
-  macaroonFilePath: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  macaroon-file-path: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!
-  certFilePath: '/root/.lnd/tls.cert'
+  cert-file-path: '/root/.lnd/tls.cert'
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
@@ -86,7 +86,7 @@ org.tbk.spring.testcontainer.bitcoind:
     # Log IP Addresses in debug output.
     - '-logips=1'
     # Append comment to the user agent string.
-    - '-uacomment=tbk-bitcoin-spring-boot-starter-lnd-playground-example-app'
+    - '-uacomment=tbk-bitcoin-example-app'
     # Allows you to test address relay on localhost.
     - '-addrmantest=1'
     # Send trace/debug info to console instead of debug.log.

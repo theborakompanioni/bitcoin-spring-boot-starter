@@ -25,13 +25,12 @@ management.info.lndApi.enabled: true
 management.health.bitcoinJsonRpc.enabled: true
 management.health.lndApi.enabled: true
 
-
 org.tbk.spring.testcontainer.cln:
   enabled: true
   port: 20735
   rpcport: 20835
   commands:
-    - '--alias=tbk-cln-starter-test'
+    - '--alias=tbk-cln-example'
     - '--bitcoin-rpcuser=myoneandonlyrpcuser'
     - '--bitcoin-rpcpassword=correcthorsebatterystaple123'
     - '--grpc-port=20935'
@@ -42,16 +41,16 @@ org.tbk.lightning.cln.grpc:
   port: 20935
   shutdown-timeout: PT3S
   # path to the tls files within the container!
-  clientCertFilePath: '/root/.lightning/regtest/client.pem'
-  clientKeyFilePath: '/root/.lightning/regtest/client-key.pem'
-  caCertFilePath: '/root/.lightning/regtest/ca.pem'
+  client-cert-file-path: '/root/.lightning/regtest/client.pem'
+  client-key-file-path: '/root/.lightning/regtest/client-key.pem'
+  ca-cert-file-path: '/root/.lightning/regtest/ca.pem'
 
 org.tbk.spring.testcontainer.lnd:
   enabled: true
   restport: 20080
   rpcport: 20009
   commands:
-    - '--alias=tbk-lnd-example-application'
+    - '--alias=tbk-lnd-example'
     - '--bitcoind.rpcuser=myoneandonlyrpcuser'
     - '--bitcoind.rpcpass=correcthorsebatterystaple123'
 
@@ -60,9 +59,9 @@ org.tbk.lightning.lnd.grpc:
   host: localhost
   port: ${org.tbk.spring.testcontainer.lnd.rpcport}
   # path to the admin macaroon file within the container!
-  macaroonFilePath: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
+  macaroon-file-path: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   # path to the tls cert file within the container!
-  certFilePath: '/root/.lnd/tls.cert'
+  cert-file-path: '/root/.lnd/tls.cert'
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
@@ -87,7 +86,7 @@ org.tbk.spring.testcontainer.bitcoind:
     # Log IP Addresses in debug output.
     - '-logips=1'
     # Append comment to the user agent string.
-    - '-uacomment=tbk-bitcoin-spring-boot-starter-lnd-playground-example-app'
+    - '-uacomment=tbk-bitcoin-example-app'
     # Allows you to test address relay on localhost.
     - '-addrmantest=1'
     # Send trace/debug info to console instead of debug.log.
