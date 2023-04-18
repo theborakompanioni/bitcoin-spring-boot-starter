@@ -62,7 +62,7 @@ public class LndClientAutoConfiguration {
     @Bean("lndRpcMacaroonContext")
     @ConditionalOnMissingBean(name = {"lndRpcMacaroonContext"})
     @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.grpc.macaroonFilePath"
+            "org.tbk.lightning.lnd.grpc.macaroon-file-path"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
@@ -81,7 +81,7 @@ public class LndClientAutoConfiguration {
     @Bean("lndRpcSslContext")
     @ConditionalOnMissingBean(name = {"lndRpcSslContext"})
     @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.grpc.certFilePath"
+            "org.tbk.lightning.lnd.grpc.cert-file-path"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")

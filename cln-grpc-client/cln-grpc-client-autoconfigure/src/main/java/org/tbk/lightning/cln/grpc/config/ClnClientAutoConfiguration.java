@@ -49,9 +49,9 @@ public class ClnClientAutoConfiguration {
     @Bean("clnRpcSslContext")
     @ConditionalOnMissingBean(name = "clnRpcSslContext")
     @ConditionalOnProperty({
-            "org.tbk.lightning.cln.grpc.caCertFilePath",
-            "org.tbk.lightning.cln.grpc.clientCertFilePath",
-            "org.tbk.lightning.cln.grpc.clientKeyFilePath"
+            "org.tbk.lightning.cln.grpc.ca-cert-file-path",
+            "org.tbk.lightning.cln.grpc.client-cert-file-path",
+            "org.tbk.lightning.cln.grpc.client-key-file-path"
     })
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")

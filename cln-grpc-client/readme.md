@@ -20,7 +20,7 @@ implementation "io.github.theborakompanioni:cln-grpc-client-starter:${bitcoinSpr
 ```xml
 <dependency>
     <groupId>io.github.theborakompanioni</groupId>
-    <artifactId>cln-grpc-client</artifactId>
+    <artifactId>cln-grpc-client-starter</artifactId>
     <version>${bitcoinSpringBootStarter.version}</version>
 </dependency>
 ```
