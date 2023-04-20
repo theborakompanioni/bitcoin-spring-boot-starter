@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - upgrade: update bitcoin testcontainer from v23 to v24
+- upgrade: update lightning-kmp from v1.4.1 to v1.4.4
 
 ### Fixed
 - fix: use canonical form for property conditions
