@@ -226,7 +226,7 @@
          <trusted-key id="cf17e92c9ffa55316b5db83901d734ee5ee9c3f8" group="org.eclipse.sisu"/>
          <trusted-key id="cfc10b69382cbcf5387e51484ece492b63e38acf" group="com.h3xstream.findsecbugs"/>
          <trusted-key id="d196a5e3e70732eeb2e5007f1861c322c56014b2" group="commons-lang" name="commons-lang" version="2.6"/>
-         <trusted-key id="d421d1df4570bfb13e485d0bf95add0a28d2f139" group="org.projectlombok" name="lombok" version="1.18.20"/>
+         <trusted-key id="d421d1df4570bfb13e485d0bf95add0a28d2f139" group="org.projectlombok" name="lombok" version="1.18.26"/>
          <trusted-key id="d5fc4d8e6ff704c573819555bf7cc7defe9389d7" group="com.github.docker-java"/>
          <trusted-key id="d6f1bc78607808ec8e9f69437a8860944fad5f62" group="org.apache.commons" name="commons-parent"/>
          <trusted-key id="dbd744ace7ade6aa50dd591f66b50994442d2d40" group="com.squareup.okio"/>

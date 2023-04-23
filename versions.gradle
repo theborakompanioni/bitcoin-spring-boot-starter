@@ -21,7 +21,7 @@ ext {
     acinqLightningKmpVersion = '1.4.4'
     sqliteVersion = '3.41.2.1'
     hibernateCommunityDialectsVersion = '6.1.7.Final'
-    lombokVersion = '1.18.20'
+    lombokVersion = '1.18.26'
     springdocOpenApiVersion = '2.0.4'
     mockserverVersion = '5.11.2'
     checkstyleVersion = '10.3.4'

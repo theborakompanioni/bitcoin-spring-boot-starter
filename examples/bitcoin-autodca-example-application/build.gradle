@@ -9,7 +9,6 @@ dependencies {
     implementation project(':spring-xchange:spring-xchange-starter')
 
     implementation "io.projectreactor:reactor-core"
-    implementation "org.javamoney:moneta:${monetaVersion}"
 
     implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
 
