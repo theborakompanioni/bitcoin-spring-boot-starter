@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - upgrade: update bitcoin testcontainer from v23 to v24
+- upgrade: update lnd testcontainer from v0.16.0-beta to v0.16.1-beta
 - upgrade: update lightning-kmp from v1.4.1 to v1.4.4
 - upgrade: update lombok from v1.18.20 to v1.18.26
 - upgrade: update spring-boot from v3.0.4 to v3.0.6
