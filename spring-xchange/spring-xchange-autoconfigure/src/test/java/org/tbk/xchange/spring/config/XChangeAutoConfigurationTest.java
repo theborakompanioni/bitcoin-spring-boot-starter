@@ -3,6 +3,7 @@ package org.tbk.xchange.spring.config;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeSpecification;
+import org.knowm.xchange.ExchangeSpecification.ResilienceSpecification;
 import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.kraken.KrakenExchange;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -33,7 +34,8 @@ class XChangeAutoConfigurationTest {
         this.contextRunner.withUserConfiguration(XChangeAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.xchange.enabled=true",
-                        "org.tbk.xchange.specifications.exampleExchange.exchangeClass=org.knowm.xchange.kraken.KrakenExchange"
+                        "org.tbk.xchange.specifications.exampleExchange.exchangeClass=org.knowm.xchange.kraken.KrakenExchange",
+                        "org.tbk.xchange.specifications.exampleExchange.shouldLoadRemoteMetaData=false"
                 )
                 .run(context -> {
                     Map<String, Exchange> beans = context.getBeansOfType(Exchange.class);
@@ -53,7 +55,7 @@ class XChangeAutoConfigurationTest {
                 .withPropertyValues(
                         "org.tbk.xchange.enabled=true",
                         "org.tbk.xchange.specifications.exampleExchange.exchangeClass=org.knowm.xchange.kraken.KrakenExchange",
-                        "org.tbk.xchange.specifications.exampleExchange.exchangeName=Example",
+                        "org.tbk.xchange.specifications.exampleExchange.exchangeName=Kraken",
                         "org.tbk.xchange.specifications.exampleExchange.exchangeDescription=any description (can contain whitespaces)",
                         "org.tbk.xchange.specifications.exampleExchange.userName=any-username",
                         "org.tbk.xchange.specifications.exampleExchange.password=any-password",
@@ -63,7 +65,7 @@ class XChangeAutoConfigurationTest {
                         "org.tbk.xchange.specifications.exampleExchange.plainTextUri=http://example.com:8080/exchange",
                         "org.tbk.xchange.specifications.exampleExchange.host=example.com",
                         "org.tbk.xchange.specifications.exampleExchange.port=8080",
-                        "org.tbk.xchange.specifications.exampleExchange.proxyHost=example.com",
+                        "org.tbk.xchange.specifications.exampleExchange.proxyHost=proxy.example.com",
                         "org.tbk.xchange.specifications.exampleExchange.proxyPort=9075",
                         "org.tbk.xchange.specifications.exampleExchange.httpConnTimeout=42",
                         "org.tbk.xchange.specifications.exampleExchange.httpReadTimeout=1337",
@@ -79,11 +81,32 @@ class XChangeAutoConfigurationTest {
                     Map<String, Exchange> beans = context.getBeansOfType(Exchange.class);
                     assertThat(beans.values(), hasSize(1));
 
-                    Exchange exampleExchange = requireNonNull(beans.get("exampleExchange"));
+                    Exchange exchange = requireNonNull(beans.get("exampleExchange"));
+                    assertThat(exchange, is(instanceOf(KrakenExchange.class)));
 
-                    ExchangeSpecification exchangeSpecification = exampleExchange.getExchangeSpecification();
-                    Object useSandbox = exchangeSpecification.getExchangeSpecificParametersItem("Use_Sandbox");
+                    ExchangeSpecification spec = exchange.getExchangeSpecification();
 
+                    assertThat(spec.getExchangeName(), is("Kraken"));
+                    assertThat(spec.getExchangeDescription(), is("any description (can contain whitespaces)"));
+                    assertThat(spec.getUserName(), is("any-username"));
+                    assertThat(spec.getPassword(), is("any-password"));
+                    assertThat(spec.getSecretKey(), is("f0000000"));
+                    assertThat(spec.getApiKey(), is("any-api-key"));
+                    assertThat(spec.getSslUri(), is("https://example.com:8443/exchange"));
+                    assertThat(spec.getPlainTextUri(), is("http://example.com:8080/exchange"));
+                    assertThat(spec.getHost(), is("example.com"));
+                    assertThat(spec.getPort(), is(8080));
+                    assertThat(spec.getProxyHost(), is("proxy.example.com"));
+                    assertThat(spec.getProxyPort(), is(9075));
+                    assertThat(spec.getHttpConnTimeout(), is(42));
+                    assertThat(spec.getHttpReadTimeout(), is(1337));
+                    assertThat(spec.isShouldLoadRemoteMetaData(), is(false));
+
+                    ResilienceSpecification resilience = spec.getResilience();
+                    assertThat(resilience.isRetryEnabled(), is(true));
+                    assertThat(resilience.isRateLimiterEnabled(), is(true));
+
+                    Object useSandbox = spec.getExchangeSpecificParametersItem("Use_Sandbox");
                     assertThat(useSandbox, is(instanceOf(Boolean.class)));
                     assertThat(useSandbox, is(Boolean.TRUE));
                 });

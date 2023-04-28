@@ -115,7 +115,7 @@ public class XChangeAutoConfiguration {
             Optional.ofNullable(properties.getApiKey()).ifPresent(exchangeSpecification::setApiKey);
             Optional.ofNullable(properties.getExchangeDescription()).ifPresent(exchangeSpecification::setExchangeDescription);
             Optional.ofNullable(properties.getExchangeName()).ifPresent(exchangeSpecification::setExchangeName);
-            Optional.ofNullable(properties.getApiKey()).ifPresent(exchangeSpecification::setHost);
+            Optional.ofNullable(properties.getHost()).ifPresent(exchangeSpecification::setHost);
             Optional.ofNullable(properties.getHttpConnTimeout()).ifPresent(exchangeSpecification::setHttpConnTimeout);
             Optional.ofNullable(properties.getHttpReadTimeout()).ifPresent(exchangeSpecification::setHttpReadTimeout);
             Optional.ofNullable(properties.getMetaDataJsonFileOverride()).ifPresent(exchangeSpecification::setMetaDataJsonFileOverride);

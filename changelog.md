@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - fix: use canonical form for property conditions
+- fix: parse all exchange properties in module `spring-xchange`
 
 ### Removed
 - deprecated class `org.tbk.bitcoin.common.util.Hex`
