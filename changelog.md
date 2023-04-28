@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update lightning-kmp from v1.4.1 to v1.4.4
 - upgrade: update lombok from v1.18.20 to v1.18.26
 - upgrade: update spring-boot from v3.0.4 to v3.0.6
+- upgrade: update grpc from v1.50.0 to v1.54.1
 
 ### Fixed
 - fix: use canonical form for property conditions
