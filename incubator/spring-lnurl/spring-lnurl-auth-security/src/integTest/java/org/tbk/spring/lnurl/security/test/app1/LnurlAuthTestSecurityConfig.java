@@ -22,7 +22,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @Slf4j
 @EnableWebSecurity
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
 

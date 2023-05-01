@@ -21,7 +21,7 @@ import static org.tbk.bitcoin.regtest.common.BitcoindStatusLogging.logBitcoinSta
 import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.logElectrumStatusOnNewBlock;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Profile("!test")
 public class BitcoinRegtestExampleApplicationConfig {
 

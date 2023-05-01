@@ -38,7 +38,7 @@ class ElectrumPersonalServerContainerApplicationTest {
                     .run(args);
         }
 
-        @Configuration
+        @Configuration(proxyBeanMethods = false)
         @AutoConfigureBefore(ElectrumPersonalServerContainerAutoConfiguration.class)
         public static class ElectrumPersonalServerContainerTestConfig {
 

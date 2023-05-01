@@ -24,7 +24,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @Slf4j
 @EnableWebSecurity
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer {
     static final String LNURL_AUTH_LOGIN_PAGE_PATH = "/login";
