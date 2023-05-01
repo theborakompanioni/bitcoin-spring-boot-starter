@@ -13,7 +13,7 @@ ext {
     grpcVersion = '1.54.1' // must be compatible with lightningj
     protobufVersion = '3.21.12'
     protocVersion = protobufVersion
-    jmoleculesBomVersion = '2022.2.4'
+    jmoleculesBomVersion = '2022.3.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.0'
     acinqBitcoinKmpVersion = '0.11.1'

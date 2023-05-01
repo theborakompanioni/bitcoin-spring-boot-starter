@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- upgrade: update jmolecules bom from v2022.2.4 to v2022.3.0
+
 ## [0.8.0] - 2023-04-29
 ### Changed
 - upgrade: update bitcoin testcontainer from v23 to v24
