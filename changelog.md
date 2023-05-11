@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - upgrade: update jmolecules bom from v2022.2.4 to v2022.3.0
+- upgrade: update lnd testcontainer from v0.16.1-beta to v0.16.2-beta
 
 ## [0.8.0] - 2023-04-29
 ### Changed
