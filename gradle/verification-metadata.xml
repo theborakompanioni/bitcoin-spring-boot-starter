@@ -41,6 +41,7 @@
             <trusting group="io.netty" name="netty-bom" version="4.1.85.Final"/>
             <trusting group="io.netty" name="netty-bom" version="4.1.87.Final"/>
             <trusting group="io.netty" name="netty-bom" version="4.1.89.Final"/>
+            <trusting group="io.netty" name="netty-bom" version="4.1.90.Final"/>
             <trusting group="io.netty" name="netty-bom" version="4.1.91.Final"/>
          </trusted-key>
          <trusted-key id="0f07d1201bddab67cfb84eb479752db6c966f0b8" group="com.google.android" name="annotations" version="4.1.1.4"/>
@@ -73,6 +74,7 @@
          <trusted-key id="32367341f8fa8f7d97ae36b9c9aca61e87a79929" group="org.mongodb"/>
          <trusted-key id="3262a061c42fc4c7bbb5c25c1cf0293fa53ca458" group="org.apache.tomcat.embed"/>
          <trusted-key id="34441e504a937f43eb0daef96a65176a0fb1cd0b">
+            <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.10"/>
             <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.11"/>
             <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.6"/>
             <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.7"/>
