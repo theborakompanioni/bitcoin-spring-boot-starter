@@ -107,4 +107,27 @@ class ClnClientAutoConfigurationTest {
                     assertThat(rootCause.getMessage(), is("'caCertFile' must exist"));
                 });
     }
+
+    @Test
+    void errorIfCertBase64Invalid() {
+        this.contextRunner.withUserConfiguration(ClnClientAutoConfiguration.class)
+                .withPropertyValues(
+                        "org.tbk.lightning.cln.grpc.host=localhost",
+                        "org.tbk.lightning.cln.grpc.port=10001",
+                        "org.tbk.lightning.cln.grpc.ca-cert-base64=$invalid$",
+                        "org.tbk.lightning.cln.grpc.client-cert-base64=yv66vg==",
+                        "org.tbk.lightning.cln.grpc.client-key-base64=yv66vg=="
+                ).run(context -> {
+                    Throwable startupFailure = context.getStartupFailure();
+                    assertThat(startupFailure, is(notNullValue()));
+
+                    Throwables.getCausalChain(startupFailure).stream()
+                            .filter(it -> "Error while decoding 'caCertBase64'".equals(it.getMessage()))
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalStateException("Expected exception not found"));
+
+                    Throwable rootCause = Throwables.getRootCause(startupFailure);
+                    assertThat(rootCause.getMessage(), is("Illegal base64 character 24"));
+                });
+    }
 }

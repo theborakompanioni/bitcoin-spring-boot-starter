@@ -109,4 +109,26 @@ class LndClientAutoConfigurationTest {
                     assertThat(rootCause.getMessage(), is("'certFile' must exist"));
                 });
     }
+
+    @Test
+    void errorIfCertBase64Invalid() {
+        this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
+                .withPropertyValues(
+                        "org.tbk.lightning.lnd.grpc.host=localhost",
+                        "org.tbk.lightning.lnd.grpc.port=10001",
+                        "org.tbk.lightning.lnd.grpc.macaroon-base64=yv66vg==",
+                        "org.tbk.lightning.lnd.grpc.cert-base64=$invalid$"
+                ).run(context -> {
+                    Throwable startupFailure = context.getStartupFailure();
+                    assertThat(startupFailure, is(notNullValue()));
+
+                    Throwables.getCausalChain(startupFailure).stream()
+                            .filter(it -> "Error while decoding 'certBase64'".equals(it.getMessage()))
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalStateException("Expected exception not found"));
+
+                    Throwable rootCause = Throwables.getRootCause(startupFailure);
+                    assertThat(rootCause.getMessage(), is("Illegal base64 character 24"));
+                });
+    }
 }

@@ -227,19 +227,25 @@ public class ClnClientAutoConfiguration {
         return NodeGrpc.newFutureStub(clnChannel);
     }
 
+    private static byte[] readFromBase64(String val, String displayName) {
+        requireNonNull(val, String.format("'%s' must not be null", displayName));
 
-    private static byte[] readFromBase64(String val, String type) {
-        requireNonNull(val, String.format("'%s' must not be null", type));
-        return Base64.getDecoder().decode(val);
+        try {
+            return Base64.getDecoder().decode(val);
+        } catch (IllegalArgumentException e) {
+            String errorMessage = String.format("Error while decoding '%s'", displayName);
+            throw new IllegalStateException(errorMessage, e);
+        }
     }
 
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    private static byte[] readAllBytes(String fileName, String type) {
-        requireNonNull(fileName, String.format("'%s' must not be null", type));
+    private static byte[] readAllBytes(String fileName, String displayName) {
+        requireNonNull(fileName, String.format("'%s' must not be null", displayName));
+
         File file = new File(fileName);
-        checkArgument(file.exists(), String.format("'%s' must exist", type));
-        checkArgument(file.canRead(), String.format("'%s' must be readable", type));
+        checkArgument(file.exists(), String.format("'%s' must exist", displayName));
+        checkArgument(file.canRead(), String.format("'%s' must be readable", displayName));
 
         return Files.readAllBytes(file.toPath());
     }

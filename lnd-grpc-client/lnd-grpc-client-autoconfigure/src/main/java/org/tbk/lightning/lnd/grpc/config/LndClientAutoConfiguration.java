@@ -139,28 +139,12 @@ public class LndClientAutoConfiguration {
 
     private byte[] lndRpcCert() {
         if (StringUtils.hasText(properties.getCertFilePath())) {
-            return lndRpcCertFromFile();
+            return readAllBytes(properties.getCertFilePath(), "certFile");
         } else if (StringUtils.hasText(properties.getCertBase64())) {
-            return lndRpcCertFromBase64();
+            return readFromBase64(properties.getCertBase64(), "certBase64");
         } else {
             throw new IllegalStateException("Could not find LND certificate");
         }
-    }
-
-    private byte[] lndRpcCertFromBase64() {
-        requireNonNull(properties.getCertBase64(), "'certBase64' must not be null");
-        return Base64.getDecoder().decode(properties.getCertBase64());
-    }
-
-    @SneakyThrows
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    private byte[] lndRpcCertFromFile() {
-        requireNonNull(properties.getCertFilePath(), "'certFilePath' must not be null");
-        File certFile = new File(properties.getCertFilePath());
-        checkArgument(certFile.exists(), "'certFile' must exist");
-        checkArgument(certFile.canRead(), "'certFile' must be readable");
-
-        return Files.readAllBytes(certFile.toPath());
     }
 
     @Bean
@@ -435,5 +419,26 @@ public class LndClientAutoConfiguration {
                 rpcConfig.getPort(),
                 rpcConfig.getSslContext(),
                 rpcConfig.getMacaroonContext());
+    }
+
+    private static byte[] readFromBase64(String val, String displayName) {
+        requireNonNull(val, String.format("'%s' must not be null", displayName));
+        try {
+            return Base64.getDecoder().decode(val);
+        } catch (IllegalArgumentException e) {
+            String errorMessage = String.format("Error while decoding '%s'", displayName);
+            throw new IllegalStateException(errorMessage, e);
+        }
+    }
+
+    @SneakyThrows
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
+    private static byte[] readAllBytes(String fileName, String displayName) {
+        requireNonNull(fileName, String.format("'%s' must not be null", displayName));
+        File file = new File(fileName);
+        checkArgument(file.exists(), String.format("'%s' must exist", displayName));
+        checkArgument(file.canRead(), String.format("'%s' must be readable", displayName));
+
+        return Files.readAllBytes(file.toPath());
     }
 }
