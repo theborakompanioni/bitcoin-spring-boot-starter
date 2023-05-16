@@ -60,6 +60,28 @@ class LndClientAutoConfigurationTest {
     }
 
     @Test
+    void beansAreCreatedBase64Values() {
+        this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
+                .withPropertyValues(
+                        "org.tbk.lightning.lnd.grpc.host=localhost",
+                        "org.tbk.lightning.lnd.grpc.port=10001",
+                        "org.tbk.lightning.lnd.grpc.macaroon-base64=yv66vg==",
+                        // same `src/test/resources/lnd/tls-test.cert` but base64-encoded
+                        "org.tbk.lightning.lnd.grpc.cert-base64=LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNCRENDQWF1Z0F3SUJBZ0lRUVZIcmplYmIzcTR1dnFHb3I0bjd2VEFLQmdncWhrak9QUVFEQWpBNE1SOHcKSFFZRFZRUUtFeFpzYm1RZ1lYVjBiMmRsYm1WeVlYUmxaQ0JqWlhKME1SVXdFd1lEVlFRREV3eGlaVEE0TlRrMApOVGc1TVRVd0hoY05NakF4TVRJNE1UZzFNRFU1V2hjTk1qSXdNVEl6TVRnMU1EVTVXakE0TVI4d0hRWURWUVFLCkV4WnNibVFnWVhWMGIyZGxibVZ5WVhSbFpDQmpaWEowTVJVd0V3WURWUVFERXd4aVpUQTROVGswTlRnNU1UVXcKV1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVF4eUpJa2tnbHdjQ0xpOTJTMDZta0oxaEVTcVRqQwo5bWliREx2TkpUbnNuRUx2TExmNVRFc1ZQL09yNzdPRjREZjJxcisva29qUUIzTE1pQytyM2ZIV280R1dNSUdUCk1BNEdBMVVkRHdFQi93UUVBd0lDcERBVEJnTlZIU1VFRERBS0JnZ3JCZ0VGQlFjREFUQVBCZ05WSFJNQkFmOEUKQlRBREFRSC9NRnNHQTFVZEVRUlVNRktDREdKbE1EZzFPVFExT0RreE5ZSUpiRzlqWVd4b2IzTjBnZ1IxYm1sNApnZ3AxYm1sNGNHRmphMlYwZ2dkaWRXWmpiMjV1aHdSL0FBQUJoeEFBQUFBQUFBQUFBQUFBQUFBQUFBQUJod1NzCkVRQUZNQW9HQ0NxR1NNNDlCQU1DQTBjQU1FUUNJRWJzdXdCL0hWbkxNd0ZEWnBzZnBvMWhqVEYyWUlSUUo0USsKYlBjclJWUDlBaUJCdmduR0FpRXFSRnN4bXlIb0V1c2dMOStiT0NwWXBtTDlTd0F2YWt1N1p3PT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ=="
+                )
+                .run(context -> {
+                    Map<String, Class<?>> beanNamesAndClasses = ImmutableMap.<String, Class<?>>builder()
+                            .put("lndAPI", AsynchronousLndAPI.class)
+                            .build();
+
+                    beanNamesAndClasses.forEach((name, clazz) -> {
+                        assertThat(context.containsBean(name), is(true));
+                        assertThat(context.getBean(clazz), is(notNullValue()));
+                    });
+                });
+    }
+
+    @Test
     void noBeansAreCreated() {
         this.contextRunner.withUserConfiguration(LndClientAutoConfiguration.class)
                 .withPropertyValues(

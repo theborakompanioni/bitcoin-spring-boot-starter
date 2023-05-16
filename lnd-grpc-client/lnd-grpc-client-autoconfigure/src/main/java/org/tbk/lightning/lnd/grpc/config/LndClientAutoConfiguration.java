@@ -30,18 +30,19 @@ import org.lightningj.lnd.wrapper.watchtower.SynchronousWatchtowerAPI;
 import org.lightningj.lnd.wrapper.wtclient.AsynchronousWatchtowerClientAPI;
 import org.lightningj.lnd.wrapper.wtclient.SynchronousWatchtowerClientAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.HexFormat;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -59,42 +60,107 @@ public class LndClientAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
+    static class OnMacaroonSpecified extends AnyNestedCondition {
+
+        OnMacaroonSpecified() {
+            super(ConfigurationPhase.PARSE_CONFIGURATION);
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.lnd.grpc.macaroon-file-path")
+        static class OnFilePathSpecified {
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.lnd.grpc.macaroon-base64")
+        static class OnRawValueSpecified {
+        }
+    }
+
     @Bean("lndRpcMacaroonContext")
     @ConditionalOnMissingBean(name = {"lndRpcMacaroonContext"})
-    @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.grpc.macaroon-file-path"
-    })
+    @Conditional(OnMacaroonSpecified.class)
+    public MacaroonContext lndRpcMacaroonContext() {
+        String hex = HexFormat.of().formatHex(lndRpcMacaroon());
+        return () -> hex;
+    }
+
+    private byte[] lndRpcMacaroon() {
+        if (StringUtils.hasText(properties.getMacaroonFilePath())) {
+            return lndRpcMacaroonFromFile();
+        } else if (StringUtils.hasText(properties.getMacaroonBase64())) {
+            return lndRpcMacaroonFromBase64();
+        } else {
+            throw new IllegalStateException("Could not find LND macaroon");
+        }
+    }
+
+    private byte[] lndRpcMacaroonFromBase64() {
+        requireNonNull(properties.getMacaroonBase64(), "'macaroonBase64' must not be null");
+        return Base64.getDecoder().decode(properties.getMacaroonBase64());
+    }
+
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    public MacaroonContext lndRpcMacaroonContext() {
+    private byte[] lndRpcMacaroonFromFile() {
         requireNonNull(properties.getMacaroonFilePath(), "'macaroonFilePath' must not be null");
 
         File macaroonFile = new File(properties.getMacaroonFilePath());
         checkArgument(macaroonFile.exists(), "'macaroonFile' must exist");
         checkArgument(macaroonFile.canRead(), "'macaroonFile' must be readable");
 
-        byte[] bytes = Files.readAllBytes(macaroonFile.toPath());
-        String hex = HexFormat.of().formatHex(bytes);
-        return () -> hex;
+        return Files.readAllBytes(macaroonFile.toPath());
+    }
+
+    static class OnCertSpecified extends AnyNestedCondition {
+
+        OnCertSpecified() {
+            super(ConfigurationPhase.PARSE_CONFIGURATION);
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.lnd.grpc.cert-file-path")
+        static class OnFilePathSpecified {
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.lnd.grpc.cert-base64")
+        static class OnRawValueSpecified {
+        }
     }
 
     @Bean("lndRpcSslContext")
     @ConditionalOnMissingBean(name = {"lndRpcSslContext"})
-    @ConditionalOnProperty({
-            "org.tbk.lightning.lnd.grpc.cert-file-path"
-    })
+    @Conditional(OnCertSpecified.class)
+    @SneakyThrows
+    public SslContext lndRpcSslContext() {
+        try (ByteArrayInputStream certStream = new ByteArrayInputStream(lndRpcCert())) {
+            return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
+                    .trustManager(certStream)
+                    .build();
+        }
+    }
+
+    private byte[] lndRpcCert() {
+        if (StringUtils.hasText(properties.getCertFilePath())) {
+            return lndRpcCertFromFile();
+        } else if (StringUtils.hasText(properties.getCertBase64())) {
+            return lndRpcCertFromBase64();
+        } else {
+            throw new IllegalStateException("Could not find LND certificate");
+        }
+    }
+
+    private byte[] lndRpcCertFromBase64() {
+        requireNonNull(properties.getCertBase64(), "'certBase64' must not be null");
+        return Base64.getDecoder().decode(properties.getCertBase64());
+    }
+
     @SneakyThrows
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    public SslContext lndRpcSslContext() {
+    private byte[] lndRpcCertFromFile() {
         requireNonNull(properties.getCertFilePath(), "'certFilePath' must not be null");
-
         File certFile = new File(properties.getCertFilePath());
         checkArgument(certFile.exists(), "'certFile' must exist");
         checkArgument(certFile.canRead(), "'certFile' must be readable");
 
-        return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
-                .trustManager(certFile)
-                .build();
+        return Files.readAllBytes(certFile.toPath());
     }
 
     @Bean

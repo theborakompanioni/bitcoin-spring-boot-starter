@@ -1,10 +1,10 @@
 package org.tbk.lightning.lnd.grpc.config;
 
-import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -47,10 +47,21 @@ public class LndClientAutoConfigProperties implements Validator {
      */
     private String certFilePath;
 
+
     /**
-     * Path to the cert file (e.g. /home/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon)
+     * Cert encoded in base64.
+     */
+    private String certBase64;
+
+    /**
+     * Path to the macaroon file (e.g. /home/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon)
      */
     private String macaroonFilePath;
+
+    /**
+     * Macaroon encoded in base64.
+     */
+    private String macaroonBase64;
 
     public Network getNetwork() {
         return Objects.requireNonNullElse(network, Network.mainnet);
@@ -70,9 +81,23 @@ public class LndClientAutoConfigProperties implements Validator {
             errors.rejectValue("port", "port.invalid", errorMessage);
         }
 
-        if (Strings.isNullOrEmpty(properties.getHost())) {
-            String errorMessage = String.format("Invalid `host` value: '%s'", properties.getHost());
+        if (!StringUtils.hasText(properties.getHost())) {
+            String errorMessage = String.format("Invalid 'host' value: '%s'", properties.getHost());
             errors.rejectValue("host", "host.invalid", errorMessage);
+        }
+
+        boolean certFileAbsent = !StringUtils.hasText(properties.getCertFilePath());
+        boolean certRawAbsent = !StringUtils.hasText(properties.getCertBase64());
+        if (certFileAbsent && certRawAbsent) {
+            String errorMessage = "'cert' must not be empty: Either provide a path or a base64-encoded value";
+            errors.rejectValue("certFilePath", "certFilePath.invalid", errorMessage);
+        }
+
+        boolean macaroonFileAbsent = !StringUtils.hasText(properties.getMacaroonFilePath());
+        boolean macaroonRawAbsent = !StringUtils.hasText(properties.getMacaroonBase64());
+        if (macaroonFileAbsent && macaroonRawAbsent) {
+            String errorMessage = "'macaroon' must not be empty: Either provide a path or a base64-encoded value";
+            errors.rejectValue("macaroonFilePath", "macaroonFilePath.invalid", errorMessage);
         }
     }
 }
