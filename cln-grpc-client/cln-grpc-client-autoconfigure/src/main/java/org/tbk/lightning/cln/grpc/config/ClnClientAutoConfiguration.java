@@ -13,21 +13,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.StringUtils;
 import org.tbk.lightning.cln.grpc.ClnRpcConfig;
 import org.tbk.lightning.cln.grpc.ClnRpcConfigImpl;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.file.Files;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -46,36 +48,99 @@ public class ClnClientAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
+    static class OnCaCertSpecified extends AnyNestedCondition {
+
+        OnCaCertSpecified() {
+            super(ConfigurationPhase.PARSE_CONFIGURATION);
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.cln.grpc.ca-cert-file-path")
+        static class OnFilePathSpecified {
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.cln.grpc.ca-cert-base64")
+        static class OnRawValueSpecified {
+        }
+    }
+
+    static class OnClientCertSpecified extends AnyNestedCondition {
+
+        OnClientCertSpecified() {
+            super(ConfigurationPhase.PARSE_CONFIGURATION);
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.cln.grpc.client-cert-file-path")
+        static class OnFilePathSpecified {
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.cln.grpc.client-cert-base64")
+        static class OnRawValueSpecified {
+        }
+    }
+
+
+    static class OnClientKeySpecified extends AnyNestedCondition {
+
+        OnClientKeySpecified() {
+            super(ConfigurationPhase.PARSE_CONFIGURATION);
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.cln.grpc.client-key-file-path")
+        static class OnFilePathSpecified {
+        }
+
+        @ConditionalOnProperty(name = "org.tbk.lightning.cln.grpc.client-key-base64")
+        static class OnRawValueSpecified {
+        }
+    }
+
     @Bean("clnRpcSslContext")
     @ConditionalOnMissingBean(name = "clnRpcSslContext")
-    @ConditionalOnProperty({
-            "org.tbk.lightning.cln.grpc.ca-cert-file-path",
-            "org.tbk.lightning.cln.grpc.client-cert-file-path",
-            "org.tbk.lightning.cln.grpc.client-key-file-path"
+    @Conditional({
+            OnCaCertSpecified.class,
+            OnClientCertSpecified.class,
+            OnClientKeySpecified.class,
     })
     @SneakyThrows
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public SslContext clnRpcSslContext() {
-        requireNonNull(properties.getCaCertFilePath(), "'caCertFilePath' must not be null");
-        requireNonNull(properties.getClientCertFilePath(), "'clientCertFilePath' must not be null");
-        requireNonNull(properties.getClientKeyFilePath(), "'clientKeyFilePath' must not be null");
+        try (ByteArrayInputStream caCertStream = new ByteArrayInputStream(clnRpcCaCert());
+             ByteArrayInputStream clientCertStream = new ByteArrayInputStream(clnRpcClientCert());
+             ByteArrayInputStream clientKeyStream = new ByteArrayInputStream(clnRpcClientKey())) {
+            return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
+                    .trustManager(caCertStream)
+                    .keyManager(clientCertStream, clientKeyStream)
+                    .build();
+        }
+    }
 
-        File caCertFile = new File(properties.getCaCertFilePath());
-        checkArgument(caCertFile.exists(), "'caCertFile' must exist");
-        checkArgument(caCertFile.canRead(), "'caCertFile' must be readable");
+    private byte[] clnRpcCaCert() {
+        if (StringUtils.hasText(properties.getCaCertFilePath())) {
+            return readAllBytes(properties.getCaCertFilePath(), "caCertFile");
+        } else if (StringUtils.hasText(properties.getCaCertBase64())) {
+            return readFromBase64(properties.getCaCertBase64(), "caCertBase64");
+        } else {
+            throw new IllegalStateException("Could not find CLN CA certificate");
+        }
+    }
 
-        File clientCertFile = new File(properties.getClientCertFilePath());
-        checkArgument(clientCertFile.exists(), "'clientCertFile' must exist");
-        checkArgument(clientCertFile.canRead(), "'clientCertFile' must be readable");
+    private byte[] clnRpcClientCert() {
+        if (StringUtils.hasText(properties.getClientCertFilePath())) {
+            return readAllBytes(properties.getClientCertFilePath(), "clientCertFile");
+        } else if (StringUtils.hasText(properties.getClientCertBase64())) {
+            return readFromBase64(properties.getClientCertBase64(), "clientCertBase64");
+        } else {
+            throw new IllegalStateException("Could not find CLN client certificate");
+        }
+    }
 
-        File clientKeyFile = new File(properties.getClientKeyFilePath());
-        checkArgument(clientKeyFile.exists(), "'clientKeyFile' must exist");
-        checkArgument(clientKeyFile.canRead(), "'clientKeyFile' must be readable");
-
-        return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
-                .keyManager(clientCertFile, clientKeyFile)
-                .trustManager(caCertFile)
-                .build();
+    private byte[] clnRpcClientKey() {
+        if (StringUtils.hasText(properties.getClientKeyFilePath())) {
+            return readAllBytes(properties.getClientKeyFilePath(), "clientKeyFile");
+        } else if (StringUtils.hasText(properties.getClientKeyBase64())) {
+            return readFromBase64(properties.getClientKeyBase64(), "clientKeyBase64");
+        } else {
+            throw new IllegalStateException("Could not find CLN client key");
+        }
     }
 
     @Bean
@@ -160,5 +225,22 @@ public class ClnClientAutoConfiguration {
     @ConditionalOnBean(name = "clnChannel")
     public NodeGrpc.NodeFutureStub clnNodeFutureStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
         return NodeGrpc.newFutureStub(clnChannel);
+    }
+
+
+    private static byte[] readFromBase64(String val, String type) {
+        requireNonNull(val, String.format("'%s' must not be null", type));
+        return Base64.getDecoder().decode(val);
+    }
+
+    @SneakyThrows
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
+    private static byte[] readAllBytes(String fileName, String type) {
+        requireNonNull(fileName, String.format("'%s' must not be null", type));
+        File file = new File(fileName);
+        checkArgument(file.exists(), String.format("'%s' must exist", type));
+        checkArgument(file.canRead(), String.format("'%s' must be readable", type));
+
+        return Files.readAllBytes(file.toPath());
     }
 }

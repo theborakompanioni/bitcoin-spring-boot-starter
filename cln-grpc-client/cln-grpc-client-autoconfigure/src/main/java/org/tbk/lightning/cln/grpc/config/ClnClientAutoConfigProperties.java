@@ -1,10 +1,10 @@
 package org.tbk.lightning.cln.grpc.config;
 
-import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -37,9 +37,14 @@ public class ClnClientAutoConfigProperties implements Validator {
     private int port;
 
     /**
-     * Path to the cert file (e.g. /home/cln/.lightning/regtest/ca.pem).
+     * Path to the CA cert file (e.g. /home/cln/.lightning/regtest/ca.pem).
      */
     private String caCertFilePath;
+
+    /**
+     * CA cert encoded in base64.
+     */
+    private String caCertBase64;
 
     /**
      * Path to the client cert file (e.g. /home/cln/.lightning/regtest/client.pem).
@@ -47,9 +52,19 @@ public class ClnClientAutoConfigProperties implements Validator {
     private String clientCertFilePath;
 
     /**
+     * Client cert encoded in base64.
+     */
+    private String clientCertBase64;
+
+    /**
      * Path to the client key file (e.g. /home/cln/.lightning/regtest/client-key.pem).
      */
     private String clientKeyFilePath;
+
+    /**
+     * Client key encoded in base64.
+     */
+    private String clientKeyBase64;
 
     private Duration shutdownTimeout;
 
@@ -71,23 +86,29 @@ public class ClnClientAutoConfigProperties implements Validator {
             errors.rejectValue("port", "port.invalid", errorMessage);
         }
 
-        if (Strings.isNullOrEmpty(properties.getHost())) {
-            String errorMessage = String.format("'host' must not be null or empty - invalid value: '%s'", properties.getHost());
+        if (!StringUtils.hasText(properties.getHost())) {
+            String errorMessage = String.format("'host' must not be empty - invalid value: '%s'", properties.getHost());
             errors.rejectValue("host", "host.invalid", errorMessage);
         }
 
-        if (Strings.isNullOrEmpty(properties.getCaCertFilePath())) {
-            String errorMessage = String.format("'caCertFilePath' must not be null or empty - invalid value: '%s'", properties.getHost());
+        boolean caCertFileAbsent = !StringUtils.hasText(properties.getCaCertFilePath());
+        boolean caCertRawAbsent = !StringUtils.hasText(properties.getCaCertBase64());
+        if (caCertFileAbsent && caCertRawAbsent) {
+            String errorMessage = "'caCert' must not be empty: Either provide a path or a base64-encoded value";
             errors.rejectValue("caCertFilePath", "caCertFilePath.invalid", errorMessage);
         }
 
-        if (Strings.isNullOrEmpty(properties.getClientCertFilePath())) {
-            String errorMessage = String.format("'clientCertFilePath' must not be null or empty - invalid value: '%s'", properties.getHost());
+        boolean clientCertFileAbsent = !StringUtils.hasText(properties.getClientCertFilePath());
+        boolean clientCertRawAbsent = !StringUtils.hasText(properties.getClientCertBase64());
+        if (clientCertFileAbsent && clientCertRawAbsent) {
+            String errorMessage = "'clientCert' must not be empty: Either provide a path or a base64-encoded value";
             errors.rejectValue("clientCertFilePath", "clientCertFilePath.invalid", errorMessage);
         }
 
-        if (Strings.isNullOrEmpty(properties.getClientKeyFilePath())) {
-            String errorMessage = String.format("'clientKeyFilePath' must not be null or empty - invalid value: '%s'", properties.getHost());
+        boolean clientKeyFileAbsent = !StringUtils.hasText(properties.getClientKeyFilePath());
+        boolean clientKeyRawAbsent = !StringUtils.hasText(properties.getClientKeyBase64());
+        if (clientKeyFileAbsent && clientKeyRawAbsent) {
+            String errorMessage = "'clientKey' must not be empty: Either provide a path or a base64-encoded value";
             errors.rejectValue("clientKeyFilePath", "clientKeyFilePath.invalid", errorMessage);
         }
     }

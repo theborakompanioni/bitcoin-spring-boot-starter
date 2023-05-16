@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - lnd-grpc-client: ability to specify cert and macaroon as base64-encoded value
+- cln-grpc-client: ability to specify certs and key as base64-encoded value
 
 ### Changed
 - upgrade: update jmolecules bom from v2022.2.4 to v2022.3.0
