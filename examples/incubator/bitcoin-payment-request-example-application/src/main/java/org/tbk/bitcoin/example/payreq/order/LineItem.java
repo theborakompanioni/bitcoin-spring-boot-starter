@@ -3,7 +3,6 @@ package org.tbk.bitcoin.example.payreq.order;
 import com.google.common.base.MoreObjects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
@@ -19,7 +18,6 @@ import java.util.UUID;
 
 @Getter
 @Table(name = "customer_order_line_item")
-@AllArgsConstructor
 public class LineItem implements Entity<Order, LineItem.LineItemId> {
 
     private final LineItemId id;
