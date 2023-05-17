@@ -11,7 +11,7 @@ The starter will automatically create an injectable `BitcoinClient` bean:
 
 ```yaml
 org.tbk.bitcoin.jsonrpc:
-  enabled: true
+  enabled: true # whether auto-config should run - default is `true`
   network: mainnet
   rpchost: http://localhost
   rpcport: 8332
@@ -26,6 +26,7 @@ The starter will automatically create injectable `ZeroMqMessagePublisherFactory`
 
 ```yaml
 org.tbk.bitcoin.zeromq:
+  enabled: true # whether auto-config should run - default is `true`
   network: mainnet
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333
@@ -37,18 +38,29 @@ Also, if you have [bitcoinj](https://github.com/bitcoinj/bitcoinj) in the classp
 of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory` which will emit `bitcoinj` types for your convenience.
 
 
-## cln-grpc-client
+### cln-grpc-client
 A module containing a spring boot starter for a CLN gRPC API client.
 The starter will automatically create injectable `NodeStub`, `NodeFutureStub` and `NodeBlockingStub` beans:
 
 ```yaml
 org.tbk.lightning.cln.grpc:
-  enabled: true
+  enabled: true # whether auto-config should run - default is `true`
   host: localhost
   port: 19935
   ca-cert-file-path: '/home/user/.lightning/regtest/ca.pem'
   client-cert-file-path: '/home/user/.lightning/regtest/client.pem'
   client-key-file-path: '/home/user/.lightning/regtest/client-key.pem'
+```
+
+or
+
+```yaml
+org.tbk.lightning.cln.grpc:
+  host: localhost
+  port: 19935
+  ca-cert-base64: '...yv66vg=='
+  client-cert-base64: '...yv66vg=='
+  client-key-base64: '...yv66vg=='
 ```
 
 
@@ -58,11 +70,21 @@ The starter will automatically create injectable `AsynchronousLndAPI` and `Synch
 
 ```yaml
 org.tbk.lightning.lnd.grpc:
-  enabled: true
+  enabled: true # whether auto-config should run - default is `true`
   host: localhost
   port: 10009
   macaroon-file-path: '/home/user/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
   cert-file-path: '/home/user/.lnd/tls.cert'
+```
+
+or
+
+```yaml
+org.tbk.lightning.lnd.grpc:
+  host: localhost
+  port: 10009
+  macaroon-base64: '...yv66vg=='
+  cert-base64: '...yv66vg=='
 ```
 
 
@@ -152,9 +174,11 @@ Most of these spring boot starter modules contain a simple example application.
 They can be used in combination with other modules like [bitcoin-jsonrpc-client](#bitcoin-jsonrpc-client), 
 [bitcoin-zeromq-client](#bitcoin-zeromq-client), [lnd-grpc-client](#lnd-grpc-client), etc.
 
+
 ### bitcoin-regtest
 A module containing spring boot starters for integration and regression testing your own application.
 It includes functionality to create and fund addresses, send transactions, mine blocks and much more.
+
 
 ### incubator
 This subproject is home to all almost-ready modules.
