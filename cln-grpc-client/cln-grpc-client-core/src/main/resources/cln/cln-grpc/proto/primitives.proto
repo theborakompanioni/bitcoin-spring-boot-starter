@@ -20,8 +20,8 @@ message AmountOrAny {
 }
 
 enum ChannelSide {
-	IN = 0;
-	OUT = 1;
+	LOCAL = 0;
+	REMOTE = 1;
 }
 
 enum ChannelState {
@@ -36,6 +36,20 @@ enum ChannelState {
 	Onchain = 8;
 	DualopendOpenInit = 9;
 	DualopendAwaitingLockin = 10;
+}
+
+enum HtlcState {
+      SentAddHtlc = 0;
+      SentAddCommit = 1;
+      RcvdAddRevocation = 2;
+      RcvdAddAckCommit = 3;
+      SentAddAckRevocation = 4;
+      RcvdAddAckRevocation = 5;
+      RcvdRemoveHtlc = 6;
+      RcvdRemoveCommit = 7;
+      SentRemoveRevocation = 8;
+      SentRemoveAckCommit = 9;
+      RcvdRemoveAckRevocation = 10;
 }
 
 message ChannelStateChangeCause {}

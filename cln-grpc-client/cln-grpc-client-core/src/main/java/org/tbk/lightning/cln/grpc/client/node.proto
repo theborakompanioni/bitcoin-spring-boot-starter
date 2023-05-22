@@ -49,6 +49,10 @@ service Node {
 	rpc TxDiscard(TxdiscardRequest) returns (TxdiscardResponse) {}
 	rpc TxPrepare(TxprepareRequest) returns (TxprepareResponse) {}
 	rpc TxSend(TxsendRequest) returns (TxsendResponse) {}
+	rpc ListPeerChannels(ListpeerchannelsRequest) returns (ListpeerchannelsResponse) {}
+	rpc ListClosedChannels(ListclosedchannelsRequest) returns (ListclosedchannelsResponse) {}
+	rpc DecodePay(DecodepayRequest) returns (DecodepayResponse) {}
+	rpc Decode(DecodeRequest) returns (DecodeResponse) {}
 	rpc Disconnect(DisconnectRequest) returns (DisconnectResponse) {}
 	rpc Feerates(FeeratesRequest) returns (FeeratesResponse) {}
 	rpc FundChannel(FundchannelRequest) returns (FundchannelResponse) {}
@@ -135,7 +139,7 @@ message ListpeersResponse {
 message ListpeersPeers {
 	bytes id = 1;
 	bool connected = 2;
-	uint32 num_channels = 8;
+	optional uint32 num_channels = 8;
 	repeated ListpeersPeersLog log = 3;
 	repeated ListpeersPeersChannels channels = 4;
 	repeated string netaddr = 5;
@@ -269,6 +273,7 @@ message ListpeersPeersChannelsHtlcs {
 	bytes payment_hash = 5;
 	optional bool local_trimmed = 6;
 	optional string status = 7;
+	HtlcState state = 8;
 }
 
 message ListfundsRequest {
@@ -307,7 +312,7 @@ message ListfundsChannels {
 	uint32 funding_output = 5;
 	bool connected = 6;
 	ChannelState state = 7;
-	bytes channel_id = 9;
+	optional bytes channel_id = 9;
 	optional string short_channel_id = 8;
 }
 
@@ -592,7 +597,6 @@ message InvoiceRequest {
 	optional uint64 expiry = 7;
 	repeated string fallbacks = 4;
 	optional bytes preimage = 5;
-	optional bool exposeprivatechannels = 8;
 	optional uint32 cltv = 6;
 	optional bool deschashonly = 9;
 }
@@ -1107,6 +1111,333 @@ message TxsendResponse {
 	bytes txid = 3;
 }
 
+message ListpeerchannelsRequest {
+	optional bytes id = 1;
+}
+
+message ListpeerchannelsResponse {
+	repeated ListpeerchannelsChannels channels = 1;
+}
+
+message ListpeerchannelsChannels {
+	// ListPeerChannels.channels[].state
+	enum ListpeerchannelsChannelsState {
+		OPENINGD = 0;
+		CHANNELD_AWAITING_LOCKIN = 1;
+		CHANNELD_NORMAL = 2;
+		CHANNELD_SHUTTING_DOWN = 3;
+		CLOSINGD_SIGEXCHANGE = 4;
+		CLOSINGD_COMPLETE = 5;
+		AWAITING_UNILATERAL = 6;
+		FUNDING_SPEND_SEEN = 7;
+		ONCHAIN = 8;
+		DUALOPEND_OPEN_INIT = 9;
+		DUALOPEND_AWAITING_LOCKIN = 10;
+	}
+	optional bytes peer_id = 1;
+	optional bool peer_connected = 2;
+	optional ListpeerchannelsChannelsState state = 3;
+	optional bytes scratch_txid = 4;
+	optional ListpeerchannelsChannelsFeerate feerate = 6;
+	optional string owner = 7;
+	optional string short_channel_id = 8;
+	optional bytes channel_id = 9;
+	optional bytes funding_txid = 10;
+	optional uint32 funding_outnum = 11;
+	optional string initial_feerate = 12;
+	optional string last_feerate = 13;
+	optional string next_feerate = 14;
+	optional uint32 next_fee_step = 15;
+	repeated ListpeerchannelsChannelsInflight inflight = 16;
+	optional bytes close_to = 17;
+	optional bool private = 18;
+	optional ChannelSide opener = 19;
+	optional ChannelSide closer = 20;
+	optional ListpeerchannelsChannelsFunding funding = 22;
+	optional Amount to_us_msat = 23;
+	optional Amount min_to_us_msat = 24;
+	optional Amount max_to_us_msat = 25;
+	optional Amount total_msat = 26;
+	optional Amount fee_base_msat = 27;
+	optional uint32 fee_proportional_millionths = 28;
+	optional Amount dust_limit_msat = 29;
+	optional Amount max_total_htlc_in_msat = 30;
+	optional Amount their_reserve_msat = 31;
+	optional Amount our_reserve_msat = 32;
+	optional Amount spendable_msat = 33;
+	optional Amount receivable_msat = 34;
+	optional Amount minimum_htlc_in_msat = 35;
+	optional Amount minimum_htlc_out_msat = 36;
+	optional Amount maximum_htlc_out_msat = 37;
+	optional uint32 their_to_self_delay = 38;
+	optional uint32 our_to_self_delay = 39;
+	optional uint32 max_accepted_htlcs = 40;
+	optional ListpeerchannelsChannelsAlias alias = 41;
+	repeated string status = 43;
+	optional uint64 in_payments_offered = 44;
+	optional Amount in_offered_msat = 45;
+	optional uint64 in_payments_fulfilled = 46;
+	optional Amount in_fulfilled_msat = 47;
+	optional uint64 out_payments_offered = 48;
+	optional Amount out_offered_msat = 49;
+	optional uint64 out_payments_fulfilled = 50;
+	optional Amount out_fulfilled_msat = 51;
+	repeated ListpeerchannelsChannelsHtlcs htlcs = 52;
+	optional string close_to_addr = 53;
+}
+
+message ListpeerchannelsChannelsFeerate {
+	optional uint32 perkw = 1;
+	optional uint32 perkb = 2;
+}
+
+message ListpeerchannelsChannelsInflight {
+	optional bytes funding_txid = 1;
+	optional uint32 funding_outnum = 2;
+	optional string feerate = 3;
+	optional Amount total_funding_msat = 4;
+	optional Amount our_funding_msat = 5;
+	optional bytes scratch_txid = 6;
+}
+
+message ListpeerchannelsChannelsFunding {
+	optional Amount pushed_msat = 1;
+	optional Amount local_funds_msat = 2;
+	optional Amount remote_funds_msat = 3;
+	optional Amount fee_paid_msat = 4;
+	optional Amount fee_rcvd_msat = 5;
+}
+
+message ListpeerchannelsChannelsAlias {
+	optional string local = 1;
+	optional string remote = 2;
+}
+
+message ListpeerchannelsChannelsHtlcs {
+	// ListPeerChannels.channels[].htlcs[].direction
+	enum ListpeerchannelsChannelsHtlcsDirection {
+		IN = 0;
+		OUT = 1;
+	}
+	optional ListpeerchannelsChannelsHtlcsDirection direction = 1;
+	optional uint64 id = 2;
+	optional Amount amount_msat = 3;
+	optional uint32 expiry = 4;
+	optional bytes payment_hash = 5;
+	optional bool local_trimmed = 6;
+	optional string status = 7;
+	optional HtlcState state = 8;
+}
+
+message ListclosedchannelsRequest {
+	optional bytes id = 1;
+}
+
+message ListclosedchannelsResponse {
+	repeated ListclosedchannelsClosedchannels closedchannels = 1;
+}
+
+message ListclosedchannelsClosedchannels {
+	// ListClosedChannels.closedchannels[].close_cause
+	enum ListclosedchannelsClosedchannelsClose_cause {
+		UNKNOWN = 0;
+		LOCAL = 1;
+		USER = 2;
+		REMOTE = 3;
+		PROTOCOL = 4;
+		ONCHAIN = 5;
+	}
+	optional bytes peer_id = 1;
+	bytes channel_id = 2;
+	optional string short_channel_id = 3;
+	optional ListclosedchannelsClosedchannelsAlias alias = 4;
+	ChannelSide opener = 5;
+	optional ChannelSide closer = 6;
+	bool private = 7;
+	uint64 total_local_commitments = 9;
+	uint64 total_remote_commitments = 10;
+	uint64 total_htlcs_sent = 11;
+	bytes funding_txid = 12;
+	uint32 funding_outnum = 13;
+	bool leased = 14;
+	optional Amount funding_fee_paid_msat = 15;
+	optional Amount funding_fee_rcvd_msat = 16;
+	optional Amount funding_pushed_msat = 17;
+	Amount total_msat = 18;
+	Amount final_to_us_msat = 19;
+	Amount min_to_us_msat = 20;
+	Amount max_to_us_msat = 21;
+	optional bytes last_commitment_txid = 22;
+	optional Amount last_commitment_fee_msat = 23;
+	ListclosedchannelsClosedchannelsClose_cause close_cause = 24;
+}
+
+message ListclosedchannelsClosedchannelsAlias {
+	optional string local = 1;
+	optional string remote = 2;
+}
+
+message DecodepayRequest {
+	string bolt11 = 1;
+	optional string description = 2;
+}
+
+message DecodepayResponse {
+	string currency = 1;
+	uint64 created_at = 2;
+	uint64 expiry = 3;
+	bytes payee = 4;
+	optional Amount amount_msat = 5;
+	bytes payment_hash = 6;
+	string signature = 7;
+	optional string description = 8;
+	optional bytes description_hash = 9;
+	uint32 min_final_cltv_expiry = 10;
+	optional bytes payment_secret = 11;
+	optional bytes features = 12;
+	optional bytes payment_metadata = 13;
+	repeated DecodepayFallbacks fallbacks = 14;
+	repeated DecodepayExtra extra = 16;
+}
+
+message DecodepayFallbacks {
+	// DecodePay.fallbacks[].type
+	enum DecodepayFallbacksType {
+		P2PKH = 0;
+		P2SH = 1;
+		P2WPKH = 2;
+		P2WSH = 3;
+	}
+	DecodepayFallbacksType item_type = 1;
+	optional string addr = 2;
+	bytes hex = 3;
+}
+
+message DecodepayExtra {
+	string tag = 1;
+	string data = 2;
+}
+
+message DecodeRequest {
+	string string = 1;
+}
+
+message DecodeResponse {
+	// Decode.type
+	enum DecodeType {
+		BOLT12_OFFER = 0;
+		BOLT12_INVOICE = 1;
+		BOLT12_INVOICE_REQUEST = 2;
+		BOLT11_INVOICE = 3;
+		RUNE = 4;
+	}
+	DecodeType item_type = 1;
+	bool valid = 2;
+	optional bytes offer_id = 3;
+	repeated bytes offer_chains = 4;
+	optional bytes offer_metadata = 5;
+	optional string offer_currency = 6;
+	optional string warning_unknown_offer_currency = 7;
+	optional uint32 currency_minor_unit = 8;
+	optional uint64 offer_amount = 9;
+	optional Amount offer_amount_msat = 10;
+	optional string offer_description = 11;
+	optional string offer_issuer = 12;
+	optional bytes offer_features = 13;
+	optional uint64 offer_absolute_expiry = 14;
+	optional uint64 offer_quantity_max = 15;
+	repeated DecodeOffer_paths offer_paths = 16;
+	optional bytes offer_node_id = 17;
+	optional string warning_missing_offer_node_id = 20;
+	optional string warning_invalid_offer_description = 21;
+	optional string warning_missing_offer_description = 22;
+	optional string warning_invalid_offer_currency = 23;
+	optional string warning_invalid_offer_issuer = 24;
+	optional bytes invreq_metadata = 25;
+	optional bytes invreq_payer_id = 26;
+	optional bytes invreq_chain = 27;
+	optional Amount invreq_amount_msat = 28;
+	optional bytes invreq_features = 29;
+	optional uint64 invreq_quantity = 30;
+	optional string invreq_payer_note = 31;
+	optional uint32 invreq_recurrence_counter = 32;
+	optional uint32 invreq_recurrence_start = 33;
+	optional string warning_missing_invreq_metadata = 35;
+	optional string warning_missing_invreq_payer_id = 36;
+	optional string warning_invalid_invreq_payer_note = 37;
+	optional string warning_missing_invoice_request_signature = 38;
+	optional string warning_invalid_invoice_request_signature = 39;
+	optional uint64 invoice_created_at = 41;
+	optional uint32 invoice_relative_expiry = 42;
+	optional bytes invoice_payment_hash = 43;
+	optional Amount invoice_amount_msat = 44;
+	repeated DecodeInvoice_fallbacks invoice_fallbacks = 45;
+	optional bytes invoice_features = 46;
+	optional bytes invoice_node_id = 47;
+	optional uint64 invoice_recurrence_basetime = 48;
+	optional string warning_missing_invoice_paths = 50;
+	optional string warning_missing_invoice_blindedpay = 51;
+	optional string warning_missing_invoice_created_at = 52;
+	optional string warning_missing_invoice_payment_hash = 53;
+	optional string warning_missing_invoice_amount = 54;
+	optional string warning_missing_invoice_recurrence_basetime = 55;
+	optional string warning_missing_invoice_node_id = 56;
+	optional string warning_missing_invoice_signature = 57;
+	optional string warning_invalid_invoice_signature = 58;
+	repeated DecodeFallbacks fallbacks = 59;
+	optional uint64 created_at = 60;
+	optional uint64 expiry = 61;
+	optional bytes payee = 62;
+	optional bytes payment_hash = 63;
+	optional bytes description_hash = 64;
+	optional uint32 min_final_cltv_expiry = 65;
+	optional bytes payment_secret = 66;
+	optional bytes payment_metadata = 67;
+	repeated DecodeExtra extra = 69;
+	optional string unique_id = 70;
+	optional string version = 71;
+	optional string string = 72;
+	repeated DecodeRestrictions restrictions = 73;
+	optional string warning_rune_invalid_utf8 = 74;
+	optional bytes hex = 75;
+}
+
+message DecodeOffer_paths {
+	bytes first_node_id = 1;
+	bytes blinding = 2;
+}
+
+message DecodeOffer_recurrencePaywindow {
+	uint32 seconds_before = 1;
+	uint32 seconds_after = 2;
+	optional bool proportional_amount = 3;
+}
+
+message DecodeInvoice_pathsPath {
+	bytes blinded_node_id = 1;
+	bytes encrypted_recipient_data = 2;
+}
+
+message DecodeInvoice_fallbacks {
+	uint32 version = 1;
+	bytes hex = 2;
+	optional string address = 3;
+}
+
+message DecodeFallbacks {
+	optional string warning_invoice_fallbacks_version_invalid = 1;
+}
+
+message DecodeExtra {
+	string tag = 1;
+	string data = 2;
+}
+
+message DecodeRestrictions {
+	repeated string alternatives = 1;
+	string summary = 2;
+}
+
 message DisconnectRequest {
 	bytes id = 1;
 	optional bool force = 2;
@@ -1134,6 +1465,8 @@ message FeeratesResponse {
 message FeeratesPerkb {
 	uint32 min_acceptable = 1;
 	uint32 max_acceptable = 2;
+	optional uint32 floor = 10;
+	repeated FeeratesPerkbEstimates estimates = 9;
 	optional uint32 opening = 3;
 	optional uint32 mutual_close = 4;
 	optional uint32 unilateral_close = 5;
@@ -1142,15 +1475,29 @@ message FeeratesPerkb {
 	optional uint32 penalty = 8;
 }
 
+message FeeratesPerkbEstimates {
+	optional uint32 blockcount = 1;
+	optional uint32 feerate = 2;
+	optional uint32 smoothed_feerate = 3;
+}
+
 message FeeratesPerkw {
 	uint32 min_acceptable = 1;
 	uint32 max_acceptable = 2;
+	optional uint32 floor = 10;
+	repeated FeeratesPerkwEstimates estimates = 9;
 	optional uint32 opening = 3;
 	optional uint32 mutual_close = 4;
 	optional uint32 unilateral_close = 5;
 	optional uint32 delayed_to_us = 6;
 	optional uint32 htlc_resolution = 7;
 	optional uint32 penalty = 8;
+}
+
+message FeeratesPerkwEstimates {
+	optional uint32 blockcount = 1;
+	optional uint32 feerate = 2;
+	optional uint32 smoothed_feerate = 3;
 }
 
 message FeeratesOnchain_fee_estimates {

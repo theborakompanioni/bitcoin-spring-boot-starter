@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - cln-grpc-client: ability to specify certs and key as base64-encoded value
 
 ### Changed
+- rebuild `cln-grpc-client` to work with CLN v23.05.1
 - upgrade: update jmolecules bom from v2022.2.4 to v2022.3.0
 - upgrade: update lnd testcontainer from v0.16.1-beta to v0.16.2-beta
 - upgrade: update springdoc-openapi from v2.0.4 to v2.1.0

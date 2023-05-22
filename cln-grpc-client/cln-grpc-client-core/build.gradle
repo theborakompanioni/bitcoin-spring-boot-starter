@@ -44,7 +44,7 @@ task fetchClnProtoFiles() {
                 .every()
     }
 
-    def base = "https://raw.githubusercontent.com/ElementsProject/lightning/master/cln-grpc/proto"
+    def base = "https://raw.githubusercontent.com/ElementsProject/lightning/${clnVersion}/cln-grpc/proto"
 
     doLast {
         clnProtoFiles
