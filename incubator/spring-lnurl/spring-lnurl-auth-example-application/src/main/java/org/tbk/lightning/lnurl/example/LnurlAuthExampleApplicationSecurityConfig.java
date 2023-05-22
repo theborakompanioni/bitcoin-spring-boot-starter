@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
@@ -68,36 +69,8 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .cors().disable()
-                /*
-                 * An overly verbose definition of the lnurl-auth authorization filter configuration.
-                 * This should demonstrate the ability of creating more customized setups.
-                 */
-                .apply(new LnurlAuthConfigurer()
-                        .k1Manager(lnurlAuthk1Manager)
-                        .pairingService(lnurlAuthPairingService)
-                        .lnurlAuthFactory(lnurlAuthFactory)
-                        .authenticationUserDetailsService(userDetailsService)
-                        .loginPageEndpoint(login -> login
-                                .enable(true)
-                                .baseUri(lnurlAuthLoginPagePath())
-                        )
-                        .sessionEndpoint(session -> session
-                                .baseUri(lnurlAuthSessionLoginPath())
-                                .sessionK1Key(lnurlAuthSessionK1Key())
-                                .successHandlerCustomizer(successHandler -> {
-                                    successHandler.setDefaultTargetUrl("/");
-                                    successHandler.setTargetUrlParameter("redirect");
-                                    successHandler.setAlwaysUseDefaultTargetUrl(false);
-                                    successHandler.setUseReferer(false);
-                                })
-                        )
-                        .walletEndpoint(wallet -> wallet
-                                .baseUri(lnurlAuthWalletLoginPath())
-                        )
-                )
-                .and()
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionFixation().migrateSession()
@@ -127,6 +100,33 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                                 antMatcher("/api/v1/demo/**")
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                /*
+                 * An overly verbose definition of the lnurl-auth authorization filter configuration.
+                 * This should demonstrate the ability of creating more customized setups.
+                 */
+                .apply(new LnurlAuthConfigurer()
+                        .k1Manager(lnurlAuthk1Manager)
+                        .pairingService(lnurlAuthPairingService)
+                        .lnurlAuthFactory(lnurlAuthFactory)
+                        .authenticationUserDetailsService(userDetailsService)
+                        .loginPageEndpoint(login -> login
+                                .enable(true)
+                                .baseUri(lnurlAuthLoginPagePath())
+                        )
+                        .sessionEndpoint(session -> session
+                                .baseUri(lnurlAuthSessionLoginPath())
+                                .sessionK1Key(lnurlAuthSessionK1Key())
+                                .successHandlerCustomizer(successHandler -> {
+                                    successHandler.setDefaultTargetUrl("/");
+                                    successHandler.setTargetUrlParameter("redirect");
+                                    successHandler.setAlwaysUseDefaultTargetUrl(false);
+                                    successHandler.setUseReferer(false);
+                                })
+                        )
+                        .walletEndpoint(wallet -> wallet
+                                .baseUri(lnurlAuthWalletLoginPath())
+                        )
                 );
 
         return http.build();

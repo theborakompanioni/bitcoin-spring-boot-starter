@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update lnd testcontainer from v0.16.1-beta to v0.16.2-beta
 - upgrade: update springdoc-openapi from v2.0.4 to v2.1.0
 - upgrade: update spring-tor from v0.7.0 to v0.8.0
+- upgrade: update spring-boot from v3.0.6 to v3.1.0
 
 ## [0.8.0] - 2023-04-29
 ### Changed

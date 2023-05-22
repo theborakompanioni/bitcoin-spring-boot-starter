@@ -43,8 +43,6 @@ class LnurlAuthTestSecurityDeprecatedConfig implements WebSecurityCustomizer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .userDetailsService(userDetailsService)
-                .apply(LnurlAuthConfigurer.create(k1Manager, pairingService))
-                .and()
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionFixation().migrateSession()
@@ -57,7 +55,8 @@ class LnurlAuthTestSecurityDeprecatedConfig implements WebSecurityCustomizer {
                                 antMatcher("/login")
                         ).permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                .apply(LnurlAuthConfigurer.create(k1Manager, pairingService));
 
         return http.build();
     }

@@ -42,14 +42,10 @@ class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .apply(LnurlAuthConfigurer.create(k1Manager, pairingService)
-                        .authenticationUserDetailsService(userDetailsService))
-                .and()
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionFixation().migrateSession()
                 )
-                .logout().and()
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(
@@ -57,7 +53,9 @@ class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
                                 antMatcher("/login")
                         ).permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                .apply(LnurlAuthConfigurer.create(k1Manager, pairingService)
+                        .authenticationUserDetailsService(userDetailsService));
 
         return http.build();
     }
