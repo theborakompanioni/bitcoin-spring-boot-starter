@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @EnableScheduling
 @Configuration(proxyBeanMethods = false)
-public class BitcoinPaymentRequestExampleApplicationConfig {
+class BitcoinPaymentRequestExampleApplicationConfig {
 
     /**
      * We must have access to a wallet for "getnewaddress" command to work.

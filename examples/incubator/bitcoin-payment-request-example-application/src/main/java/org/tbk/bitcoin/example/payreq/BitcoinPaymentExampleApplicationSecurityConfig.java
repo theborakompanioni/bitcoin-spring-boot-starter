@@ -13,7 +13,7 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 
 @EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
-public class BitcoinPaymentExampleApplicationSecurityConfig implements WebSecurityCustomizer {
+class BitcoinPaymentExampleApplicationSecurityConfig implements WebSecurityCustomizer {
 
     @Override
     public void customize(WebSecurity web) {

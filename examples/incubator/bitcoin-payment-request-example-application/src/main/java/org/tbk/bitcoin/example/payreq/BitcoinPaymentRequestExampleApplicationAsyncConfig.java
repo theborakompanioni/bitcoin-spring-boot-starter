@@ -10,7 +10,7 @@ import java.util.concurrent.Executor;
 
 @EnableAsync
 @Configuration(proxyBeanMethods = false)
-public class BitcoinPaymentRequestExampleApplicationAsyncConfig implements AsyncConfigurer {
+class BitcoinPaymentRequestExampleApplicationAsyncConfig implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {

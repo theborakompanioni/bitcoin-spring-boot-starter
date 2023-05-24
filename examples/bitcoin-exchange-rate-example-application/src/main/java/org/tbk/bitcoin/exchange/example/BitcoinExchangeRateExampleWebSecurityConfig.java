@@ -21,14 +21,7 @@ class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomiz
 
     @Override
     public void customize(WebSecurity web) {
-        web
-                .httpFirewall(new StrictHttpFirewall())
-                .ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .requestMatchers(
-                        antMatcher("/index.html"),
-                        antMatcher("/fonts/**")
-                );
+        web.httpFirewall(new StrictHttpFirewall());
     }
 
     @Bean
@@ -37,6 +30,11 @@ class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomiz
                 .cors(cors -> {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                        PathRequest.toStaticResources().atCommonLocations(),
+                        antMatcher("/index.html"),
+                        antMatcher("/fonts/**")
+                ).permitAll())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         return http.build();
