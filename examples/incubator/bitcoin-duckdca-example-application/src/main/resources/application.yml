@@ -25,11 +25,11 @@ org.tbk.xchange:
   enabled: true
   specifications:
     krakenExchange:
-      exchangeClass: org.knowm.xchange.kraken.KrakenExchange
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
     bitstampExchange:
-      exchangeClass: org.knowm.xchange.bitstamp.BitstampExchange
+      exchange-class: org.knowm.xchange.bitstamp.BitstampExchange
     bitfinexExchange:
-      exchangeClass: org.knowm.xchange.bitfinex.BitfinexExchange
-      shouldLoadRemoteMetaData: false # prevent exception since exchange added pair DOGE/USD
+      exchange-class: org.knowm.xchange.bitfinex.BitfinexExchange
+      should-load-remote-meta-data: false # prevent exception since exchange added pair DOGE/USD
     geminiExchange:
-      exchangeClass: org.knowm.xchange.gemini.v1.GeminiExchange
+      exchange-class: org.knowm.xchange.gemini.v1.GeminiExchange

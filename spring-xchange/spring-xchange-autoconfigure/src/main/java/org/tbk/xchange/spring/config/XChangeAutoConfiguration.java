@@ -83,7 +83,14 @@ public class XChangeAutoConfiguration {
             }
 
             if (bean instanceof XChangeAutoConfigProperties xChangeProperties) {
-                registerExchangeBeans(xChangeProperties);
+                // As registering beans should be done as early as possible, it might happen that
+                // the properties bean has not been processed yet. Trigger it manually, in case it did not happen.
+                ConfigurationPropertiesBindingPostProcessor propertiesBindingPostProcessor = beanFactory.getBean(ConfigurationPropertiesBindingPostProcessor.class);
+                propertiesBindingPostProcessor.postProcessBeforeInitialization(bean, beanName);
+
+                if (xChangeProperties.isEnabled()) {
+                    registerExchangeBeans(xChangeProperties);
+                }
             }
 
             return bean;

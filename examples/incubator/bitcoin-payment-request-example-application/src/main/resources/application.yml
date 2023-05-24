@@ -136,11 +136,11 @@ org.tbk.xchange:
   enabled: true
   specifications:
     krakenExchange:
-      exchangeClass: org.knowm.xchange.kraken.KrakenExchange
-      shouldLoadRemoteMetaData: false
+      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+      should-load-remote-meta-data: false
     bitstampExchange:
-      exchangeClass: org.knowm.xchange.bitstamp.BitstampExchange
-      shouldLoadRemoteMetaData: false
+      exchange-class: org.knowm.xchange.bitstamp.BitstampExchange
+      should-load-remote-meta-data: false
     geminiExchange:
-      exchangeClass: org.knowm.xchange.gemini.v1.GeminiExchange
-      shouldLoadRemoteMetaData: false
+      exchange-class: org.knowm.xchange.gemini.v1.GeminiExchange
+      should-load-remote-meta-data: false

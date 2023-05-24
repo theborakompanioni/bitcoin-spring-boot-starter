@@ -110,7 +110,7 @@ public class ExchangeSpecificationProperties implements Validator {
     private String metaDataJsonFileOverride;
 
     /**
-     * By default, some meta data from the exchange is remotely loaded (if implemented). Here you can set this default behavior.
+     * By default, some metadata from the exchange is remotely loaded (if implemented). Here you can set this default behavior.
      */
     private Boolean shouldLoadRemoteMetaData;
 

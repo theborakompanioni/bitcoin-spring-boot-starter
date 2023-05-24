@@ -17,7 +17,7 @@ import java.util.Map;
 )
 public class XChangeAutoConfigProperties implements Validator {
 
-    private boolean enabled;
+    private boolean enabled = true;
 
     private Map<String, ExchangeSpecificationProperties> specifications;
 
