@@ -187,7 +187,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin ([Docker](https://hub.docker.com/r/polarlightning/bitcoind))
 - bitcoin-kmp (GitHub): https://github.com/ACINQ/bitcoin-kmp
 - bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
-- cln (GitHub): https://github.com/ElementsProject/lightning ([Docker](https://hub.docker.com/r/elementsproject/lightningd))
+- cln (GitHub): https://github.com/ElementsProject/lightning ([Docker](https://hub.docker.com/r/polarlightning/clightning))
 - lnd (GitHub): https://github.com/LightningNetwork/lnd ([Docker](https://hub.docker.com/r/lightninglabs/lnd))
 - lnurl (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - LightningJ (GitHub): https://github.com/lightningj-org/lightningj

@@ -17,7 +17,6 @@ implementation "io.github.theborakompanioni:cln-grpc-client-starter:${bitcoinSpr
 org.tbk.spring.testcontainer.cln:
   enabled: true
   port: 19735
-  rpcport: 19835
   commands:
     - '--alias=tbk-cln-example'
     - '--bitcoin-rpcuser=myrpcuser'

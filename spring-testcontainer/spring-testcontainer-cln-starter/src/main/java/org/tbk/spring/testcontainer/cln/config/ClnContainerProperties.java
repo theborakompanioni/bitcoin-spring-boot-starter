@@ -24,8 +24,25 @@ import static com.google.common.base.Preconditions.checkArgument;
         ignoreUnknownFields = false
 )
 public class ClnContainerProperties extends AbstractContainerProperties implements Validator {
-    private static final int DEFAULT_PORT = 9735;
-    private static final int DEFAULT_RPC_PORT = 9835;
+    private static final String DEFAULT_NETWORK = "regtest";
+
+    // If 'PORT' is not specified, the default port 9735 is used for mainnet
+    // (testnet: 19735, signet: 39735, regtest: 19846)
+    private static final int DEFAULT_MAINNET_PORT = 9735;
+    private static final int DEFAULT_TESTNET_PORT = 19735;
+    private static final int DEFAULT_SIGNET_PORT = 39735;
+    private static final int DEFAULT_REGTEST_PORT = 19846;
+
+    private static int getPortByNetwork(String network) {
+        return switch (network) {
+            case "bitcoin" -> DEFAULT_MAINNET_PORT;
+            case "testnet" -> DEFAULT_TESTNET_PORT;
+            case "signet" -> DEFAULT_SIGNET_PORT;
+            case "regtest" -> DEFAULT_REGTEST_PORT;
+            default -> throw new IllegalStateException("Unexpected value: " + network);
+        };
+    }
+
 
     static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(1);
 
@@ -43,15 +60,18 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
 
     /**
      * Specify the port to listen on for RPC connections.
+     * @deprecated scheduled for removal; use the grpc instead
      */
+    @Deprecated
     private Integer rpcport;
 
+    @Deprecated
     public int getRpcport() {
-        return rpcport != null ? rpcport : DEFAULT_RPC_PORT;
+        return rpcport != null ? rpcport : 9835;
     }
 
     public int getPort() {
-        return port != null ? port : DEFAULT_PORT;
+        return port != null ? port : getPortByNetwork(getNetwork());
     }
 
     public Optional<String> getBitcoinRpcUser() {
@@ -65,6 +85,10 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
     public Optional<Integer> getGrpcPort() {
         return getCommandValueByKey("grpc-port")
                 .map(Integer::parseUnsignedInt);
+    }
+
+    public String getNetwork() {
+        return getCommandValueByKey("network").orElse(DEFAULT_NETWORK);
     }
 
     @Override

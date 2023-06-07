@@ -1,7 +1,6 @@
 package org.tbk.spring.testcontainer.cln.config;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -23,6 +22,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class ClnContainerAutoConfiguration {
 
-    private static final String DOCKER_IMAGE_NAME = "elementsproject/lightningd:v22.11.1";
+    private static final String DOCKER_IMAGE_NAME = "polarlightning/clightning:23.05";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -50,13 +50,14 @@ public class ClnContainerAutoConfiguration {
                 .addAll(buildCommandList())
                 .add("--bitcoin-rpcconnect=" + MoreTestcontainers.testcontainersInternalHost())
                 .add("--bitcoin-rpcport=" + bitcoindContainer.getMappedPort(18443))
+                .add("--network=" + this.properties.getNetwork())
+                .add("--addr=[::]:" + this.properties.getPort())
                 .addAll(this.properties.getGrpcPort().stream()
                         .map(it -> "--grpc-port=" + it)
                         .toList())
                 .build();
 
         List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
-                .add(this.properties.getRpcport())
                 .add(this.properties.getPort())
                 .addAll(this.properties.getGrpcPort().stream().toList())
                 .build();
@@ -67,13 +68,7 @@ public class ClnContainerAutoConfiguration {
                 .build();
 
         WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
-                .ports(ImmutableList.<Integer>builder()
-                        .addAll(this.properties.getGrpcPort().stream().toList())
-                        // TODO: wait for rpc port too
-                        // passing env var EXPOSE_TCP=true does not work..
-                        // this will only work once https://github.com/ElementsProject/lightning/pull/6101 is merged.
-                        //.add(this.properties.getRpcport())
-                        .build())
+                .ports(this.properties.getGrpcPort().stream().toList())
                 .build();
 
         WaitStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
@@ -87,13 +82,7 @@ public class ClnContainerAutoConfiguration {
 
         return new ClnContainer<>(dockerImageName)
                 .dependsOn(bitcoindContainer)
-                .withEnv(ImmutableMap.<String, String>builder()
-                        .put("LIGHTNINGD_DATA", "/root/.lightning")
-                        .put("LIGHTNINGD_PORT", String.valueOf(this.properties.getPort()))
-                        .put("LIGHTNINGD_RPC_PORT", String.valueOf(this.properties.getRpcport()))
-                        .put("LIGHTNINGD_NETWORK", "regtest")
-                        .put("EXPOSE_TCP", "false")
-                        .build())
+                .withEnv(this.properties.getEnvironment())
                 .withCreateContainerCmdModifier(MoreTestcontainers.cmdModifiers().withName(dockerContainerName))
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
@@ -102,7 +91,7 @@ public class ClnContainerAutoConfiguration {
 
     /**
      * Build command list.
-     * e.g. see https://lightning.readthedocs.io/lightningd-config.5.html
+     * e.g. see <a href="https://lightning.readthedocs.io/lightningd-config.5.html">lightningd-config</a>
      *
      * @return a list fo commands for the container.
      */

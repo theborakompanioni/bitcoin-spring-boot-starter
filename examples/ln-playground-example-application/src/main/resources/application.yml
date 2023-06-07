@@ -28,7 +28,6 @@ management.health.lndApi.enabled: true
 org.tbk.spring.testcontainer.cln:
   enabled: true
   port: 20735
-  rpcport: 20835
   commands:
     - '--alias=tbk-cln-example'
     - '--bitcoin-rpcuser=myoneandonlyrpcuser'
@@ -41,9 +40,9 @@ org.tbk.lightning.cln.grpc:
   port: 20935
   shutdown-timeout: PT3S
   # path to the tls files within the container!
-  client-cert-file-path: '/root/.lightning/regtest/client.pem'
-  client-key-file-path: '/root/.lightning/regtest/client-key.pem'
-  ca-cert-file-path: '/root/.lightning/regtest/ca.pem'
+  client-cert-file-path: '/home/clightning/.lightning/regtest/client.pem'
+  client-key-file-path: '/home/clightning/.lightning/regtest/client-key.pem'
+  ca-cert-file-path: '/home/clightning/.lightning/regtest/ca.pem'
 
 org.tbk.spring.testcontainer.lnd:
   enabled: true

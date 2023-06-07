@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Breaking
 - change bitcoin testcontainer image from ruimarinho/bitcoin-core to polarlightning/bitcoind
+- change cln testcontainer image from elementsproject/lightningd to polarlightning/clightning
+- deprecation: scheduled `rpcport` config property of cln testcontainer for removal
 
 ### Added
 - lnd-grpc-client: ability to specify cert and macaroon as base64-encoded value
