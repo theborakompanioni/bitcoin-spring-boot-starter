@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Breaking
+- change bitcoin testcontainer image from ruimarinho/bitcoin-core to polarlightning/bitcoind
+
 ### Added
 - lnd-grpc-client: ability to specify cert and macaroon as base64-encoded value
 - cln-grpc-client: ability to specify certs and key as base64-encoded value
@@ -15,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update springdoc-openapi from v2.0.4 to v2.1.0
 - upgrade: update spring-tor from v0.7.0 to v0.8.0
 - upgrade: update spring-boot from v3.0.6 to v3.1.0
+- upgrade: update bitcoin testcontainer from v24 to v25
 
 ## [0.8.0] - 2023-04-29
 ### Changed
@@ -33,6 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - deprecated class `org.tbk.bitcoin.common.util.Hex`
 
 ## [0.7.0] - 2023-04-04
+### Breaking
+- lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
+- upgrade: update docker lightninglabs/lnd from v0.15.5-beta to v0.16.0-beta
+- upgrade: update lightningj from v0.15.5-Beta to v0.16.0-Beta
+- 
 ### Added
 - module: initial version of module `cln-grpc-client`
 - module: initial version of module `spring-testcontainer-cln-starter`
@@ -48,20 +57,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update springdoc-openapi from v2.0.2 to v2.0.4
 - upgrade: update jmolecules bom from v2022.2.2 to v2022.2.4
 
-### Breaking
-- lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
-- upgrade: update docker lightninglabs/lnd from v0.15.5-beta to v0.16.0-beta
-- upgrade: update lightningj from v0.15.5-Beta to v0.16.0-Beta
-
 ## [0.6.0] - 2023-02-23
-### Added
-- module: initial version of module `bitcoin-zeromq-client-bitcoin-kmp`
-- ability to disable library specific zmq auto configuration
-
 ### Breaking
 - upgrade: update spring-boot from v2.7.6 to v3.0.2
 - upgrade: update spring-tor from v0.6.0 to v0.7.0
 - upgrade: update springdoc-openapi from v1.6.13 to v2.0.2
+- 
+### Added
+- module: initial version of module `bitcoin-zeromq-client-bitcoin-kmp`
+- ability to disable library specific zmq auto configuration
 
 ### Changed
 - upgrade: update bitcoin-kmp from v0.10.0 to v0.11.0
@@ -118,6 +122,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update netlayer from v0.7.2 to v0.7.5
 
 ## [0.4.0] - 2022-10-02
+### Breaking
+- upgrade: update spring-boot from v2.5.6 to v2.7.3
+- upgrade: update consensusj from v0.5.8 to v0.6.3
+
 ### Fixed
 - fix: tor auto-publish can be disabled (`org.tbk.tor.auto-publish-enabled`)
 
@@ -137,10 +145,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update protoc-gen-grpc-java v1.41.1 to v1.47.0
 - upgrade: update xchange from v5.0.11 to v5.0.13
 - upgrade: update zxing v3.4.1 to v3.5.0
-
-### Breaking
-- upgrade: update spring-boot from v2.5.6 to v2.7.3
-- upgrade: update consensusj from v0.5.8 to v0.6.3
 
 ## [0.3.0] - 2021-11-10
 ### Breaking

@@ -65,12 +65,13 @@ public class BitcoinRegtestExampleApplicationConfig {
             log.info("electrum wallet synchronized: {}", walletSynchronized);
 
             if (!walletSynchronized) {
-                log.info("Will wait max. 30s for electrum wallet to synchronize..");
+                Duration timeout = Duration.ofSeconds(60);
+                log.info("Will wait max. {} for electrum wallet to synchronize..", timeout);
                 Stopwatch sw = Stopwatch.createStarted();
-                Boolean walletSynchronizedAfterWaiting = Flux.interval(Duration.ofMillis(100))
+                Boolean walletSynchronizedAfterWaiting = Flux.interval(Duration.ofMillis(1))
                         .map(it -> electrumClient.isWalletSynchronized())
                         .filter(it -> it)
-                        .blockFirst(Duration.ofSeconds(30));
+                        .blockFirst(timeout);
 
                 log.info("Electrum wallet synchronized after {}: {}", sw.stop(), walletSynchronizedAfterWaiting);
 

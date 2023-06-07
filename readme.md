@@ -184,7 +184,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - Testcontainers (GitHub): https://github.com/testcontainers/testcontainers-java
 - Tor: https://www.torproject.org
 ---
-- Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin ([Docker](https://hub.docker.com/r/ruimarinho/bitcoin-core))
+- Bitcoin Core (GitHub): https://github.com/bitcoin/bitcoin ([Docker](https://hub.docker.com/r/polarlightning/bitcoind))
 - bitcoin-kmp (GitHub): https://github.com/ACINQ/bitcoin-kmp
 - bitcoinj (GitHub): https://github.com/bitcoinj/bitcoinj
 - cln (GitHub): https://github.com/ElementsProject/lightning ([Docker](https://hub.docker.com/r/elementsproject/lightningd))

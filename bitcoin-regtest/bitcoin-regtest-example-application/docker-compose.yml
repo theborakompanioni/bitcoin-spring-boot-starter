@@ -1,16 +1,10 @@
 version: "3"
 
-# Currently config "network_mode='host'" is still needed.
-# Otherwise electrumx cannot connect to bitcoind
-# (which should theoretically work, but does not on fedora 33 with docker 19.03.13).
-# This is just an example application, so it might not ever be a problem.
-
 services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
-    image: ruimarinho/bitcoin-core:22-alpine
+    image: polarlightning/bitcoind:25.0
     restart: always
-    network_mode: "host"
     command:
       -regtest=1
       -server=1
@@ -48,7 +42,6 @@ services:
     container_name: electrumx_regtest
     image: lukechilds/electrumx:v1.16.0
     restart: always
-    network_mode: "host"
     depends_on:
       - bitcoind_regtest
     expose:
@@ -58,7 +51,7 @@ services:
       - "50001:50001"
       - "50002:50002"
     environment:
-      DAEMON_URL: http://regtest-rpc-user:regtest-rpc-pass@localhost:18443
+      DAEMON_URL: http://regtest-rpc-user:regtest-rpc-pass@bitcoind_regtest:18443
       COIN: BitcoinSegwit
       NET: regtest
       LOG_LEVEL: debug
@@ -71,7 +64,6 @@ services:
   electrumd_regtest:
     container_name: electrumd_regtest
     image: osminogin/electrum-daemon:3.3.8
-    network_mode: "host"
     restart: always
     depends_on:
       - electrumx_regtest

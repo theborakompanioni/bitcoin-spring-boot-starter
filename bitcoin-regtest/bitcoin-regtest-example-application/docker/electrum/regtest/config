@@ -6,5 +6,5 @@
     "rpcpassword": "rpc-pwd",
     "rpcport": 7000,
     "rpcuser": "rpc-user",
-    "server": "127.0.0.1:50002:s"
+    "server": "electrumx_regtest:50002:s"
 }

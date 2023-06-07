@@ -1,3 +1,3 @@
 # Resources
-- ruimarinho/bitcoin-core (Docker): https://github.com/ruimarinho/docker-bitcoin-core
+- polarlightning/bitcoind (Docker): https://hub.docker.com/r/polarlightning/bitcoind
 - Bitcoin Core config generator: https://jlopp.github.io/bitcoin-core-config-generator/
