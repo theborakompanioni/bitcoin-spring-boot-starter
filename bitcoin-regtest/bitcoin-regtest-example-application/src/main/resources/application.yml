@@ -18,6 +18,11 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 logging.level.org.tbk.bitcoin.regtest: DEBUG
 
+spring.docker.compose:
+  enabled: true
+  file: ./docker/docker-compose.yml
+  stop.command: STOP # STOP is default, DOWN clears all container data after shutdown
+
 org.tbk.bitcoin.regtest:
   enabled: true
   # mine blocks every 1 - 10 seconds

@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - change bean methods visibility in autoconfig classes to package-private
 
+### Added
+- use spring-boot-docker-compose in bitcoin-regtest example application
+
 ### Changed
 - upgrade: update bitcoin-kmp from v0.11.1 to v0.12.0
 - upgrade: update bitcoinj from v0.16.1 to v0.16.2

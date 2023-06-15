@@ -3,18 +3,39 @@ bitcoin-regtest-example-application
 
 A small demo application with bitcoin/electrumx/electrum in regtest mode.
 
-1. Start services with
-```shell
-docker-compose up
-```
-
-2. Start application with
+Start application with
 ```shell
 ./gradlew -p bitcoin-regtest/bitcoin-regtest-example-application bootRun
 ```
 
+If you want to start from scratch, remove docker volumes:
+```shell
+docker-compose -f bitcoin-regtest/bitcoin-regtest-example-application/docker/docker-compose.yml down -v
+```
+
 Example log output:
 ```
+2021-05-12 00:50:41.632 INFO 111281 --- [  restartedMain] .s.b.d.c.l.DockerComposeLifecycleManager : Using Docker Compose file './docker/docker-compose.yml'
+2021-05-12 00:50:41.946 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Network docker_default  Creating
+2021-05-12 00:50:42.050 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Network docker_default  Created
+2021-05-12 00:50:42.051 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container bitcoind_regtest  Creating
+2021-05-12 00:50:42.072 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container bitcoind_regtest  Created
+2021-05-12 00:50:42.072 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumx_regtest  Creating
+2021-05-12 00:50:42.092 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumx_regtest  Created
+2021-05-12 00:50:42.093 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumd_regtest  Creating
+2021-05-12 00:50:42.112 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumd_regtest  Created
+2021-05-12 00:50:42.114 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container bitcoind_regtest  Starting
+2021-05-12 00:50:42.430 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container bitcoind_regtest  Started
+2021-05-12 00:50:42.430 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumx_regtest  Starting
+2021-05-12 00:50:42.720 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumx_regtest  Started
+2021-05-12 00:50:42.721 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumd_regtest  Starting
+2021-05-12 00:50:43.024 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumd_regtest  Started
+2021-05-12 00:50:43.024 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container bitcoind_regtest  Waiting
+2021-05-12 00:50:43.024 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumx_regtest  Waiting
+2021-05-12 00:50:43.024 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumd_regtest  Waiting
+2021-05-12 00:50:43.526 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container bitcoind_regtest  Healthy
+2021-05-12 00:50:43.526 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumx_regtest  Healthy
+2021-05-12 00:50:43.527 INFO 111281 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container electrumd_regtest  Healthy
 2021-05-12 00:50:44.460 DEBUG 26485 --- [stMiner RUNNING] o.t.b.regtest.BitcoindRegtestMinerImpl   : Trying to mine 1 block(s) with coinbase reward for address bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
 2021-05-12 00:50:44.469 DEBUG 26485 --- [stMiner RUNNING] o.t.b.regtest.BitcoindRegtestMinerImpl   : Mined 1 blocks with coinbase reward for address bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
 2021-05-12 00:50:44.470 DEBUG 26485 --- [stMiner RUNNING] .c.BitcoindRegtestMinerAutoConfiguration : Duration till next block: PT4.031S
