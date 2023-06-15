@@ -18,9 +18,9 @@ public class FeeRecommendationRequestImpl implements FeeRecommendationRequest {
 
         @Builder
         public ConfidenceImpl(double confidenceValue) {
-            // we can never have hundred percent guarantee that we make it into the next block
+            // we can never have a hundred percent guarantee that we make it into the next block
             checkArgument(confidenceValue < 1d, "value must be lower than 1");
-            //  we cannot guarantee the other way around either: this means "i really dont care" and should
+            //  we cannot guarantee the other way around either: this means "I really don't care" and should
             // therefore be expressed with "durationTarget"
             checkArgument(confidenceValue > 0d, "value must be greater than zero");
 

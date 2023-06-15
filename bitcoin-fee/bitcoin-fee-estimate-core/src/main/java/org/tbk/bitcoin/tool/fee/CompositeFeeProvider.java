@@ -17,6 +17,7 @@ public final class CompositeFeeProvider extends AbstractFeeProvider {
     private final List<FeeProvider> feeProviders;
 
     private final ProviderInfo providerInfo;
+
     private final Scheduler scheduler;
 
     public CompositeFeeProvider(List<FeeProvider> feeProviders) {
@@ -66,6 +67,6 @@ public final class CompositeFeeProvider extends AbstractFeeProvider {
                 .filter(it -> !it.isBlank())
                 .orElse("<empty>");
 
-        return String.format("A composite fee provider backed by %d providers: %s", feeProviders.size(), commaSeparatedProviderNames);
+        return "A composite fee provider backed by %d providers: %s".formatted(feeProviders.size(), commaSeparatedProviderNames);
     }
 }
