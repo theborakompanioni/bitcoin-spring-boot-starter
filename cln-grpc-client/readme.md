@@ -1,9 +1,8 @@
 cln-grpc-client
 ===
 
-A module containing a CLN gRPC API client.
-A Spring Boot starter is available which will automatically create injectable `NodeStub`, `NodeFutureStub` and
-`NodeBlockingStub` beans.
+A module containing a Spring Boot Starter for a [CLN gRPC API client](https://github.com/theborakompanioni/cln-grpc-client).
+The starter will automatically create injectable `NodeStub`, `NodeFutureStub` and `NodeBlockingStub` beans
 
 
 ## Install
@@ -42,21 +41,5 @@ org.tbk.lightning.cln.grpc:
 Of course, you can always create and inject all beans programmatically yourself.
 
 
-## Troubleshooting
-
-### `ManagedChannelProvider$ProviderNotFoundException`
-```
-Caused by: io.grpc.ManagedChannelProvider$ProviderNotFoundException: No functional channel service provider found. Try adding a dependency on the grpc-okhttp, grpc-netty, or grpc-netty-shaded artifact
-```
-
-add a channel service provider implementation, e.g.
-```groovy
-implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
-```
-
-Hint: The above section should currently not apply, as `grpc-netty-shaded` is included as dependency.
-However, this dependency might be removed in future releases.
-
-
 # Resources
-- https://github.com/ElementsProject/lightning/tree/master/cln-grpc/proto
+- cln-grpc-client (GitHub): https://github.com/theborakompanioni/cln-grpc-client

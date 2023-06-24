@@ -24,7 +24,6 @@ include 'lnd-grpc-client:lnd-grpc-client-core'
 include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
 include 'lnd-grpc-client:lnd-grpc-client-starter'
 
-include 'cln-grpc-client:cln-grpc-client-core'
 include 'cln-grpc-client:cln-grpc-client-autoconfigure'
 include 'cln-grpc-client:cln-grpc-client-starter'
 

@@ -39,7 +39,7 @@ of type `BitcoinjTransactionPublisherFactory` and `BitcoinjBlockPublisherFactory
 
 
 ### cln-grpc-client
-A module containing a spring boot starter for a CLN gRPC API client.
+A module containing a spring boot starter for a [CLN gRPC API client](https://github.com/theborakompanioni/cln-grpc-client).
 The starter will automatically create injectable `NodeStub`, `NodeFutureStub` and `NodeBlockingStub` beans:
 
 ```yaml

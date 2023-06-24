@@ -5,7 +5,7 @@ plugins {
 description = 'cln grpc client autoconfigure package'
 
 dependencies {
-    api project(':cln-grpc-client:cln-grpc-client-core')
+    api "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
