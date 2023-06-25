@@ -56,7 +56,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(name = {"hiddenServiceHealthIndicator", "hiddenServiceHealthContributor"})
-        public HealthContributor bitcoinJsonRpcHealthContributor(Map<String, BitcoinClient> beans) {
+        HealthContributor bitcoinJsonRpcHealthContributor(Map<String, BitcoinClient> beans) {
             return createContributor(beans);
         }
     }
@@ -65,7 +65,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
     @ConditionalOnSingleCandidate(BitcoinClient.class)
     @ConditionalOnEnabledInfoContributor("bitcoinJsonRpc")
     @ConditionalOnMissingBean(name = "bitcoinJsonRpcInfoContributor")
-    public InfoContributor bitcoinJsonRpcInfoContributor(BitcoinClient client) {
+    InfoContributor bitcoinJsonRpcInfoContributor(BitcoinClient client) {
         return builder -> {
             ImmutableMap.Builder<String, Object> detailBuilder = ImmutableMap.<String, Object>builder()
                     .put("network", firstNonNull(client.getNetParams().getId(), "<empty>"))

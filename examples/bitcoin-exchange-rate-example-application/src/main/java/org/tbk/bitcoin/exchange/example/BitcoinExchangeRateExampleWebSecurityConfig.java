@@ -15,8 +15,8 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
+@Configuration(proxyBeanMethods = false)
 class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomizer {
 
     @Override
@@ -25,7 +25,7 @@ class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomiz
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> {
                 })

@@ -32,13 +32,13 @@ class BitcoinPaymentRequestExampleApplicationConfig {
      * Maybe move to {@link org.tbk.bitcoin.regtest.config.BitcoinRegtestAutoConfiguration}?
      */
     @Bean
-    public InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
+    InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
         return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinRegtestClient);
     }
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner mainRunner(LndClientAutoConfigProperties properties,
+    ApplicationRunner mainRunner(LndClientAutoConfigProperties properties,
                                         LndContainer<?> lndContainer,
                                         SynchronousLndAPI lndApi) {
         return args -> {

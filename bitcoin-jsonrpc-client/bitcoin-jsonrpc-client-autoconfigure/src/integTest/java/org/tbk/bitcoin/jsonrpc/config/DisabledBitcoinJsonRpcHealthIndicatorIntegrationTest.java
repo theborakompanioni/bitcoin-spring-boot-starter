@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 class DisabledBitcoinJsonRpcHealthIndicatorIntegrationTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinJsonRpcTestApplication {
 
         public static void main(String[] args) {

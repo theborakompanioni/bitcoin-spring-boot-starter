@@ -12,7 +12,7 @@ public class BitcoinJsr354AutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BitcoinStandardExchangeRateProvider.class)
-    public BitcoinStandardExchangeRateProvider bitcoinStandardExchangeRateProvider() {
+    BitcoinStandardExchangeRateProvider bitcoinStandardExchangeRateProvider() {
         return new BitcoinStandardExchangeRateProvider();
     }
 

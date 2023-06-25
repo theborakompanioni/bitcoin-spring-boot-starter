@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinZeroMqClientExampleApplication {
 
     public static void main(String[] args) {
@@ -42,7 +42,7 @@ public class BitcoinZeroMqClientExampleApplication {
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
+    CommandLineRunner mainRunner(MessagePublishService<Transaction> bitcoinjTransactionPublishService) {
         return args -> {
             log.info("Starting example application main runner");
 
@@ -76,5 +76,4 @@ public class BitcoinZeroMqClientExampleApplication {
             bitcoinjTransactionPublishService.awaitRunning(Duration.ofSeconds(10));
         };
     }
-
 }

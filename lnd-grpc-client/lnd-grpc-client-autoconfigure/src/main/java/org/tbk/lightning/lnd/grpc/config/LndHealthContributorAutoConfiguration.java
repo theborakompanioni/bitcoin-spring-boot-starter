@@ -49,7 +49,7 @@ public class LndHealthContributorAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(name = {"lndApiHealthIndicator", "lndApiHealthContributor"})
-        public HealthContributor lndApiHealthContributor(Map<String, SynchronousLndAPI> beans) {
+        HealthContributor lndApiHealthContributor(Map<String, SynchronousLndAPI> beans) {
             return createContributor(beans);
         }
     }
@@ -58,7 +58,7 @@ public class LndHealthContributorAutoConfiguration {
     @ConditionalOnSingleCandidate(SynchronousLndAPI.class)
     @ConditionalOnEnabledInfoContributor("lndApi")
     @ConditionalOnMissingBean(name = "lndApiInfoContributor")
-    public InfoContributor lndApiInfoContributor(SynchronousLndAPI client) {
+    InfoContributor lndApiInfoContributor(SynchronousLndAPI client) {
         return builder -> {
             ImmutableMap.Builder<String, Object> detailBuilder = ImmutableMap.<String, Object>builder()
                     .put("performValidation", client.isPerformValidation());
@@ -98,5 +98,4 @@ public class LndHealthContributorAutoConfiguration {
             }
         };
     }
-
 }

@@ -27,7 +27,7 @@ public class BitcoinFeeClientAutoConfiguration {
     @Primary
     @Bean
     @ConditionalOnMissingBean(CompositeFeeProvider.class)
-    public FeeProvider compositeFeeProvider(List<FeeProvider> feeProviders) {
+    FeeProvider compositeFeeProvider(List<FeeProvider> feeProviders) {
         return new CompositeFeeProvider(feeProviders);
     }
 

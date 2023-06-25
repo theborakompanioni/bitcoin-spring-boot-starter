@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @ActiveProfiles("test")
 class ElectrumDaemonContainerApplicationTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumDaemonContainerTestApplication {
 
         public static void main(String[] args) {

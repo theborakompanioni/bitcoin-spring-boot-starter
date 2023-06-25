@@ -34,20 +34,20 @@ public class MempoolspaceFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(MempoolspaceFeeApiClient.class)
-    public MempoolspaceFeeApiClient mempoolspaceFeeApiClient() {
+    MempoolspaceFeeApiClient mempoolspaceFeeApiClient() {
         return new MempoolspaceFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(SimpleMempoolspaceFeeProvider.class)
-    public SimpleMempoolspaceFeeProvider simpleMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+    SimpleMempoolspaceFeeProvider simpleMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
         return new SimpleMempoolspaceFeeProvider(mempoolspaceFeeApiClient);
     }
 
     @Bean("projectedBlocksMempoolspaceFeeProvider")
     @ConditionalOnBean(FeesFromProjectedBlockStrategy.class)
     @ConditionalOnMissingBean(ProjectedBlocksMempoolspaceFeeProvider.class)
-    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProviderWithCustomStrategy(MempoolspaceFeeApiClient mempoolspaceFeeApiClient,
+    ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProviderWithCustomStrategy(MempoolspaceFeeApiClient mempoolspaceFeeApiClient,
                                                                                                            FeesFromProjectedBlockStrategy strategy) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, strategy);
     }
@@ -57,7 +57,7 @@ public class MempoolspaceFeeClientAutoConfiguration {
             ProjectedBlocksMempoolspaceFeeProvider.class,
             FeesFromProjectedBlockStrategy.class
     })
-    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+    ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient);
     }
 }

@@ -43,12 +43,12 @@ class BitcoinRegtestScenarioTest {
         }
 
         @Bean
-        public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
+        RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
             return new RegtestMinerImpl(bitcoinJsonRpcClient);
         }
 
         @Bean
-        public BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
+        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
             return new BitcoinRegtestActions(regtestMiner);
         }
     }

@@ -21,7 +21,7 @@ import java.time.Duration;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BitcoindContainerExampleApplication {
 
     public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class BitcoindContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner mainRunner(MessagePublishService<Block> bitcoinBlockPublishService) {
+    ApplicationRunner mainRunner(MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             log.info("=================================================");

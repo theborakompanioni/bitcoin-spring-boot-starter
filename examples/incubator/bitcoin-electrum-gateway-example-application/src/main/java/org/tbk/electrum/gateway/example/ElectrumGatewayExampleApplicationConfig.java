@@ -23,7 +23,7 @@ import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.log
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ElectrumGatewayExampleApplicationProperties.class)
-public class ElectrumGatewayExampleApplicationConfig {
+class ElectrumGatewayExampleApplicationConfig {
 
     private final ElectrumGatewayExampleApplicationProperties properties;
 
@@ -32,7 +32,7 @@ public class ElectrumGatewayExampleApplicationConfig {
     }
 
     @Bean(destroyMethod = "stopAsync")
-    public ElectrumWalletWatchLoop electrumWalletWatchLoop(ElectrumClient electrumClient) {
+    ElectrumWalletWatchLoop electrumWalletWatchLoop(ElectrumClient electrumClient) {
         Scheduler scheduler = Scheduler.newFixedDelaySchedule(
                 this.properties.getInitialDelay().toNanos(),
                 this.properties.getDelay().toNanos(),
@@ -52,14 +52,14 @@ public class ElectrumGatewayExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+    CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
                                               BitcoinClient bitcoinClient) {
         return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
     }
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+    CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
                                                ElectrumClient electrumClient) {
         return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient);
     }

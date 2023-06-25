@@ -44,12 +44,12 @@ class SimpleElectrumRegtestFaucetTest {
         }
 
         @Bean
-        public RegtestMiner regtestMiner(BitcoinClient bitcoinClient) {
+        RegtestMiner regtestMiner(BitcoinClient bitcoinClient) {
             return new RegtestMinerImpl(bitcoinClient);
         }
 
         @Bean
-        public BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
+        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
             return new BitcoinRegtestActions(regtestMiner);
         }
     }

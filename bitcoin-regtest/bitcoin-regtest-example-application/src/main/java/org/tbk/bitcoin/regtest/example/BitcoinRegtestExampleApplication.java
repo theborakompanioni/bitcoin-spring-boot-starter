@@ -8,7 +8,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationListener;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinRegtestExampleApplication {
 
     public static void main(String[] args) {

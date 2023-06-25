@@ -36,7 +36,7 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AdvancedBitcoinjElectrumClientContainerTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumDaemonContainerTestApplication {
 
         public static void main(String[] args) {
@@ -47,17 +47,17 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         }
 
         @Bean
-        public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
+        RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
             return new RegtestMinerImpl(bitcoinJsonRpcClient);
         }
 
         @Bean
-        public BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
+        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
             return new BitcoinRegtestActions(regtestMiner);
         }
 
         @Bean
-        public ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
+        ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
             return new ElectrumRegtestActions(electrumClient);
         }
     }

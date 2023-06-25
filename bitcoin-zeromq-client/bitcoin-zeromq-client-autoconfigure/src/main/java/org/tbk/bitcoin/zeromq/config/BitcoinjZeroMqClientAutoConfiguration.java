@@ -41,7 +41,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BitcoinSerializer bitcoinjZeroMqClientBitcoinSerializer(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
+    BitcoinSerializer bitcoinjZeroMqClientBitcoinSerializer(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         NetworkParameters networkParameters = networkFromProperties(bitcoinZmqClientConfig);
         return new BitcoinSerializer(networkParameters, false);
     }
@@ -49,7 +49,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "bitcoinRawTxZeroMqMessagePublisherFactory")
-    public BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory(
+    BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory(
             BitcoinSerializer bitcoinSerializer,
             @Qualifier("bitcoinRawTxZeroMqMessagePublisherFactory") ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory
     ) {
@@ -59,7 +59,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
     @ConditionalOnMissingBean(value = Transaction.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(BitcoinjTransactionPublisherFactory.class)
-    public MessagePublishService<Transaction> bitcoinjTransactionPublishService(
+    MessagePublishService<Transaction> bitcoinjTransactionPublishService(
             BitcoinjTransactionPublisherFactory bitcoinjTransactionPublisherFactory
     ) {
         return new MessagePublishService<>(bitcoinjTransactionPublisherFactory);
@@ -68,7 +68,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "bitcoinRawBlockZeroMqMessagePublisherFactory")
-    public BitcoinjBlockPublisherFactory bitcoinjBlockPublisherFactory(
+    BitcoinjBlockPublisherFactory bitcoinjBlockPublisherFactory(
             BitcoinSerializer bitcoinSerializer,
             @Qualifier("bitcoinRawBlockZeroMqMessagePublisherFactory") ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory
     ) {
@@ -78,7 +78,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
     @ConditionalOnMissingBean(value = Block.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(BitcoinjBlockPublisherFactory.class)
-    public MessagePublishService<Block> bitcoinjBlockPublishService(
+    MessagePublishService<Block> bitcoinjBlockPublishService(
             BitcoinjBlockPublisherFactory bitcoinjBlockPublisherFactory
     ) {
         return new MessagePublishService<>(bitcoinjBlockPublisherFactory);

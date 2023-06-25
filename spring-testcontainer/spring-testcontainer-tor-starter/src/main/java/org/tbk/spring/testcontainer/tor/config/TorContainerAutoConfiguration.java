@@ -58,7 +58,7 @@ public class TorContainerAutoConfiguration {
 
     @Bean(name = "torContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(TorContainer.class)
-    public TorContainer<?> torContainer(@Qualifier("torContainerWaitStrategy") WaitStrategy waitStrategy) {
+    TorContainer<?> torContainer(@Qualifier("torContainerWaitStrategy") WaitStrategy waitStrategy) {
         // expose all the ports of the host that are mapped as Hidden Services
         this.properties.getHiddenServiceHostPorts().forEach(Testcontainers::exposeHostPorts);
 
@@ -67,19 +67,19 @@ public class TorContainerAutoConfiguration {
 
     @Bean("torContainerWaitStrategy")
     @ConditionalOnMissingBean(name = "torContainerWaitStrategy")
-    public WaitStrategy torContainerWaitStrategy() {
+    WaitStrategy torContainerWaitStrategy() {
         return CustomHostPortWaitStrategy.builder()
                 .addPort(hardcodedSocksPort)
                 .build();
     }
 
     @Bean
-    public HiddenServiceHostnameResolver hiddenServiceHostnameResolver(TorContainer<?> torContainer) {
+    HiddenServiceHostnameResolver hiddenServiceHostnameResolver(TorContainer<?> torContainer) {
         return new HiddenServiceHostnames(torContainer, HIDDEN_SERVICE_HOME);
     }
 
     @Bean
-    public ApplicationRunner torContainerHiddenServiceHostnameLogger(HiddenServiceHostnameResolver resolver) {
+    ApplicationRunner torContainerHiddenServiceHostnameLogger(HiddenServiceHostnameResolver resolver) {
         return args -> {
             Set<String> hiddenServiceNames = this.properties.getHiddenServices().keySet();
 
@@ -159,5 +159,4 @@ public class TorContainerAutoConfiguration {
                 .put(torExtraArgsEnvVarName, torExtraArgsWithServices)
                 .build();
     }
-
 }

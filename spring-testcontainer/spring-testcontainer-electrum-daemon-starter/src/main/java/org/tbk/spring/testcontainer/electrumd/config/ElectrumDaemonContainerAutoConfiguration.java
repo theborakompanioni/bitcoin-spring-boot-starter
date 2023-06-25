@@ -41,7 +41,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ElectrumDaemonContainerConfig.class)
-    public ElectrumDaemonContainerConfig electrumDaemonContainerConfig() {
+    ElectrumDaemonContainerConfig electrumDaemonContainerConfig() {
         return ElectrumDaemonContainerConfig.builder()
                 .environment(properties.getEnvironmentWithDefaults())
                 .defaultWallet(properties.getDefaultWallet().orElse(null))
@@ -51,7 +51,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumxContainer.class)
-    public ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumxTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
+    ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumxTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
                                                                                         ElectrumxContainer<?> electrumxContainer) {
         verifyCompatibilityWithElectrumx(electrumDaemonContainerConfig, electrumxContainer);
 
@@ -61,27 +61,26 @@ public class ElectrumDaemonContainerAutoConfiguration {
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumPersonalServerContainer.class)
-    public ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
+    ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
                                                                                                      ElectrumPersonalServerContainer<?> electrumPersonlServerContainer) {
         return containerFactory.createStartedElectrumDaemonContainer(electrumDaemonContainerConfig, electrumPersonlServerContainer);
     }
 
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
-    public ElectrumDaemonContainer<?> electrumDaemonContainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig) {
+    ElectrumDaemonContainer<?> electrumDaemonContainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig) {
         return containerFactory.createStartedElectrumDaemonContainer(electrumDaemonContainerConfig);
     }
 
     @Bean
     @ConditionalOnBean(ElectrumDaemonContainer.class)
-    public InitializingBean electrumDaemonContainerInitLogger(ElectrumDaemonContainer electrumDaemonContainer) {
+    InitializingBean electrumDaemonContainerInitLogger(ElectrumDaemonContainer electrumDaemonContainer) {
         return () -> {
             if (log.isDebugEnabled()) {
                 log.debug("Started {} with exposed ports {}", electrumDaemonContainer.getContainerName(), electrumDaemonContainer.getExposedPorts());
             }
         };
     }
-
 
     private void verifyCompatibilityWithElectrumx(ElectrumDaemonContainerConfig config,
                                                   ElectrumxContainer<?> electrumxContainer) {

@@ -46,7 +46,7 @@ public class BitcoinJsonRpcMetricsConfiguration {
 
     @Bean
     @ConditionalOnBean(CacheFacade.class)
-    public MeterBinder bitcoinJsonRpcCacheMetrics(CacheFacade cache) {
+    MeterBinder bitcoinJsonRpcCacheMetrics(CacheFacade cache) {
         return (registry) -> {
             GuavaCacheMetrics.monitor(registry, cache.block(), "block", Collections.emptyList());
             GuavaCacheMetrics.monitor(registry, cache.blockInfo(), "blockInfo", Collections.emptyList());
@@ -57,7 +57,7 @@ public class BitcoinJsonRpcMetricsConfiguration {
 
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
-    public BitcoinJsonRpcClientMetrics bitcoinJsonRpcClientMetrics(BitcoinClient client) {
+    BitcoinJsonRpcClientMetrics bitcoinJsonRpcClientMetrics(BitcoinClient client) {
         return new BitcoinJsonRpcClientMetrics(client);
     }
 

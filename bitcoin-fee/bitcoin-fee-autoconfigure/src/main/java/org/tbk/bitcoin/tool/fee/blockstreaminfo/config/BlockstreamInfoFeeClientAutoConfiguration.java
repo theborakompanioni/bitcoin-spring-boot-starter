@@ -32,13 +32,13 @@ public class BlockstreamInfoFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BlockstreamInfoFeeApiClient.class)
-    public BlockstreamInfoFeeApiClient blockstreamInfoFeeApiClient() {
+    BlockstreamInfoFeeApiClient blockstreamInfoFeeApiClient() {
         return new BlockstreamInfoFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(BlockstreamInfoFeeProvider.class)
-    public BlockstreamInfoFeeProvider blockstreamInfoFeeProvider(BlockstreamInfoFeeApiClient blockstreamInfoFeeApiClient) {
+    BlockstreamInfoFeeProvider blockstreamInfoFeeProvider(BlockstreamInfoFeeApiClient blockstreamInfoFeeApiClient) {
         return new BlockstreamInfoFeeProvider(blockstreamInfoFeeApiClient);
     }
 }

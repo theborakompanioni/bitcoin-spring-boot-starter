@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class ClnContainerExampleApplication {
 
     public static void main(String[] args) {
@@ -49,7 +49,7 @@ public class ClnContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner clnPrintInfoRunner() {
+    ApplicationRunner clnPrintInfoRunner() {
         return args -> {
             GetinfoResponse info = clnNodeFutureStub.getinfo(GetinfoRequest.newBuilder().build())
                     .get(10, TimeUnit.SECONDS);
@@ -67,7 +67,7 @@ public class ClnContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner clnBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService) {
+    ApplicationRunner clnBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
@@ -87,7 +87,7 @@ public class ClnContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner clnAddTestInvoiceRunner() {
+    ApplicationRunner clnAddTestInvoiceRunner() {
         return args -> {
             InvoiceResponse invoiceResponse = clnNodeFutureStub.invoice(InvoiceRequest.newBuilder()
                             .setAmountMsat(AmountOrAny.newBuilder()

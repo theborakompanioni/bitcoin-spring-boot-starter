@@ -43,12 +43,12 @@ class ScheduledRegtestMinerTest {
         }
 
         @Bean
-        public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
+        RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
             return new RegtestMinerImpl(bitcoinJsonRpcClient);
         }
 
         @Bean(destroyMethod = "stopAsync")
-        public ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
+        ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
                                                            @Qualifier("regtestMinerScheduler")
                                                            AbstractScheduledService.Scheduler scheduler) {
             ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
@@ -57,7 +57,7 @@ class ScheduledRegtestMinerTest {
         }
 
         @Bean("regtestMinerScheduler")
-        public AbstractScheduledService.Scheduler regtestMinerScheduler() {
+        AbstractScheduledService.Scheduler regtestMinerScheduler() {
             return new RegtestMinerScheduler();
         }
 

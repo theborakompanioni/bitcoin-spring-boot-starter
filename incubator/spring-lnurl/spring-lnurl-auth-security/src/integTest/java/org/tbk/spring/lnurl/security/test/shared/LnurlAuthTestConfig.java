@@ -18,7 +18,7 @@ import java.net.URI;
 public class LnurlAuthTestConfig {
 
     @Bean
-    public LnurlAuthFactory lnurlAuthFactory() {
+    LnurlAuthFactory lnurlAuthFactory() {
         // any url well do - we just need the query string in tests
         URI loginUrl = URI.create("https://localhost" + LnurlAuthConfigurer.defaultWalletLoginUrl());
 
@@ -26,18 +26,18 @@ public class LnurlAuthTestConfig {
     }
 
     @Bean
-    public TestPairingService pairingService() {
+    TestPairingService pairingService() {
         return new TestPairingService(userDetailsService());
     }
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
+    InMemoryUserDetailsManager userDetailsService() {
         return new InMemoryUserDetailsManager();
     }
 
     // make bean of K1Manager injectable in tests
     @Bean
-    public SimpleK1Manager k1Manager() {
+    SimpleK1Manager k1Manager() {
         return new SimpleK1Manager();
     }
 

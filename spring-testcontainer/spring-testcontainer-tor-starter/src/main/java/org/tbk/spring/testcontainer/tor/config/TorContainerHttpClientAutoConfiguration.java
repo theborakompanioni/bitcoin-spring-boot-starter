@@ -24,7 +24,7 @@ public class TorContainerHttpClientAutoConfiguration {
     @Bean(name = "torHttpClient", destroyMethod = "close")
     @ConditionalOnBean(TorContainer.class)
     @ConditionalOnMissingBean(name = "torHttpClient")
-    public CloseableHttpClient torHttpClient(TorContainer<?> torContainer) {
+    CloseableHttpClient torHttpClient(TorContainer<?> torContainer) {
         SocketAddress sockAddr = new InetSocketAddress("localhost", torContainer.getMappedPort(9050));
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, sockAddr);
 

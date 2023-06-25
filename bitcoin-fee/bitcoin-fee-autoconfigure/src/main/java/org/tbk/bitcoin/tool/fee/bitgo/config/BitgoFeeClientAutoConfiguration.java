@@ -36,7 +36,7 @@ public class BitgoFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BitgoFeeApiClient.class)
-    public BitgoFeeApiClient bitgoFeeApiClient() {
+    BitgoFeeApiClient bitgoFeeApiClient() {
         BitgoFeeApiClientImpl bitgoFeeApiClient = new BitgoFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
 
         return CachingBitgoFeeApiClient.builder()
@@ -47,7 +47,7 @@ public class BitgoFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BitgoFeeProvider.class)
-    public BitgoFeeProvider bitgoFeeProvider(BitgoFeeApiClient bitgoFeeApiClient) {
+    BitgoFeeProvider bitgoFeeProvider(BitgoFeeApiClient bitgoFeeApiClient) {
         return new BitgoFeeProvider(bitgoFeeApiClient);
     }
 

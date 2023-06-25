@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class TorContainerExampleApplicationConfig {
+class TorContainerExampleApplicationConfig {
 
 }

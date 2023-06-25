@@ -21,7 +21,7 @@ public class ElectrumDaemonContainerJsonRpcClientAutoConfiguration {
      */
     @Bean
     @ConditionalOnSingleCandidate(ElectrumDaemonContainer.class)
-    public ElectrumDaemonJsonrpcConfigBuilderCustomizer electrumDaemonJsonrpcConfigBuilderCustomizer(ElectrumDaemonContainer<?> electrumDaemonContainer) {
+    ElectrumDaemonJsonrpcConfigBuilderCustomizer electrumDaemonJsonrpcConfigBuilderCustomizer(ElectrumDaemonContainer<?> electrumDaemonContainer) {
         return config -> config
                 .host("http://" + electrumDaemonContainer.getHost())
                 .port(electrumDaemonContainer.getMappedPort(config.getPort()));

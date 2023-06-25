@@ -24,7 +24,7 @@ public class BitcoindContainerJsonRpcClientAutoConfiguration {
      */
     @Bean
     @ConditionalOnBean(BitcoindContainer.class)
-    public RpcConfigBuilderCustomizer bitcoinJsonRpcConfigBuilderCustomizer(BitcoindContainer<?> bitcoinContainer) {
+    RpcConfigBuilderCustomizer bitcoinJsonRpcConfigBuilderCustomizer(BitcoindContainer<?> bitcoinContainer) {
         return config -> config
                 .host("http://" + bitcoinContainer.getHost())
                 .port(bitcoinContainer.getMappedPort(config.getPort()));

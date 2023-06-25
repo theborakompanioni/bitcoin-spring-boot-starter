@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @ActiveProfiles("test")
 class ClnContainerApplicationTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class ClnContainerTestApplication {
         public static void main(String[] args) {
             new SpringApplicationBuilder()

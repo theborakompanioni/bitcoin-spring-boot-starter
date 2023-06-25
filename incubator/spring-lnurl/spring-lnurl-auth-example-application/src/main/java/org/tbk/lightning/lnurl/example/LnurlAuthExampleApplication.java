@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationListener;
 import java.util.TimeZone;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class LnurlAuthExampleApplication {
     static {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BtcRpcExplorerExampleApplication {
 
     public static void main(String[] args) {
@@ -27,7 +27,7 @@ public class BtcRpcExplorerExampleApplication {
     }
 
     @Bean
-    public ApplicationRunner mainRunner() {
+    ApplicationRunner mainRunner() {
         return args -> {
             log.info("=================================================");
             log.info("Starting...");

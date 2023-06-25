@@ -32,13 +32,13 @@ public class BlockchairFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BlockchairFeeApiClient.class)
-    public BlockchairFeeApiClient blockchairFeeApiClient() {
+    BlockchairFeeApiClient blockchairFeeApiClient() {
         return new BlockchairFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(BlockchairFeeProvider.class)
-    public BlockchairFeeProvider blockchairFeeProvider(BlockchairFeeApiClient blockchairFeeApiClientb) {
+    BlockchairFeeProvider blockchairFeeProvider(BlockchairFeeApiClient blockchairFeeApiClientb) {
         return new BlockchairFeeProvider(blockchairFeeApiClientb);
     }
 }

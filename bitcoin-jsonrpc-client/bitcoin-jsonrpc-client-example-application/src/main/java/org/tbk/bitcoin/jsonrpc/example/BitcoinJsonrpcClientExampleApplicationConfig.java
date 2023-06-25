@@ -23,11 +23,11 @@ import java.util.List;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableScheduling
-public class BitcoinJsonrpcClientExampleApplicationConfig {
+class BitcoinJsonrpcClientExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner printBitcoinNodeInfo(TaskScheduler scheduler, BitcoinClient bitcoinClient) {
+    CommandLineRunner printBitcoinNodeInfo(TaskScheduler scheduler, BitcoinClient bitcoinClient) {
         Runnable task = () -> {
             Stopwatch stopwatch = Stopwatch.createStarted();
             try {

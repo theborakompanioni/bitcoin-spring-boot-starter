@@ -48,7 +48,7 @@ public class LndContainerRpcClientAutoConfiguration {
     @Bean("lndRpcMacaroonContext")
     @ConditionalOnMissingBean(name = {"lndRpcMacaroonContext"})
     @ConditionalOnBean({LndContainer.class})
-    public MacaroonContext lndRpcMacaroonContext(LndContainer<?> lndContainer) {
+    MacaroonContext lndRpcMacaroonContext(LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getMacaroonFilePath(), inputStream -> {
             String hex = HexFormat.of().formatHex(inputStream.readAllBytes());
             return () -> hex;
@@ -58,7 +58,7 @@ public class LndContainerRpcClientAutoConfiguration {
     @Bean("lndRpcSslContext")
     @ConditionalOnMissingBean(name = {"lndRpcSslContext"})
     @ConditionalOnBean({LndContainer.class})
-    public SslContext lndRpcSslContext(LndContainer<?> lndContainer) {
+    SslContext lndRpcSslContext(LndContainer<?> lndContainer) {
         return lndContainer.copyFileFromContainer(properties.getCertFilePath(), inputStream -> {
             return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                     .trustManager(inputStream)
@@ -69,7 +69,7 @@ public class LndContainerRpcClientAutoConfiguration {
     @Bean("lndRpcConfig")
     @ConditionalOnMissingBean(LndRpcConfig.class)
     @ConditionalOnBean({LndContainer.class})
-    public LndRpcConfig lndRpcConfig(LndContainer<?> lndContainer,
+    LndRpcConfig lndRpcConfig(LndContainer<?> lndContainer,
                                      @Qualifier("lndRpcMacaroonContext") MacaroonContext lndRpcMacaroonContext,
                                      @Qualifier("lndRpcSslContext") SslContext lndRpcSslContext) {
         String host = lndContainer.getHost();

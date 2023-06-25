@@ -40,10 +40,10 @@ class LnurlAuthExampleApplicationConfig {
 
     @Bean
     @SneakyThrows(URISyntaxException.class)
-    public LnurlAuthFactory lnurlAuthFactory(K1Manager k1Manager,
-                                             ServletContext servletContext,
-                                             Optional<Tor> tor, // injects only after tor is running!
-                                             Optional<HiddenServiceDefinition> applicationHiddenServiceDefinition) {
+    LnurlAuthFactory lnurlAuthFactory(K1Manager k1Manager,
+                                      ServletContext servletContext,
+                                      Optional<Tor> tor, // injects only after tor is running!
+                                      Optional<HiddenServiceDefinition> applicationHiddenServiceDefinition) {
         String callbackBaseUrl = properties.getLnurlAuthBaseUrl()
                 .or(() -> applicationHiddenServiceDefinition.flatMap(this::buildOnionUrl))
                 .orElseThrow(() -> {
@@ -60,23 +60,23 @@ class LnurlAuthExampleApplicationConfig {
     }
 
     @Bean
-    public SimpleK1Manager k1Manager() {
+    SimpleK1Manager k1Manager() {
         return new SimpleK1Manager();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(WalletUserService walletUserService) {
+    UserDetailsService userDetailsService(WalletUserService walletUserService) {
         return new UserDetailsServiceImpl(walletUserService);
     }
 
     @Bean
-    public LnurlAuthPairingService lnurlAuthSecurityService(WalletUserService walletUserService) {
+    LnurlAuthPairingService lnurlAuthSecurityService(WalletUserService walletUserService) {
         return new LnurlAuthPairingServiceImpl(walletUserService);
     }
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner lnurlAuthExampleConsoleInfoRunner(LnurlAuthFactory lnurlAuthFactory) {
+    ApplicationRunner lnurlAuthExampleConsoleInfoRunner(LnurlAuthFactory lnurlAuthFactory) {
         return args -> {
             LnurlAuth lnurlAuth = lnurlAuthFactory.createLnUrlAuth();
 
@@ -89,9 +89,9 @@ class LnurlAuthExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner applicationHiddenServiceConsoleInfoRunner(ServletContext servletContext,
-                                                                       Optional<Tor> tor, // injects only after tor is running!
-                                                                       Optional<HiddenServiceDefinition> applicationHiddenServiceDefinition) {
+    ApplicationRunner applicationHiddenServiceConsoleInfoRunner(ServletContext servletContext,
+                                                                Optional<Tor> tor, // injects only after tor is running!
+                                                                Optional<HiddenServiceDefinition> applicationHiddenServiceDefinition) {
         return args -> {
             if (applicationHiddenServiceDefinition.isEmpty()) {
                 log.info("===== TOR IS DISABLED ===========================");
@@ -111,11 +111,11 @@ class LnurlAuthExampleApplicationConfig {
                 .map(virtualHost -> {
                     int port = applicationHiddenServiceDefinition.getVirtualPort();
                     if (port == 80) {
-                        return "http://" + virtualHost;
+                        return "http://%s".formatted(virtualHost);
                     } else if (port == 443) {
-                        return "https://" + virtualHost;
+                        return "https://%s".formatted(virtualHost);
                     }
-                    return "http://" + virtualHost + ":" + port;
+                    return "http://%s:%d".formatted(virtualHost, port);
                 });
     }
 }

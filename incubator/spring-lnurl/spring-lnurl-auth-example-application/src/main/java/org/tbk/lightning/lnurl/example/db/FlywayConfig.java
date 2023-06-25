@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class FlywayConfig {
+class FlywayConfig {
 
     @Bean
-    public FlywayConfigurationCustomizer flywayConfigurationCustomizer(ApplicationContext applicationContext) {
+    FlywayConfigurationCustomizer flywayConfigurationCustomizer(ApplicationContext applicationContext) {
         return configuration -> {
             JavaMigration[] javaMigrations = applicationContext.getBeansOfType(JavaMigration.class)
                     .values().toArray(JavaMigration[]::new);
@@ -20,5 +20,4 @@ public class FlywayConfig {
             configuration.javaMigrations(javaMigrations);
         };
     }
-
 }

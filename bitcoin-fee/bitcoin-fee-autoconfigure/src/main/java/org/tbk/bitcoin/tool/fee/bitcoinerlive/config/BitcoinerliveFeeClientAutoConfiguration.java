@@ -32,14 +32,13 @@ public class BitcoinerliveFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BitcoinerliveFeeApiClient.class)
-    public BitcoinerliveFeeApiClient bitcoinerliveFeeApiClient() {
+    BitcoinerliveFeeApiClient bitcoinerliveFeeApiClient() {
         return new BitcoinerliveFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(BitcoinerliveFeeProvider.class)
-    public BitcoinerliveFeeProvider bitcoinerliveFeeProvider(BitcoinerliveFeeApiClient bitcoinerliveFeeApiClient) {
+    BitcoinerliveFeeProvider bitcoinerliveFeeProvider(BitcoinerliveFeeApiClient bitcoinerliveFeeApiClient) {
         return new BitcoinerliveFeeProvider(bitcoinerliveFeeApiClient);
     }
-
 }

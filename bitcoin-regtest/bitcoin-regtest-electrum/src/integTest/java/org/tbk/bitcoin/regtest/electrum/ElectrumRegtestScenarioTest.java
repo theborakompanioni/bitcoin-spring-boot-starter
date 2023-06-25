@@ -49,17 +49,17 @@ class ElectrumRegtestScenarioTest {
         }
 
         @Bean
-        public RegtestMiner regtestMiner(BitcoinClient bitcoinClient) {
+        RegtestMiner regtestMiner(BitcoinClient bitcoinClient) {
             return new RegtestMinerImpl(bitcoinClient);
         }
 
         @Bean
-        public BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
+        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
             return new BitcoinRegtestActions(regtestMiner);
         }
 
         @Bean
-        public ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
+        ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
             return new ElectrumRegtestActions(electrumClient);
         }
     }

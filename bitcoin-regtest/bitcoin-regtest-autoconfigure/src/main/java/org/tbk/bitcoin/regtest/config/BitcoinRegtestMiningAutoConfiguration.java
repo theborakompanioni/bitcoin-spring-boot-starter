@@ -46,7 +46,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnBean({BitcoinClient.class})
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.coinbase-reward-address")
-    public CoinbaseRewardAddressSupplier staticCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
+    CoinbaseRewardAddressSupplier staticCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
         return this.properties.getCoinbaseRewardAddress()
                 .map(it -> Address.fromString(bitcoinJsonRpcClient.getNetParams(), it))
                 .map(StaticCoinbaseRewardAddressSupplier::new)
@@ -56,21 +56,21 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @Bean
     @ConditionalOnBean({BitcoinClient.class})
     @ConditionalOnMissingBean
-    public CoinbaseRewardAddressSupplier bitcoinClientCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
+    CoinbaseRewardAddressSupplier bitcoinClientCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
         return new BitcoinClientCoinbaseRewardAddressSupplier(bitcoinJsonRpcClient);
     }
 
     @Bean
     @ConditionalOnBean({BitcoinClient.class})
     @ConditionalOnMissingBean
-    public RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient,
+    RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient,
                                      CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         return new RegtestMinerImpl(bitcoinJsonRpcClient, coinbaseRewardAddressSupplier);
     }
 
     @Bean("regtestMinerScheduler")
     @ConditionalOnMissingBean(name = "regtestMinerScheduler")
-    public MinMaxDurationScheduler regtestMinerScheduler() {
+    MinMaxDurationScheduler regtestMinerScheduler() {
         Duration minDuration = properties.getNextBlockDuration().getMinDuration();
         Duration maxDuration = properties.getNextBlockDuration().getMaxDuration();
 
@@ -89,7 +89,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     })
     @ConditionalOnMissingBean(ScheduledRegtestMiner.class)
     @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
-    public ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
+    ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
                                                        @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
         ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
         scheduledregtestMiner.startAsync();
@@ -98,7 +98,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
 
     @Bean
     @ConditionalOnBean({RegtestMiner.class})
-    public InitializingBean regtestMinerPreminer(RegtestMiner regtestMiner) {
+    InitializingBean regtestMinerPreminer(RegtestMiner regtestMiner) {
         int numberOfBlocksToMine = properties.getMineInitialAmountOfBlocks();
 
         if (numberOfBlocksToMine == 0) {
@@ -152,7 +152,6 @@ public class BitcoinRegtestMiningAutoConfiguration {
             log.debug("Duration till next block: {}", durationTillNewBlock);
 
             return new Schedule(durationTillNewBlock.toSeconds(), TimeUnit.SECONDS);
-
         }
     }
 }

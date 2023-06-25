@@ -59,14 +59,14 @@ public class BtcRpcExplorerContainerAutoConfiguration {
 
     @Bean("btcRpcExplorerContainerWaitStrategy")
     @ConditionalOnMissingBean(name = "btcRpcExplorerContainerWaitStrategy")
-    public WaitStrategy btcRpcExplorerContainerWaitStrategy() {
+    WaitStrategy btcRpcExplorerContainerWaitStrategy() {
         return CustomHostPortWaitStrategy.builder()
                 .ports(hardcodedStandardPorts)
                 .build();
     }
 
     @Bean
-    public ApplicationRunner btcRpcExplorerContainerBasicAuthPasswordLogger() {
+    ApplicationRunner btcRpcExplorerContainerBasicAuthPasswordLogger() {
         return args -> {
             String key = "BTCEXP_BASIC_AUTH_PASSWORD";
             String value = this.properties.getEnvironmentWithDefaults().get(key);
@@ -76,7 +76,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
 
     @Bean(name = "btcRpcExplorerContainer", destroyMethod = "stop")
     @ConditionalOnBean({BitcoindContainer.class, ElectrumxContainer.class})
-    public BtcRpcExplorerContainer<?> btcRpcExplorerContainerWithBitcoindAndElectrumxTestcontainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy,
+    BtcRpcExplorerContainer<?> btcRpcExplorerContainerWithBitcoindAndElectrumxTestcontainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy,
                                                                                                    BitcoindContainer<?> bitcoindContainer,
                                                                                                    ElectrumxContainer<?> electrumxContainer) {
         String bitcoindHost = MoreTestcontainers.testcontainersInternalHost();
@@ -97,13 +97,13 @@ public class BtcRpcExplorerContainerAutoConfiguration {
     @Bean(name = "btcRpcExplorerContainer", destroyMethod = "stop")
     @ConditionalOnBean(BitcoindContainer.class)
     @ConditionalOnMissingBean(ElectrumxContainer.class)
-    public BtcRpcExplorerContainer<?> btcRpcExplorerContainerWithBitcoindTestcontainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy,
+    BtcRpcExplorerContainer<?> btcRpcExplorerContainerWithBitcoindTestcontainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy,
                                                                                        BitcoindContainer<?> bitcoindContainer) {
         String bitcoindHost = MoreTestcontainers.testcontainersInternalHost();
         Integer bitcoindPort = bitcoindContainer.getMappedPort(this.properties.getBitcoind().getRpcport());
 
         Optional<String> electrumServerOrEmpty = Optional.ofNullable(this.properties.getElectrumx())
-                .map(it -> String.format("tcp://%s:%d", it.getRpchost(), it.getTcpport()));
+                .map(it -> "tcp://%s:%d".formatted(it.getRpchost(), it.getTcpport()));
 
         List<String> electrumServers = electrumServerOrEmpty
                 .map(Collections::singletonList)
@@ -116,7 +116,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
 
     @Bean(name = "btcRpcExplorerContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(BtcRpcExplorerContainer.class)
-    public BtcRpcExplorerContainer<?> btcRpcExplorerContainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy) {
+    BtcRpcExplorerContainer<?> btcRpcExplorerContainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy) {
         boolean isLocalhost = "localhost".equals(this.properties.getBitcoind().getRpchost());
         boolean isLoopback = "127.0.0.1".equals(this.properties.getBitcoind().getRpchost());
         boolean isWildcard = "0.0.0.0".equals(this.properties.getBitcoind().getRpchost());
@@ -133,7 +133,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
                 this.properties.getBitcoind().getRpchost();
 
         List<String> electrumServers = Optional.ofNullable(this.properties.getElectrumx())
-                .map(it -> String.format("%s://%s:%d", "tcp", it.getRpchost(), it.getTcpport()))
+                .map(it -> "%s://%s:%d".formatted("tcp", it.getRpchost(), it.getTcpport()))
                 .stream()
                 .toList();
 
@@ -152,7 +152,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
+        String dockerContainerName ="%s-%s".formatted(dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 

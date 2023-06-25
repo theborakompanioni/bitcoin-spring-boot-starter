@@ -32,13 +32,13 @@ public class BlockcypherFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BlockcypherFeeApiClient.class)
-    public BlockcypherFeeApiClient blockcypherFeeApiClient() {
+    BlockcypherFeeApiClient blockcypherFeeApiClient() {
         return new BlockcypherFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(BlockcypherFeeProvider.class)
-    public BlockcypherFeeProvider blockcypherFeeProvider(BlockcypherFeeApiClient blockcypherFeeApiClient) {
+    BlockcypherFeeProvider blockcypherFeeProvider(BlockcypherFeeApiClient blockcypherFeeApiClient) {
         return new BlockcypherFeeProvider(blockcypherFeeApiClient);
     }
 }

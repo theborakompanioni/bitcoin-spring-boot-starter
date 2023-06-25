@@ -6,7 +6,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 import org.tbk.spring.lnurl.security.test.shared.LnurlAuthTestConfig;
 
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 @Import(LnurlAuthTestConfig.class)
 public class LnurlAuthTestApplication {
 

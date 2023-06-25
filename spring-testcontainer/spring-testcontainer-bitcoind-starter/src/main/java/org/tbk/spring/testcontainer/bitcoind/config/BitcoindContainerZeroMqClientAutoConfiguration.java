@@ -27,7 +27,7 @@ public class BitcoindContainerZeroMqClientAutoConfiguration {
      */
     @Bean
     @ConditionalOnBean(BitcoindContainer.class)
-    public BitcoinZmqClientConfigBuilderCustomizer bitcoinZmqClientConfigBuilderCustomizer(BitcoindContainer<?> bitcoinContainer) {
+    BitcoinZmqClientConfigBuilderCustomizer bitcoinZmqClientConfigBuilderCustomizer(BitcoindContainer<?> bitcoinContainer) {
 
         Function<String, Optional<String>> replacePortInUrl = url -> {
             Optional<Integer> specifiedListeningPort = Optional.ofNullable(url)

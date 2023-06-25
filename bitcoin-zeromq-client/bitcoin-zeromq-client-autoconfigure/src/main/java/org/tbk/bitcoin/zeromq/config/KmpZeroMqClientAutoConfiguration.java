@@ -29,7 +29,7 @@ public class KmpZeroMqClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "bitcoinRawBlockZeroMqMessagePublisherFactory")
-    public KmpBlockPublisherFactory bitcoinKmpBlockPublisherFactory(
+    KmpBlockPublisherFactory bitcoinKmpBlockPublisherFactory(
             @Qualifier("bitcoinRawBlockZeroMqMessagePublisherFactory") ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory
     ) {
         return new KmpBlockPublisherFactory(bitcoinRawBlockZeroMqMessagePublisherFactory);
@@ -38,7 +38,7 @@ public class KmpZeroMqClientAutoConfiguration {
     @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
     @ConditionalOnMissingBean(value = Block.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(KmpBlockPublisherFactory.class)
-    public MessagePublishService<Block> bitcoinKmpBlockPublishService(
+    MessagePublishService<Block> bitcoinKmpBlockPublishService(
             KmpBlockPublisherFactory bitcoinKmpBlockPublisherFactory
     ) {
         return new MessagePublishService<>(bitcoinKmpBlockPublisherFactory);
@@ -47,7 +47,7 @@ public class KmpZeroMqClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "bitcoinRawTxZeroMqMessagePublisherFactory")
-    public KmpTransactionPublisherFactory bitcoinKmpTransactionPublisherFactory(
+    KmpTransactionPublisherFactory bitcoinKmpTransactionPublisherFactory(
             @Qualifier("bitcoinRawTxZeroMqMessagePublisherFactory") ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory
     ) {
         return new KmpTransactionPublisherFactory(bitcoinRawTxZeroMqMessagePublisherFactory);
@@ -56,7 +56,7 @@ public class KmpZeroMqClientAutoConfiguration {
     @Bean(initMethod = "startAsync", destroyMethod = "stopAsync")
     @ConditionalOnMissingBean(value = Transaction.class, parameterizedContainer = MessagePublishService.class)
     @ConditionalOnBean(KmpTransactionPublisherFactory.class)
-    public MessagePublishService<Transaction> bitcoinKmpTransactionPublishService(
+    MessagePublishService<Transaction> bitcoinKmpTransactionPublishService(
             KmpTransactionPublisherFactory bitcoinKmpTransactionPublisherFactory
     ) {
         return new MessagePublishService<>(bitcoinKmpTransactionPublisherFactory);

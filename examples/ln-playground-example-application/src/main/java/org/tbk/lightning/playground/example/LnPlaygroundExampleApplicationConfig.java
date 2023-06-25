@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class LnPlaygroundExampleApplicationConfig {
+class LnPlaygroundExampleApplicationConfig {
 
     /**
      * We must have access to a wallet for "getnewaddress" command to work.
@@ -43,13 +43,13 @@ public class LnPlaygroundExampleApplicationConfig {
      */
     @Bean
     @Profile("!test")
-    public InitializingBean createWalletIfMissing(BitcoinClient bitcoinClient) {
+    InitializingBean createWalletIfMissing(BitcoinClient bitcoinClient) {
         return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
     }
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner clnPrintInfoRunner(NodeGrpc.NodeFutureStub clnNodeFutureStub) {
+    ApplicationRunner clnPrintInfoRunner(NodeGrpc.NodeFutureStub clnNodeFutureStub) {
         return args -> {
             GetinfoResponse info = clnNodeFutureStub.getinfo(GetinfoRequest.newBuilder().build())
                     .get(10, TimeUnit.SECONDS);
@@ -63,7 +63,7 @@ public class LnPlaygroundExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner lndPrintInfoRunner(SynchronousLndAPI lndApi,
+    ApplicationRunner lndPrintInfoRunner(SynchronousLndAPI lndApi,
                                                 SynchronousAutopilotAPI autopilotApi) {
         return args -> {
             GetInfoResponse info = lndApi.getInfo();
@@ -80,7 +80,7 @@ public class LnPlaygroundExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
+    ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
@@ -99,7 +99,7 @@ public class LnPlaygroundExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner clnBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+    ApplicationRunner clnBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
                                                 NodeGrpc.NodeFutureStub clnNodeFutureStub) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
@@ -119,7 +119,7 @@ public class LnPlaygroundExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+    ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
                                                 SynchronousLndAPI lndApi) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
@@ -135,5 +135,4 @@ public class LnPlaygroundExampleApplicationConfig {
             Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
         };
     }
-
 }

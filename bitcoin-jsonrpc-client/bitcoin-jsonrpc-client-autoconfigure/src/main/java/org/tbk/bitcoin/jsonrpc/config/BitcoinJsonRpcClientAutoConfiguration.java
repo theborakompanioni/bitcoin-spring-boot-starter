@@ -33,13 +33,13 @@ public class BitcoinJsonRpcClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BitcoinJsonRpcClientFactory bitcoinJsonRpcClientFactory() {
+    BitcoinJsonRpcClientFactory bitcoinJsonRpcClientFactory() {
         return new BitcoinJsonRpcClientFactoryImpl();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public NetworkParameters bitcoinJsonRpcNetworkParameters() {
+    NetworkParameters bitcoinJsonRpcNetworkParameters() {
         return switch (properties.getNetwork()) {
             case mainnet -> MainNetParams.get();
             case testnet -> TestNet3Params.get();
@@ -53,7 +53,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
             "org.tbk.bitcoin.jsonrpc.rpchost",
             "org.tbk.bitcoin.jsonrpc.rpcport"
     })
-    public RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
+    RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
                                           ObjectProvider<RpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
         RpcConfigBuilder rpcConfigBuilder = new RpcConfigBuilder(bitcoinNetworkParameters, properties.getRpchost(), properties.getRpcport())
                 .username(properties.getRpcuser())
@@ -67,7 +67,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
     @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(RpcConfig.class)
-    public BitcoinClient bitcoinJsonRpcClient(BitcoinJsonRpcClientFactory bitcoinClientFactory, RpcConfig rpcConfig) {
+    BitcoinClient bitcoinJsonRpcClient(BitcoinJsonRpcClientFactory bitcoinClientFactory, RpcConfig rpcConfig) {
         return bitcoinClientFactory.create(rpcConfig);
     }
 }

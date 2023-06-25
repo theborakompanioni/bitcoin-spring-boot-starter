@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebMvc
 @Configuration(proxyBeanMethods = false)
-public class BitcoinZeroMqClientExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
+class BitcoinZeroMqClientExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

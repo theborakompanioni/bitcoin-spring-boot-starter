@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
-public class SwaggerUiWebMvcConfigurer implements WebMvcConfigurer {
+class SwaggerUiWebMvcConfigurer implements WebMvcConfigurer {
 
     public static final String APP_HANDLER_PATH = "/swagger-ui";
 
@@ -24,7 +24,7 @@ public class SwaggerUiWebMvcConfigurer implements WebMvcConfigurer {
     }
 
     @Bean
-    public OpenAPI openApi() {
+    OpenAPI openApi() {
         return new OpenAPI()
                 .info(new Info()
                         .version(this.getClass().getPackage().getImplementationVersion())

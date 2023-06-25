@@ -146,13 +146,13 @@ class ElectrumGatewayExampleApplicationTest {
         private static final String TEST_ELECTRUM_PASSWORD2 = "correct_horse_battery_staple_20210516-1";
 
         @Bean
-        public SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory() {
+        SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory() {
             return new SimpleElectrumDaemonContainerFactory();
         }
 
         @Primary
         @Bean("primaryElectrumDaemonContainer")
-        public ElectrumDaemonContainer<?> primaryElectrumDaemonContainer(SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory,
+        ElectrumDaemonContainer<?> primaryElectrumDaemonContainer(SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory,
                                                                          ElectrumxContainer<?> electrumxContainer) {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
@@ -165,7 +165,7 @@ class ElectrumGatewayExampleApplicationTest {
         }
 
         @Bean("secondaryElectrumDaemonContainer")
-        public ElectrumDaemonContainer<?> secondaryElectrumDaemonContainer(SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory,
+        ElectrumDaemonContainer<?> secondaryElectrumDaemonContainer(SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory,
                                                                            ElectrumxContainer<?> electrumxContainer) {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
@@ -178,13 +178,13 @@ class ElectrumGatewayExampleApplicationTest {
         }
 
         @Bean
-        public ElectrumClientFactory electrumClientFactory() {
+        ElectrumClientFactory electrumClientFactory() {
             return new ElectrumClientFactoryImpl();
         }
 
         @Primary
         @Bean("primaryElectrumClient")
-        public ElectrumClient primaryElectrumClient(ElectrumClientFactory electrumClientFactory,
+        ElectrumClient primaryElectrumClient(ElectrumClientFactory electrumClientFactory,
                                                     @Qualifier("primaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
             ElectrumDaemonJsonrpcConfig config = new ElectrumDaemonJsonrpcConfigBuilder()
                     .host("http://" + electrumDaemonContainer.getHost())
@@ -197,7 +197,7 @@ class ElectrumGatewayExampleApplicationTest {
         }
 
         @Bean("secondaryElectrumClient")
-        public ElectrumClient secondaryElectrumClient(ElectrumClientFactory electrumClientFactory,
+        ElectrumClient secondaryElectrumClient(ElectrumClientFactory electrumClientFactory,
                                                       @Qualifier("secondaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
             ElectrumDaemonJsonrpcConfig config = new ElectrumDaemonJsonrpcConfigBuilder()
                     .host("http://" + electrumDaemonContainer.getHost())

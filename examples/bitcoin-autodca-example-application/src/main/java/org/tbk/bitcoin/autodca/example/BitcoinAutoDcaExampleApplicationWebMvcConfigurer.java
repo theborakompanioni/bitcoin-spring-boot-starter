@@ -20,7 +20,7 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 @EnableWebMvc
 @ConditionalOnWebApplication
-public class BitcoinAutoDcaExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
+class BitcoinAutoDcaExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

@@ -45,7 +45,7 @@ public class ClnContainerRpcClientAutoConfiguration {
     @Bean("clnRpcSslContext")
     @ConditionalOnMissingBean(name = {"clnRpcSslContext"})
     @ConditionalOnBean({ClnContainer.class})
-    public SslContext clnRpcSslContext(ClnContainer<?> clnContainer) {
+    SslContext clnRpcSslContext(ClnContainer<?> clnContainer) {
         return clnContainer.copyFileFromContainer(properties.getClientCertFilePath(), certStream -> {
             return clnContainer.copyFileFromContainer(properties.getClientKeyFilePath(), keyStream -> {
                 return clnContainer.copyFileFromContainer(properties.getCaCertFilePath(), caStream -> {
@@ -61,7 +61,7 @@ public class ClnContainerRpcClientAutoConfiguration {
     @Bean("clnRpcConfig")
     @ConditionalOnMissingBean(ClnRpcConfig.class)
     @ConditionalOnBean({ClnContainer.class})
-    public ClnRpcConfig clnRpcConfig(ClnContainer<?> clnContainer,
+    ClnRpcConfig clnRpcConfig(ClnContainer<?> clnContainer,
                                      @Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
         String host = clnContainer.getHost();
         Integer mappedPort = clnContainer.getMappedPort(properties.getPort());

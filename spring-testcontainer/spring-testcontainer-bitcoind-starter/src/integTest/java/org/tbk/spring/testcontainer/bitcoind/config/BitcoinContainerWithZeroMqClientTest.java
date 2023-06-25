@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.*;
 @ActiveProfiles("test")
 class BitcoinContainerWithZeroMqClientTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
 
         public static void main(String[] args) {

@@ -17,11 +17,11 @@ import java.time.Duration;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class LndContainerExampleApplicationConfig {
+class LndContainerExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
+    ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));

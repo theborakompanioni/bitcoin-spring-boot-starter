@@ -11,7 +11,7 @@ import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinAutoDcaExampleApplication {
     private static final String[] profiles = new String[]{"development", "local"};
 

@@ -23,11 +23,11 @@ import java.time.Duration;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class ElectrumDaemonExampleApplicationConfig {
+class ElectrumDaemonExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner electrumDaemonStatusLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+    ApplicationRunner electrumDaemonStatusLogger(MessagePublishService<Block> bitcoinBlockPublishService,
                                                         ElectrumClient electrumClient) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
@@ -47,7 +47,7 @@ public class ElectrumDaemonExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
+    ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
                                              MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
@@ -67,7 +67,7 @@ public class ElectrumDaemonExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
+    ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
                                                 SynchronousLndAPI lndApi) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));

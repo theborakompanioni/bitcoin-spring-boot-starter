@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.is;
 @ActiveProfiles("test")
 class BitcoinContainerWithJsonRpcClientTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinContainerClientTestApplication {
 
         public static void main(String[] args) {

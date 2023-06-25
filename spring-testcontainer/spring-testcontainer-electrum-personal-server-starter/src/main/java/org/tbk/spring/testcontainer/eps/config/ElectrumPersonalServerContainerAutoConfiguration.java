@@ -56,7 +56,7 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
     @Bean(name = "electrumPersonalServerContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumPersonalServerContainer.class)
     @ConditionalOnBean(BitcoindContainer.class)
-    public ElectrumPersonalServerContainer<?> electrumPersonalServerContainerWithBitcoindTestcontainer(BitcoindContainer<?> bitcoindContainer) {
+    ElectrumPersonalServerContainer<?> electrumPersonalServerContainerWithBitcoindTestcontainer(BitcoindContainer<?> bitcoindContainer) {
         String epsBitcoindConfig = buildEpsBitcoindConfig(bitcoindContainer);
 
         return createStartedContainer(epsBitcoindConfig);
@@ -64,7 +64,7 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
 
     @Bean(name = "electrumPersonalServerContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumPersonalServerContainer.class)
-    public ElectrumPersonalServerContainer<?> electrumPersonalServerContainer() {
+    ElectrumPersonalServerContainer<?> electrumPersonalServerContainer() {
         boolean isLocalhost = "localhost".equals(this.properties.getRpchost());
         boolean isLoopback = "127.0.0.1".equals(this.properties.getRpchost());
         boolean isWildcard = "0.0.0.0".equals(this.properties.getRpchost());

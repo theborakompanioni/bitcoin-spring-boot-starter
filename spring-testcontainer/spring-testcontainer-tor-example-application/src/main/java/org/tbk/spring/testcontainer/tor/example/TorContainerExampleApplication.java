@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Profile;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class TorContainerExampleApplication {
 
     public static void main(String[] args) {
@@ -41,7 +41,7 @@ public class TorContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner mainRunner() {
+    ApplicationRunner mainRunner() {
         String successPhrase = "Congratulations. This browser is configured to use Tor.";
         String errorPhraseIgnoreCase = "not using Tor";
 

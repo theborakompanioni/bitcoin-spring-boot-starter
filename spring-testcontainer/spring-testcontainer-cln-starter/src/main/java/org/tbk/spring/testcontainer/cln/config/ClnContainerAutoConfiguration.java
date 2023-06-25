@@ -45,7 +45,7 @@ public class ClnContainerAutoConfiguration {
     }
 
     @Bean(name = "clnContainer", initMethod = "start", destroyMethod = "stop")
-    public ClnContainer<?> clnContainer(BitcoindContainer<?> bitcoindContainer) {
+    ClnContainer<?> clnContainer(BitcoindContainer<?> bitcoindContainer) {
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
                 .add("--bitcoin-rpcconnect=" + MoreTestcontainers.testcontainersInternalHost())

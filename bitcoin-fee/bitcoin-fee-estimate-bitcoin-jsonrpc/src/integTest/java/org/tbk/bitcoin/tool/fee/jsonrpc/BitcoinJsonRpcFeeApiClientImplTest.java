@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.*;
 @ActiveProfiles("test")
 class BitcoinJsonRpcFeeApiClientImplTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class BitcoinJsonRpcFeeApiClientImplTestApplication {
 
         public static void main(String[] args) {

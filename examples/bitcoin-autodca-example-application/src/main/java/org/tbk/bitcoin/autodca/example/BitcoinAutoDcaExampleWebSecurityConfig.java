@@ -26,7 +26,7 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 @ConditionalOnWebApplication
-public class BitcoinAutoDcaExampleWebSecurityConfig implements WebMvcConfigurer {
+class BitcoinAutoDcaExampleWebSecurityConfig implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

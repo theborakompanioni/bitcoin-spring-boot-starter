@@ -33,13 +33,13 @@ public class SpringJsr354AutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SpringContextAwareServiceProvider springApplicationContextServiceProvider() {
+    SpringContextAwareServiceProvider springApplicationContextServiceProvider() {
         ServiceProvider delegateOrNull = loadDefaultServiceProvider().orElse(null);
         return new SpringContextAwareServiceProvider(10, delegateOrNull);
     }
 
     @Bean
-    public InitializingBean jsr354AutoBootstrap(SpringContextAwareServiceProvider provider) {
+    InitializingBean jsr354AutoBootstrap(SpringContextAwareServiceProvider provider) {
         return () -> {
             String providerName = provider.getClass().getName();
             if (properties.isAutobootstrap()) {

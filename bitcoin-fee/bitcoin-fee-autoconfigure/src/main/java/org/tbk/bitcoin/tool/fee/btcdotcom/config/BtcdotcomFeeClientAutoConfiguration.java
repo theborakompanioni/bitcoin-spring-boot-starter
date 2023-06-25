@@ -32,13 +32,13 @@ public class BtcdotcomFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BtcdotcomFeeApiClient.class)
-    public BtcdotcomFeeApiClient btcdotcomFeeApiClient() {
+    BtcdotcomFeeApiClient btcdotcomFeeApiClient() {
         return new BtcdotcomFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(BtcdotcomFeeProvider.class)
-    public BtcdotcomFeeProvider btcdotcomFeeProvider(BtcdotcomFeeApiClient btcdotcomFeeApiClient) {
+    BtcdotcomFeeProvider btcdotcomFeeProvider(BtcdotcomFeeApiClient btcdotcomFeeApiClient) {
         return new BtcdotcomFeeProvider(btcdotcomFeeApiClient);
     }
 }

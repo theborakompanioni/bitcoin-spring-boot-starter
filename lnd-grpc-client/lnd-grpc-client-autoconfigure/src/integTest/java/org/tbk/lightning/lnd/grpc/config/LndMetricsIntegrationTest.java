@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 class LndMetricsIntegrationTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class LndMetricsIntegrationTestApplication {
 
         public static void main(String[] args) {

@@ -23,7 +23,7 @@ public class BitcoinjElectrumJsonrpcClientAutoConfiguration {
             ElectrumClient.class
     })
     @ConditionalOnMissingBean
-    public BitcoinjElectrumClient bitcoinjElectrumClient(NetworkParameters network,
+    BitcoinjElectrumClient bitcoinjElectrumClient(NetworkParameters network,
                                                          ElectrumClient client) {
         return new BitcoinjElectrumClientImpl(network, client);
     }

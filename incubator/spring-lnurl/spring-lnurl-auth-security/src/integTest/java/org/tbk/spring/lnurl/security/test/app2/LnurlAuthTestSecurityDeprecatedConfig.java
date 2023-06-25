@@ -40,7 +40,7 @@ class LnurlAuthTestSecurityDeprecatedConfig implements WebSecurityCustomizer {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .userDetailsService(userDetailsService)
                 .sessionManagement(session -> session

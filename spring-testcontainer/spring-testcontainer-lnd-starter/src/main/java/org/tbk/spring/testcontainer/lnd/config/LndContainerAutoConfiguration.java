@@ -45,7 +45,7 @@ public class LndContainerAutoConfiguration {
     }
 
     @Bean(name = "lndContainer", initMethod = "start", destroyMethod = "stop")
-    public LndContainer<?> lndContainer(BitcoindContainer<?> bitcoindContainer) {
+    LndContainer<?> lndContainer(BitcoindContainer<?> bitcoindContainer) {
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
                 // TODO: expose ports specified via auto configuration properties
@@ -88,7 +88,7 @@ public class LndContainerAutoConfiguration {
 
     /**
      * Build command list.
-     * e.g. see https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
+     * e.g. see <a href="https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf">sample-lnd.conf</a>
      *
      * @return a list fo commands for the container.
      */

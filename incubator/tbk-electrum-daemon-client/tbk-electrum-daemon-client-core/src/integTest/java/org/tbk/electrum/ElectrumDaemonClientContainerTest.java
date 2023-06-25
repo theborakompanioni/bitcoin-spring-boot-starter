@@ -33,7 +33,7 @@ class ElectrumDaemonClientContainerTest {
 
     private static final String firstAddress = "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz";
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumDaemonContainerTestApplication {
 
         public static void main(String[] args) {

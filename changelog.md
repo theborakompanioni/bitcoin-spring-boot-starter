@@ -5,10 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Breaking
+- change bean methods visibility in autoconfig classes to package-private
+
 ### Removed
 - module: externalize 'cln-grpc-client-core'
 
-## [0.8.0] - 2023-06-15
+## [0.9.0] - 2023-06-15
 ### Breaking
 - change bitcoin testcontainer image from ruimarinho/bitcoin-core to polarlightning/bitcoind
 - change cln testcontainer image from elementsproject/lightningd to polarlightning/clightning

@@ -19,7 +19,7 @@ import javax.money.convert.ExchangeRateProvider;
 import java.util.List;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinExchangeRateExampleApplication {
 
     public static void main(String[] args) {
@@ -41,7 +41,7 @@ public class BitcoinExchangeRateExampleApplication {
 
     @Bean
     @Profile("!test")
-    public CommandLineRunner exchangeRateDemoRunner(List<ExchangeRateProvider> xChangeExchangeRateProviders) {
+    CommandLineRunner exchangeRateDemoRunner(List<ExchangeRateProvider> xChangeExchangeRateProviders) {
         return args -> {
             if (xChangeExchangeRateProviders.isEmpty()) {
                 log.warn("No XChangeExchangeRateProviders found.");

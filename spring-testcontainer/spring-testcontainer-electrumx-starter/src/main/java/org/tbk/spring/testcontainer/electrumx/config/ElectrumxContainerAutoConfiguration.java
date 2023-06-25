@@ -58,8 +58,7 @@ public class ElectrumxContainerAutoConfiguration {
 
     @Bean(name = "electrumxContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(BitcoindContainer.class)
-    public ElectrumxContainer<?> electrumxContainer(@Qualifier("electrumxContainerWaitStrategy") WaitStrategy waitStrategy) {
-
+    ElectrumxContainer<?> electrumxContainer(@Qualifier("electrumxContainerWaitStrategy") WaitStrategy waitStrategy) {
         boolean isLocalhost = "localhost".equals(this.properties.getRpchost());
         boolean isLoopback = "127.0.0.1".equals(this.properties.getRpchost());
         boolean isWildcard = "0.0.0.0".equals(this.properties.getRpchost());
@@ -78,7 +77,7 @@ public class ElectrumxContainerAutoConfiguration {
 
     @Bean(name = "electrumxContainer", destroyMethod = "stop")
     @ConditionalOnBean(BitcoindContainer.class)
-    public ElectrumxContainer<?> electrumxContainerWithBitcoindTestcontainer(@Qualifier("electrumxContainerWaitStrategy") WaitStrategy waitStrategy,
+    ElectrumxContainer<?> electrumxContainerWithBitcoindTestcontainer(@Qualifier("electrumxContainerWaitStrategy") WaitStrategy waitStrategy,
                                                                              BitcoindContainer<?> bitcoindContainer) {
         String bitcoindDaemonUrl = buildDaemonUrl(bitcoindContainer);
 
@@ -87,7 +86,7 @@ public class ElectrumxContainerAutoConfiguration {
 
     @Bean("electrumxContainerWaitStrategy")
     @ConditionalOnMissingBean(name = "electrumxContainerWaitStrategy")
-    public WaitStrategy electrumxContainerWaitStrategy() {
+    WaitStrategy electrumxContainerWaitStrategy() {
         // only listen for rpc port as other ports might not be opened because of the initial sync!
         // from the docs (https://electrumx-spesmilo.readthedocs.io/en/latest/HOWTO.html#sync-progress):
         // > ElectrumX will not serve normal client connections until it has fully synchronized and caught up with

@@ -42,7 +42,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(TransactionCache.class)
-    public TransactionCache bitcoinJsonRpcTransactionCache(BitcoinClient bitcoinClient) {
+    TransactionCache bitcoinJsonRpcTransactionCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, Transaction> cache = CacheBuilder.newBuilder()
                 .recordStats()
                 .expireAfterAccess(Duration.ofMinutes(30))
@@ -59,7 +59,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(RawTransactionInfoCache.class)
-    public RawTransactionInfoCache bitcoinJsonRpcRawTransactionInfoCache(BitcoinClient bitcoinClient) {
+    RawTransactionInfoCache bitcoinJsonRpcRawTransactionInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, RawTransactionInfo> cache = CacheBuilder.newBuilder()
                 .recordStats()
                 .expireAfterAccess(Duration.ofMinutes(30))
@@ -76,7 +76,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockCache.class)
-    public BlockCache bitcoinJsonRpcBlockCache(BitcoinClient bitcoinClient) {
+    BlockCache bitcoinJsonRpcBlockCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, Block> cache = CacheBuilder.newBuilder()
                 .recordStats()
                 .expireAfterAccess(Duration.ofMinutes(30))
@@ -93,7 +93,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockInfoCache.class)
-    public BlockInfoCache bitcoinJsonRpcInfoCache(BitcoinClient bitcoinClient) {
+    BlockInfoCache bitcoinJsonRpcInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, BlockInfo> cache = CacheBuilder.newBuilder()
                 .recordStats()
                 .expireAfterAccess(Duration.ofMinutes(30))
@@ -115,7 +115,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
             BlockInfoCache.class,
     })
     @ConditionalOnMissingBean(CacheFacade.class)
-    public CacheFacade bitcoinJsonRpcCacheFacade(TransactionCache transactionCache,
+    CacheFacade bitcoinJsonRpcCacheFacade(TransactionCache transactionCache,
                                                  RawTransactionInfoCache rawTransactionInfoCache,
                                                  BlockCache blockCache,
                                                  BlockInfoCache blockInfoCache) {
@@ -161,5 +161,4 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
             return blockCache;
         }
     }
-
 }

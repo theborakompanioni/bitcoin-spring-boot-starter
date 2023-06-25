@@ -38,7 +38,7 @@ public class LndMetricsAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(SynchronousLndAPI.class)
-    public LndClientMetrics lndClientMetrics(SynchronousLndAPI client) {
+    LndClientMetrics lndClientMetrics(SynchronousLndAPI client) {
         return new LndClientMetrics(client);
     }
 

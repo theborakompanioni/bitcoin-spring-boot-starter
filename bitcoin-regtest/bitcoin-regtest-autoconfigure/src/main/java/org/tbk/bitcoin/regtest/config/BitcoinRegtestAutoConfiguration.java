@@ -36,7 +36,7 @@ public class BitcoinRegtestAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(RpcConfig.class)
-    public BitcoinExtendedClient bitcoinRegtestClient(RpcConfig rpcConfig) {
+    BitcoinExtendedClient bitcoinRegtestClient(RpcConfig rpcConfig) {
         String requiredNetworkId = NetworkParameters.ID_REGTEST;
         String configuredNetworkId = rpcConfig.getNetParams().getId();
 

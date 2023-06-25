@@ -54,18 +54,18 @@ class BitcoinFeeExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
     }
 
     @Bean
-    public ProtobufJsonFormatHttpMessageConverter protobufJsonFormatHttpMessageConverter(JsonFormat.Parser jsonParser,
+    ProtobufJsonFormatHttpMessageConverter protobufJsonFormatHttpMessageConverter(JsonFormat.Parser jsonParser,
                                                                                          JsonFormat.Printer jsonPrinter) {
         return new ProtobufJsonFormatHttpMessageConverter(jsonParser, jsonPrinter);
     }
 
     @Bean
-    public JsonFormat.Printer protobufJsonPrinter() {
+    JsonFormat.Printer protobufJsonPrinter() {
         return JsonFormat.printer().sortingMapKeys();
     }
 
     @Bean
-    public JsonFormat.Parser protobufJsonParser() {
+    JsonFormat.Parser protobufJsonParser() {
         return JsonFormat.parser().ignoringUnknownFields();
     }
 

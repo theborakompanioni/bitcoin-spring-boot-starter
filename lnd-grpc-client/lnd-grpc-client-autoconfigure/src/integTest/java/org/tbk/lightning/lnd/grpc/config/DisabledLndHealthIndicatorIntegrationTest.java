@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 class DisabledLndHealthIndicatorIntegrationTest {
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class LndHealthIndicatorTestApplication {
 
         public static void main(String[] args) {

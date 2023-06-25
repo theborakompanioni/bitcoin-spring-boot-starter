@@ -9,7 +9,7 @@ import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class LnPlaygroundExampleApplication {
 
     public static void main(String[] args) {

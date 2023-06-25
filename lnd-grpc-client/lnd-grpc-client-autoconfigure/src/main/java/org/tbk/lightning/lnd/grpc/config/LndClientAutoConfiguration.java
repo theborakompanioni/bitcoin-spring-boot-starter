@@ -78,7 +78,7 @@ public class LndClientAutoConfiguration {
     @Bean("lndRpcMacaroonContext")
     @ConditionalOnMissingBean(name = {"lndRpcMacaroonContext"})
     @Conditional(OnMacaroonSpecified.class)
-    public MacaroonContext lndRpcMacaroonContext() {
+    MacaroonContext lndRpcMacaroonContext() {
         String hex = HexFormat.of().formatHex(lndRpcMacaroon());
         return () -> hex;
     }
@@ -129,7 +129,7 @@ public class LndClientAutoConfiguration {
     @ConditionalOnMissingBean(name = {"lndRpcSslContext"})
     @Conditional(OnCertSpecified.class)
     @SneakyThrows
-    public SslContext lndRpcSslContext() {
+    SslContext lndRpcSslContext() {
         try (ByteArrayInputStream certStream = new ByteArrayInputStream(lndRpcCert())) {
             return GrpcSslContexts.configure(SslContextBuilder.forClient(), SslProvider.OPENSSL)
                     .trustManager(certStream)
@@ -154,7 +154,7 @@ public class LndClientAutoConfiguration {
             "org.tbk.lightning.lnd.grpc.port"
     })
     @ConditionalOnBean(name = {"lndRpcMacaroonContext", "lndRpcSslContext"})
-    public LndRpcConfig lndRpcConfig(
+    LndRpcConfig lndRpcConfig(
             @Qualifier("lndRpcMacaroonContext") MacaroonContext lndRpcMacaroonContext,
             @Qualifier("lndRpcSslContext") SslContext lndRpcSslContext) {
         return LndRpcConfigImpl.builder()
@@ -172,7 +172,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousLndAPI synchronousLndAPI(LndRpcConfig rpcConfig) {
+    SynchronousLndAPI synchronousLndAPI(LndRpcConfig rpcConfig) {
         return new SynchronousLndAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -183,7 +183,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousLndAPI lndAPI(LndRpcConfig rpcConfig) {
+    AsynchronousLndAPI lndAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousLndAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -195,7 +195,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndWalletUnlockerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousWalletUnlockerAPI synchronousLndWalletUnlockerAPI(LndRpcConfig rpcConfig) {
+    SynchronousWalletUnlockerAPI synchronousLndWalletUnlockerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWalletUnlockerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -206,7 +206,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndWalletUnlockerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousWalletUnlockerAPI lndWalletUnlockerAPI(LndRpcConfig rpcConfig) {
+    AsynchronousWalletUnlockerAPI lndWalletUnlockerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWalletUnlockerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -218,7 +218,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndAutopilotAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousAutopilotAPI synchronousLndAutopilotAPI(LndRpcConfig rpcConfig) {
+    SynchronousAutopilotAPI synchronousLndAutopilotAPI(LndRpcConfig rpcConfig) {
         return new SynchronousAutopilotAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -229,7 +229,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndAutopilotAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousAutopilotAPI lndAutopilotAPI(LndRpcConfig rpcConfig) {
+    AsynchronousAutopilotAPI lndAutopilotAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousAutopilotAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -241,7 +241,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndChainNotifierAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousChainNotifierAPI synchronousLndChainNotifierAPI(LndRpcConfig rpcConfig) {
+    SynchronousChainNotifierAPI synchronousLndChainNotifierAPI(LndRpcConfig rpcConfig) {
         return new SynchronousChainNotifierAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -252,7 +252,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndChainNotifierAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousChainNotifierAPI lndChainNotifierAPI(LndRpcConfig rpcConfig) {
+    AsynchronousChainNotifierAPI lndChainNotifierAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousChainNotifierAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -264,7 +264,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndInvoiceAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousInvoicesAPI synchronousLndInvoiceAPI(LndRpcConfig rpcConfig) {
+    SynchronousInvoicesAPI synchronousLndInvoiceAPI(LndRpcConfig rpcConfig) {
         return new SynchronousInvoicesAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -275,7 +275,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndInvoiceAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousInvoicesAPI lndInvoiceAPI(LndRpcConfig rpcConfig) {
+    AsynchronousInvoicesAPI lndInvoiceAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousInvoicesAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -287,7 +287,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndRouterAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousRouterAPI synchronousLndRouterAPI(LndRpcConfig rpcConfig) {
+    SynchronousRouterAPI synchronousLndRouterAPI(LndRpcConfig rpcConfig) {
         return new SynchronousRouterAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -298,7 +298,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndRouterAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousRouterAPI lndRouterAPI(LndRpcConfig rpcConfig) {
+    AsynchronousRouterAPI lndRouterAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousRouterAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -310,7 +310,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndSignerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousSignerAPI synchronousLndSignerAPI(LndRpcConfig rpcConfig) {
+    SynchronousSignerAPI synchronousLndSignerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousSignerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -321,7 +321,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndSignerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousSignerAPI lndSignerAPI(LndRpcConfig rpcConfig) {
+    AsynchronousSignerAPI lndSignerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousSignerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -333,7 +333,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndWalletKitAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousWalletKitAPI synchronousLndWalletKitAPI(LndRpcConfig rpcConfig) {
+    SynchronousWalletKitAPI synchronousLndWalletKitAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWalletKitAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -344,7 +344,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndWalletKitAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousWalletKitAPI lndWalletKitAPI(LndRpcConfig rpcConfig) {
+    AsynchronousWalletKitAPI lndWalletKitAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWalletKitAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -356,7 +356,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndWatchtowerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousWatchtowerAPI synchronousLndWatchtowerAPI(LndRpcConfig rpcConfig) {
+    SynchronousWatchtowerAPI synchronousLndWatchtowerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWatchtowerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -367,7 +367,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndWatchtowerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousWatchtowerAPI lndWatchtowerAPI(LndRpcConfig rpcConfig) {
+    AsynchronousWatchtowerAPI lndWatchtowerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWatchtowerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -379,7 +379,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndWatchtowerClientAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousWatchtowerClientAPI synchronousLndWatchtowerClientAPI(LndRpcConfig rpcConfig) {
+    SynchronousWatchtowerClientAPI synchronousLndWatchtowerClientAPI(LndRpcConfig rpcConfig) {
         return new SynchronousWatchtowerClientAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -390,7 +390,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndWatchtowerClientAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousWatchtowerClientAPI lndWatchtowerClientAPI(LndRpcConfig rpcConfig) {
+    AsynchronousWatchtowerClientAPI lndWatchtowerClientAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousWatchtowerClientAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -402,7 +402,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "synchronousLndVersionerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public SynchronousVersionerAPI synchronousLndVersionerAPI(LndRpcConfig rpcConfig) {
+    SynchronousVersionerAPI synchronousLndVersionerAPI(LndRpcConfig rpcConfig) {
         return new SynchronousVersionerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
@@ -413,7 +413,7 @@ public class LndClientAutoConfiguration {
     @Bean(name = "lndVersionerAPI", destroyMethod = "close")
     @ConditionalOnMissingBean
     @ConditionalOnBean(LndRpcConfig.class)
-    public AsynchronousVersionerAPI lndVersionerAPI(LndRpcConfig rpcConfig) {
+    AsynchronousVersionerAPI lndVersionerAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousVersionerAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),

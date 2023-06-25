@@ -23,10 +23,10 @@ import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.log
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @Profile("!test")
-public class BitcoinRegtestExampleApplicationConfig {
+class BitcoinRegtestExampleApplicationConfig {
 
     @Bean
-    public CommandLineRunner logZmqRawBlocksMessages(MessagePublishService<Block> bitcoinjBlockPublishService) {
+    CommandLineRunner logZmqRawBlocksMessages(MessagePublishService<Block> bitcoinjBlockPublishService) {
         return args -> {
             AtomicLong zeromqBlockCounter = new AtomicLong();
             Disposable subscription = Flux.from(bitcoinjBlockPublishService).subscribe(arg -> {
@@ -39,19 +39,19 @@ public class BitcoinRegtestExampleApplicationConfig {
     }
 
     @Bean
-    public CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+    CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
                                               BitcoinClient bitcoinClient) {
         return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
     }
 
     @Bean
-    public CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+    CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
                                                ElectrumClient electrumClient) {
         return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient);
     }
 
     @Bean
-    public CommandLineRunner loadElectrumWallet(ElectrumClient electrumClient) {
+    CommandLineRunner loadElectrumWallet(ElectrumClient electrumClient) {
         return args -> {
             boolean daemonConnected = electrumClient.isDaemonConnected();
             log.info("electrum daemon connected: {}", daemonConnected);

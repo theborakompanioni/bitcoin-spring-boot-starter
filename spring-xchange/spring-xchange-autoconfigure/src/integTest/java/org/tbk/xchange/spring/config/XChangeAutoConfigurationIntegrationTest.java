@@ -34,13 +34,13 @@ class XChangeAutoConfigurationIntegrationTest {
         }
 
         @Bean
-        public AtomicReference<Exchange> aBeanInjectedWithDynamicallyCreatedExchangeBean(KrakenExchange krakenExchange) {
+        AtomicReference<Exchange> aBeanInjectedWithDynamicallyCreatedExchangeBean(KrakenExchange krakenExchange) {
             requireNonNull(krakenExchange);
             return new AtomicReference<>(krakenExchange);
         }
 
         @Bean
-        public AtomicReference<Exchange> anotherBeanInjectedWithDynamicallyCreatedExchangeBean(KrakenExchange krakenExchange) {
+        AtomicReference<Exchange> anotherBeanInjectedWithDynamicallyCreatedExchangeBean(KrakenExchange krakenExchange) {
             requireNonNull(krakenExchange);
             return new AtomicReference<>(krakenExchange);
         }

@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.*;
 class TorContainerApplicationTest {
     private static final URI CHECK_TOR_URL = URI.create("https://check.torproject.org/");
 
-    @SpringBootApplication
+    @SpringBootApplication(proxyBeanMethods = false)
     public static class TorContainerTestApplication {
 
         public static void main(String[] args) {

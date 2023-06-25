@@ -102,7 +102,7 @@ public class ClnClientAutoConfiguration {
             OnClientKeySpecified.class,
     })
     @SneakyThrows
-    public SslContext clnRpcSslContext() {
+    SslContext clnRpcSslContext() {
         try (ByteArrayInputStream caCertStream = new ByteArrayInputStream(clnRpcCaCert());
              ByteArrayInputStream clientCertStream = new ByteArrayInputStream(clnRpcClientCert());
              ByteArrayInputStream clientKeyStream = new ByteArrayInputStream(clnRpcClientKey())) {
@@ -150,7 +150,7 @@ public class ClnClientAutoConfiguration {
             "org.tbk.lightning.cln.grpc.port"
     })
     @ConditionalOnBean(name = {"clnRpcSslContext"})
-    public ClnRpcConfig clnRpcConfig(@Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
+    ClnRpcConfig clnRpcConfig(@Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
         return ClnRpcConfigImpl.builder()
                 .host(properties.getHost())
                 .port(properties.getPort())
@@ -161,7 +161,7 @@ public class ClnClientAutoConfiguration {
     @Bean(name = "clnChannelBuilder")
     @ConditionalOnMissingBean(name = "clnChannelBuilder")
     @ConditionalOnBean(ClnRpcConfig.class)
-    public ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig,
+    ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig,
                                                       ObjectProvider<ManagedChannelBuilderCustomizer> managedChannelBuilderCustomizer) {
         ManagedChannelBuilder<?> managedChannelBuilder = NettyChannelBuilder.forAddress(rpcConfig.getHost(), rpcConfig.getPort())
                 .sslContext(rpcConfig.getSslContext());
@@ -174,7 +174,7 @@ public class ClnClientAutoConfiguration {
     @Bean(name = "clnChannel")
     @ConditionalOnMissingBean(name = "clnChannel")
     @ConditionalOnBean(ManagedChannelBuilder.class)
-    public ManagedChannel clnChannel(@Qualifier("clnChannelBuilder") ManagedChannelBuilder<?> clnChannelBuilder) {
+    ManagedChannel clnChannel(@Qualifier("clnChannelBuilder") ManagedChannelBuilder<?> clnChannelBuilder) {
         // From https://github.com/grpc/grpc-java/issues/3268#issuecomment-317484178:
         // > Channels are expensive to create, and the general recommendation is to use one per application,
         // > shared among the service stubs.
@@ -184,7 +184,7 @@ public class ClnClientAutoConfiguration {
     @Bean(name = "clnChannelShutdownHook")
     @ConditionalOnBean(name = "clnChannel")
     @Order(value = Ordered.LOWEST_PRECEDENCE)
-    public DisposableBean clnChannelShutdownHook(@Qualifier("clnChannel") ManagedChannel clnChannel) {
+    DisposableBean clnChannelShutdownHook(@Qualifier("clnChannel") ManagedChannel clnChannel) {
         return () -> {
             Duration timeout = properties.getShutdownTimeout();
             try {
@@ -208,22 +208,21 @@ public class ClnClientAutoConfiguration {
     @Bean(name = "clnNodeBlockingStub")
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "clnChannel")
-    public NodeGrpc.NodeBlockingStub clnNodeBlockingStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
+    NodeGrpc.NodeBlockingStub clnNodeBlockingStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
         return NodeGrpc.newBlockingStub(clnChannel);
     }
 
     @Bean(name = "clnNodeStub")
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "clnChannel")
-    public NodeGrpc.NodeStub clnNodeStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
+    NodeGrpc.NodeStub clnNodeStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
         return NodeGrpc.newStub(clnChannel);
     }
-
 
     @Bean(name = "clnNodeFutureStub")
     @ConditionalOnMissingBean
     @ConditionalOnBean(name = "clnChannel")
-    public NodeGrpc.NodeFutureStub clnNodeFutureStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
+    NodeGrpc.NodeFutureStub clnNodeFutureStub(@Qualifier("clnChannel") ManagedChannel clnChannel) {
         return NodeGrpc.newFutureStub(clnChannel);
     }
 

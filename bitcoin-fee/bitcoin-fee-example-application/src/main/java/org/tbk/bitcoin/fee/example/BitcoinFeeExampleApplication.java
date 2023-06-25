@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinFeeExampleApplication {
 
     public static void main(String[] args) {
@@ -42,7 +42,7 @@ public class BitcoinFeeExampleApplication {
 
     @Bean
     @Profile("demo-disabled-for-now")
-    public ApplicationRunner mainRunner(FeeProvider feeProvider) {
+    ApplicationRunner mainRunner(FeeProvider feeProvider) {
         return args -> {
             log.info("=====================");
             List<Duration> durations = IntStream.range(0, 12)

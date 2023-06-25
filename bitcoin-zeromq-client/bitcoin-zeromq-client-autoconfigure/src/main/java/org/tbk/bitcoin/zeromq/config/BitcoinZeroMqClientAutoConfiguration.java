@@ -27,7 +27,7 @@ public class BitcoinZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BitcoinZmqClientConfig bitcoinZmqClientConfig(
+    BitcoinZmqClientConfig bitcoinZmqClientConfig(
             ObjectProvider<BitcoinZmqClientConfigBuilderCustomizer> bitcoinZmqClientConfigBuilderCustomizer) {
 
         BitcoinZmqClientConfigBuilder configBuilder = BitcoinZmqClientConfig.builder()
@@ -44,7 +44,7 @@ public class BitcoinZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubrawblock")
-    public ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
+    ZeroMqMessagePublisherFactory bitcoinRawBlockZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         return bitcoinZmqClientConfig.getZmqpubrawblock()
                 .map(val -> ZeroMqMessagePublisherFactory.builder()
                         .topic(BitcoinZeroMqTopics.rawblock())
@@ -55,7 +55,7 @@ public class BitcoinZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubrawtx")
-    public ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
+    ZeroMqMessagePublisherFactory bitcoinRawTxZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         return bitcoinZmqClientConfig.getZmqpubrawtx()
                 .map(val -> ZeroMqMessagePublisherFactory.builder()
                         .topic(BitcoinZeroMqTopics.rawtx())
@@ -66,7 +66,7 @@ public class BitcoinZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubhashblock")
-    public ZeroMqMessagePublisherFactory bitcoinHashBlockZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
+    ZeroMqMessagePublisherFactory bitcoinHashBlockZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         return bitcoinZmqClientConfig.getZmqpubhashblock()
                 .map(val -> ZeroMqMessagePublisherFactory.builder()
                         .topic(BitcoinZeroMqTopics.hashblock())
@@ -77,7 +77,7 @@ public class BitcoinZeroMqClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "org.tbk.bitcoin.zeromq.zmqpubhashtx")
-    public ZeroMqMessagePublisherFactory bitcoinHashTxZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
+    ZeroMqMessagePublisherFactory bitcoinHashTxZeroMqMessagePublisherFactory(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         return bitcoinZmqClientConfig.getZmqpubhashtx()
                 .map(val -> ZeroMqMessagePublisherFactory.builder()
                         .topic(BitcoinZeroMqTopics.hashtx())

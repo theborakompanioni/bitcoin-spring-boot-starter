@@ -61,7 +61,7 @@ public class BitcoindContainerAutoConfiguration {
      * P2P: 38333
      */
     @Bean(name = "bitcoindContainer", destroyMethod = "stop")
-    public BitcoindContainer<?> bitcoindContainer() {
+    BitcoindContainer<?> bitcoindContainer() {
         List<String> commands = buildCommandList();
 
         // TODO: expose ports specified via auto configuration properties

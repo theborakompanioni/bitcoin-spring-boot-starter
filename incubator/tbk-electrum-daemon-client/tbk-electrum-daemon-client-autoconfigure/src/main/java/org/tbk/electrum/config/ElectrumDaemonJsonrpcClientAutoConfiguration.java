@@ -29,7 +29,7 @@ public class ElectrumDaemonJsonrpcClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ElectrumClient electrumClient(ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig,
+    ElectrumClient electrumClient(ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig,
                                          ElectrumClientFactory factory) {
         URI uri = electrumDaemonJsonrpcConfig.getUri();
 
@@ -38,13 +38,13 @@ public class ElectrumDaemonJsonrpcClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ElectrumClientFactory electrumClientFactory() {
+    ElectrumClientFactory electrumClientFactory() {
         return new ElectrumClientFactoryImpl();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig(ObjectProvider<ElectrumDaemonJsonrpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
+    ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig(ObjectProvider<ElectrumDaemonJsonrpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
         ElectrumDaemonJsonrpcConfigBuilder rpcConfigBuilder = new ElectrumDaemonJsonrpcConfigBuilder()
                 .host(properties.getRpchost())
                 .port(properties.getRpcport())

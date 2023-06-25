@@ -48,7 +48,7 @@ class ElectrumPersonalServerContainerApplicationTest {
              * Maybe move to {@link org.tbk.bitcoin.regtest.config.BitcoinRegtestAutoConfiguration}?
              */
             @Bean
-            public InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
+            InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
                 return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinRegtestClient);
             }
         }

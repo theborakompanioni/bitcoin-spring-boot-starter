@@ -39,7 +39,7 @@ public class EarndotcomFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(EarndotcomApiClient.class)
-    public EarndotcomApiClient earndotcomApiClient() {
+    EarndotcomApiClient earndotcomApiClient() {
         EarndotcomApiClientImpl client = new EarndotcomApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
 
         return CachingEarndotcomApiClient.builder()
@@ -51,13 +51,13 @@ public class EarndotcomFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(FeeSelectionStrategy.class)
-    public FeeSelectionStrategy earndotcomFeeSelectionStrategy() {
+    FeeSelectionStrategy earndotcomFeeSelectionStrategy() {
         return new SimpleFeeSelectionStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean(EarndotcomFeeProvider.class)
-    public EarndotcomFeeProvider earndotcomFeeProvider(EarndotcomApiClient earndotcomApiClient,
+    EarndotcomFeeProvider earndotcomFeeProvider(EarndotcomApiClient earndotcomApiClient,
                                                        FeeSelectionStrategy earndotcomFeeSelectionStrategy) {
         return new EarndotcomFeeProvider(earndotcomApiClient, earndotcomFeeSelectionStrategy);
     }

@@ -21,12 +21,12 @@ class CustomMempoolSpaceFeeProviderConfig {
 
     // ****************************************** mempool.space
     @Bean
-    public MempoolspaceFeeApiClient mempoolspaceFeeApiClient() {
+    MempoolspaceFeeApiClient mempoolspaceFeeApiClient() {
         return new MempoolspaceFeeApiClientImpl("https://mempool.space", null);
     }
 
     @Bean
-    public SimpleMempoolspaceFeeProvider mempoolspaceFeeProvider() {
+    SimpleMempoolspaceFeeProvider mempoolspaceFeeProvider() {
         return new SimpleMempoolspaceFeeProvider(mempoolspaceFeeApiClient(), SimpleProviderInfo.builder()
                 .name("mempool.space-simple")
                 .description("Simple fee recommendation")
@@ -34,7 +34,7 @@ class CustomMempoolSpaceFeeProviderConfig {
     }
 
     @Bean
-    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+    ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, SimpleProviderInfo.builder()
                 .name("mempool.space")
                 .description("Fee recommendation using projected blocks of the mempool")
@@ -43,12 +43,12 @@ class CustomMempoolSpaceFeeProviderConfig {
 
     // ****************************************** mempool.bisq.services
     @Bean
-    public MempoolspaceFeeApiClient mempoolBisqFeeApiClient() {
+    MempoolspaceFeeApiClient mempoolBisqFeeApiClient() {
         return new MempoolspaceFeeApiClientImpl("https://mempool.bisq.services", null);
     }
 
     @Bean
-    public SimpleMempoolspaceFeeProvider mempoolBisqFeeProvider() {
+    SimpleMempoolspaceFeeProvider mempoolBisqFeeProvider() {
         return new SimpleMempoolspaceFeeProvider(mempoolBisqFeeApiClient(), SimpleProviderInfo.builder()
                 .name("mempool.bisq.services-simple")
                 .description("Simple fee recommendation")
@@ -56,7 +56,7 @@ class CustomMempoolSpaceFeeProviderConfig {
     }
 
     @Bean
-    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolBisqFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+    ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolBisqFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, SimpleProviderInfo.builder()
                 .name("mempool.bisq.services")
                 .description("Fee recommendation using projected blocks of the mempool")
@@ -65,12 +65,12 @@ class CustomMempoolSpaceFeeProviderConfig {
 
     // ****************************************** mempool.emzy.de
     @Bean
-    public MempoolspaceFeeApiClient mempoolEmzyFeeApiClient() {
+    MempoolspaceFeeApiClient mempoolEmzyFeeApiClient() {
         return new MempoolspaceFeeApiClientImpl("https://mempool.emzy.de", null);
     }
 
     @Bean
-    public SimpleMempoolspaceFeeProvider mempoolEmzyFeeProvider() {
+    SimpleMempoolspaceFeeProvider mempoolEmzyFeeProvider() {
         return new SimpleMempoolspaceFeeProvider(mempoolEmzyFeeApiClient(), SimpleProviderInfo.builder()
                 .name("mempool.emzy.de-simple")
                 .description("Simple fee recommendation")
@@ -78,7 +78,7 @@ class CustomMempoolSpaceFeeProviderConfig {
     }
 
     @Bean
-    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolEmzyFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+    ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolEmzyFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, SimpleProviderInfo.builder()
                 .name("mempool.emzy.de")
                 .description("Fee recommendation using projected blocks of the mempool")
@@ -87,12 +87,12 @@ class CustomMempoolSpaceFeeProviderConfig {
 
     // ****************************************** mempool.ninja
     @Bean
-    public MempoolspaceFeeApiClient mempoolNinjaFeeApiClient() {
+    MempoolspaceFeeApiClient mempoolNinjaFeeApiClient() {
         return new MempoolspaceFeeApiClientImpl("https://mempool.ninja", null);
     }
 
     @Bean
-    public SimpleMempoolspaceFeeProvider mempoolNinjaFeeProvider() {
+    SimpleMempoolspaceFeeProvider mempoolNinjaFeeProvider() {
         return new SimpleMempoolspaceFeeProvider(mempoolNinjaFeeApiClient(), SimpleProviderInfo.builder()
                 .name("mempool.ninja-simple")
                 .description("Simple fee recommendation")
@@ -100,7 +100,7 @@ class CustomMempoolSpaceFeeProviderConfig {
     }
 
     @Bean
-    public ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolNinjaFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
+    ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolNinjaFeeProvider(MempoolspaceFeeApiClient mempoolspaceFeeApiClient) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, SimpleProviderInfo.builder()
                 .name("mempool.ninja")
                 .description("Fee recommendation using projected blocks of the mempool")

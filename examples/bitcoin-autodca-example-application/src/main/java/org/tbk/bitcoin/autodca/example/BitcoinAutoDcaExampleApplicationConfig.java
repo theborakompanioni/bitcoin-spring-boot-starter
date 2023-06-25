@@ -34,7 +34,7 @@ public class BitcoinAutoDcaExampleApplicationConfig {
     }
 
     @Bean
-    public DryRunOption dryRunOption(Environment env, ApplicationArguments applicationArguments) {
+    DryRunOption dryRunOption(Environment env, ApplicationArguments applicationArguments) {
         boolean isProductionEnvironment = env.acceptsProfiles(Profiles.of("production"));
         boolean isExplicitTestEnvironment = env.acceptsProfiles(Profiles.of("test | debug | development | staging"));
         boolean isExplicitDryRunGivenByUserViaArguments = applicationArguments.containsOption("dry");
@@ -49,7 +49,7 @@ public class BitcoinAutoDcaExampleApplicationConfig {
     }
 
     @Bean
-    public ApplicationRunner dryRunOptionLogger(DryRunOption dryRunOption) {
+    ApplicationRunner dryRunOptionLogger(DryRunOption dryRunOption) {
         return args -> {
             if (dryRunOption.isEnabled()) {
                 log.info("================================");
@@ -61,53 +61,53 @@ public class BitcoinAutoDcaExampleApplicationConfig {
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner versionCommandRunner(BuildProperties buildProperties) {
+    ApplicationRunner versionCommandRunner(BuildProperties buildProperties) {
         return new VersionCommandRunner(buildProperties);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner helpCommandRunner(BuildProperties buildProperties) {
+    ApplicationRunner helpCommandRunner(BuildProperties buildProperties) {
         return new HelpCommandRunner(buildProperties);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner stackCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
+    ApplicationRunner stackCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
         KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenStackCommandRunner(krakenExchange, this.properties, dryRunOption);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner withdrawCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
+    ApplicationRunner withdrawCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
         KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenWithdrawCommandRunner(krakenExchange, this.properties, dryRunOption);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner balanceCommandRunner(Exchange exchange) {
+    ApplicationRunner balanceCommandRunner(Exchange exchange) {
         KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenBalanceCommandRunner(krakenExchange);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner tickerCommandRunner(Exchange exchange) {
+    ApplicationRunner tickerCommandRunner(Exchange exchange) {
         return new TickerCommandRunner(exchange, this.properties);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner historyCommandRunner(Exchange exchange) {
+    ApplicationRunner historyCommandRunner(Exchange exchange) {
         KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenHistoryCommandRunner(krakenExchange);
     }
 
     @Bean
     @ConditionalOnNotWebApplication
-    public ApplicationRunner rebalanceCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
+    ApplicationRunner rebalanceCommandRunner(Exchange exchange, DryRunOption dryRunOption) {
         KrakenExchange krakenExchange = toKrakenExchangeOrThrow(exchange);
         return new KrakenRebalanceCommandRunner(krakenExchange, this.properties, dryRunOption);
     }

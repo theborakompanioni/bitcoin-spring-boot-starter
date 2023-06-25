@@ -29,7 +29,7 @@ import java.time.Duration;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class LndContainerExampleApplication {
 
     public static void main(String[] args) {
@@ -53,7 +53,7 @@ public class LndContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner mainRunner() {
+    ApplicationRunner mainRunner() {
         return args -> {
             GetInfoResponse info = lndApi.getInfo();
             log.info("=================================================");
@@ -65,7 +65,7 @@ public class LndContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService) {
+    ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
@@ -86,7 +86,7 @@ public class LndContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner channelEventUpdateRunner(AsynchronousLndAPI lndAsyncApi) {
+    ApplicationRunner channelEventUpdateRunner(AsynchronousLndAPI lndAsyncApi) {
         return args -> {
             Flux<ChannelEventUpdate> channelEventUpdates = Flux.create(emitter -> {
                 try {
@@ -127,7 +127,7 @@ public class LndContainerExampleApplication {
 
     @Bean
     @Profile("!test")
-    public ApplicationRunner addInvoiceRunner() {
+    ApplicationRunner addInvoiceRunner() {
         return args -> {
             AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(LightningApi.Invoice.newBuilder()
                     .setMemo("Test invoice")

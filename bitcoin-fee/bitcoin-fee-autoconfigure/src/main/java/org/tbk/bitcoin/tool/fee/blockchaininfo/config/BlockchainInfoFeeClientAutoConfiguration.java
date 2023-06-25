@@ -32,13 +32,13 @@ public class BlockchainInfoFeeClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BlockchainInfoFeeApiClient.class)
-    public BlockchainInfoFeeApiClient blockchainInfoFeeApiClient() {
+    BlockchainInfoFeeApiClient blockchainInfoFeeApiClient() {
         return new BlockchainInfoFeeApiClientImpl(properties.getBaseUrl(), properties.getToken().orElse(null));
     }
 
     @Bean
     @ConditionalOnMissingBean(BlockchainInfoFeeProvider.class)
-    public BlockchainInfoFeeProvider blockchainInfoFeeProvider(BlockchainInfoFeeApiClient blockchainInfoFeeApiClient) {
+    BlockchainInfoFeeProvider blockchainInfoFeeProvider(BlockchainInfoFeeApiClient blockchainInfoFeeApiClient) {
         return new BlockchainInfoFeeProvider(blockchainInfoFeeApiClient);
     }
 }
