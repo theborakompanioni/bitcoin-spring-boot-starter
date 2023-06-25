@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - change bean methods visibility in autoconfig classes to package-private
 
 ### Changed
+- upgrade: update bitcoin-kmp from v0.11.1 to v0.12.0
 - upgrade: update bitcoinj from v0.16.1 to v0.16.2
 - upgrade: update lightningj from v0.16.0-Beta to v0.16.2-Beta
 - upgrade: update grpc from v1.54.1 to v1.56.0
