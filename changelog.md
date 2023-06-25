@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - upgrade: update bitcoinj from v0.16.1 to v0.16.2
+- upgrade: update lightningj from v0.16.0-Beta to v0.16.2-Beta
 
 ### Removed
 - module: externalize 'cln-grpc-client-core'
@@ -54,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - lnd-grpc-client: rename `rpchost` and `rpcport` properties to `host` and `port`
 - upgrade: update docker lightninglabs/lnd from v0.15.5-beta to v0.16.0-beta
 - upgrade: update lightningj from v0.15.5-Beta to v0.16.0-Beta
-- 
+
 ### Added
 - module: initial version of module `cln-grpc-client`
 - module: initial version of module `spring-testcontainer-cln-starter`
