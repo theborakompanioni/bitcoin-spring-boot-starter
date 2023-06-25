@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update grpc from v1.54.1 to v1.56.0
 - upgrade: update protobuf from v3.21.12 to v3.22.3
 - upgrade: update hibernate-community-dialects from v6.1.7.Final to v6.2.5.Final
+- upgrade: update testcontainers from v1.17.6 to v1.18.3
 
 ### Fixed
 - Fix json serialization of FeeRecommendationResponse in bitcoin-fee
