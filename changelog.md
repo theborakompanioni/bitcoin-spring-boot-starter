@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - upgrade: update bitcoinj from v0.16.1 to v0.16.2
 - upgrade: update lightningj from v0.16.0-Beta to v0.16.2-Beta
+- upgrade: update grpc from v1.54.1 to v1.56.0
+- upgrade: update protobuf from v3.21.12 to v3.22.3
+
+### Fixed
+- Fix json serialization of FeeRecommendationResponse in bitcoin-fee
 
 ### Removed
 - module: externalize 'cln-grpc-client-core'

@@ -72,5 +72,5 @@ message FeeRecommendationResponse {
     }
 
     FeeRecommendationRequest request = 1 [json_name = "request"];
-    repeated FeeRecommendation recommendation = 2 [json_name = "request"];
+    repeated FeeRecommendation recommendation = 2 [json_name = "recommendation"];
 }
