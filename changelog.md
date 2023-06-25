@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - change bean methods visibility in autoconfig classes to package-private
 
+### Changed
+- upgrade: update bitcoinj from v0.16.1 to v0.16.2
+
 ### Removed
 - module: externalize 'cln-grpc-client-core'
 
