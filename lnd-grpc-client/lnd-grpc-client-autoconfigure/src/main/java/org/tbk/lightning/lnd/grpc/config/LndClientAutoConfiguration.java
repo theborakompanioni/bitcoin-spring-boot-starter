@@ -11,6 +11,8 @@ import org.lightningj.lnd.wrapper.MacaroonContext;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.autopilot.AsynchronousAutopilotAPI;
 import org.lightningj.lnd.wrapper.autopilot.SynchronousAutopilotAPI;
+import org.lightningj.lnd.wrapper.chainkit.AsynchronousChainKitAPI;
+import org.lightningj.lnd.wrapper.chainkit.SynchronousChainKitAPI;
 import org.lightningj.lnd.wrapper.chainnotifier.AsynchronousChainNotifierAPI;
 import org.lightningj.lnd.wrapper.chainnotifier.SynchronousChainNotifierAPI;
 import org.lightningj.lnd.wrapper.invoices.AsynchronousInvoicesAPI;
@@ -231,6 +233,29 @@ public class LndClientAutoConfiguration {
     @ConditionalOnBean(LndRpcConfig.class)
     AsynchronousAutopilotAPI lndAutopilotAPI(LndRpcConfig rpcConfig) {
         return new AsynchronousAutopilotAPI(
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
+                rpcConfig.getSslContext(),
+                rpcConfig.getMacaroonContext());
+    }
+
+    // ----------- ChainKit API beans
+    @Bean(name = "synchronousLndChainKit", destroyMethod = "close")
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(LndRpcConfig.class)
+    SynchronousChainKitAPI synchronousLndChainKit(LndRpcConfig rpcConfig) {
+        return new SynchronousChainKitAPI(
+                rpcConfig.getHost(),
+                rpcConfig.getPort(),
+                rpcConfig.getSslContext(),
+                rpcConfig.getMacaroonContext());
+    }
+
+    @Bean(name = "lndChainKitAPI", destroyMethod = "close")
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(LndRpcConfig.class)
+    AsynchronousChainKitAPI lndChainKitAPI(LndRpcConfig rpcConfig) {
+        return new AsynchronousChainKitAPI(
                 rpcConfig.getHost(),
                 rpcConfig.getPort(),
                 rpcConfig.getSslContext(),

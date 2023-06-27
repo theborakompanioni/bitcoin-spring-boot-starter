@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import org.lightningj.lnd.wrapper.AsynchronousLndAPI;
 import org.lightningj.lnd.wrapper.autopilot.AsynchronousAutopilotAPI;
+import org.lightningj.lnd.wrapper.chainkit.AsynchronousChainKitAPI;
 import org.lightningj.lnd.wrapper.chainnotifier.AsynchronousChainNotifierAPI;
 import org.lightningj.lnd.wrapper.invoices.AsynchronousInvoicesAPI;
 import org.lightningj.lnd.wrapper.router.AsynchronousRouterAPI;
@@ -42,6 +43,7 @@ class LndClientAutoConfigurationTest {
                             .put("lndAPI", AsynchronousLndAPI.class)
                             .put("lndWalletUnlockerAPI", AsynchronousWalletUnlockerAPI.class)
                             .put("lndAutopilotAPI", AsynchronousAutopilotAPI.class)
+                            .put("lndChainKitAPI", AsynchronousChainKitAPI.class)
                             .put("lndChainNotifierAPI", AsynchronousChainNotifierAPI.class)
                             .put("lndInvoiceAPI", AsynchronousInvoicesAPI.class)
                             .put("lndRouterAPI", AsynchronousRouterAPI.class)

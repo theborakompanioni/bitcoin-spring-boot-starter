@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - use spring-boot-docker-compose in bitcoin-regtest example application
+- lnd: create beans for ChainKit LightningJ APIs
 
 ### Changed
 - upgrade: update bitcoin-kmp from v0.11.1 to v0.12.0
