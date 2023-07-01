@@ -5,8 +5,7 @@ plugins {
 description = 'lnd grpc client autoconfigure package'
 
 dependencies {
-    // todo: 'lnd-grpc-client-core' should be compileOnly!
-    api project(':lnd-grpc-client:lnd-grpc-client-core')
+    compileOnly project(':lnd-grpc-client:lnd-grpc-client-core')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
@@ -19,7 +18,8 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+    testImplementation project(':lnd-grpc-client:lnd-grpc-client-core')
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
 
 }
