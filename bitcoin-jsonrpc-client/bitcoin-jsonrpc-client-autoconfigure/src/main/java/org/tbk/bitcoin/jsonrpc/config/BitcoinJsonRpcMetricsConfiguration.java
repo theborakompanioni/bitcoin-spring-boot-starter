@@ -37,23 +37,33 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
-@ConditionalOnClass(MeterBinder.class)
+@ConditionalOnClass({
+        MeterBinder.class,
+        BitcoinClient.class
+})
 @AutoConfigureAfter({
         BitcoinJsonRpcClientAutoConfiguration.class,
         BitcoinJsonRpcCacheAutoConfiguration.class
 })
 public class BitcoinJsonRpcMetricsConfiguration {
 
-    @Bean
-    @ConditionalOnBean(CacheFacade.class)
-    MeterBinder bitcoinJsonRpcCacheMetrics(CacheFacade cache) {
-        return (registry) -> {
-            GuavaCacheMetrics.monitor(registry, cache.block(), "block", Collections.emptyList());
-            GuavaCacheMetrics.monitor(registry, cache.blockInfo(), "blockInfo", Collections.emptyList());
-            GuavaCacheMetrics.monitor(registry, cache.tx(), "tx", Collections.emptyList());
-            GuavaCacheMetrics.monitor(registry, cache.txInfo(), "txInfo", Collections.emptyList());
-        };
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(CacheFacade.class)
+    public static class BitcoinJsonRpcCacheMetricsConfiguration {
+
+        @Bean
+        @ConditionalOnBean(CacheFacade.class)
+        MeterBinder bitcoinJsonRpcCacheMetrics(CacheFacade cache) {
+            return (registry) -> {
+                GuavaCacheMetrics.monitor(registry, cache.block(), "block", Collections.emptyList());
+                GuavaCacheMetrics.monitor(registry, cache.blockInfo(), "blockInfo", Collections.emptyList());
+                GuavaCacheMetrics.monitor(registry, cache.tx(), "tx", Collections.emptyList());
+                GuavaCacheMetrics.monitor(registry, cache.txInfo(), "txInfo", Collections.emptyList());
+            };
+        }
+
     }
+
 
     @Bean
     @ConditionalOnBean(BitcoinClient.class)

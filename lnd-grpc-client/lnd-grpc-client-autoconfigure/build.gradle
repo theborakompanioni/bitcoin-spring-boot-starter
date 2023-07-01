@@ -5,6 +5,7 @@ plugins {
 description = 'lnd grpc client autoconfigure package'
 
 dependencies {
+    // todo: 'lnd-grpc-client-core' should be compileOnly!
     api project(':lnd-grpc-client:lnd-grpc-client-core')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

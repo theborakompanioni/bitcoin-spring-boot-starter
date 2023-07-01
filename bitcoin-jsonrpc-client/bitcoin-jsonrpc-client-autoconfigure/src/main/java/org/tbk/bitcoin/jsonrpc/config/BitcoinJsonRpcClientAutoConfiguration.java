@@ -21,7 +21,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinJsonRpcClientAutoConfigProperties.class)
-@ConditionalOnClass(BitcoinJsonRpcClientFactory.class)
+@ConditionalOnClass({
+        BitcoinJsonRpcClientFactory.class,
+        BitcoinClient.class
+})
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
 public class BitcoinJsonRpcClientAutoConfiguration {
 
@@ -54,7 +57,7 @@ public class BitcoinJsonRpcClientAutoConfiguration {
             "org.tbk.bitcoin.jsonrpc.rpcport"
     })
     RpcConfig bitcoinJsonRpcConfig(NetworkParameters bitcoinNetworkParameters,
-                                          ObjectProvider<RpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
+                                   ObjectProvider<RpcConfigBuilderCustomizer> rpcConfigBuilderCustomizer) {
         RpcConfigBuilder rpcConfigBuilder = new RpcConfigBuilder(bitcoinNetworkParameters, properties.getRpchost(), properties.getRpcport())
                 .username(properties.getRpcuser())
                 .password(properties.getRpcpassword());

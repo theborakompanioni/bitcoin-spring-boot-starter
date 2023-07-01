@@ -28,7 +28,10 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BitcoinJsonRpcCacheAutoConfigProperties.class)
-@ConditionalOnClass(CacheFacade.class)
+@ConditionalOnClass({
+        CacheFacade.class,
+        BitcoinClient.class
+})
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.cache.enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureAfter(BitcoinJsonRpcClientAutoConfiguration.class)
 public class BitcoinJsonRpcCacheAutoConfiguration {
@@ -93,7 +96,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockInfoCache.class)
-    BlockInfoCache bitcoinJsonRpcInfoCache(BitcoinClient bitcoinClient) {
+    BlockInfoCache bitcoinJsonRpcBlockInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, BlockInfo> cache = CacheBuilder.newBuilder()
                 .recordStats()
                 .expireAfterAccess(Duration.ofMinutes(30))
@@ -116,9 +119,9 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     })
     @ConditionalOnMissingBean(CacheFacade.class)
     CacheFacade bitcoinJsonRpcCacheFacade(TransactionCache transactionCache,
-                                                 RawTransactionInfoCache rawTransactionInfoCache,
-                                                 BlockCache blockCache,
-                                                 BlockInfoCache blockInfoCache) {
+                                          RawTransactionInfoCache rawTransactionInfoCache,
+                                          BlockCache blockCache,
+                                          BlockInfoCache blockInfoCache) {
         return SimpleCacheFacade.builder()
                 .transactionCache(transactionCache)
                 .rawTransactionInfoCache(rawTransactionInfoCache)

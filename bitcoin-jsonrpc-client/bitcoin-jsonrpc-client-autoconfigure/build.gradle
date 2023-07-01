@@ -5,10 +5,8 @@ plugins {
 description = 'bitcoin jsonrpc client autoconfigure package'
 
 dependencies {
-    api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
-
-    // todo: 'bitcoin-jsonrpc-client-cache' should be compileOnly!
-    api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-cache')
+    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+    compileOnly project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-cache')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
@@ -21,6 +19,9 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+    testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
+
+    integTestImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-cache')
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
 }

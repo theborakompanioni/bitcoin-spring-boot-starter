@@ -5,6 +5,7 @@ plugins {
 description = 'cln grpc client autoconfigure package'
 
 dependencies {
+    // todo: 'cln-grpc-client-core' should be compileOnly!
     api "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
