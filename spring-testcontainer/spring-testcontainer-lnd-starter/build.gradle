@@ -11,6 +11,7 @@ dependencies {
     // currently a hard dependency on the bitcoind testcontainer package - try to make it an optional dependency!
     implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
 
+    compileOnly project(':lnd-grpc-client:lnd-grpc-client-core')
     compileOnly project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
