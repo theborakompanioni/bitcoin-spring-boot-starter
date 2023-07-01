@@ -5,8 +5,7 @@ plugins {
 description = 'cln grpc client autoconfigure package'
 
 dependencies {
-    // todo: 'cln-grpc-client-core' should be compileOnly!
-    api "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
+    compileOnly "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
@@ -14,5 +13,8 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+    testImplementation "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
+
+    // TODO: add actuator endpoints
+    // integTestImplementation 'org.springframework.boot:spring-boot-starter-actuator'
 }

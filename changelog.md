@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 - module bitcoin-jsonrpc-client-autoconfigure: dependencies not included in anymore
+- module cln-grpc-client-autoconfigure: dependencies not included in anymore
 
 ### Changes
 - upgrade: update spring-boot from v3.1.0 to v3.1.1
