@@ -24,7 +24,6 @@ public class BitcoinJsonrpcClientExampleApplication {
                 .sources(BitcoinJsonrpcClientExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
                 .run(args);
     }
 
