@@ -11,11 +11,37 @@ server.compression.enabled: true
 management.server.port: 9001
 
 # LOGGING
-logging.file.path: ./var/log
 logging.file.name: application-dev.log
 logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 logging.level.web: DEBUG
 
+spring.docker.compose:
+  enabled: true
+  file: ./docker/docker-compose.yml
+  stop.command: DOWN # DOWN clears all container data after shutdown
 
+org.tbk.bitcoin.zeromq:
+  network: regtest
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: regtest-rpc-user
+  rpcpassword: regtest-rpc-pass
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  # mine blocks every 1 - 10 seconds
+  mining:
+    enabled: true
+    # secret to address: truth fever mom transfer steak immense lake jacket glide bring fancy electric
+    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+    mine-initial-amount-of-blocks: 101
+    next-block-duration:
+      min-duration: PT1S
+      max-duration: PT10S

@@ -64,7 +64,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnBean({BitcoinClient.class})
     @ConditionalOnMissingBean
     RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient,
-                                     CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+                              CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         return new RegtestMinerImpl(bitcoinJsonRpcClient, coinbaseRewardAddressSupplier);
     }
 
@@ -90,7 +90,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnMissingBean(ScheduledRegtestMiner.class)
     @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
     ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
-                                                       @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
+                                                @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
         ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
         scheduledregtestMiner.startAsync();
         return scheduledregtestMiner;

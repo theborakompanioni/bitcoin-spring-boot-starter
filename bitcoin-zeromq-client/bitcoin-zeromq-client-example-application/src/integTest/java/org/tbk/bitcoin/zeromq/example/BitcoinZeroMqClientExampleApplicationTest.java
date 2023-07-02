@@ -22,5 +22,4 @@ class BitcoinZeroMqClientExampleApplicationTest {
     void contextLoads() {
         assertThat(bitcoinjTransactionPublishService, is(notNullValue()));
     }
-
 }

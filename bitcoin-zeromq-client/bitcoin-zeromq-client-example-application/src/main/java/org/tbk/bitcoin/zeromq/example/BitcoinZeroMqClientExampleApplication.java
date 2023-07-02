@@ -34,7 +34,6 @@ public class BitcoinZeroMqClientExampleApplication {
                 .sources(BitcoinZeroMqClientExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
                 .run(args);
     }
 
