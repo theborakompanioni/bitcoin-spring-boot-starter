@@ -13,7 +13,7 @@ class BitcoinJsonRpcCacheAutoConfigurationTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    void noBeansAreCreatedWhenDependecyIsMissing() {
+    void noBeansAreCreatedWhenDependencyIsMissing() {
         this.contextRunner.withUserConfiguration(BitcoinJsonRpcClientAutoConfiguration.class)
                 .withPropertyValues(
                         "org.tbk.bitcoin.jsonrpc.enabled=true"

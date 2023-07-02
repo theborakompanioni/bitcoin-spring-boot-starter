@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.jsonrpc.cache.*;
 
 import java.io.IOException;
-import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,7 +31,7 @@ import static java.util.Objects.requireNonNull;
         CacheFacade.class,
         BitcoinClient.class
 })
-@ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.cache.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc-cache.enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureAfter(BitcoinJsonRpcClientAutoConfiguration.class)
 public class BitcoinJsonRpcCacheAutoConfiguration {
 
@@ -46,10 +45,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(TransactionCache.class)
     TransactionCache bitcoinJsonRpcTransactionCache(BitcoinClient bitcoinClient) {
-        LoadingCache<Sha256Hash, Transaction> cache = CacheBuilder.newBuilder()
-                .recordStats()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
+        LoadingCache<Sha256Hash, Transaction> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
                 .build(new CacheLoader<>() {
                     @Override
                     public Transaction load(Sha256Hash key) throws IOException {
@@ -63,10 +59,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(RawTransactionInfoCache.class)
     RawTransactionInfoCache bitcoinJsonRpcRawTransactionInfoCache(BitcoinClient bitcoinClient) {
-        LoadingCache<Sha256Hash, RawTransactionInfo> cache = CacheBuilder.newBuilder()
-                .recordStats()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
+        LoadingCache<Sha256Hash, RawTransactionInfo> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
                 .build(new CacheLoader<>() {
                     @Override
                     public RawTransactionInfo load(Sha256Hash key) throws IOException {
@@ -80,10 +73,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockCache.class)
     BlockCache bitcoinJsonRpcBlockCache(BitcoinClient bitcoinClient) {
-        LoadingCache<Sha256Hash, Block> cache = CacheBuilder.newBuilder()
-                .recordStats()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
+        LoadingCache<Sha256Hash, Block> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
                 .build(new CacheLoader<>() {
                     @Override
                     public Block load(Sha256Hash key) throws IOException {
@@ -97,10 +87,7 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnBean(BitcoinClient.class)
     @ConditionalOnMissingBean(BlockInfoCache.class)
     BlockInfoCache bitcoinJsonRpcBlockInfoCache(BitcoinClient bitcoinClient) {
-        LoadingCache<Sha256Hash, BlockInfo> cache = CacheBuilder.newBuilder()
-                .recordStats()
-                .expireAfterAccess(Duration.ofMinutes(30))
-                .maximumSize(10_000)
+        LoadingCache<Sha256Hash, BlockInfo> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
                 .build(new CacheLoader<>() {
                     @Override
                     public BlockInfo load(Sha256Hash key) throws IOException {

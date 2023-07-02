@@ -17,5 +17,3 @@ logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 logging.level.web: DEBUG
-
-

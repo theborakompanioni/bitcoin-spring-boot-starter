@@ -13,6 +13,7 @@ import java.util.Objects;
 /**
  * {
  * "enabled": true,
+ * "network": "mainnet",
  * "rpchost": "0.0.0.0",
  * "rpcport": 7000,
  * "rpcuser": "myrpcuser",

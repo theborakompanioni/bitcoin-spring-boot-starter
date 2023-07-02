@@ -18,9 +18,24 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
 
+spring.docker.compose:
+  enabled: true
+  file: ./docker/docker-compose.yml
+  stop.command: DOWN # DOWN clears all container data after shutdown
+
 org.tbk.bitcoin.jsonrpc:
-  network: mainnet
+  network: regtest
   rpchost: http://localhost
-  rpcport: 8332
-  rpcuser: myrpcuser
-  rpcpassword: correct horse battery staple
+  rpcport: 18443
+  rpcuser: regtest-rpc-user
+  rpcpassword: regtest-rpc-pass
+
+org.tbk.bitcoin.jsonrpc-cache:
+  transaction:
+    specification: 'recordStats,initialCapacity=1000,maximumSize=100,expireAfterAccess=2h'
+  raw-transaction-info:
+    specification: 'recordStats,initialCapacity=1000,maximumSize=100,expireAfterAccess=2h'
+  block:
+    specification: 'recordStats,initialCapacity=10,maximumSize=10,expireAfterAccess=30m'
+  block-info:
+    specification: 'recordStats,initialCapacity=100,maximumSize=50,expireAfterAccess=1h'
