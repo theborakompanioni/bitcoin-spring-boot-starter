@@ -9,9 +9,16 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class BtcRpcExplorerExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()

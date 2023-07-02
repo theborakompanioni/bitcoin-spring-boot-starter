@@ -15,7 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @Slf4j
-
 @SpringBootTest
 @ActiveProfiles("test")
 class BitcoinJsonRpcFeeApiClientImplTest {

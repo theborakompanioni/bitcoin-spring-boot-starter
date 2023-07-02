@@ -16,12 +16,18 @@ import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinZeroMqClientExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()

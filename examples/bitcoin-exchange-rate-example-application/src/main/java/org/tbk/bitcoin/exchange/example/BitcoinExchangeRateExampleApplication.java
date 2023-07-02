@@ -17,10 +17,16 @@ import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRate;
 import javax.money.convert.ExchangeRateProvider;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinExchangeRateExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()

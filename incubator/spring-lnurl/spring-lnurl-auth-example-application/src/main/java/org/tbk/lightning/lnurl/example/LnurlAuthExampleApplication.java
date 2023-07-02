@@ -8,6 +8,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 @Slf4j
@@ -15,6 +16,7 @@ import java.util.TimeZone;
 public class LnurlAuthExampleApplication {
     static {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
     }
 
     public static void main(String[] args) {

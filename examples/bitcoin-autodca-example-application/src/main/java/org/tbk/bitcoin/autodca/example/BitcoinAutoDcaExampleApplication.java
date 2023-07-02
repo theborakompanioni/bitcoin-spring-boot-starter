@@ -10,9 +10,16 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.boot.web.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinAutoDcaExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
     private static final String[] profiles = new String[]{"development", "local"};
 
     public static void main(String[] args) {

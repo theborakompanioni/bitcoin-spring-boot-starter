@@ -17,10 +17,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class TorContainerExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()

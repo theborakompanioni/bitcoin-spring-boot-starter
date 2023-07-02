@@ -17,6 +17,8 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.HexFormat;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -27,6 +29,10 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class ClnContainerExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()

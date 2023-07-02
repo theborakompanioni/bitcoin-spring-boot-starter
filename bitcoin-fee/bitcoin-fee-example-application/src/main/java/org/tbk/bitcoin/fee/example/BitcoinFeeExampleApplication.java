@@ -17,11 +17,17 @@ import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 @Slf4j
 @SpringBootApplication(proxyBeanMethods = false)
 public class BitcoinFeeExampleApplication {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
