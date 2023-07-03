@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -37,7 +38,10 @@ public class FeeTableCtrl {
     private static final String FEE_TABLE_KEY = "FEE_TABLE";
     private static final String PROVIDER_FEE_TABLE_KEY = "PROVIDER_FEE_TABLE";
 
+    @NonNull
     private final FeeProvider feeProvider;
+
+    @NonNull
     private final JsonFormat.Printer jsonPrinter;
 
     private final LoadingCache<String, FeeTableResponse> tableResponseCache = CacheBuilder.newBuilder()
@@ -52,7 +56,7 @@ public class FeeTableCtrl {
                         FeeTableResponse feeTableResponse = tableResponseCache.getUnchecked(FEE_TABLE_KEY);
                         return toProviderFeeTable(feeTableResponse);
                     }
-                    throw new IllegalArgumentException("Key not supported: " + key);
+                    throw new IllegalArgumentException("Key not supported: %s".formatted(key));
                 }
             });
 
@@ -93,10 +97,10 @@ public class FeeTableCtrl {
                 .build();
 
         List<FeeRecommendationRequest> requests = durations.stream()
-                .map(val -> FeeRecommendationRequestImpl.builder()
+                .<FeeRecommendationRequest>map(val -> FeeRecommendationRequestImpl.builder()
                         .durationTarget(val)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         Map<Duration, List<FeeRecommendationResponse>> durationToFeeRecommendations = requests.stream()
                 .collect(Collectors.toMap(FeeRecommendationRequest::getDurationTarget, val -> feeProvider.request(val)

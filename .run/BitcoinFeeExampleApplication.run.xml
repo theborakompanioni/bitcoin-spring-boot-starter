@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BitcoinFeeExampleApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="org.tbk.bitcoin.fee.example.BitcoinFeeExampleApplication" />
+    <module name="bitcoin-spring-boot-starter.bitcoin-fee.bitcoin-fee-example-application.main" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=development" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.tbk.bitcoin.fee.example.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

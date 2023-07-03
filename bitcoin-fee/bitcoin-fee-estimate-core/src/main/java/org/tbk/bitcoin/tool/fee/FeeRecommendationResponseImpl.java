@@ -6,6 +6,7 @@ import lombok.Singular;
 import lombok.Value;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -30,7 +31,7 @@ public class FeeRecommendationResponseImpl implements FeeRecommendationResponse 
     @Builder
     public static final class SatPerVbyteImpl implements FeeUnit {
         @NonNull
-        BigDecimal satPerVbyteValue;
+        private BigDecimal satPerVbyteValue;
 
         private SatPerVbyteImpl(BigDecimal satPerVbyteValue) {
             requireNonNull(satPerVbyteValue);
@@ -39,8 +40,17 @@ public class FeeRecommendationResponseImpl implements FeeRecommendationResponse 
             this.satPerVbyteValue = satPerVbyteValue;
         }
 
+        @Override
         public BigDecimal getValue() {
             return satPerVbyteValue;
+        }
+
+        @Override
+        public String toString() {
+            if (BigDecimal.ONE.compareTo(satPerVbyteValue) == 0) {
+                return "1 sat/vByte";
+            }
+            return "%s sats/vByte".formatted(satPerVbyteValue.setScale(2, RoundingMode.UP).toPlainString());
         }
     }
 }
