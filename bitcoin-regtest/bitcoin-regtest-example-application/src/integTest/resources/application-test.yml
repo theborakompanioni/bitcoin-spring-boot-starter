@@ -8,4 +8,3 @@ org.tbk.bitcoin.regtest:
   enabled: true
   mining:
     enabled: false # disable miner as no services will run in test profile
-

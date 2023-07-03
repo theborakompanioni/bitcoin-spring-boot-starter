@@ -2,7 +2,7 @@ app.name: tbk-bitcoin-spring-boot-starter-demo (dev)
 app.description: A spring boot bitcoin demo application
 
 spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo (dev)'
-spring.http.log-request-details: true
+spring.http.log-request-details: false
 
 server.port: 8080
 server.use-forward-headers: true
@@ -11,11 +11,8 @@ server.compression.enabled: true
 management.server.port: 9001
 
 # LOGGING
-logging.file.path: ./var/log
 logging.file.name: application-dev.log
 logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
-logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
-logging.level.web: DEBUG
-
-
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: INFO # TRACE
+logging.level.web: INFO # DEBUG

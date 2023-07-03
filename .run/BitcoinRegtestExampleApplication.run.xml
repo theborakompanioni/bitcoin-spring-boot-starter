@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BitcoinRegtestExampleApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="org.tbk.bitcoin.regtest.example.BitcoinRegtestExampleApplication" />
+    <module name="bitcoin-spring-boot-starter.bitcoin-regtest.bitcoin-regtest-example-application.main" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=development" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bitcoin-regtest/bitcoin-regtest-example-application" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.tbk.bitcoin.regtest.example.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
