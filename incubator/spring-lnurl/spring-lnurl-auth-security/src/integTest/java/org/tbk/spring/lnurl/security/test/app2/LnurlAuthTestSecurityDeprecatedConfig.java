@@ -18,6 +18,7 @@ import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Slf4j
@@ -47,7 +48,7 @@ class LnurlAuthTestSecurityDeprecatedConfig implements WebSecurityCustomizer {
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionFixation().migrateSession()
                 )
-                .logout().and()
+                .logout(withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(
