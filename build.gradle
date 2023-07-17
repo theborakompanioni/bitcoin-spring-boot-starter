@@ -188,6 +188,9 @@ subprojects {
         }
 
         bootRun {
+            enabled = true
+            args = ['--spring.profiles.active=development']
+
             environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
         }
 
