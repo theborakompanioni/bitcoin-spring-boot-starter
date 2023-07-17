@@ -17,17 +17,12 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
 
-spring.docker.compose:
-  enabled: true
-  file: ./docker/docker-compose.yml
-  stop.command: DOWN # DOWN clears all container data after shutdown
-
 org.tbk.bitcoin.jsonrpc:
-  network: regtest
+  network: mainnet
   rpchost: http://localhost
-  rpcport: 18443
-  rpcuser: regtest-rpc-user
-  rpcpassword: regtest-rpc-pass
+  rpcport: 8332
+  rpcuser: my-user
+  rpcpassword: my-password
 
 org.tbk.bitcoin.jsonrpc-cache:
   transaction:

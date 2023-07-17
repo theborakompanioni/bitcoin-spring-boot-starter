@@ -19,8 +19,8 @@ logging.level.web: DEBUG
 
 spring.docker.compose:
   enabled: true
-  file: ./docker/docker-compose.yml
-  stop.command: DOWN # DOWN clears all container data after shutdown
+  file: ../../docker/regtest/bitcoin/docker-compose.yml
+  stop.command: DOWN # STOP is default, DOWN stops and removes containers and networks
 
 org.tbk.bitcoin.zeromq:
   network: regtest

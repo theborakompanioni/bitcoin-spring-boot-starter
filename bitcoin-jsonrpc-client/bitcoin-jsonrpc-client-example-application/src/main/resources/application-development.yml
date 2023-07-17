@@ -16,3 +16,15 @@ logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 logging.level.web: DEBUG
+
+spring.docker.compose:
+  enabled: true
+  file: ../../docker/regtest/bitcoin/docker-compose.yml
+  stop.command: DOWN # STOP is default, DOWN stops and removes containers and networks
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: regtest-rpc-user
+  rpcpassword: regtest-rpc-pass

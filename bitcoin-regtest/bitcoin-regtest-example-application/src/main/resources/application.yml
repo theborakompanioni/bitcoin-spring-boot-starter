@@ -18,33 +18,17 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 logging.level.org.tbk.bitcoin.regtest: DEBUG
 
-spring.docker.compose:
-  enabled: true
-  file: ./docker/docker-compose.yml
-  stop.command: STOP # STOP is default, DOWN clears all container data after shutdown
-
-org.tbk.bitcoin.regtest:
-  enabled: true
-  # mine blocks every 1 - 10 seconds
-  mining:
-    enabled: true
-    # an address from "default_wallet" with key:
-    # truth fever mom transfer steak immense lake jacket glide bring fancy electric
-    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
-    mine-initial-amount-of-blocks: 99
-    next-block-duration:
-      min-duration: PT1S
-      max-duration: PT10S
+org.tbk.bitcoin.regtest.enabled: false
 
 org.tbk.bitcoin.jsonrpc:
-  network: regtest
+  network: mainnet
   rpchost: http://localhost
-  rpcport: 18443
-  rpcuser: regtest-rpc-user
-  rpcpassword: regtest-rpc-pass
+  rpcport: 8332
+  rpcuser: my-bitcoin-rpc-user
+  rpcpassword: my-bitcoin-rpc-password
 
 org.tbk.bitcoin.zeromq:
-  network: regtest
+  network: mainnet
   zmqpubrawblock: tcp://127.0.0.1:28332
   zmqpubrawtx: tcp://127.0.0.1:28333
   zmqpubhashblock: tcp://127.0.0.1:28334
@@ -54,5 +38,5 @@ org.tbk.bitcoin.electrum-daemon.jsonrpc:
   enabled: true
   rpchost: http://localhost
   rpcport: 7000
-  rpcuser: rpc-user
-  rpcpassword: rpc-pwd
+  rpcuser: my-electrum-rpc-user
+  rpcpassword: my-electrum-rpc-password

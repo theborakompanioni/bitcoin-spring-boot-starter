@@ -5,6 +5,8 @@ services:
     container_name: bitcoind_regtest
     image: polarlightning/bitcoind:25.0
     restart: always
+    volumes:
+      - bitcoind-data:/home/bitcoin/.bitcoin/regtest
     command:
       -regtest=1
       -server=1
@@ -37,3 +39,6 @@ services:
       - "28333:28333"
       - "28334:28334"
       - "28335:28335"
+
+volumes:
+  bitcoind-data:
