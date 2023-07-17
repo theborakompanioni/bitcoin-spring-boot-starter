@@ -68,7 +68,7 @@ services:
     depends_on:
       - electrumx_regtest
     volumes:
-      - ./data/electrum/regtest/wallets/:/home/electrum/.electrum/regtest/wallets/:z
+      - ./data/electrum/regtest/wallets/:/home/electrum/.electrum/regtest/wallets/:ro
       - ./data/electrum/regtest/config:/home/electrum/.electrum/regtest/config:z
     environment:
       - ELECTRUM_USER=rpc-user
