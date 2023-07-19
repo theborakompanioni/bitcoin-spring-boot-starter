@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - module cln-grpc-client-autoconfigure: dependencies not included in anymore
 - module lnd-grpc-client-autoconfigure: dependencies not included in anymore
 - autoconfig property prefix of bitcoin jsonrpc cache changed from "jsonrpc.cache" to "jsonrpc-cache"
+- bitcoin-regtest-starter does not import testcontainer dependencies for bitcoin, electrumx and electrum-daemon automatically anymore
 
 ### Changed
 - improved default specs for bitcoin jsonrpc client caches

@@ -11,5 +11,9 @@ dependencies {
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
 
     integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
+
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
 }

@@ -19,4 +19,5 @@ dependencies {
 
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
     integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+    integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
 }
