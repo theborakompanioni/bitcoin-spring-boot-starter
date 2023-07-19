@@ -20,6 +20,10 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-starter'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 
+include 'ln-common-client:ln-common-client-core'
+include 'ln-common-client:ln-common-client-cln'
+include 'ln-common-client:ln-common-client-lnd'
+
 include 'lnd-grpc-client:lnd-grpc-client-core'
 include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
 include 'lnd-grpc-client:lnd-grpc-client-starter'

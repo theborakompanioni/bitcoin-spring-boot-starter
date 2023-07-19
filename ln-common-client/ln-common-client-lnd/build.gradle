@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+description = 'ln common client lnd package'
+
+dependencies {
+    api project(':ln-common-client:ln-common-client-core')
+    api project(':lnd-grpc-client:lnd-grpc-client-core')
+}
