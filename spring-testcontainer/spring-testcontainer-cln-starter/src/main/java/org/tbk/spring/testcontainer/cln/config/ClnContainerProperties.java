@@ -60,6 +60,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
 
     /**
      * Specify the port to listen on for RPC connections.
+     *
      * @deprecated scheduled for removal; use the grpc instead
      */
     @Deprecated

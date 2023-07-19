@@ -1,6 +1,5 @@
 package org.tbk.bitcoin.zeromq.bitcoinj;
 
-import com.google.common.base.MoreObjects;
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.MainNetParams;
 import org.bouncycastle.util.encoders.Hex;
@@ -21,7 +20,7 @@ class BitcoinjBlockPublisherFactoryTest {
 
     private static final Context bitcoinjContext = Context.getOrCreate(MainNetParams.get());
 
-    private static final BitcoinSerializer mainnetSerializer  = new BitcoinSerializer(bitcoinjContext.getParams(), false);
+    private static final BitcoinSerializer mainnetSerializer = new BitcoinSerializer(bitcoinjContext.getParams(), false);
 
     @Test
     void create() {

@@ -28,7 +28,7 @@ class ElectrumDaemonExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner electrumDaemonStatusLogger(MessagePublishService<Block> bitcoinBlockPublishService,
-                                                        ElectrumClient electrumClient) {
+                                                 ElectrumClient electrumClient) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
 
@@ -48,7 +48,7 @@ class ElectrumDaemonExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
-                                             MessagePublishService<Block> bitcoinBlockPublishService) {
+                                      MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
 
@@ -68,7 +68,7 @@ class ElectrumDaemonExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
-                                                SynchronousLndAPI lndApi) {
+                                         SynchronousLndAPI lndApi) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
 

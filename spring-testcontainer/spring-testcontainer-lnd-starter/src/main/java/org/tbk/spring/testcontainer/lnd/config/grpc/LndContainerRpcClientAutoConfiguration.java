@@ -70,8 +70,8 @@ public class LndContainerRpcClientAutoConfiguration {
     @ConditionalOnMissingBean(LndRpcConfig.class)
     @ConditionalOnBean({LndContainer.class})
     LndRpcConfig lndRpcConfig(LndContainer<?> lndContainer,
-                                     @Qualifier("lndRpcMacaroonContext") MacaroonContext lndRpcMacaroonContext,
-                                     @Qualifier("lndRpcSslContext") SslContext lndRpcSslContext) {
+                              @Qualifier("lndRpcMacaroonContext") MacaroonContext lndRpcMacaroonContext,
+                              @Qualifier("lndRpcSslContext") SslContext lndRpcSslContext) {
         String host = lndContainer.getHost();
         Integer mappedPort = lndContainer.getMappedPort(properties.getPort());
 

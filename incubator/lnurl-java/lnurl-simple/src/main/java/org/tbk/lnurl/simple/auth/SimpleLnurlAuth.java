@@ -87,13 +87,13 @@ public class SimpleLnurlAuth implements LnurlAuth {
                 .collect(Collectors.groupingBy(NameValuePair::getName));
 
         List<NameValuePair> tagQueryParams = queryParamsMap.getOrDefault(LNURL_AUTH_TAG_KEY, Collections.emptyList());
-        checkArgument(tagQueryParams.isEmpty(), "Url must not include '" + LNURL_AUTH_TAG_KEY + "' query parameter");
+        checkArgument(tagQueryParams.isEmpty(), "Url must not include '%s' query parameter".formatted(LNURL_AUTH_TAG_KEY));
 
         List<NameValuePair> k1QueryParams = queryParamsMap.getOrDefault(LNURL_AUTH_K1_KEY, Collections.emptyList());
-        checkArgument(k1QueryParams.isEmpty(), "Url must not include '" + LNURL_AUTH_K1_KEY + "' query parameter");
+        checkArgument(k1QueryParams.isEmpty(), "Url must not include '%s' query parameter".formatted(LNURL_AUTH_K1_KEY));
 
         List<NameValuePair> actionQueryParams = queryParamsMap.getOrDefault(LNURL_AUTH_ACTION_KEY, Collections.emptyList());
-        checkArgument(actionQueryParams.isEmpty(), "Url must not include '" + LNURL_AUTH_ACTION_KEY + "' query parameter");
+        checkArgument(actionQueryParams.isEmpty(), "Url must not include '%s' query parameter".formatted(LNURL_AUTH_ACTION_KEY));
 
         return new SimpleLnurlAuth(url, k1, action);
     }
@@ -108,16 +108,17 @@ public class SimpleLnurlAuth implements LnurlAuth {
         Map<String, List<NameValuePair>> queryParamsMap = parseQueryParamsMap(uri);
 
         List<NameValuePair> tagQueryParams = queryParamsMap.getOrDefault(LNURL_AUTH_TAG_KEY, Collections.emptyList());
-        checkArgument(tagQueryParams.size() == 1, "Url must include exactly one '" + LNURL_AUTH_TAG_KEY + "' query parameter");
+        checkArgument(tagQueryParams.size() == 1, "Url must include exactly one '%s' query parameter".formatted(LNURL_AUTH_TAG_KEY));
         String tag = tagQueryParams.stream().map(NameValuePair::getValue).findFirst().orElseThrow();
-        checkArgument(LNURL_AUTH_TAG_PARAM_VALUE.equals(tag), "Invalid '" + LNURL_AUTH_TAG_KEY + "' query parameter: Must have value '" + LNURL_AUTH_TAG_PARAM_VALUE + "'");
+        checkArgument(LNURL_AUTH_TAG_PARAM_VALUE.equals(tag), "Invalid '%s' query parameter: Must have value '%s'"
+                .formatted(LNURL_AUTH_TAG_KEY, LNURL_AUTH_TAG_PARAM_VALUE));
 
         List<NameValuePair> k1QueryParams = queryParamsMap.getOrDefault(LNURL_AUTH_K1_KEY, Collections.emptyList());
-        checkArgument(k1QueryParams.size() == 1, "Url must include exactly one '" + LNURL_AUTH_K1_KEY + "' query parameter");
+        checkArgument(k1QueryParams.size() == 1, "Url must include exactly one '%s' query parameter".formatted(LNURL_AUTH_K1_KEY));
         String k1 = k1QueryParams.stream().map(NameValuePair::getValue).findFirst().orElseThrow();
 
         List<NameValuePair> actionQueryParams = queryParamsMap.getOrDefault(LNURL_AUTH_ACTION_KEY, Collections.emptyList());
-        checkArgument(actionQueryParams.size() <= 1, "Url must not include more than one '" + LNURL_AUTH_ACTION_KEY + "' query parameter");
+        checkArgument(actionQueryParams.size() <= 1, "Url must not include more than one '%s' query parameter".formatted(LNURL_AUTH_ACTION_KEY));
         Optional<Action> action = actionQueryParams.stream()
                 .map(NameValuePair::getValue)
                 .map(Action::parse)

@@ -22,7 +22,7 @@ class BtcRpcExplorerExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
-                                             MessagePublishService<Block> bitcoinBlockPublishService) {
+                                      MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
 

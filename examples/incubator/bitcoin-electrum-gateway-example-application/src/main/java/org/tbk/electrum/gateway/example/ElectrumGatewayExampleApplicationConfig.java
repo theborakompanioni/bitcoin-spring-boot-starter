@@ -53,14 +53,14 @@ class ElectrumGatewayExampleApplicationConfig {
     @Bean
     @Profile("!test")
     CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                              BitcoinClient bitcoinClient) {
+                                       BitcoinClient bitcoinClient) {
         return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
     }
 
     @Bean
     @Profile("!test")
     CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                               ElectrumClient electrumClient) {
+                                        ElectrumClient electrumClient) {
         return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient);
     }
 }

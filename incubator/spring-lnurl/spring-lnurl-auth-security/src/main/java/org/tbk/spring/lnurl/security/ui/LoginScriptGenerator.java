@@ -47,9 +47,9 @@ final class LoginScriptGenerator {
 
         String scriptTemplate = StaticTemplateUtils.readContents("login.js");
         this.script = scriptTemplate
-                .replace("%%_LNURL_AUTH_INITIAL_DELAY_%%", "" + config.getInitialDelay().toMillis())
-                .replace("%%_LNURL_AUTH_POLLING_INTERVAL_%%", "" + config.getPollingInterval().toMillis())
-                .replace("%%_LNURL_AUTH_MAX_ATTEMPTS_%%", "" + config.getMaxAttempts());
+                .replace("%%_LNURL_AUTH_INITIAL_DELAY_%%", String.valueOf(config.getInitialDelay().toMillis()))
+                .replace("%%_LNURL_AUTH_POLLING_INTERVAL_%%", String.valueOf(config.getPollingInterval().toMillis()))
+                .replace("%%_LNURL_AUTH_MAX_ATTEMPTS_%%", String.valueOf(config.getMaxAttempts()));
     }
 
     public String createScript(String sessionMigrationEndpoint) {

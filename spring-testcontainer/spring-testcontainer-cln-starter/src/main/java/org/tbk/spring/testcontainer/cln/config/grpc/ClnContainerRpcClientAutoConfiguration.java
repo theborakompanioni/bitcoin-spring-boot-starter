@@ -62,7 +62,7 @@ public class ClnContainerRpcClientAutoConfiguration {
     @ConditionalOnMissingBean(ClnRpcConfig.class)
     @ConditionalOnBean({ClnContainer.class})
     ClnRpcConfig clnRpcConfig(ClnContainer<?> clnContainer,
-                                     @Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
+                              @Qualifier("clnRpcSslContext") SslContext clnRpcSslContext) {
         String host = clnContainer.getHost();
         Integer mappedPort = clnContainer.getMappedPort(properties.getPort());
 

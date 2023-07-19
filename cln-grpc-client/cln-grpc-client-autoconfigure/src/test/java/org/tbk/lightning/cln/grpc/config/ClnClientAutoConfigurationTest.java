@@ -130,6 +130,7 @@ class ClnClientAutoConfigurationTest {
                     assertThat(rootCause.getMessage(), is("'caCertFile' must exist"));
                 });
     }
+
     @Test
     void errorIfCertFileIsInvalid() {
         this.contextRunner.withUserConfiguration(ClnClientAutoConfiguration.class)

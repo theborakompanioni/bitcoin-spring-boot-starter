@@ -20,7 +20,7 @@ public final class GenesisMessage {
         return INSTANCE;
     }
 
-    private  final byte[] raw;
+    private final byte[] raw;
 
     private final String text;
 

@@ -64,7 +64,7 @@ class LnPlaygroundExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner lndPrintInfoRunner(SynchronousLndAPI lndApi,
-                                                SynchronousAutopilotAPI autopilotApi) {
+                                         SynchronousAutopilotAPI autopilotApi) {
         return args -> {
             GetInfoResponse info = lndApi.getInfo();
             StatusResponse autopilotStatus = autopilotApi.status();
@@ -81,7 +81,7 @@ class LnPlaygroundExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner bestBlockLogger(BitcoinClient bitcoinJsonRpcClient,
-                                             MessagePublishService<Block> bitcoinBlockPublishService) {
+                                      MessagePublishService<Block> bitcoinBlockPublishService) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
@@ -100,7 +100,7 @@ class LnPlaygroundExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner clnBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
-                                                NodeGrpc.NodeFutureStub clnNodeFutureStub) {
+                                         NodeGrpc.NodeFutureStub clnNodeFutureStub) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
@@ -120,7 +120,7 @@ class LnPlaygroundExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
-                                                SynchronousLndAPI lndApi) {
+                                         SynchronousLndAPI lndApi) {
         return args -> {
             bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {

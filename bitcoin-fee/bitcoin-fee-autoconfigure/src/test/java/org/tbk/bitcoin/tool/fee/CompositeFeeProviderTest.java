@@ -7,11 +7,9 @@ import org.tbk.bitcoin.tool.fee.blockchaininfo.config.BlockchainInfoFeeClientAut
 import org.tbk.bitcoin.tool.fee.config.BitcoinFeeClientAutoConfiguration;
 import org.tbk.bitcoin.tool.fee.earndotcom.config.EarndotcomFeeClientAutoConfiguration;
 
-import java.time.Duration;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 class CompositeFeeProviderTest {
 

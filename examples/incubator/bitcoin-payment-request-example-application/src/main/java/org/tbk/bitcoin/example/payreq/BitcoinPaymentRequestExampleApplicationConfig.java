@@ -39,8 +39,8 @@ class BitcoinPaymentRequestExampleApplicationConfig {
     @Bean
     @Profile("!test")
     ApplicationRunner mainRunner(LndClientAutoConfigProperties properties,
-                                        LndContainer<?> lndContainer,
-                                        SynchronousLndAPI lndApi) {
+                                 LndContainer<?> lndContainer,
+                                 SynchronousLndAPI lndApi) {
         return args -> {
             String lndConnectString = new LndConnect(properties, lndContainer).getValue();
 

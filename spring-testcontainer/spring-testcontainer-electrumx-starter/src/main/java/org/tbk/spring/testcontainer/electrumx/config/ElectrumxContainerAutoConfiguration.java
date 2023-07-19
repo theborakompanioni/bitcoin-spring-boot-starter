@@ -78,7 +78,7 @@ public class ElectrumxContainerAutoConfiguration {
     @Bean(name = "electrumxContainer", destroyMethod = "stop")
     @ConditionalOnBean(BitcoindContainer.class)
     ElectrumxContainer<?> electrumxContainerWithBitcoindTestcontainer(@Qualifier("electrumxContainerWaitStrategy") WaitStrategy waitStrategy,
-                                                                             BitcoindContainer<?> bitcoindContainer) {
+                                                                      BitcoindContainer<?> bitcoindContainer) {
         String bitcoindDaemonUrl = buildDaemonUrl(bitcoindContainer);
 
         return createStartedElectrumxContainer(bitcoindDaemonUrl, waitStrategy);

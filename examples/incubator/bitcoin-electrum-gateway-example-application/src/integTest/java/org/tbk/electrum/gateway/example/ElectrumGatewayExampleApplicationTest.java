@@ -51,7 +51,7 @@ class ElectrumGatewayExampleApplicationTest {
 
     @Autowired(required = false)
     @Qualifier("primaryElectrumClient")
-    public ElectrumClient primaryElectrumClient;
+    private ElectrumClient primaryElectrumClient;
 
     @Autowired(required = false)
     @Qualifier("secondaryElectrumDaemonContainer")
@@ -59,7 +59,7 @@ class ElectrumGatewayExampleApplicationTest {
 
     @Autowired(required = false)
     @Qualifier("secondaryElectrumClient")
-    public ElectrumClient secondaryElectrumClient;
+    private ElectrumClient secondaryElectrumClient;
 
     @Test
     void contextLoads() {
@@ -153,7 +153,7 @@ class ElectrumGatewayExampleApplicationTest {
         @Primary
         @Bean("primaryElectrumDaemonContainer")
         ElectrumDaemonContainer<?> primaryElectrumDaemonContainer(SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory,
-                                                                         ElectrumxContainer<?> electrumxContainer) {
+                                                                  ElectrumxContainer<?> electrumxContainer) {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet("electrum/wallets/regtest/default_wallet")
@@ -166,7 +166,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         @Bean("secondaryElectrumDaemonContainer")
         ElectrumDaemonContainer<?> secondaryElectrumDaemonContainer(SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory,
-                                                                           ElectrumxContainer<?> electrumxContainer) {
+                                                                    ElectrumxContainer<?> electrumxContainer) {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet("electrum/wallets/regtest/second_wallet")
@@ -185,7 +185,7 @@ class ElectrumGatewayExampleApplicationTest {
         @Primary
         @Bean("primaryElectrumClient")
         ElectrumClient primaryElectrumClient(ElectrumClientFactory electrumClientFactory,
-                                                    @Qualifier("primaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
+                                             @Qualifier("primaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
             ElectrumDaemonJsonrpcConfig config = new ElectrumDaemonJsonrpcConfigBuilder()
                     .host("http://" + electrumDaemonContainer.getHost())
                     .port(electrumDaemonContainer.getMappedPort(7000))
@@ -198,7 +198,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         @Bean("secondaryElectrumClient")
         ElectrumClient secondaryElectrumClient(ElectrumClientFactory electrumClientFactory,
-                                                      @Qualifier("secondaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
+                                               @Qualifier("secondaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
             ElectrumDaemonJsonrpcConfig config = new ElectrumDaemonJsonrpcConfigBuilder()
                     .host("http://" + electrumDaemonContainer.getHost())
                     .port(electrumDaemonContainer.getMappedPort(7000))

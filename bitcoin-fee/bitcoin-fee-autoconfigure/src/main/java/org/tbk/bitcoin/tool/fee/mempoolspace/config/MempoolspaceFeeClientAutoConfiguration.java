@@ -48,7 +48,7 @@ public class MempoolspaceFeeClientAutoConfiguration {
     @ConditionalOnBean(FeesFromProjectedBlockStrategy.class)
     @ConditionalOnMissingBean(ProjectedBlocksMempoolspaceFeeProvider.class)
     ProjectedBlocksMempoolspaceFeeProvider projectedBlocksMempoolspaceFeeProviderWithCustomStrategy(MempoolspaceFeeApiClient mempoolspaceFeeApiClient,
-                                                                                                           FeesFromProjectedBlockStrategy strategy) {
+                                                                                                    FeesFromProjectedBlockStrategy strategy) {
         return new ProjectedBlocksMempoolspaceFeeProvider(mempoolspaceFeeApiClient, strategy);
     }
 

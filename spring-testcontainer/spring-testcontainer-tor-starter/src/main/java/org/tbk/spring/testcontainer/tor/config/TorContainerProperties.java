@@ -64,7 +64,7 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
         TorContainerProperties properties = (TorContainerProperties) target;
 
         properties.getHiddenServices().forEach((key, value) -> {
-            errors.pushNestedPath("hiddenServices[" + key + "]");
+            errors.pushNestedPath("hiddenServices[%s]".formatted(key));
             ValidationUtils.invokeValidator(value, value, errors);
             errors.popNestedPath();
         });

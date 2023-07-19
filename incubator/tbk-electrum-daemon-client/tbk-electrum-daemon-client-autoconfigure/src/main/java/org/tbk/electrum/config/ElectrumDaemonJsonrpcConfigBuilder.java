@@ -36,7 +36,7 @@ public class ElectrumDaemonJsonrpcConfigBuilder {
     }
 
     public ElectrumDaemonJsonrpcConfig build() {
-        URI uri = URI.create(this.host + ":" + this.port);
+        URI uri = URI.create("%s:%d".formatted(host, port));
         return new ElectrumDaemonJsonrpcConfig(uri, username, password);
     }
 }

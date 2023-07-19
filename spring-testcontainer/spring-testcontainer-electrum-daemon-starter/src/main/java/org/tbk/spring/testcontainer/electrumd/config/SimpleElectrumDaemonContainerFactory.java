@@ -147,7 +147,7 @@ public final class SimpleElectrumDaemonContainerFactory {
             // - simnet: /home/electrum/.electrum/simnet/wallets
             String networkWalletDir = home + "/.electrum" + Optional.of(config.getNetwork())
                     .filter(it -> !"mainnet".equals(it))
-                    .map(it -> "/" + it + "/wallets")
+                    .map("/%s/wallets"::formatted)
                     .orElse("/wallets");
 
             String containerWalletFilePath = networkWalletDir + "/default_wallet";

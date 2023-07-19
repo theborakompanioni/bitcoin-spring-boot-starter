@@ -30,7 +30,7 @@ public class ElectrumDaemonJsonrpcClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     ElectrumClient electrumClient(ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig,
-                                         ElectrumClientFactory factory) {
+                                  ElectrumClientFactory factory) {
         URI uri = electrumDaemonJsonrpcConfig.getUri();
 
         return factory.create(uri, electrumDaemonJsonrpcConfig.getUsername(), electrumDaemonJsonrpcConfig.getPassword());

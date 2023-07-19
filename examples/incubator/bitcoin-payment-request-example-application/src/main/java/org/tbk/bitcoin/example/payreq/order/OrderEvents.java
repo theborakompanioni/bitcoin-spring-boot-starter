@@ -5,10 +5,21 @@ public final class OrderEvents {
         throw new UnsupportedOperationException();
     }
 
-    public record CreatedEvent (Order.OrderId orderId) {}
-    public record ReadyEvent (Order.OrderId orderId) {}
-    public record InProgressEvent (Order.OrderId orderId) {}
-    public record CancelledEvent (Order.OrderId orderId) {}
-    public record CompletedEvent (Order.OrderId orderId) {}
-    public record ErrorEvent (Order.OrderId orderId) {}
+    public record CreatedEvent(Order.OrderId orderId) {
+    }
+
+    public record ReadyEvent(Order.OrderId orderId) {
+    }
+
+    public record InProgressEvent(Order.OrderId orderId) {
+    }
+
+    public record CancelledEvent(Order.OrderId orderId) {
+    }
+
+    public record CompletedEvent(Order.OrderId orderId) {
+    }
+
+    public record ErrorEvent(Order.OrderId orderId) {
+    }
 }

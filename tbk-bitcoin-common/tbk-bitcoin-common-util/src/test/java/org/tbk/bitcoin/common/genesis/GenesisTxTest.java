@@ -1,7 +1,6 @@
 package org.tbk.bitcoin.common.genesis;
 
 import org.junit.jupiter.api.Test;
-import org.tbk.bitcoin.common.genesis.GenesisTx;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -49,8 +49,8 @@ class ScheduledRegtestMinerTest {
 
         @Bean(destroyMethod = "stopAsync")
         ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
-                                                           @Qualifier("regtestMinerScheduler")
-                                                           AbstractScheduledService.Scheduler scheduler) {
+                                                    @Qualifier("regtestMinerScheduler")
+                                                    AbstractScheduledService.Scheduler scheduler) {
             ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
             scheduledregtestMiner.startAsync();
             return scheduledregtestMiner;

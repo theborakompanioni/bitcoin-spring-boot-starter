@@ -22,7 +22,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;

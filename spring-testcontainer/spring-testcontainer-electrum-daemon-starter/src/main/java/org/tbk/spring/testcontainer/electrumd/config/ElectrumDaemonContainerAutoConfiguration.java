@@ -52,7 +52,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumxContainer.class)
     ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumxTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
-                                                                                        ElectrumxContainer<?> electrumxContainer) {
+                                                                                 ElectrumxContainer<?> electrumxContainer) {
         verifyCompatibilityWithElectrumx(electrumDaemonContainerConfig, electrumxContainer);
 
         return containerFactory.createStartedElectrumDaemonContainer(electrumDaemonContainerConfig, electrumxContainer);
@@ -62,7 +62,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumPersonalServerContainer.class)
     ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
-                                                                                                     ElectrumPersonalServerContainer<?> electrumPersonlServerContainer) {
+                                                                                              ElectrumPersonalServerContainer<?> electrumPersonlServerContainer) {
         return containerFactory.createStartedElectrumDaemonContainer(electrumDaemonContainerConfig, electrumPersonlServerContainer);
     }
 

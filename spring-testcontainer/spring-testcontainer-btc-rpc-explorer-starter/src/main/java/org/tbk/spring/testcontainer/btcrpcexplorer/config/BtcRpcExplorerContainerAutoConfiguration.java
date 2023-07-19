@@ -77,8 +77,8 @@ public class BtcRpcExplorerContainerAutoConfiguration {
     @Bean(name = "btcRpcExplorerContainer", destroyMethod = "stop")
     @ConditionalOnBean({BitcoindContainer.class, ElectrumxContainer.class})
     BtcRpcExplorerContainer<?> btcRpcExplorerContainerWithBitcoindAndElectrumxTestcontainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy,
-                                                                                                   BitcoindContainer<?> bitcoindContainer,
-                                                                                                   ElectrumxContainer<?> electrumxContainer) {
+                                                                                            BitcoindContainer<?> bitcoindContainer,
+                                                                                            ElectrumxContainer<?> electrumxContainer) {
         String bitcoindHost = MoreTestcontainers.testcontainersInternalHost();
         Integer bitcoindPort = bitcoindContainer.getMappedPort(this.properties.getBitcoind().getRpcport());
 
@@ -98,7 +98,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
     @ConditionalOnBean(BitcoindContainer.class)
     @ConditionalOnMissingBean(ElectrumxContainer.class)
     BtcRpcExplorerContainer<?> btcRpcExplorerContainerWithBitcoindTestcontainer(@Qualifier("btcRpcExplorerContainerWaitStrategy") WaitStrategy waitStrategy,
-                                                                                       BitcoindContainer<?> bitcoindContainer) {
+                                                                                BitcoindContainer<?> bitcoindContainer) {
         String bitcoindHost = MoreTestcontainers.testcontainersInternalHost();
         Integer bitcoindPort = bitcoindContainer.getMappedPort(this.properties.getBitcoind().getRpcport());
 
@@ -152,7 +152,7 @@ public class BtcRpcExplorerContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        String dockerContainerName ="%s-%s".formatted(dockerImageName.getUnversionedPart(),
+        String dockerContainerName = "%s-%s".formatted(dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
 

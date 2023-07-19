@@ -40,13 +40,13 @@ class BitcoinRegtestExampleApplicationConfig {
 
     @Bean
     CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                              BitcoinClient bitcoinClient) {
+                                       BitcoinClient bitcoinClient) {
         return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
     }
 
     @Bean
     CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                               ElectrumClient electrumClient) {
+                                        ElectrumClient electrumClient) {
         return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient);
     }
 

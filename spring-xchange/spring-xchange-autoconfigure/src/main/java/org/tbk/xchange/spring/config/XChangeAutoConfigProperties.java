@@ -35,7 +35,7 @@ public class XChangeAutoConfigProperties implements Validator {
         XChangeAutoConfigProperties properties = (XChangeAutoConfigProperties) target;
 
         properties.getSpecifications().forEach((key, value) -> {
-            errors.pushNestedPath("specifications[" + key + "]");
+            errors.pushNestedPath("specifications[%s]".formatted(key));
             ValidationUtils.invokeValidator(value, value, errors);
             errors.popNestedPath();
         });

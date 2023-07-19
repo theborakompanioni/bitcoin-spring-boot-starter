@@ -58,7 +58,7 @@ public class EarndotcomFeeClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(EarndotcomFeeProvider.class)
     EarndotcomFeeProvider earndotcomFeeProvider(EarndotcomApiClient earndotcomApiClient,
-                                                       FeeSelectionStrategy earndotcomFeeSelectionStrategy) {
+                                                FeeSelectionStrategy earndotcomFeeSelectionStrategy) {
         return new EarndotcomFeeProvider(earndotcomApiClient, earndotcomFeeSelectionStrategy);
     }
 

@@ -162,7 +162,7 @@ public class ClnClientAutoConfiguration {
     @ConditionalOnMissingBean(name = "clnChannelBuilder")
     @ConditionalOnBean(ClnRpcConfig.class)
     ManagedChannelBuilder<?> clnChannelBuilder(ClnRpcConfig rpcConfig,
-                                                      ObjectProvider<ManagedChannelBuilderCustomizer> managedChannelBuilderCustomizer) {
+                                               ObjectProvider<ManagedChannelBuilderCustomizer> managedChannelBuilderCustomizer) {
         ManagedChannelBuilder<?> managedChannelBuilder = NettyChannelBuilder.forAddress(rpcConfig.getHost(), rpcConfig.getPort())
                 .sslContext(rpcConfig.getSslContext());
 

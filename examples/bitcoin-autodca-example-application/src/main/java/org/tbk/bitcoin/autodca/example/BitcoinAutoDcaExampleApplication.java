@@ -20,6 +20,7 @@ public class BitcoinAutoDcaExampleApplication {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         Locale.setDefault(Locale.ENGLISH);
     }
+
     private static final String[] profiles = new String[]{"development", "local"};
 
     public static void main(String[] args) {
