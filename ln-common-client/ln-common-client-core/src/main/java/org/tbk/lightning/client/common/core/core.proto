@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package lncommonclient;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "org.tbk.lightning.client.common.core.proto";
+option java_outer_classname = "LnCommonClientProtos";
+option java_multiple_files = true;
+
+message GetinfoRequest {
+}
+
+message GetinfoResponse {
+  bytes identityPubkey = 1 [json_name = "identityPubkey"];
+  optional string alias = 2 [json_name = "alias"];
+  bytes color = 3 [json_name = "color"];
+  uint32 num_peers = 4 [json_name = "num_peers"];
+  uint32 num_pending_channels = 5 [json_name = "num_pending_channels"];
+  uint32 num_active_channels = 6 [json_name = "num_active_channels"];
+  uint32 num_inactive_channels = 7 [json_name = "num_inactive_channels"];
+  string version = 8 [json_name = "version"];
+  // A list of active chains the node is connected to
+  repeated Chain chain = 9 [json_name = "chains"];
+  uint32 blockheight = 10 [json_name = "blockheight"];
+}
+
+message Chain {
+  // The blockchain the node is on (i.e. bitcoin)
+  string chain = 1 [json_name = "chain"];
+
+  // The network the node is on (e.g. regtest, testnet, mainnet, etc.)
+  string network = 2 [json_name = "network"];
+}
