@@ -10,7 +10,7 @@ Start application with
 
 If you want to start from scratch, remove docker volumes:
 ```shell
-docker-compose -f bitcoin-regtest/bitcoin-regtest-example-application/docker/docker-compose.yml down -v
+docker-compose -f docker/regtest/electrum/docker-compose.yml down -v
 ```
 
 Example log output:
