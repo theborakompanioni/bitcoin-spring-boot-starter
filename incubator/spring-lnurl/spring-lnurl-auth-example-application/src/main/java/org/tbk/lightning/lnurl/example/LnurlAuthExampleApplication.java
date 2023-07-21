@@ -24,7 +24,6 @@ public class LnurlAuthExampleApplication {
                 .sources(LnurlAuthExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
                 .run(args);
     }
 

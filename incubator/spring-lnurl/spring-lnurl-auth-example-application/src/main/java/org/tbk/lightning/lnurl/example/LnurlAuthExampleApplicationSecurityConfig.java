@@ -124,9 +124,7 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                                     successHandler.setUseReferer(false);
                                 })
                         )
-                        .walletEndpoint(wallet -> wallet
-                                .baseUri(lnurlAuthWalletLoginPath())
-                        )
+                        .walletEndpoint(wallet -> wallet.baseUri(lnurlAuthWalletLoginPath()))
                 );
 
         return http.build();
