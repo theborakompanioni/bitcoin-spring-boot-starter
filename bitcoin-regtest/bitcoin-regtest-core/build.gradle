@@ -14,5 +14,4 @@ dependencies {
 
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
-
 }

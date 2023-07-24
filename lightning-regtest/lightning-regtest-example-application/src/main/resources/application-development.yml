@@ -1,0 +1,43 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo (dev)
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo (dev)'
+spring.http.log-request-details: false
+
+server.port: 8080
+server.use-forward-headers: true
+server.compression.enabled: true
+
+management.server.port: 9001
+
+# LOGGING
+logging.file.name: application-dev.log
+logging.config: classpath:logback-development.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: INFO # TRACE
+logging.level.web: INFO # DEBUG
+
+spring.docker.compose:
+  enabled: true
+  file: ./../../docker/regtest/lightning-regtest-setup-devel/docker-compose.yml
+  stop.command: DOWN # STOP is default, DOWN stops and removes containers and networks
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: regtest-rpc-user
+  rpcpassword: regtest-rpc-pass
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  # mine blocks every 1 - 10 seconds
+  mining:
+    enabled: true
+    # an address from "default_wallet" with key:
+    # truth fever mom transfer steak immense lake jacket glide bring fancy electric
+    coinbase-reward-address: bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz
+    mine-initial-amount-of-blocks: 0
+    next-block-duration:
+      min-duration: PT1S
+      max-duration: PT10S
