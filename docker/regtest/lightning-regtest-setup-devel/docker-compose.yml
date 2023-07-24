@@ -1,0 +1,264 @@
+
+version: "3"
+
+services:
+  postgres:
+    restart: always
+    container_name: regtest_db
+    image: postgres:14.5-alpine
+    volumes:
+      - postgres-data:/postgresql_data
+      - ./data/pg/init:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_ADDITIONAL_DATABASES: regtest_cln0_app,regtest_cln1_alice,regtest_cln2_bob,regtest_cln3_charlie,regtest_cln4_dave,regtest_cln5_erin
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      PGDATA: /postgresql_data
+    ports:
+      - "5889:5432"
+
+  bitcoind_regtest:
+    container_name: bitcoind_regtest
+    image: polarlightning/bitcoind:25.0
+    restart: always
+    volumes:
+      - bitcoind-data:/home/bitcoin/.bitcoin/regtest
+    command:
+      -regtest=1
+      -server=1
+      -whitelist=0.0.0.0/0
+      -txindex=1
+      -debug=mempool
+      -dns=0
+      -dnsseed=0
+      -networkactive=0
+      -uacomment=tbkdevbitcoindregtest
+      -printpriority=1
+      -logtimemicros=1
+      -rpcuser=regtest-rpc-user
+      -rpcpassword=regtest-rpc-pass
+      -rpcbind=0.0.0.0
+      -rpcallowip=0.0.0.0/0
+      -zmqpubrawblock=tcp://0.0.0.0:28332
+      -zmqpubrawtx=tcp://0.0.0.0:28333
+      -zmqpubhashblock=tcp://0.0.0.0:28334
+      -zmqpubhashtx=tcp://0.0.0.0:28335
+    expose:
+      - "18443"
+      - "28332"
+      - "28333"
+      - "28334"
+      - "28335"
+    ports:
+      - "18443:18443"
+      - "28332:28332"
+      - "28333:28333"
+      - "28334:28334"
+      - "28335:28335"
+
+  cln0_app:
+    container_name: regtest_cln0_app
+    image: polarlightning/clightning:23.05.2
+    restart: always
+    depends_on:
+      bitcoind_regtest:
+        condition: service_started # service_healthy
+      postgres:
+        condition: service_started # service_healthy
+      cln1_alice:
+        condition: service_started # service_healthy
+      cln2_bob:
+        condition: service_started # service_healthy
+      cln3_charlie:
+        condition: service_started # service_healthy
+      cln4_dave:
+        condition: service_started # service_healthy
+      cln5_erin:
+        condition: service_started # service_healthy
+    command:
+      - '--alias=regtest_cln0_app' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--log-level=debug'
+      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=regtest-rpc-user'
+      - '--bitcoin-rpcpassword=regtest-rpc-pass'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--funding-confirms=1'
+      - '--wallet=postgres://regtest_cln0_app:regtest_cln0_app@regtest_db:5432/regtest_cln0_app'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln0_app/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln0_app/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln0_app/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln0_app/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln0_app/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln0_app/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln0_app/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19935:19935"
+
+  cln1_alice:
+    container_name: regtest_cln1_alice
+    image: polarlightning/clightning:23.05.2
+    restart: always
+    depends_on:
+      bitcoind_regtest:
+        condition: service_started # service_healthy
+      postgres:
+        condition: service_started # service_healthy
+    command:
+      - '--alias=regtest_cln1_alice' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--log-level=debug'
+      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=regtest-rpc-user'
+      - '--bitcoin-rpcpassword=regtest-rpc-pass'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--funding-confirms=1'
+      - '--wallet=postgres://regtest_cln1_alice:regtest_cln1_alice@regtest_db:5432/regtest_cln1_alice'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln1_alice/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19936:19935"
+
+  cln2_bob:
+    container_name: regtest_cln2_bob
+    image: polarlightning/clightning:23.05.2
+    restart: always
+    depends_on:
+      bitcoind_regtest:
+        condition: service_started # service_healthy
+      postgres:
+        condition: service_started # service_healthy
+    command:
+      - '--alias=regtest_cln2_bob' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--log-level=debug'
+      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=regtest-rpc-user'
+      - '--bitcoin-rpcpassword=regtest-rpc-pass'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--funding-confirms=1'
+      - '--wallet=postgres://regtest_cln2_bob:regtest_cln2_bob@regtest_db:5432/regtest_cln2_bob'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln2_bob/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19937:19935"
+
+  cln3_charlie:
+    container_name: regtest_cln3_charlie
+    image: polarlightning/clightning:23.05.2
+    restart: always
+    depends_on:
+      bitcoind_regtest:
+        condition: service_started # service_healthy
+      postgres:
+        condition: service_started # service_healthy
+    command:
+      - '--alias=regtest_cln3_charlie' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--log-level=debug'
+      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=regtest-rpc-user'
+      - '--bitcoin-rpcpassword=regtest-rpc-pass'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--funding-confirms=1'
+      - '--wallet=postgres://regtest_cln3_charlie:regtest_cln3_charlie@regtest_db:5432/regtest_cln3_charlie'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln3_charlie/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19938:19935"
+
+  cln4_dave:
+    container_name: regtest_cln4_dave
+    image: polarlightning/clightning:23.05.2
+    restart: always
+    depends_on:
+      bitcoind_regtest:
+        condition: service_started # service_healthy
+      postgres:
+        condition: service_started # service_healthy
+    command:
+      - '--alias=regtest_cln4_dave' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--log-level=debug'
+      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=regtest-rpc-user'
+      - '--bitcoin-rpcpassword=regtest-rpc-pass'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--funding-confirms=1'
+      - '--wallet=postgres://regtest_cln4_dave:regtest_cln4_dave@regtest_db:5432/regtest_cln4_dave'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln4_dave/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19939:19935"
+
+  cln5_erin:
+    container_name: regtest_cln5_erin
+    image: polarlightning/clightning:23.05.2
+    restart: always
+    depends_on:
+      bitcoind_regtest:
+        condition: service_started # service_healthy
+      postgres:
+        condition: service_started # service_healthy
+    command:
+      - '--alias=regtest_cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--log-level=debug'
+      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=regtest-rpc-user'
+      - '--bitcoin-rpcpassword=regtest-rpc-pass'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--funding-confirms=1'
+      - '--wallet=postgres://regtest_cln5_erin:regtest_cln5_erin@regtest_db:5432/regtest_cln5_erin'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln5_erin/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19940:19935"
+
+volumes:
+  bitcoind-data:
+  postgres-data:
