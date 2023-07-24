@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+description = 'lightning regtest setup package'
+
+dependencies {
+    api project(':lightning-regtest:lightning-regtest-core')
+
+    api project(':bitcoin-regtest:bitcoin-regtest-core')
+
+    // TODO: temporarily - this module should be independent of the implementation
+    api "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
+
+    api 'org.springframework:spring-context'
+}
