@@ -5,6 +5,6 @@ plugins {
 description = 'ln common client cln package'
 
 dependencies {
-    api project(':ln-common-client:ln-common-client-core')
+    api project(':lightning-commons:lightning-commons-client-core')
     api "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
 }
