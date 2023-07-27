@@ -26,9 +26,9 @@ include 'lightning-regtest:lightning-regtest-setup-devel'
 include 'lightning-regtest:lightning-regtest-starter'
 include 'lightning-regtest:lightning-regtest-example-application'
 
-include 'ln-common-client:ln-common-client-core'
-include 'ln-common-client:ln-common-client-cln'
-include 'ln-common-client:ln-common-client-lnd'
+include 'lightning-commons:lightning-commons-client-core'
+include 'lightning-commons:lightning-commons-client-cln'
+include 'lightning-commons:lightning-commons-client-lnd'
 
 include 'lnd-grpc-client:lnd-grpc-client-core'
 include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
