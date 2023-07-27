@@ -9,5 +9,5 @@ dependencies {
     api "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
     api "fr.acinq.lightning:lightning-kmp-jvm:${acinqLightningKmpVersion}"
 
-    api project(':ln-common-client:ln-common-client-core')
+    api project(':lightning-commons:lightning-commons-client-core')
 }
