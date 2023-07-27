@@ -76,6 +76,8 @@ services:
         condition: service_started # service_healthy
       cln5_erin:
         condition: service_started # service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln0_app' # hack: use the container name as alias (to programmatically connect in setup)
       - '--log-level=debug'
@@ -108,6 +110,8 @@ services:
         condition: service_started # service_healthy
       postgres:
         condition: service_started # service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln1_alice' # hack: use the container name as alias (to programmatically connect in setup)
       - '--log-level=debug'
@@ -140,6 +144,8 @@ services:
         condition: service_started # service_healthy
       postgres:
         condition: service_started # service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln2_bob' # hack: use the container name as alias (to programmatically connect in setup)
       - '--log-level=debug'
@@ -172,6 +178,8 @@ services:
         condition: service_started # service_healthy
       postgres:
         condition: service_started # service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln3_charlie' # hack: use the container name as alias (to programmatically connect in setup)
       - '--log-level=debug'
@@ -204,6 +212,8 @@ services:
         condition: service_started # service_healthy
       postgres:
         condition: service_started # service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln4_dave' # hack: use the container name as alias (to programmatically connect in setup)
       - '--log-level=debug'
@@ -236,6 +246,8 @@ services:
         condition: service_started # service_healthy
       postgres:
         condition: service_started # service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
       - '--log-level=debug'
