@@ -41,8 +41,8 @@ public class LocalRegtestLightningNetworkSetupConfig {
     RpcConfig bitcoinRpcConfig() {
         String host = "localhost";
         int port = 18443;
-        String username = "regtest-rpc-user";
-        String password = "regtest-rpc-pass";
+        String username = "regtest";
+        String password = "regtest";
         URI uri = URI.create("http://%s:%d".formatted(host, port));
         return new RpcConfig(RegTestParams.get(), uri, username, password);
     }
