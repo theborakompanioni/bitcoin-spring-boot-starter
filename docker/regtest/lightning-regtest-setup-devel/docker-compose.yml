@@ -29,7 +29,7 @@ services:
       -server=1
       -whitelist=0.0.0.0/0
       -txindex=1
-      -debug=mempool
+      -debug=rpc
       -dns=0
       -dnsseed=0
       -networkactive=0
@@ -44,6 +44,7 @@ services:
       -zmqpubrawtx=tcp://0.0.0.0:28333
       -zmqpubhashblock=tcp://0.0.0.0:28334
       -zmqpubhashtx=tcp://0.0.0.0:28335
+      -fallbackfee=0.00000253
     expose:
       - "18443"
       - "28332"
@@ -80,15 +81,17 @@ services:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln0_app' # hack: use the container name as alias (to programmatically connect in setup)
-      - '--log-level=debug'
+      - '--wallet=postgres://regtest_cln0_app:regtest_cln0_app@regtest_db:5432/regtest_cln0_app'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=regtest-rpc-user'
       - '--bitcoin-rpcpassword=regtest-rpc-pass'
       - '--grpc-port=19935'
       - '--network=regtest'
+      - '--log-level=debug'
       - '--funding-confirms=1'
-      - '--wallet=postgres://regtest_cln0_app:regtest_cln0_app@regtest_db:5432/regtest_cln0_app'
+      - '--dev-fast-gossip'
+      - '--dev-bitcoind-poll=1'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln0_app/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -114,15 +117,17 @@ services:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln1_alice' # hack: use the container name as alias (to programmatically connect in setup)
-      - '--log-level=debug'
+      - '--wallet=postgres://regtest_cln1_alice:regtest_cln1_alice@regtest_db:5432/regtest_cln1_alice'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=regtest-rpc-user'
       - '--bitcoin-rpcpassword=regtest-rpc-pass'
       - '--grpc-port=19935'
       - '--network=regtest'
+      - '--log-level=debug'
       - '--funding-confirms=1'
-      - '--wallet=postgres://regtest_cln1_alice:regtest_cln1_alice@regtest_db:5432/regtest_cln1_alice'
+      - '--dev-fast-gossip'
+      - '--dev-bitcoind-poll=1'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln1_alice/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -148,15 +153,17 @@ services:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln2_bob' # hack: use the container name as alias (to programmatically connect in setup)
-      - '--log-level=debug'
+      - '--wallet=postgres://regtest_cln2_bob:regtest_cln2_bob@regtest_db:5432/regtest_cln2_bob'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=regtest-rpc-user'
       - '--bitcoin-rpcpassword=regtest-rpc-pass'
       - '--grpc-port=19935'
       - '--network=regtest'
+      - '--log-level=debug'
       - '--funding-confirms=1'
-      - '--wallet=postgres://regtest_cln2_bob:regtest_cln2_bob@regtest_db:5432/regtest_cln2_bob'
+      - '--dev-fast-gossip'
+      - '--dev-bitcoind-poll=1'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln2_bob/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -182,15 +189,17 @@ services:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln3_charlie' # hack: use the container name as alias (to programmatically connect in setup)
-      - '--log-level=debug'
+      - '--wallet=postgres://regtest_cln3_charlie:regtest_cln3_charlie@regtest_db:5432/regtest_cln3_charlie'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=regtest-rpc-user'
       - '--bitcoin-rpcpassword=regtest-rpc-pass'
       - '--grpc-port=19935'
       - '--network=regtest'
+      - '--log-level=debug'
       - '--funding-confirms=1'
-      - '--wallet=postgres://regtest_cln3_charlie:regtest_cln3_charlie@regtest_db:5432/regtest_cln3_charlie'
+      - '--dev-fast-gossip'
+      - '--dev-bitcoind-poll=1'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln3_charlie/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -216,15 +225,17 @@ services:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln4_dave' # hack: use the container name as alias (to programmatically connect in setup)
-      - '--log-level=debug'
+      - '--wallet=postgres://regtest_cln4_dave:regtest_cln4_dave@regtest_db:5432/regtest_cln4_dave'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=regtest-rpc-user'
       - '--bitcoin-rpcpassword=regtest-rpc-pass'
       - '--grpc-port=19935'
       - '--network=regtest'
+      - '--log-level=debug'
       - '--funding-confirms=1'
-      - '--wallet=postgres://regtest_cln4_dave:regtest_cln4_dave@regtest_db:5432/regtest_cln4_dave'
+      - '--dev-fast-gossip'
+      - '--dev-bitcoind-poll=1'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln4_dave/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -250,15 +261,17 @@ services:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
       - '--alias=regtest_cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
-      - '--log-level=debug'
+      - '--wallet=postgres://regtest_cln5_erin:regtest_cln5_erin@regtest_db:5432/regtest_cln5_erin'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=regtest-rpc-user'
       - '--bitcoin-rpcpassword=regtest-rpc-pass'
       - '--grpc-port=19935'
       - '--network=regtest'
+      - '--log-level=debug'
       - '--funding-confirms=1'
-      - '--wallet=postgres://regtest_cln5_erin:regtest_cln5_erin@regtest_db:5432/regtest_cln5_erin'
+      - '--dev-fast-gossip'
+      - '--dev-bitcoind-poll=1'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln5_erin/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
