@@ -8,8 +8,8 @@ org.tbk.bitcoin.jsonrpc:
   network: regtest
   rpchost: http://localhost
   rpcport: 18443
-  rpcuser: regtest-rpc-user
-  rpcpassword: regtest-rpc-pass
+  rpcuser: regtest
+  rpcpassword: regtest
 
 org.tbk.lightning.cln.grpc:
   enabled: false # all beans are created programmatically
