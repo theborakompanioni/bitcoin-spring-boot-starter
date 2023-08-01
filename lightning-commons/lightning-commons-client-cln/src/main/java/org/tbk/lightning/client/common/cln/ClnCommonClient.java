@@ -10,13 +10,13 @@ import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class ClnCommonClient implements LnCommonClient {
+public class ClnCommonClient implements LnCommonClient<NodeGrpc.NodeBlockingStub> {
 
     @NonNull
     private final NodeGrpc.NodeBlockingStub client;
 
     @Override
-    public Mono<GetinfoResponse> getInfo(GetinfoRequest request) {
+    public Mono<GetinfoResponse> info(GetinfoRequest request) {
         return Mono.fromCallable(() -> {
             org.tbk.lightning.cln.grpc.client.GetinfoResponse response = client.getinfo(org.tbk.lightning.cln.grpc.client.GetinfoRequest.newBuilder().build());
             return GetinfoResponse.newBuilder()
@@ -35,5 +35,10 @@ public class ClnCommonClient implements LnCommonClient {
                     .setBlockheight(response.getBlockheight())
                     .build();
         });
+    }
+
+    @Override
+    public NodeGrpc.NodeBlockingStub baseClient() {
+        return client;
     }
 }
