@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.tbk.lightning.cln.grpc.client.*;
+import org.tbk.lightning.regtest.core.MoreMilliSatoshi;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -79,14 +80,14 @@ public abstract class AbstractClnNodeApi {
                 .filter(ListfundsChannels::hasAmountMsat)
                 .map(ListfundsChannels::getAmountMsat)
                 .map(it -> new MilliSatoshi(it.getMsat()))
-                .reduce(new MilliSatoshi(0L), MilliSatoshi::plus);
+                .reduce(MoreMilliSatoshi.ZERO, MilliSatoshi::plus);
 
         // "outbound liquidity": what this node is able to send
         MilliSatoshi outboundLiquidity = listfundsResponse.getChannelsList().stream()
                 .filter(ListfundsChannels::hasOurAmountMsat)
                 .map(ListfundsChannels::getOurAmountMsat)
                 .map(it -> new MilliSatoshi(it.getMsat()))
-                .reduce(new MilliSatoshi(0L), MilliSatoshi::plus);
+                .reduce(MoreMilliSatoshi.ZERO, MilliSatoshi::plus);
 
         // "inbound liquidity": what this node is able to receive
         MilliSatoshi inboundLiquidity = totalCapacity.minus(outboundLiquidity);
@@ -95,7 +96,7 @@ public abstract class AbstractClnNodeApi {
                 .filter(ListfundsOutputs::hasAmountMsat)
                 .map(ListfundsOutputs::getAmountMsat)
                 .map(it -> new MilliSatoshi(it.getMsat()))
-                .reduce(new MilliSatoshi(0L), MilliSatoshi::plus);
+                .reduce(MoreMilliSatoshi.ZERO, MilliSatoshi::plus);
 
         return ResponseEntity.ok(BalanceInfo.builder()
                 .channelCount(listfundsResponse.getChannelsCount())
