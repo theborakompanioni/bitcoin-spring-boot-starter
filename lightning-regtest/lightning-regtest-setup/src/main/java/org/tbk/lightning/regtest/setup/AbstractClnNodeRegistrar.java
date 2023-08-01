@@ -15,6 +15,8 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
+import org.tbk.lightning.client.common.cln.ClnCommonClient;
+import org.tbk.lightning.client.common.core.LnCommonClient;
 import org.tbk.lightning.cln.grpc.ClnRpcConfig;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
@@ -39,6 +41,7 @@ public abstract class AbstractClnNodeRegistrar implements ImportBeanDefinitionRe
         ManagedChannel clnChannel = createClnChannel(clnChannelBuilder);
         DisposableBean clnChannelShutdownHook = createClnChannelShutdownHook(clnChannel);
         NodeGrpc.NodeBlockingStub clnNodeBlockingStub = createClnNodeBlockingStub(clnChannel);
+        ClnCommonClient clnCommonClient = new ClnCommonClient(clnNodeBlockingStub);
 
         AbstractBeanDefinition clnChannelShutdownHookDefinition = BeanDefinitionBuilder
                 .genericBeanDefinition(DisposableBean.class, () -> clnChannelShutdownHook)
@@ -48,11 +51,17 @@ public abstract class AbstractClnNodeRegistrar implements ImportBeanDefinitionRe
                 .genericBeanDefinition(NodeGrpc.NodeBlockingStub.class, () -> clnNodeBlockingStub)
                 .getBeanDefinition();
 
+        AbstractBeanDefinition clnNodeCommonClientDefinition = BeanDefinitionBuilder
+                .genericBeanDefinition(ClnCommonClient.class, () -> clnCommonClient)
+                .getBeanDefinition();
+
         beanCustomizer.customize(clnChannelShutdownHookDefinition);
         beanCustomizer.customize(clnNodeBlockingStubDefinition);
+        beanCustomizer.customize(clnNodeCommonClientDefinition);
 
         registry.registerBeanDefinition("%sClnChannelShutdownHook".formatted(beanPrefix), clnChannelShutdownHookDefinition);
         registry.registerBeanDefinition("%sClnNodeBlockingStub".formatted(beanPrefix), clnNodeBlockingStubDefinition);
+        registry.registerBeanDefinition("%sLightningCommonClient".formatted(beanPrefix), clnNodeCommonClientDefinition);
     }
 
     protected BeanDefinitionCustomizer beanDefinitionCustomizer() {

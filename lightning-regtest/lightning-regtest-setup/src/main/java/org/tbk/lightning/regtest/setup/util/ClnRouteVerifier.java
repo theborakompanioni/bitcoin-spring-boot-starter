@@ -1,5 +1,6 @@
 package org.tbk.lightning.regtest.setup.util;
 
+import org.tbk.lightning.client.common.core.LnCommonClient;
 import org.tbk.lightning.cln.grpc.client.GetrouteResponse;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
@@ -8,7 +9,7 @@ import org.tbk.lightning.cln.grpc.client.NodeGrpc;
  * @implNote Currently specific to CLN nodes, hence the prefix "Cln".
  */
 public interface ClnRouteVerifier {
-    boolean hasDirectRoute(NodeGrpc.NodeBlockingStub origin, NodeGrpc.NodeBlockingStub destination);
+    boolean hasDirectRoute(LnCommonClient<NodeGrpc.NodeBlockingStub> origin, LnCommonClient<?> destination);
 
     GetrouteResponse waitForRouteOrThrow(RouteVerification routeVerification);
 }

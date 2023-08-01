@@ -14,13 +14,13 @@ import org.tbk.lightning.client.common.core.proto.GetinfoResponse;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class LndCommonClient implements LnCommonClient {
+public class LndCommonClient implements LnCommonClient<SynchronousLndAPI> {
 
     @NonNull
     private final SynchronousLndAPI client;
 
     @Override
-    public Mono<GetinfoResponse> getInfo(GetinfoRequest request) {
+    public Mono<GetinfoResponse> info(GetinfoRequest request) {
         return Mono.fromCallable(() -> {
             GetInfoResponse response = client.getInfo(new GetInfoRequest(LightningApi.GetInfoRequest.newBuilder().build()));
             return GetinfoResponse.newBuilder()
@@ -41,5 +41,10 @@ public class LndCommonClient implements LnCommonClient {
                     .setBlockheight(response.getBlockHeight())
                     .build();
         });
+    }
+
+    @Override
+    public SynchronousLndAPI baseClient() {
+        return client;
     }
 }
