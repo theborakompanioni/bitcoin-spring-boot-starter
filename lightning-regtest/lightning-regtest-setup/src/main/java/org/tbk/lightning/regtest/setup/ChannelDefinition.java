@@ -5,6 +5,7 @@ import fr.acinq.lightning.MilliSatoshi;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
+import org.tbk.lightning.client.common.core.LnCommonClient;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.MoreMilliSatoshi;
 
@@ -17,10 +18,10 @@ public
 class ChannelDefinition {
 
     @NonNull
-    NodeGrpc.NodeBlockingStub origin;
+    LnCommonClient<NodeGrpc.NodeBlockingStub> origin;
 
     @NonNull
-    NodeGrpc.NodeBlockingStub destination;
+    LnCommonClient<NodeGrpc.NodeBlockingStub> destination;
 
     @NonNull
     Satoshi capacity;
