@@ -1,6 +1,5 @@
 package org.tbk.lightning.regtest.setup.util;
 
-import fr.acinq.lightning.MilliSatoshi;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -11,7 +10,6 @@ import java.time.Duration;
 @Value
 @Builder
 public class RouteVerification {
-    private static final MilliSatoshi ZERO = new MilliSatoshi(0L);
 
     @NonNull
     NodeGrpc.NodeBlockingStub origin;
