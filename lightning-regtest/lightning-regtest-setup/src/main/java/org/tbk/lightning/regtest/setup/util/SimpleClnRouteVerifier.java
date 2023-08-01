@@ -3,29 +3,40 @@ package org.tbk.lightning.regtest.setup.util;
 import com.google.common.base.Stopwatch;
 import com.google.protobuf.ByteString;
 import lombok.extern.slf4j.Slf4j;
-import org.tbk.lightning.cln.grpc.client.*;
+import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.proto.GetinfoRequest;
+import org.tbk.lightning.client.common.core.proto.GetinfoResponse;
+import org.tbk.lightning.cln.grpc.client.Amount;
+import org.tbk.lightning.cln.grpc.client.GetrouteRequest;
+import org.tbk.lightning.cln.grpc.client.GetrouteResponse;
+import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 public class SimpleClnRouteVerifier implements ClnRouteVerifier {
     private static final Amount MILLISATOSHI = Amount.newBuilder().setMsat(1L).build();
 
     @Override
-    public boolean hasDirectRoute(NodeGrpc.NodeBlockingStub origin, NodeGrpc.NodeBlockingStub destination) {
-        GetinfoResponse destInfo = destination.getinfo(GetinfoRequest.newBuilder().build());
-        return getRouteInternal(origin, destInfo.getId())
+    public boolean hasDirectRoute(LnCommonClient<NodeGrpc.NodeBlockingStub> origin, LnCommonClient<?> destination) {
+        GetinfoResponse destInfo = requireNonNull(destination.info(GetinfoRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)));
+        return getRouteInternal(origin, destInfo.getIdentityPubkey())
                 .map(it -> it.getRouteCount() > 0)
                 .orElse(false);
     }
 
     @Override
     public GetrouteResponse waitForRouteOrThrow(RouteVerification routeVerification) {
-        GetinfoResponse originInfo = routeVerification.getOrigin().getinfo(GetinfoRequest.newBuilder().build());
-        GetinfoResponse destInfo = routeVerification.getDestination().getinfo(GetinfoRequest.newBuilder().build());
+        GetinfoResponse originInfo = requireNonNull(routeVerification.getOrigin().info(GetinfoRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)));
+        GetinfoResponse destInfo = requireNonNull(routeVerification.getDestination().info(GetinfoRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)));
 
         log.debug("Waiting for a route from {} -> {} to become available…", originInfo.getAlias(), destInfo.getAlias());
 
@@ -34,7 +45,7 @@ public class SimpleClnRouteVerifier implements ClnRouteVerifier {
         Duration waitForRouteTimeout = Duration.ofMinutes(15);
         GetrouteResponse route = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
                 .doOnNext(it -> tries.incrementAndGet())
-                .map(it -> getRouteInternal(routeVerification.getOrigin(), destInfo.getId()))
+                .map(it -> getRouteInternal(routeVerification.getOrigin(), destInfo.getIdentityPubkey()))
                 .mapNotNull(it -> it.orElse(null))
                 .filter(it -> it.getRouteCount() > 0)
                 .blockFirst(waitForRouteTimeout);
@@ -51,10 +62,10 @@ public class SimpleClnRouteVerifier implements ClnRouteVerifier {
         return route;
     }
 
-    private Optional<GetrouteResponse> getRouteInternal(NodeGrpc.NodeBlockingStub origin, ByteString destId) {
+    private Optional<GetrouteResponse> getRouteInternal(LnCommonClient<NodeGrpc.NodeBlockingStub> origin, ByteString destId) {
         try {
             // see https://lightning.readthedocs.io/lightning-getroute.7.html
-            return Optional.ofNullable(origin.getRoute(GetrouteRequest.newBuilder()
+            return Optional.ofNullable(origin.baseClient().getRoute(GetrouteRequest.newBuilder()
                     .setAmountMsat(MILLISATOSHI)
                     .setId(destId)
                     .setRiskfactor(0) // we are just interested if a route exists

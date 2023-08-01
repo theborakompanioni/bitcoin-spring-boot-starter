@@ -10,7 +10,7 @@ dependencies {
     api project(':bitcoin-regtest:bitcoin-regtest-core')
 
     // TODO: temporarily - this module should be independent of the implementation
-    api "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
+    api project(':lightning-commons:lightning-commons-client-cln')
 
     api 'org.springframework:spring-context'
 }
