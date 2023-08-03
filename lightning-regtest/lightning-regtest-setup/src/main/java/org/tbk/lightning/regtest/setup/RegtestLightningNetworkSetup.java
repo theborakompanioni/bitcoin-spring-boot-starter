@@ -17,7 +17,6 @@ import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
-import org.tbk.lightning.cln.grpc.client.*;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc.NodeBlockingStub;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.util.ClnRouteVerifier;
@@ -149,21 +148,22 @@ public class RegtestLightningNetworkSetup {
                 .map(it -> nodeInfos.nodeAliasByNodeId(it.getIdentityPubkey()))
                 .collect(Collectors.joining(", ")));
 
-        ListpeerchannelsResponse peerChannels = listPeerChannels(node);
-        log.info("  {} channel count: {}", nodeName, peerChannels.getChannelsCount());
+        CommonListPeerChannelsResponse peerChannels = listPeerChannels(node);
+        log.info("  {} channel count: {}", nodeName, peerChannels.getPeerChannelsCount());
 
-        peerChannels.getChannelsList().forEach(it -> {
-            boolean incoming = it.getOpener() == ChannelSide.REMOTE;
-            log.info("  - {} channel ({}) {} {}--{} {} (state: {}, capacity: {}, spendable: {}, receivable: {}, peer_connected: {})",
+        peerChannels.getPeerChannelsList().forEach(it -> {
+            boolean incoming = !it.getInitiator();
+            log.info("  - {} {} channel {} {}--{} {} (active: {}, capacity: {}, local_balance: {}, spendable: {}, receivable: {})",
                     incoming ? "Incoming" : "Outgoing",
-                    it.getShortChannelId(), nodeName,
+                    it.getAnnounced() ? "public" : "unannounced",
+                    nodeName,
                     incoming ? "<" : "", incoming ? "" : ">",
-                    nodeInfos.nodeAliasByNodeId(it.getPeerId()),
-                    it.getState(),
-                    new MilliSatoshi(it.getTotalMsat().getMsat()).truncateToSatoshi(),
-                    new MilliSatoshi(it.getSpendableMsat().getMsat()),
-                    new MilliSatoshi(it.getReceivableMsat().getMsat()),
-                    it.getPeerConnected());
+                    nodeInfos.nodeAliasByNodeId(it.getRemoteIdentityPubkey()),
+                    it.getActive(),
+                    new MilliSatoshi(it.getCapacityMsat()),
+                    new MilliSatoshi(it.getLocalBalanceMsat()),
+                    new MilliSatoshi(it.getEstimatedSpendableMsat()),
+                    new MilliSatoshi(it.getEstimatedReceivableMsat()));
         });
     }
 
@@ -247,10 +247,10 @@ public class RegtestLightningNetworkSetup {
     }
 
     private boolean needsCreation(ChannelDefinition definition) {
-        ListchannelsResponse outgoingChannels = listOutgoingChannels(definition.getOrigin());
-        Optional<ListchannelsChannels> channelOrEmpty = outgoingChannels.getChannelsList().stream()
-                .filter(it -> nodeInfos.nodeIdHex(definition.getDestination()).equals(hex(it.getDestination())))
-                .filter(it -> it.getAmountMsat().getMsat() == new MilliSatoshi(definition.getCapacity()).getMsat())
+        List<PeerChannel> outgoingChannels = listOutgoingChannels(definition.getOrigin());
+        Optional<PeerChannel> channelOrEmpty = outgoingChannels.stream()
+                .filter(it -> nodeInfos.nodeIdHex(definition.getDestination()).equals(hex(it.getRemoteIdentityPubkey())))
+                .filter(it -> it.getCapacityMsat() == new MilliSatoshi(definition.getCapacity()).getMsat())
                 .findFirst();
 
         return channelOrEmpty.isEmpty();
@@ -300,14 +300,17 @@ public class RegtestLightningNetworkSetup {
                 .sum()).truncateToSatoshi();
     }
 
-    private ListchannelsResponse listOutgoingChannels(LightningCommonClient<NodeBlockingStub> client) {
-        return client.baseClient().listChannels(ListchannelsRequest.newBuilder()
-                .setSource(nodeInfos.nodeIdBytes(client))
-                .build());
+    private List<PeerChannel> listOutgoingChannels(LightningCommonClient<NodeBlockingStub> client) {
+        return requireNonNull(client.listPeerChannels(CommonListPeerChannelsRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)))
+                .getPeerChannelsList().stream()
+                .filter(PeerChannel::getInitiator)
+                .toList();
     }
 
-    private ListpeerchannelsResponse listPeerChannels(LightningCommonClient<NodeBlockingStub> client) {
-        return client.baseClient().listPeerChannels(ListpeerchannelsRequest.newBuilder().build());
+    private CommonListPeerChannelsResponse listPeerChannels(LightningCommonClient<NodeBlockingStub> client) {
+        return client.listPeerChannels(CommonListPeerChannelsRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30));
     }
 
     private void waitForNodesBlockHeightSynchronization() throws IOException {

@@ -46,7 +46,7 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
     @Override
     public Mono<CommonConnectResponse> connect(CommonConnectRequest request) {
         return Mono.fromCallable(() -> {
-            org.tbk.lightning.cln.grpc.client.ConnectRequest.Builder builder = org.tbk.lightning.cln.grpc.client.ConnectRequest.newBuilder()
+            ConnectRequest.Builder builder = ConnectRequest.newBuilder()
                     .setId(HexFormat.of().formatHex(request.getIdentityPubkey().toByteArray()));
 
             if (request.hasHost()) {
@@ -56,7 +56,7 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
                 builder.setPort(request.getPort());
             }
 
-            org.tbk.lightning.cln.grpc.client.ConnectResponse connectResponse = client.connectPeer(builder.build());
+            ConnectResponse connectResponse = client.connectPeer(builder.build());
 
             log.trace("'connectPeer' returned': {}", connectResponse);
 
@@ -181,6 +181,39 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
 
             return CommonListUnspentResponse.newBuilder()
                     .addAllUnspentOutputs(unspentOutputs)
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<CommonListPeerChannelsResponse> listPeerChannels(CommonListPeerChannelsRequest request) {
+        return Mono.fromCallable(() -> {
+            ListpeerchannelsResponse response = client.listPeerChannels(ListpeerchannelsRequest.newBuilder().build());
+
+            List<PeerChannel> outgoingChannels = response.getChannelsList().stream()
+                    .map(it -> {
+                        PeerChannel.Builder builder = PeerChannel.newBuilder()
+                                .setRemoteIdentityPubkey(it.getPeerId())
+                                .setCapacityMsat(it.getTotalMsat().getMsat())
+                                .setAnnounced(!it.getPrivate())
+                                .setActive(it.getState() == ListpeerchannelsChannels.ListpeerchannelsChannelsState.CHANNELD_NORMAL)
+                                .setInitiator(it.getOpener() == ChannelSide.LOCAL);
+
+                        if (it.hasToUsMsat()) {
+                            builder.setLocalBalanceMsat(it.getToUsMsat().getMsat());
+                        }
+                        if (it.hasSpendableMsat()) {
+                            builder.setEstimatedSpendableMsat(it.getSpendableMsat().getMsat());
+                        }
+                        if (it.hasReceivableMsat()) {
+                            builder.setEstimatedReceivableMsat(it.getReceivableMsat().getMsat());
+                        }
+                        return builder.build();
+                    })
+                    .toList();
+
+            return CommonListPeerChannelsResponse.newBuilder()
+                    .addAllPeerChannels(outgoingChannels)
                     .build();
         });
     }
