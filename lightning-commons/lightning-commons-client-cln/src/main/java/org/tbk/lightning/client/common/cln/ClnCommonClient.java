@@ -122,6 +122,45 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
     }
 
     @Override
+    public Mono<CommonOpenChannelResponse> openChannel(CommonOpenChannelRequest request) {
+        return Mono.fromCallable(() -> {
+            FundchannelRequest.Builder builder = FundchannelRequest.newBuilder()
+                    .setId(request.getIdentityPubkey())
+                    .setAmount(AmountOrAll.newBuilder()
+                            .setAmount(Amount.newBuilder()
+                                    .setMsat(request.getAmountMsat())
+                                    .build())
+                            .build())
+                    .setPushMsat(Amount.newBuilder()
+                            .setMsat(request.hasPushMsat() ? request.getPushMsat() : 0)
+                            .build())
+                    .setAnnounce(!request.hasAnnounce() || request.getAnnounce());
+
+            if (request.hasSatPerVbyte()) {
+                builder.setFeerate(Feerate.newBuilder()
+                        .setPerkb(request.getSatPerVbyte() * 1_000)
+                        .build());
+            }
+            if (request.hasTargetConf()) {
+                builder.setMinconf(request.getTargetConf());
+            }
+            if (request.hasMinUtxoDepth()) {
+                builder.setMindepth(request.getMinUtxoDepth());
+            }
+            if (request.hasCloseToAddress()) {
+                builder.setCloseTo(request.getCloseToAddress());
+            }
+
+            FundchannelResponse response = client.fundChannel(builder.build());
+
+            return CommonOpenChannelResponse.newBuilder()
+                    .setTxid(response.getTxid())
+                    .setOutputIndex(response.getOutnum())
+                    .build();
+        });
+    }
+
+    @Override
     public NodeGrpc.NodeBlockingStub baseClient() {
         return client;
     }

@@ -72,8 +72,7 @@ class RegtestLightningNetworkSetupDevelTest {
     void itShouldVerifyPaymentCanBeSentOverChannelSuccessfully() {
         MilliSatoshi millisats = new MilliSatoshi(1_000L);
 
-        // generate an invoice on Node 2
-        // see: https://lightning.readthedocs.io/lightning-invoice.7.html
+        // generate an invoice on user node
         String userInvoiceLabel = randomLabel();
         Duration expiry = Duration.ofSeconds(30);
         CommonCreateInvoiceResponse invoiceResponse = requireNonNull(userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
@@ -86,8 +85,7 @@ class RegtestLightningNetworkSetupDevelTest {
 
         Stopwatch sw = Stopwatch.createStarted();
 
-        // pay invoice from Node 1
-        // see: https://lightning.readthedocs.io/lightning-pay.7.html
+        // pay invoice from app node
         PayResponse cln1PayResponse = appNode.baseClient().pay(PayRequest.newBuilder()
                 .setBolt11(invoiceResponse.getPaymentRequest())
                 .build());
@@ -132,7 +130,7 @@ class RegtestLightningNetworkSetupDevelTest {
         // generate an invoice that cannot be paid
         MilliSatoshi nonPayableAmount = LightningNetworkConstants.LARGEST_CHANNEL_SIZE_MSAT.plus(new MilliSatoshi(1));
 
-        // generate an non-payable invoice on Node 2
+        // generate an non-payable invoice on user node
         Duration expiry = Duration.ofMinutes(60);
         CommonCreateInvoiceResponse invoiceResponse = requireNonNull(userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
                 .setLabel(randomLabel())
