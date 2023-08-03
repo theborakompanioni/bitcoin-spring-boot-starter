@@ -278,21 +278,17 @@ public class RegtestLightningNetworkSetup {
         if (onchainFunds.getSat() <= definition.getCapacity().getSat()) {
             throw new IllegalStateException("Not enough funds: Cannot create channel of size " + definition.getCapacity());
         }
-        FundchannelResponse fundchannelResponse = definition.getOrigin().baseClient().fundChannel(FundchannelRequest.newBuilder()
-                .setId(nodeInfos.nodeIdBytes(definition.getDestination()))
-                .setAmount(AmountOrAll.newBuilder()
-                        .setAmount(Amount.newBuilder()
-                                .setMsat(new MilliSatoshi(definition.getCapacity()).getMsat())
-                                .build())
-                        .build())
-                .setPushMsat(Amount.newBuilder()
-                        .setMsat(definition.getPushAmount().getMsat())
-                        .build())
-                .setAnnounce(definition.isAnnounced())
-                .build());
 
-        String channelId = hex(fundchannelResponse.getChannelId());
-        log.debug("Created channel with capacity {}: {} (pushed {})", definition.getCapacity(), channelId, definition.getPushAmount());
+        CommonOpenChannelResponse openChannelResponse = requireNonNull(definition.getOrigin().openChannel(CommonOpenChannelRequest.newBuilder()
+                        .setIdentityPubkey(nodeInfos.nodeIdBytes(definition.getDestination()))
+                        .setAmountMsat(new MilliSatoshi(definition.getCapacity()).getMsat())
+                        .setPushMsat(definition.getPushAmount().getMsat())
+                        .setAnnounce(definition.isAnnounced())
+                        .build())
+                .block(Duration.ofSeconds(30L)));
+
+        String channelOutpoint = "%s:%d".formatted(hex(openChannelResponse.getTxid()), openChannelResponse.getOutputIndex());
+        log.debug("Created channel with capacity {}: {} (pushed {})", definition.getCapacity(), channelOutpoint, definition.getPushAmount());
     }
 
     private Satoshi fetchOnchainFunds(LightningCommonClient<NodeBlockingStub> node) {

@@ -73,3 +73,20 @@ message Peer {
   bytes identityPubkey = 1 [json_name = "identity_pubkey"];
   repeated string networkAddresses = 2 [json_name = "network_addresses"];
 }
+
+
+message CommonOpenChannelRequest {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  uint64 amountMsat = 2 [json_name = "amount_msat"];
+  optional uint32 satPerVbyte = 3 [json_name = "sat_per_vbyte"];
+  optional uint64 pushMsat = 4 [json_name = "push_msat"];
+  optional uint32 targetConf = 5 [json_name = "target_conf"];
+  optional bool announce = 6 [json_name = "announce"];
+  optional uint32 minUtxoDepth = 7 [json_name = "min_utxo_depth"];
+  optional string closeToAddress = 8 [json_name = "close_to_address"];
+}
+
+message CommonOpenChannelResponse {
+  bytes txid = 1 [json_name = "txid"];
+  uint32 outputIndex = 2 [json_name = "output_index"];
+}

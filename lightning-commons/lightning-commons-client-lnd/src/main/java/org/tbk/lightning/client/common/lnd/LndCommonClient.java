@@ -124,6 +124,41 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
         });
     }
 
+
+    @Override
+    public Mono<CommonOpenChannelResponse> openChannel(CommonOpenChannelRequest request) {
+        return Mono.fromCallable(() -> {
+            LightningApi.OpenChannelRequest.Builder builder = LightningApi.OpenChannelRequest.newBuilder()
+                    .setNodePubkey(request.getIdentityPubkey())
+                    .setLocalFundingAmount(request.getAmountMsat())
+                    .setPushSat(request.hasPushMsat() ? request.getPushMsat() : 0)
+                    .setPrivate(request.hasAnnounce() && !request.getAnnounce());
+
+            if (request.hasSatPerVbyte()) {
+                builder.setSatPerVbyte(request.getSatPerVbyte());
+            }
+            if (request.hasTargetConf()) {
+                builder.setTargetConf(request.getTargetConf());
+            }
+            if (request.hasMinUtxoDepth()) {
+                builder.setMinConfs(request.getMinUtxoDepth());
+            }
+            if (request.hasCloseToAddress()) {
+                builder.setCloseAddress(request.getCloseToAddress());
+            }
+
+            ChannelPoint response = client.openChannelSync(new OpenChannelRequest());
+
+            byte[] txid = Optional.ofNullable(response.getFundingTxidBytes())
+                    .orElseGet(() -> HexFormat.of().parseHex(response.getFundingTxidStr()));
+
+            return CommonOpenChannelResponse.newBuilder()
+                    .setTxid(ByteString.copyFrom(txid))
+                    .setOutputIndex(response.getOutputIndex())
+                    .build();
+        });
+    }
+
     @Override
     public SynchronousLndAPI baseClient() {
         return client;
