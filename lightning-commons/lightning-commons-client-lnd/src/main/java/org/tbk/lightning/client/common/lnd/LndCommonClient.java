@@ -79,6 +79,31 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
         });
     }
 
+
+    @Override
+    public Mono<CommonCreateInvoiceResponse> createInvoice(CommonCreateInvoiceRequest request) {
+        return Mono.fromCallable(() -> {
+            LightningApi.Invoice.Builder builder = LightningApi.Invoice.newBuilder();
+
+            if (request.hasAmountMsat()) {
+                builder.setValueMsat(request.getAmountMsat());
+            }
+            if (request.hasDescription()) {
+                builder.setMemo(request.getDescription());
+            }
+            if (request.hasExpiry()) {
+                builder.setExpiry(request.getExpiry());
+            }
+
+            AddInvoiceResponse response = client.addInvoice(new Invoice(builder.build()));
+
+            return CommonCreateInvoiceResponse.newBuilder()
+                    .setPaymentRequest(response.getPaymentRequest())
+                    .setPaymentHash(ByteString.copyFrom(response.getRHash()))
+                    .build();
+        });
+    }
+
     @Override
     public SynchronousLndAPI baseClient() {
         return client;

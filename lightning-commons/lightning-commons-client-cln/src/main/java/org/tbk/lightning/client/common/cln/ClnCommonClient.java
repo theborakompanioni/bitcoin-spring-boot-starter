@@ -72,6 +72,37 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
     }
 
     @Override
+    public Mono<CommonCreateInvoiceResponse> createInvoice(CommonCreateInvoiceRequest request) {
+        return Mono.fromCallable(() -> {
+            AmountOrAny amountOrAny = request.hasAmountMsat() ? AmountOrAny.newBuilder()
+                    .setAmount(Amount.newBuilder()
+                            .setMsat(request.getAmountMsat())
+                            .build())
+                    .build() : AmountOrAny.newBuilder()
+                    .setAny(true)
+                    .build();
+
+            InvoiceRequest.Builder builder = InvoiceRequest.newBuilder()
+                    .setAmountMsat(amountOrAny)
+                    .setLabel(request.getLabel());
+
+            if (request.hasDescription()) {
+                builder.setDescription(request.getDescription());
+            }
+            if (request.hasExpiry()) {
+                builder.setExpiry(request.getExpiry());
+            }
+
+            InvoiceResponse response = client.invoice(builder.build());
+
+            return CommonCreateInvoiceResponse.newBuilder()
+                    .setPaymentRequest(response.getBolt11())
+                    .setPaymentHash(response.getPaymentHash())
+                    .build();
+        });
+    }
+
+    @Override
     public NodeGrpc.NodeBlockingStub baseClient() {
         return client;
     }
