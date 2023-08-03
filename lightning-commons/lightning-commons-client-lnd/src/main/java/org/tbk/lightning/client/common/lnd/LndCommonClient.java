@@ -5,8 +5,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lightningj.lnd.proto.LightningApi;
+import org.lightningj.lnd.wrapper.ClientSideException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.message.*;
+import org.lightningj.lnd.wrapper.walletkit.SynchronousWalletKitAPI;
+import org.lightningj.lnd.wrapper.walletkit.message.AddrRequest;
+import org.lightningj.lnd.wrapper.walletkit.message.AddrResponse;
+import org.lightningj.lnd.wrapper.walletkit.message.ListUnspentRequest;
+import org.lightningj.lnd.wrapper.walletkit.message.ListUnspentResponse;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.Chain;
 import org.tbk.lightning.client.common.core.proto.Peer;
@@ -17,12 +23,18 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * See: <a href="https://lightning.engineering/api-docs/api/lnd/">LND API Docs</a>
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI> {
 
     @NonNull
     private final SynchronousLndAPI client;
+
+    @NonNull
+    private final SynchronousWalletKitAPI walletKitAPI;
 
     @Override
     public Mono<CommonInfoResponse> info(CommonInfoRequest request) {
@@ -74,9 +86,9 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
     @Override
     public Mono<CommonNewAddressResponse> newAddress(CommonNewAddressRequest request) {
         return Mono.fromCallable(() -> {
-            NewAddressResponse response = client.newAddress(new NewAddressRequest());
+            AddrResponse response = walletKitAPI.nextAddr(new AddrRequest());
             return CommonNewAddressResponse.newBuilder()
-                    .setAddress(response.getAddress())
+                    .setAddress(response.getAddr())
                     .build();
         });
     }
@@ -155,6 +167,37 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
             return CommonOpenChannelResponse.newBuilder()
                     .setTxid(ByteString.copyFrom(txid))
                     .setOutputIndex(response.getOutputIndex())
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<CommonListUnspentResponse> listUnspent(CommonListUnspentRequest request) {
+        return Mono.fromCallable(() -> {
+            ListUnspentResponse response = walletKitAPI.listUnspent(new ListUnspentRequest());
+
+            List<UnspentOutput> unspentOutputs = response.getUtxos().stream()
+                    .map(it -> {
+                        try {
+                            OutPoint outpoint = it.getOutpoint();
+
+                            byte[] txid = Optional.ofNullable(outpoint.getTxidBytes())
+                                    .orElseGet(() -> HexFormat.of().parseHex(outpoint.getTxidStr()));
+
+                            return UnspentOutput.newBuilder()
+                                    .setTxid(ByteString.copyFrom(txid))
+                                    .setOutputIndex(outpoint.getOutputIndex())
+                                    .setAmountMsat(it.getAmountSat() * 1_000)
+                                    .setScriptPubkey(ByteString.fromHex(it.getPkScript()))
+                                    .build();
+                        } catch (ClientSideException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .toList();
+
+            return CommonListUnspentResponse.newBuilder()
+                    .addAllUnspentOutputs(unspentOutputs)
                     .build();
         });
     }

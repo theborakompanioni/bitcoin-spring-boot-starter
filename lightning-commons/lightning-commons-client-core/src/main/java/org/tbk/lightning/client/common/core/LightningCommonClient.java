@@ -16,6 +16,9 @@ public interface LightningCommonClient<T> {
 
     Mono<CommonOpenChannelResponse> openChannel(CommonOpenChannelRequest request);
 
+    Mono<CommonListUnspentResponse> listUnspent(CommonListUnspentRequest request);
+
+
     // TODO: consider removing access to the underlying client after all common functions are implemented
     T baseClient();
 }
