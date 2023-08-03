@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
-import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.cln.grpc.client.*;
 import org.tbk.lightning.cln.grpc.client.ListpaysPays.ListpaysPaysStatus;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
@@ -49,14 +49,14 @@ class RegtestLightningNetworkSetupDevelTest {
 
     @Autowired
     @Qualifier("nodeAppLightningCommonClient")
-    private LnCommonClient<NodeGrpc.NodeBlockingStub> appClnNode;
+    private LightningCommonClient<NodeGrpc.NodeBlockingStub> appClnNode;
 
     // If the app node is not directly connected to this node,
     // make sure that the channel graph is already synced, and
     // the app node is aware of a path to this node!
     @Autowired
     @Qualifier("nodeCharlieLightningCommonClient")
-    private LnCommonClient<NodeGrpc.NodeBlockingStub> userClnNode;
+    private LightningCommonClient<NodeGrpc.NodeBlockingStub> userClnNode;
 
 
     @BeforeEach

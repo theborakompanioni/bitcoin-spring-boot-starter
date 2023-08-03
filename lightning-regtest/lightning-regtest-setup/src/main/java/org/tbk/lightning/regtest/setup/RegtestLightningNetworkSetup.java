@@ -15,11 +15,11 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
-import org.tbk.lightning.client.common.core.LnCommonClient;
-import org.tbk.lightning.client.common.core.proto.ConnectRequest;
-import org.tbk.lightning.client.common.core.proto.ConnectResponse;
-import org.tbk.lightning.client.common.core.proto.GetinfoRequest;
-import org.tbk.lightning.client.common.core.proto.GetinfoResponse;
+import org.tbk.lightning.client.common.core.LightningCommonClient;
+import org.tbk.lightning.client.common.core.proto.CommonConnectRequest;
+import org.tbk.lightning.client.common.core.proto.CommonConnectResponse;
+import org.tbk.lightning.client.common.core.proto.CommonInfoRequest;
+import org.tbk.lightning.client.common.core.proto.CommonInfoResponse;
 import org.tbk.lightning.cln.grpc.client.*;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc.NodeBlockingStub;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
@@ -78,7 +78,7 @@ public class RegtestLightningNetworkSetup {
         }
     }
 
-    private List<LnCommonClient<NodeBlockingStub>> nodes() {
+    private List<LightningCommonClient<NodeBlockingStub>> nodes() {
         return channelDefinitions.stream()
                 .flatMap(it -> Stream.of(it.getOrigin(), it.getDestination()))
                 .distinct()
@@ -92,7 +92,7 @@ public class RegtestLightningNetworkSetup {
     private void setupPeers() {
         log.debug("Will now connect peers…");
 
-        List<Tuple2<LnCommonClient<NodeBlockingStub>, LnCommonClient<NodeBlockingStub>>> peers = ImmutableList.<Tuple2<LnCommonClient<NodeBlockingStub>, LnCommonClient<NodeBlockingStub>>>builder()
+        List<Tuple2<LightningCommonClient<NodeBlockingStub>, LightningCommonClient<NodeBlockingStub>>> peers = ImmutableList.<Tuple2<LightningCommonClient<NodeBlockingStub>, LightningCommonClient<NodeBlockingStub>>>builder()
                 .addAll(channelDefinitions.stream()
                         .map(it -> Tuples.of(it.getOrigin(), it.getDestination()))
                         .toList())
@@ -102,20 +102,20 @@ public class RegtestLightningNetworkSetup {
                         .toList())
                 .build();
 
-        for (Tuple2<LnCommonClient<NodeBlockingStub>, LnCommonClient<NodeBlockingStub>> entry : peers) {
+        for (Tuple2<LightningCommonClient<NodeBlockingStub>, LightningCommonClient<NodeBlockingStub>> entry : peers) {
             String originNodeName = nodeInfos.nodeAlias(entry.getT1());
             String targetNodeName = nodeInfos.nodeAlias(entry.getT2());
 
             log.debug("Will now connect {} with {}…", originNodeName, targetNodeName);
-            ConnectResponse connectResponse = connectPeers(entry.getT1(), entry.getT2());
+            CommonConnectResponse connectResponse = connectPeers(entry.getT1(), entry.getT2());
             log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
         }
 
         log.debug("Successfully finished connecting peers.");
     }
 
-    private ConnectResponse connectPeers(LnCommonClient<NodeBlockingStub> origin, LnCommonClient<NodeBlockingStub> dest) {
-        return origin.connect(ConnectRequest.newBuilder()
+    private CommonConnectResponse connectPeers(LightningCommonClient<NodeBlockingStub> origin, LightningCommonClient<NodeBlockingStub> dest) {
+        return origin.connect(CommonConnectRequest.newBuilder()
                         .setIdentityPubkey(nodeInfos.nodeIdBytes(dest))
                         .setHost(nodeInfos.nodeAlias(dest)) // this is a hack -> the alias is the container name!
                         .build())
@@ -129,20 +129,20 @@ public class RegtestLightningNetworkSetup {
     }
 
     private void printSetupSummary() {
-        Collection<LnCommonClient<NodeBlockingStub>> nodes = nodes();
+        Collection<LightningCommonClient<NodeBlockingStub>> nodes = nodes();
 
         log.info("### Network summary ###");
-        for (LnCommonClient<NodeBlockingStub> node : nodes) {
+        for (LightningCommonClient<NodeBlockingStub> node : nodes) {
             log.info("{}: {}", nodeInfos.nodeAlias(node), nodeInfos.nodeIdHex(node));
         }
 
-        for (LnCommonClient<NodeBlockingStub> node : nodes) {
+        for (LightningCommonClient<NodeBlockingStub> node : nodes) {
             printNodeSummary(node);
         }
         log.info("### end - Network summary - end ###");
     }
 
-    private void printNodeSummary(LnCommonClient<NodeBlockingStub> node) {
+    private void printNodeSummary(LightningCommonClient<NodeBlockingStub> node) {
         String nodeName = nodeInfos.nodeAlias(node);
 
         log.info("#### {} summary ####", nodeName);
@@ -174,7 +174,7 @@ public class RegtestLightningNetworkSetup {
         // even if we do not need to mine any block, mine at least one just to confirm the nodes are syncing correctly!
         int minBlocks = 1;
 
-        List<LnCommonClient<NodeBlockingStub>> nodesWithChannelsAwaitingConfirmation = channelDefinitions.stream()
+        List<LightningCommonClient<NodeBlockingStub>> nodesWithChannelsAwaitingConfirmation = channelDefinitions.stream()
                 .map(it -> List.of(it.getOrigin(), it.getDestination()))
                 .flatMap(Collection::stream)
                 .distinct()
@@ -206,14 +206,14 @@ public class RegtestLightningNetworkSetup {
                 .filter(this::needsCreation)
                 .toList();
 
-        Map<LnCommonClient<NodeBlockingStub>, Satoshi> nodesThatNeedFunding = missingChannels.stream()
+        Map<LightningCommonClient<NodeBlockingStub>, Satoshi> nodesThatNeedFunding = missingChannels.stream()
                 .collect(groupingBy(ChannelDefinition::getOrigin, mapping(
                         ChannelDefinition::getCapacity,
                         reducing(new Satoshi(0), Satoshi::plus)
                 )));
 
-        for (Map.Entry<LnCommonClient<NodeBlockingStub>, Satoshi> entry : nodesThatNeedFunding.entrySet()) {
-            LnCommonClient<NodeBlockingStub> origin = entry.getKey();
+        for (Map.Entry<LightningCommonClient<NodeBlockingStub>, Satoshi> entry : nodesThatNeedFunding.entrySet()) {
+            LightningCommonClient<NodeBlockingStub> origin = entry.getKey();
             // control at least as many utxos as the amount of channels to be opened
             int minUtxos = Math.toIntExact(missingChannels.stream()
                     .filter(it -> origin.equals(it.getOrigin()))
@@ -258,13 +258,13 @@ public class RegtestLightningNetworkSetup {
         return channelOrEmpty.isEmpty();
     }
 
-    private void fundOnchainWallet(LnCommonClient<NodeBlockingStub> target, int numBlocks) throws IOException {
+    private void fundOnchainWallet(LightningCommonClient<NodeBlockingStub> target, int numBlocks) throws IOException {
         String address = target.baseClient().newAddr(NewaddrRequest.newBuilder().build()).getBech32();
         log.debug("Will fund {}'s address {} with {} block reward(s)…", nodeInfos.nodeAlias(target), address, numBlocks);
         bitcoinClient.generateToAddress(numBlocks, Address.fromString(RegTestParams.get(), address));
     }
 
-    private void fundOnchainWallet(LnCommonClient<NodeBlockingStub> target, Satoshi minAmount, int minUtxos) throws IOException {
+    private void fundOnchainWallet(LightningCommonClient<NodeBlockingStub> target, Satoshi minAmount, int minUtxos) throws IOException {
         // TODO: For simplicity reasons, fund the wallet with ${minUtxos} blocks. _Might_ not be enough,
         //  but we should be safe as block rewards are 50 btc when the network initially starts.
         //  Refactor on demand!
@@ -295,7 +295,7 @@ public class RegtestLightningNetworkSetup {
         log.debug("Created channel with capacity {}: {} (pushed {})", definition.getCapacity(), channelId, definition.getPushAmount());
     }
 
-    private Satoshi fetchOnchainFunds(LnCommonClient<NodeBlockingStub> node) {
+    private Satoshi fetchOnchainFunds(LightningCommonClient<NodeBlockingStub> node) {
         ListfundsResponse cln1ListfundsResponse = node.baseClient().listFunds(ListfundsRequest.newBuilder()
                 .setSpent(false)
                 .build());
@@ -305,13 +305,13 @@ public class RegtestLightningNetworkSetup {
                 .sum()).truncateToSatoshi();
     }
 
-    private ListchannelsResponse listOutgoingChannels(LnCommonClient<NodeBlockingStub> client) {
+    private ListchannelsResponse listOutgoingChannels(LightningCommonClient<NodeBlockingStub> client) {
         return client.baseClient().listChannels(ListchannelsRequest.newBuilder()
                 .setSource(nodeInfos.nodeIdBytes(client))
                 .build());
     }
 
-    private ListpeerchannelsResponse listPeerChannels(LnCommonClient<NodeBlockingStub> client) {
+    private ListpeerchannelsResponse listPeerChannels(LightningCommonClient<NodeBlockingStub> client) {
         return client.baseClient().listPeerChannels(ListpeerchannelsRequest.newBuilder()
                 .build());
     }
@@ -322,7 +322,7 @@ public class RegtestLightningNetworkSetup {
 
     // wait for cln nodes to catch up to the newest block height.
     // prevents `io.grpc.StatusRuntimeException: RpcError { code: Some(304), message: "Still syncing with bitcoin network" }`
-    private static void waitForNodeBlockHeightSynchronization(BitcoinExtendedClient bitcoin, Collection<LnCommonClient<NodeBlockingStub>> lnNodes) throws IOException {
+    private static void waitForNodeBlockHeightSynchronization(BitcoinExtendedClient bitcoin, Collection<LightningCommonClient<NodeBlockingStub>> lnNodes) throws IOException {
         int currentBlockHeight = bitcoin.getBlockChainInfo().getBlocks();
 
         // does not need to be more often than every 5 seconds - cln can take quite long to synchronize
@@ -333,7 +333,7 @@ public class RegtestLightningNetworkSetup {
         lnNodes.forEach(it -> waitForNodeBlockHeightSynchronization(it, currentBlockHeight, checkInterval, timeout));
     }
 
-    private static void waitForNodeBlockHeightSynchronization(LnCommonClient<?> client,
+    private static void waitForNodeBlockHeightSynchronization(LightningCommonClient<?> client,
                                                               int minBlockHeight,
                                                               Duration checkInterval,
                                                               Duration timeout) {
@@ -341,12 +341,12 @@ public class RegtestLightningNetworkSetup {
                 .subscribeOn(Schedulers.newSingle("wait-for-block-sync"))
                 .map(it -> {
                     try {
-                        GetinfoResponse getinfo = requireNonNull(client.info(GetinfoRequest.newBuilder().build())
+                        CommonInfoResponse info = requireNonNull(client.info(CommonInfoRequest.newBuilder().build())
                                 .block(Duration.ofSeconds(30)));
-                        boolean finished = getinfo.getBlockheight() >= minBlockHeight;
+                        boolean finished = info.getBlockheight() >= minBlockHeight;
 
                         log.debug("Waiting for blockheight to reach {} on {}, currently at height {}: {}",
-                                minBlockHeight, getinfo.getAlias(), getinfo.getBlockheight(),
+                                minBlockHeight, info.getAlias(), info.getBlockheight(),
                                 finished ? "Done" : "Still waiting…");
 
                         return finished;
@@ -361,22 +361,22 @@ public class RegtestLightningNetworkSetup {
 
     private static class NodeInfos {
 
-        private final LoadingCache<LnCommonClient<?>, GetinfoResponse> initialClientInfo = CacheBuilder.newBuilder()
+        private final LoadingCache<LightningCommonClient<?>, CommonInfoResponse> initialClientInfo = CacheBuilder.newBuilder()
                 .build(new CacheLoader<>() {
                     @Override
-                    public GetinfoResponse load(@NonNull LnCommonClient<?> client) {
-                        return client.info(GetinfoRequest.newBuilder().build()).block(Duration.ofSeconds(30));
+                    public CommonInfoResponse load(@NonNull LightningCommonClient<?> client) {
+                        return client.info(CommonInfoRequest.newBuilder().build()).block(Duration.ofSeconds(30));
                     }
                 });
 
-        public GetinfoResponse infoByNodeId(ByteString nodeId) {
+        public CommonInfoResponse infoByNodeId(ByteString nodeId) {
             return initialClientInfo.asMap().values().stream()
                     .filter(it -> nodeId.equals(it.getIdentityPubkey()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Did not find node with given id"));
         }
 
-        public String nodeAlias(LnCommonClient<?> node) {
+        public String nodeAlias(LightningCommonClient<?> node) {
             return initialClientInfo.getUnchecked(node).getAlias();
         }
 
@@ -384,11 +384,11 @@ public class RegtestLightningNetworkSetup {
             return infoByNodeId(nodeId).getAlias();
         }
 
-        public ByteString nodeIdBytes(LnCommonClient<?> client) {
+        public ByteString nodeIdBytes(LightningCommonClient<?> client) {
             return initialClientInfo.getUnchecked(client).getIdentityPubkey();
         }
 
-        public String nodeIdHex(LnCommonClient<?> client) {
+        public String nodeIdHex(LightningCommonClient<?> client) {
             return hex(nodeIdBytes(client));
         }
 

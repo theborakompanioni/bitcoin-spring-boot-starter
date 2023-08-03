@@ -3,8 +3,10 @@ package org.tbk.lightning.client.common.cln;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
+import org.tbk.lightning.cln.grpc.client.GetinfoRequest;
+import org.tbk.lightning.cln.grpc.client.GetinfoResponse;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import reactor.core.publisher.Mono;
 
@@ -12,16 +14,16 @@ import java.util.HexFormat;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ClnCommonClient implements LnCommonClient<NodeGrpc.NodeBlockingStub> {
+public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlockingStub> {
 
     @NonNull
     private final NodeGrpc.NodeBlockingStub client;
 
     @Override
-    public Mono<GetinfoResponse> info(GetinfoRequest request) {
+    public Mono<CommonInfoResponse> info(CommonInfoRequest request) {
         return Mono.fromCallable(() -> {
-            org.tbk.lightning.cln.grpc.client.GetinfoResponse response = client.getinfo(org.tbk.lightning.cln.grpc.client.GetinfoRequest.newBuilder().build());
-            return GetinfoResponse.newBuilder()
+            GetinfoResponse response = client.getinfo(GetinfoRequest.newBuilder().build());
+            return CommonInfoResponse.newBuilder()
                     .setIdentityPubkey(response.getId())
                     .setAlias(response.getAlias())
                     .setColor(response.getColor())
@@ -40,7 +42,7 @@ public class ClnCommonClient implements LnCommonClient<NodeGrpc.NodeBlockingStub
     }
 
     @Override
-    public Mono<ConnectResponse> connect(ConnectRequest request) {
+    public Mono<CommonConnectResponse> connect(CommonConnectRequest request) {
         return Mono.fromCallable(() -> {
             org.tbk.lightning.cln.grpc.client.ConnectRequest.Builder builder = org.tbk.lightning.cln.grpc.client.ConnectRequest.newBuilder()
                     .setId(HexFormat.of().formatHex(request.getIdentityPubkey().toByteArray()));
@@ -56,7 +58,7 @@ public class ClnCommonClient implements LnCommonClient<NodeGrpc.NodeBlockingStub
 
             log.trace("'connectPeer' returned': {}", connectResponse);
 
-            return ConnectResponse.newBuilder().build();
+            return CommonConnectResponse.newBuilder().build();
         });
     }
 
