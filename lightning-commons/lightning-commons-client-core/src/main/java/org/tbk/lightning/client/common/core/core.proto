@@ -90,3 +90,19 @@ message CommonOpenChannelResponse {
   bytes txid = 1 [json_name = "txid"];
   uint32 outputIndex = 2 [json_name = "output_index"];
 }
+
+
+message CommonListUnspentRequest {
+}
+
+message CommonListUnspentResponse {
+  repeated UnspentOutput unspentOutputs = 1 [json_name = "unspent_outputs"];
+}
+
+message UnspentOutput {
+  bytes txid = 1 [json_name = "txid"];
+  uint32 outputIndex = 2 [json_name = "output_index"];
+  uint64 amountMsat = 3 [json_name = "amount_msat"];
+  bytes scriptPubkey = 4 [json_name = "script_pubkey"];
+}
+
