@@ -3,7 +3,7 @@ package org.tbk.lightning.regtest.setup.util;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 
 import java.time.Duration;
@@ -13,10 +13,10 @@ import java.time.Duration;
 public class RouteVerification {
 
     @NonNull
-    LnCommonClient<NodeGrpc.NodeBlockingStub> origin;
+    LightningCommonClient<NodeGrpc.NodeBlockingStub> origin;
 
     @NonNull
-    LnCommonClient<NodeGrpc.NodeBlockingStub> destination;
+    LightningCommonClient<NodeGrpc.NodeBlockingStub> destination;
 
     @Builder.Default
     Duration checkInterval = Duration.ofSeconds(2);
