@@ -61,3 +61,15 @@ message CommonCreateInvoiceResponse {
   string paymentRequest = 1 [json_name = "payment_request"];
   bytes paymentHash = 2 [json_name = "payment_hash"];
 }
+
+message CommonListPeersRequest {
+}
+
+message CommonListPeersResponse {
+  repeated Peer peers = 1 [json_name = "peers"];
+}
+
+message Peer {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  repeated string networkAddresses = 2 [json_name = "network_addresses"];
+}
