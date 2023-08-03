@@ -40,6 +40,12 @@ message CommonConnectRequest {
   optional uint32 port = 3 [json_name = "port"];
 }
 
-
 message CommonConnectResponse {
+}
+
+message CommonNewAddressRequest {
+}
+
+message CommonNewAddressResponse {
+  string address = 1 [json_name = "address"];
 }

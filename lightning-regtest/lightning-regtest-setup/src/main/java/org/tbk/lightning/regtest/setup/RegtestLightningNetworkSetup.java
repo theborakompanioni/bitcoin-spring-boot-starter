@@ -16,10 +16,7 @@ import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
-import org.tbk.lightning.client.common.core.proto.CommonConnectRequest;
-import org.tbk.lightning.client.common.core.proto.CommonConnectResponse;
-import org.tbk.lightning.client.common.core.proto.CommonInfoRequest;
-import org.tbk.lightning.client.common.core.proto.CommonInfoResponse;
+import org.tbk.lightning.client.common.core.proto.*;
 import org.tbk.lightning.cln.grpc.client.*;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc.NodeBlockingStub;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
@@ -259,7 +256,9 @@ public class RegtestLightningNetworkSetup {
     }
 
     private void fundOnchainWallet(LightningCommonClient<NodeBlockingStub> target, int numBlocks) throws IOException {
-        String address = target.baseClient().newAddr(NewaddrRequest.newBuilder().build()).getBech32();
+        String address = requireNonNull(target.newAddress(CommonNewAddressRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)))
+                .getAddress();
         log.debug("Will fund {}'s address {} with {} block reward(s)…", nodeInfos.nodeAlias(target), address, numBlocks);
         bitcoinClient.generateToAddress(numBlocks, Address.fromString(RegTestParams.get(), address));
     }
