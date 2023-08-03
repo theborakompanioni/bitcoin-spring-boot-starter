@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
-import org.tbk.lightning.cln.grpc.client.GetinfoRequest;
-import org.tbk.lightning.cln.grpc.client.GetinfoResponse;
-import org.tbk.lightning.cln.grpc.client.NodeGrpc;
+import org.tbk.lightning.cln.grpc.client.*;
 import reactor.core.publisher.Mono;
 
 import java.util.HexFormat;
@@ -59,6 +57,17 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
             log.trace("'connectPeer' returned': {}", connectResponse);
 
             return CommonConnectResponse.newBuilder().build();
+        });
+    }
+
+    @Override
+    public Mono<CommonNewAddressResponse> newAddress(CommonNewAddressRequest request) {
+        return Mono.fromCallable(() -> {
+            NewaddrResponse response = client.newAddr(NewaddrRequest.newBuilder().build());
+
+            return CommonNewAddressResponse.newBuilder()
+                    .setAddress(response.getBech32())
+                    .build();
         });
     }
 
