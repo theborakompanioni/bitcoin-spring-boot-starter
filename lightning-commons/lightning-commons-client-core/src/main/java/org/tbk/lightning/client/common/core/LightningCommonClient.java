@@ -12,6 +12,8 @@ public interface LightningCommonClient<T> {
 
     Mono<CommonCreateInvoiceResponse> createInvoice(CommonCreateInvoiceRequest request);
 
+    Mono<CommonListPeersResponse> listPeers(CommonListPeersRequest request);
+
     // TODO: consider removing access to the underlying client after all common functions are implemented
     T baseClient();
 }

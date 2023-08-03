@@ -9,10 +9,12 @@ import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.message.*;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.Chain;
+import org.tbk.lightning.client.common.core.proto.Peer;
 import org.tbk.lightning.client.common.core.proto.*;
 import reactor.core.publisher.Mono;
 
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -100,6 +102,24 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
             return CommonCreateInvoiceResponse.newBuilder()
                     .setPaymentRequest(response.getPaymentRequest())
                     .setPaymentHash(ByteString.copyFrom(response.getRHash()))
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<CommonListPeersResponse> listPeers(CommonListPeersRequest request) {
+        return Mono.fromCallable(() -> {
+            ListPeersResponse response = client.listPeers(new ListPeersRequest());
+
+            List<Peer> peers = response.getPeers().stream()
+                    .map(it -> Peer.newBuilder()
+                            .setIdentityPubkey(ByteString.fromHex(it.getPubKey()))
+                            .addNetworkAddresses(it.getAddress())
+                            .build())
+                    .toList();
+
+            return CommonListPeersResponse.newBuilder()
+                    .addAllPeers(peers)
                     .build();
         });
     }

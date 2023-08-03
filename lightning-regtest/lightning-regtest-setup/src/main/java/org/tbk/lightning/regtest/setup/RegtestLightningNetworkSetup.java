@@ -143,9 +143,10 @@ public class RegtestLightningNetworkSetup {
         String nodeName = nodeInfos.nodeAlias(node);
 
         log.info("#### {} summary ####", nodeName);
-        ListpeersResponse listpeersResponse = node.baseClient().listPeers(ListpeersRequest.newBuilder().build());
+        CommonListPeersResponse listpeersResponse = requireNonNull(node.listPeers(CommonListPeersRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)));
         log.info("  {} peers: {}", nodeName, listpeersResponse.getPeersList().stream()
-                .map(it -> nodeInfos.nodeAliasByNodeId(it.getId()))
+                .map(it -> nodeInfos.nodeAliasByNodeId(it.getIdentityPubkey()))
                 .collect(Collectors.joining(", ")));
 
         ListpeerchannelsResponse peerChannels = listPeerChannels(node);
@@ -311,8 +312,7 @@ public class RegtestLightningNetworkSetup {
     }
 
     private ListpeerchannelsResponse listPeerChannels(LightningCommonClient<NodeBlockingStub> client) {
-        return client.baseClient().listPeerChannels(ListpeerchannelsRequest.newBuilder()
-                .build());
+        return client.baseClient().listPeerChannels(ListpeerchannelsRequest.newBuilder().build());
     }
 
     private void waitForNodesBlockHeightSynchronization() throws IOException {
