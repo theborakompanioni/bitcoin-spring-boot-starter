@@ -1,4 +1,4 @@
-package org.tbk.bitcoin.regtest.example;
+package org.tbk.lightning.regtest.example;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
