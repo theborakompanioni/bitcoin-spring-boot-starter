@@ -292,12 +292,11 @@ public class RegtestLightningNetworkSetup {
     }
 
     private Satoshi fetchOnchainFunds(LightningCommonClient<NodeBlockingStub> node) {
-        ListfundsResponse cln1ListfundsResponse = node.baseClient().listFunds(ListfundsRequest.newBuilder()
-                .setSpent(false)
-                .build());
+        CommonListUnspentResponse response = requireNonNull(node.listUnspent(CommonListUnspentRequest.newBuilder().build())
+                .block(Duration.ofSeconds(30)));
 
-        return new MilliSatoshi(cln1ListfundsResponse.getOutputsList().stream()
-                .mapToLong(it -> it.getAmountMsat().getMsat())
+        return new MilliSatoshi(response.getUnspentOutputsList().stream()
+                .mapToLong(UnspentOutput::getAmountMsat)
                 .sum()).truncateToSatoshi();
     }
 
