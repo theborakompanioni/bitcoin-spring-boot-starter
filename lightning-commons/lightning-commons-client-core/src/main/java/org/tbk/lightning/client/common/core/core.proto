@@ -13,7 +13,7 @@ message GetinfoRequest {
 }
 
 message GetinfoResponse {
-  bytes identityPubkey = 1 [json_name = "identityPubkey"];
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
   optional string alias = 2 [json_name = "alias"];
   bytes color = 3 [json_name = "color"];
   uint32 num_peers = 4 [json_name = "num_peers"];
@@ -32,4 +32,14 @@ message Chain {
 
   // The network the node is on (e.g. regtest, testnet, mainnet, etc.)
   string network = 2 [json_name = "network"];
+}
+
+message ConnectRequest {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  optional string host = 2 [json_name = "host"];
+  optional uint32 port = 3 [json_name = "port"];
+}
+
+
+message ConnectResponse {
 }

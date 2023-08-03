@@ -16,6 +16,8 @@ import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.proto.ConnectRequest;
+import org.tbk.lightning.client.common.core.proto.ConnectResponse;
 import org.tbk.lightning.client.common.core.proto.GetinfoRequest;
 import org.tbk.lightning.client.common.core.proto.GetinfoResponse;
 import org.tbk.lightning.cln.grpc.client.*;
@@ -106,17 +108,18 @@ public class RegtestLightningNetworkSetup {
 
             log.debug("Will now connect {} with {}…", originNodeName, targetNodeName);
             ConnectResponse connectResponse = connectPeers(entry.getT1(), entry.getT2());
-            log.debug("{} is connected to peer {}: {}", originNodeName, targetNodeName, connectResponse.getDirection());
+            log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
         }
 
         log.debug("Successfully finished connecting peers.");
     }
 
     private ConnectResponse connectPeers(LnCommonClient<NodeBlockingStub> origin, LnCommonClient<NodeBlockingStub> dest) {
-        return origin.baseClient().connectPeer(ConnectRequest.newBuilder()
-                .setId(nodeInfos.nodeIdHex(dest))
-                .setHost(nodeInfos.nodeAlias(dest)) // this is a hack -> the alias is the container name!
-                .build());
+        return origin.connect(ConnectRequest.newBuilder()
+                        .setIdentityPubkey(nodeInfos.nodeIdBytes(dest))
+                        .setHost(nodeInfos.nodeAlias(dest)) // this is a hack -> the alias is the container name!
+                        .build())
+                .block(Duration.ofSeconds(30));
     }
 
     private void setupChannels() throws IOException {
