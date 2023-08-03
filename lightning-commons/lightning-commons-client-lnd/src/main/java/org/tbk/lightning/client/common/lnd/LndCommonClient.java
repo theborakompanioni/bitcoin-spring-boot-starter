@@ -6,11 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lightningj.lnd.proto.LightningApi;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
-import org.lightningj.lnd.wrapper.message.ConnectPeerRequest;
-import org.lightningj.lnd.wrapper.message.ConnectPeerResponse;
-import org.lightningj.lnd.wrapper.message.GetInfoRequest;
-import org.lightningj.lnd.wrapper.message.GetInfoResponse;
+import org.lightningj.lnd.wrapper.message.*;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
+import org.tbk.lightning.client.common.core.proto.Chain;
 import org.tbk.lightning.client.common.core.proto.*;
 import reactor.core.publisher.Mono;
 
@@ -68,6 +66,16 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
             log.trace("'connectPeer' returned': {}", connectPeerResponse);
 
             return CommonConnectResponse.newBuilder().build();
+        });
+    }
+
+    @Override
+    public Mono<CommonNewAddressResponse> newAddress(CommonNewAddressRequest request) {
+        return Mono.fromCallable(() -> {
+            NewAddressResponse response = client.newAddress(new NewAddressRequest());
+            return CommonNewAddressResponse.newBuilder()
+                    .setAddress(response.getAddress())
+                    .build();
         });
     }
 
