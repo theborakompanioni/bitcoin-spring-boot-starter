@@ -11,6 +11,9 @@ import reactor.core.publisher.Mono;
 import java.util.HexFormat;
 import java.util.List;
 
+/**
+ * See: <a href="https://docs.corelightning.org/reference">CLN API Docs</a>
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlockingStub> {
@@ -156,6 +159,28 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
             return CommonOpenChannelResponse.newBuilder()
                     .setTxid(response.getTxid())
                     .setOutputIndex(response.getOutnum())
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<CommonListUnspentResponse> listUnspent(CommonListUnspentRequest request) {
+        return Mono.fromCallable(() -> {
+            ListfundsResponse response = client.listFunds(ListfundsRequest.newBuilder()
+                    .setSpent(false)
+                    .build());
+
+            List<UnspentOutput> unspentOutputs = response.getOutputsList().stream()
+                    .map(it -> UnspentOutput.newBuilder()
+                            .setTxid(it.getTxid())
+                            .setOutputIndex(it.getOutput())
+                            .setAmountMsat(it.getAmountMsat().getMsat())
+                            .setScriptPubkey(it.getScriptpubkey())
+                            .build())
+                    .toList();
+
+            return CommonListUnspentResponse.newBuilder()
+                    .addAllUnspentOutputs(unspentOutputs)
                     .build();
         });
     }
