@@ -49,3 +49,15 @@ message CommonNewAddressRequest {
 message CommonNewAddressResponse {
   string address = 1 [json_name = "address"];
 }
+
+message CommonCreateInvoiceRequest {
+  optional uint64 amountMsat = 1 [json_name = "amount_msat"];
+  optional string description = 2 [json_name = "description"];
+  string label = 3 [json_name = "label"];
+  optional uint64 expiry = 4 [json_name = "expiry"];
+}
+
+message CommonCreateInvoiceResponse {
+  string paymentRequest = 1 [json_name = "payment_request"];
+  bytes paymentHash = 2 [json_name = "payment_hash"];
+}
