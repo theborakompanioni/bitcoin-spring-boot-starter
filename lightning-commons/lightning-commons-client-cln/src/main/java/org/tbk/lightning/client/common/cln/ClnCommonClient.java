@@ -9,6 +9,7 @@ import org.tbk.lightning.cln.grpc.client.*;
 import reactor.core.publisher.Mono;
 
 import java.util.HexFormat;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -98,6 +99,24 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
             return CommonCreateInvoiceResponse.newBuilder()
                     .setPaymentRequest(response.getBolt11())
                     .setPaymentHash(response.getPaymentHash())
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<CommonListPeersResponse> listPeers(CommonListPeersRequest request) {
+        return Mono.fromCallable(() -> {
+            ListpeersResponse response = client.listPeers(ListpeersRequest.newBuilder().build());
+
+            List<Peer> peers = response.getPeersList().stream()
+                    .map(it -> Peer.newBuilder()
+                            .setIdentityPubkey(it.getId())
+                            .addAllNetworkAddresses(it.getNetaddrList())
+                            .build())
+                    .toList();
+
+            return CommonListPeersResponse.newBuilder()
+                    .addAllPeers(peers)
                     .build();
         });
     }
