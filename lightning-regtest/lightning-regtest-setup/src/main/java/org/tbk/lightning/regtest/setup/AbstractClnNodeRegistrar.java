@@ -16,7 +16,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.tbk.lightning.client.common.cln.ClnCommonClient;
-import org.tbk.lightning.client.common.core.LnCommonClient;
 import org.tbk.lightning.cln.grpc.ClnRpcConfig;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 

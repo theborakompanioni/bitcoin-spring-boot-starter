@@ -10,7 +10,7 @@ import org.lightningj.lnd.wrapper.message.ConnectPeerRequest;
 import org.lightningj.lnd.wrapper.message.ConnectPeerResponse;
 import org.lightningj.lnd.wrapper.message.GetInfoRequest;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
-import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
 import reactor.core.publisher.Mono;
 
@@ -19,16 +19,16 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LndCommonClient implements LnCommonClient<SynchronousLndAPI> {
+public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI> {
 
     @NonNull
     private final SynchronousLndAPI client;
 
     @Override
-    public Mono<GetinfoResponse> info(GetinfoRequest request) {
+    public Mono<CommonInfoResponse> info(CommonInfoRequest request) {
         return Mono.fromCallable(() -> {
             GetInfoResponse response = client.getInfo(new GetInfoRequest(LightningApi.GetInfoRequest.newBuilder().build()));
-            return GetinfoResponse.newBuilder()
+            return CommonInfoResponse.newBuilder()
                     .setIdentityPubkey(ByteString.fromHex(response.getIdentityPubkey()))
                     .setAlias(response.getAlias())
                     .setColor(ByteString.fromHex(response.getColor()))
@@ -49,7 +49,7 @@ public class LndCommonClient implements LnCommonClient<SynchronousLndAPI> {
     }
 
     @Override
-    public Mono<ConnectResponse> connect(ConnectRequest request) {
+    public Mono<CommonConnectResponse> connect(CommonConnectRequest request) {
         return Mono.fromCallable(() -> {
             LightningApi.LightningAddress.Builder addressBuilder = LightningApi.LightningAddress.newBuilder()
                     .setPubkey(HexFormat.of().formatHex(request.getIdentityPubkey().toByteArray()));
@@ -67,7 +67,7 @@ public class LndCommonClient implements LnCommonClient<SynchronousLndAPI> {
 
             log.trace("'connectPeer' returned': {}", connectPeerResponse);
 
-            return ConnectResponse.newBuilder().build();
+            return CommonConnectResponse.newBuilder().build();
         });
     }
 

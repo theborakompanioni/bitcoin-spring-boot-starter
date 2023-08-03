@@ -9,10 +9,10 @@ option java_package = "org.tbk.lightning.client.common.core.proto";
 option java_outer_classname = "LnCommonClientProtos";
 option java_multiple_files = true;
 
-message GetinfoRequest {
+message CommonInfoRequest {
 }
 
-message GetinfoResponse {
+message CommonInfoResponse {
   bytes identityPubkey = 1 [json_name = "identity_pubkey"];
   optional string alias = 2 [json_name = "alias"];
   bytes color = 3 [json_name = "color"];
@@ -34,12 +34,12 @@ message Chain {
   string network = 2 [json_name = "network"];
 }
 
-message ConnectRequest {
+message CommonConnectRequest {
   bytes identityPubkey = 1 [json_name = "identity_pubkey"];
   optional string host = 2 [json_name = "host"];
   optional uint32 port = 3 [json_name = "port"];
 }
 
 
-message ConnectResponse {
+message CommonConnectResponse {
 }

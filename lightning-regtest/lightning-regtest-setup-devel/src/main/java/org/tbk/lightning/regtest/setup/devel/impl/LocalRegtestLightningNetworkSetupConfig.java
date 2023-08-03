@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.tbk.lightning.client.common.core.LnCommonClient;
+import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.ChannelDefinition;
@@ -58,11 +58,11 @@ public class LocalRegtestLightningNetworkSetupConfig {
      */
     @Bean
     RegtestLightningNetworkSetup regtestLightningNetworkSetup(BitcoinExtendedClient bitcoinRegtestClient,
-                                                              @Qualifier("nodeAppLightningCommonClient") LnCommonClient<NodeGrpc.NodeBlockingStub> appClnNode,
-                                                              @Qualifier("nodeAliceLightningCommonClient") LnCommonClient<NodeGrpc.NodeBlockingStub> aliceClnNode,
-                                                              @Qualifier("nodeBobLightningCommonClient") LnCommonClient<NodeGrpc.NodeBlockingStub> bobClnNode,
-                                                              @Qualifier("nodeCharlieLightningCommonClient") LnCommonClient<NodeGrpc.NodeBlockingStub> charlieClnNode,
-                                                              @Qualifier("nodeErinLightningCommonClient") LnCommonClient<NodeGrpc.NodeBlockingStub> erinClnNode) throws IOException {
+                                                              @Qualifier("nodeAppLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> appClnNode,
+                                                              @Qualifier("nodeAliceLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> aliceClnNode,
+                                                              @Qualifier("nodeBobLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> bobClnNode,
+                                                              @Qualifier("nodeCharlieLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> charlieClnNode,
+                                                              @Qualifier("nodeErinLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> erinClnNode) throws IOException {
         RegtestLightningNetworkSetup regtestLightningNetworkSetup = new RegtestLightningNetworkSetup(
                 bitcoinRegtestClient,
                 ImmutableList.<ChannelDefinition>builder()
