@@ -18,6 +18,7 @@ public interface LightningCommonClient<T> {
 
     Mono<CommonListUnspentResponse> listUnspent(CommonListUnspentRequest request);
 
+    Mono<CommonListPeerChannelsResponse> listPeerChannels(CommonListPeerChannelsRequest request);
 
     // TODO: consider removing access to the underlying client after all common functions are implemented
     T baseClient();

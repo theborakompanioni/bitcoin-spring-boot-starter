@@ -202,6 +202,43 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
         });
     }
 
+
+    @Override
+    public Mono<CommonListPeerChannelsResponse> listPeerChannels(CommonListPeerChannelsRequest request) {
+        return Mono.fromCallable(() -> {
+            ListChannelsResponse response = client.listChannels(new ListChannelsRequest());
+
+            List<PeerChannel> outgoingChannels = response.getChannels().stream()
+                    .map(it -> {
+                        try {
+                            long localChannelReserveMsat = it.getLocalConstraints().getChanReserveSat() * 1_000;
+                            long spendable = Math.max(it.getLocalBalance(), localChannelReserveMsat) - localChannelReserveMsat;
+
+                            long remoteChannelReserveMsat = it.getRemoteConstraints().getChanReserveSat() * 1_000;
+                            long receivable = Math.max(it.getRemoteBalance(), remoteChannelReserveMsat) - remoteChannelReserveMsat;
+
+                            return PeerChannel.newBuilder()
+                                    .setRemoteIdentityPubkey(ByteString.fromHex(it.getRemotePubkey()))
+                                    .setCapacityMsat(it.getCapacity())
+                                    .setAnnounced(!it.getPrivate())
+                                    .setActive(it.getActive())
+                                    .setInitiator(it.getInitiator())
+                                    .setLocalBalanceMsat(it.getLocalBalance())
+                                    .setEstimatedSpendableMsat(spendable)
+                                    .setEstimatedReceivableMsat(receivable)
+                                    .build();
+                        } catch (ClientSideException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .toList();
+
+            return CommonListPeerChannelsResponse.newBuilder()
+                    .addAllPeerChannels(outgoingChannels)
+                    .build();
+        });
+    }
+
     @Override
     public SynchronousLndAPI baseClient() {
         return client;

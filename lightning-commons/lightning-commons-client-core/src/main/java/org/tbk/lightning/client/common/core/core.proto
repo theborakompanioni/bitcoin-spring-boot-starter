@@ -106,3 +106,21 @@ message UnspentOutput {
   bytes scriptPubkey = 4 [json_name = "script_pubkey"];
 }
 
+
+message CommonListPeerChannelsRequest {
+}
+
+message CommonListPeerChannelsResponse {
+    repeated PeerChannel peerChannels = 1 [json_name = "peer_channels"];
+}
+
+message PeerChannel {
+  bytes remoteIdentityPubkey = 1 [json_name = "remote_identity_pubkey"];
+  uint64 capacityMsat = 2 [json_name = "capacity_msat"];
+  bool announced = 3 [json_name = "announced"];
+  bool active = 4 [json_name = "active"];
+  bool initiator = 5 [json_name = "initiator"];
+  optional uint64 localBalanceMsat = 6 [json_name = "local_balance_msat"];
+  optional uint64 estimatedSpendableMsat = 7 [json_name = "estimated_spendable_msat"];
+  optional uint64 estimatedReceivableMsat = 8 [json_name = "estimated_receivable_msat"];
+}
