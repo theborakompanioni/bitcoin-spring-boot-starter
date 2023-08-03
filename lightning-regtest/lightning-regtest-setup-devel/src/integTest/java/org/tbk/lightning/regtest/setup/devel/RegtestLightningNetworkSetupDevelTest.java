@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
+import org.tbk.lightning.client.common.core.proto.CommonCreateInvoiceRequest;
+import org.tbk.lightning.client.common.core.proto.CommonCreateInvoiceResponse;
 import org.tbk.lightning.cln.grpc.client.*;
 import org.tbk.lightning.cln.grpc.client.ListpaysPays.ListpaysPaysStatus;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
@@ -27,6 +29,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -49,20 +52,20 @@ class RegtestLightningNetworkSetupDevelTest {
 
     @Autowired
     @Qualifier("nodeAppLightningCommonClient")
-    private LightningCommonClient<NodeGrpc.NodeBlockingStub> appClnNode;
+    private LightningCommonClient<NodeGrpc.NodeBlockingStub> appNode;
 
     // If the app node is not directly connected to this node,
     // make sure that the channel graph is already synced, and
     // the app node is aware of a path to this node!
     @Autowired
     @Qualifier("nodeCharlieLightningCommonClient")
-    private LightningCommonClient<NodeGrpc.NodeBlockingStub> userClnNode;
+    private LightningCommonClient<NodeGrpc.NodeBlockingStub> userNode;
 
 
     @BeforeEach
     void setUp() {
         // verify nodes are connected via payment path
-        Assert.isTrue(routeVerifier.hasDirectRoute(appClnNode, userClnNode), "Sanity check failed: No route between nodes");
+        Assert.isTrue(routeVerifier.hasDirectRoute(appNode, userNode), "Sanity check failed: No route between nodes");
     }
 
     @Test
@@ -73,42 +76,38 @@ class RegtestLightningNetworkSetupDevelTest {
         // see: https://lightning.readthedocs.io/lightning-invoice.7.html
         String userInvoiceLabel = randomLabel();
         Duration expiry = Duration.ofSeconds(30);
-        InvoiceResponse userClnInvoiceResponse = userClnNode.baseClient().invoice(InvoiceRequest.newBuilder()
+        CommonCreateInvoiceResponse invoiceResponse = requireNonNull(userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
                 .setLabel(userInvoiceLabel)
                 .setExpiry(expiry.toSeconds())
-                .setAmountMsat(AmountOrAny.newBuilder()
-                        .setAmount(Amount.newBuilder()
-                                .setMsat(millisats.getMsat())
-                                .build())
-                        .build())
-                .build());
+                .setAmountMsat(millisats.getMsat())
+                .build()).block(Duration.ofSeconds(30)));
 
-        assertThat(userClnInvoiceResponse.getBolt11()).startsWith("lnbcrt1");
+        assertThat(invoiceResponse.getPaymentRequest()).startsWith("lnbcrt1");
 
         Stopwatch sw = Stopwatch.createStarted();
 
         // pay invoice from Node 1
         // see: https://lightning.readthedocs.io/lightning-pay.7.html
-        PayResponse cln1PayResponse = appClnNode.baseClient().pay(PayRequest.newBuilder()
-                .setBolt11(userClnInvoiceResponse.getBolt11())
+        PayResponse cln1PayResponse = appNode.baseClient().pay(PayRequest.newBuilder()
+                .setBolt11(invoiceResponse.getPaymentRequest())
                 .build());
 
         assertThat(cln1PayResponse.getAmountMsat().getMsat()).isEqualTo(millisats.getMsat());
         assertThat(cln1PayResponse.getStatus()).isEqualTo(PayResponse.PayStatus.COMPLETE);
-        assertThat(cln1PayResponse.getPaymentHash()).isEqualTo(userClnInvoiceResponse.getPaymentHash());
+        assertThat(cln1PayResponse.getPaymentHash()).isEqualTo(invoiceResponse.getPaymentHash());
 
         log.info("Payment sent on Node 1 after {}", sw);
 
         ListinvoicesRequest request = ListinvoicesRequest.newBuilder()
-                .setPaymentHash(ByteString.copyFrom(userClnInvoiceResponse.getPaymentHash().toByteArray()))
+                .setPaymentHash(ByteString.copyFrom(invoiceResponse.getPaymentHash().toByteArray()))
                 .build();
 
         ListinvoicesInvoices userClnInvoices = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
-                .flatMap(it -> Mono.fromCallable(() -> userClnNode.baseClient().listInvoices(request)))
+                .flatMap(it -> Mono.fromCallable(() -> userNode.baseClient().listInvoices(request)))
                 .filter(it -> it.getInvoicesCount() > 0)
                 .map(it -> it.getInvoicesList().stream()
                         .filter(ListinvoicesInvoices::hasBolt11)
-                        .filter(invoice -> invoice.getBolt11().equals(userClnInvoiceResponse.getBolt11()))
+                        .filter(invoice -> invoice.getBolt11().equals(invoiceResponse.getPaymentRequest()))
                         .findFirst())
                 .flatMap(Mono::justOrEmpty)
                 .filter(it -> it.getStatus() == ListinvoicesInvoices.ListinvoicesInvoicesStatus.PAID)
@@ -135,22 +134,18 @@ class RegtestLightningNetworkSetupDevelTest {
 
         // generate an non-payable invoice on Node 2
         Duration expiry = Duration.ofMinutes(60);
-        InvoiceResponse cln2InvoiceResponse = userClnNode.baseClient().invoice(InvoiceRequest.newBuilder()
+        CommonCreateInvoiceResponse invoiceResponse = requireNonNull(userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
                 .setLabel(randomLabel())
                 .setExpiry(expiry.toSeconds())
-                .setAmountMsat(AmountOrAny.newBuilder()
-                        .setAmount(Amount.newBuilder()
-                                .setMsat(nonPayableAmount.getMsat())
-                                .build())
-                        .build())
-                .build());
+                .setAmountMsat(nonPayableAmount.getMsat())
+                .build()).block(Duration.ofSeconds(30)));
 
-        String unaffordableInvoice = cln2InvoiceResponse.getBolt11();
+        String unaffordableInvoice = invoiceResponse.getPaymentRequest();
         assertThat(unaffordableInvoice).startsWith("lnbcrt1");
 
         Duration timeout = Duration.ofSeconds(5);
         try {
-            PayResponse ignoredOnPurpose = appClnNode.baseClient().pay(PayRequest.newBuilder()
+            PayResponse ignoredOnPurpose = appNode.baseClient().pay(PayRequest.newBuilder()
                     .setBolt11(unaffordableInvoice)
                     .setRetryFor(Math.toIntExact(timeout.toSeconds()))
                     .build());
@@ -166,7 +161,7 @@ class RegtestLightningNetworkSetupDevelTest {
 
         Stopwatch sw = Stopwatch.createStarted();
         ListpaysPaysStatus initialStatus = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
-                .map(it -> appClnNode.baseClient().listPays(listpaysRequest))
+                .map(it -> appNode.baseClient().listPays(listpaysRequest))
                 .doOnNext(it -> log.info("{}", it))
                 .filter(it -> it.getPaysCount() > 0)
                 .map(it -> it.getPays(0).getStatus())
@@ -179,7 +174,7 @@ class RegtestLightningNetworkSetupDevelTest {
 
         // wait till payment state is reported as FAILED
         ListpaysPaysStatus failedState = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
-                .map(it -> appClnNode.baseClient().listPays(listpaysRequest).getPays(0).getStatus())
+                .map(it -> appNode.baseClient().listPays(listpaysRequest).getPays(0).getStatus())
                 .filter(it -> it == ListpaysPaysStatus.FAILED)
                 .blockFirst(expiry.plus(Duration.ofSeconds(1)));
 
