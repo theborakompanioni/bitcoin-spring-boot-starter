@@ -16,8 +16,6 @@ import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
 import org.tbk.lightning.client.common.core.proto.CommonLookupInvoiceResponse.InvoiceStatus;
 import org.tbk.lightning.client.common.core.proto.CommonPayResponse.PaymentStatus;
-import org.tbk.lightning.cln.grpc.client.ListpaysPays.ListpaysPaysStatus;
-import org.tbk.lightning.cln.grpc.client.ListpaysRequest;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.RegtestLightningNetworkSetup;
@@ -118,10 +116,11 @@ class RegtestLightningNetworkSetupDevelTest {
     }
 
     /**
-     * **NOTE**: This test should give you a feeling about how CLN will behave in production.
+     * **NOTE**: This test should give you a feeling about how nodes (especially CLN) will behave in production.
      * <p>
      * It can take a long time till the state of a failed payment switches from PENDING to FAILED.
-     * Verify that it will indeed happen and provide the waiting time as log output. This can take SEVERAL minutes!
+     * Verify that it will indeed happen and provide the waiting time as log output.
+     * Depending on your node implementation, this can take <i>several</i> minutes!
      */
     @Test
     void itShouldVerifyFailedPaymentsCanBeListed() {
@@ -152,33 +151,31 @@ class RegtestLightningNetworkSetupDevelTest {
             // empty on purpose
         }
 
-        ListpaysRequest listpaysRequest = ListpaysRequest.newBuilder()
-                .setBolt11(unaffordableInvoice)
+        CommonLookupPaymentRequest lookupPaymentRequest = CommonLookupPaymentRequest.newBuilder()
+                .setPaymentHash(invoiceResponse.getPaymentHash())
                 .build();
 
         Stopwatch sw = Stopwatch.createStarted();
-        ListpaysPaysStatus initialStatus = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
-                .map(it -> appNode.baseClient().listPays(listpaysRequest))
+        PaymentStatus initialStatus = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
+                .flatMap(it -> appNode.lookupPayment(lookupPaymentRequest))
                 .doOnNext(it -> log.info("{}", it))
-                .filter(it -> it.getPaysCount() > 0)
-                .map(it -> it.getPays(0).getStatus())
+                .map(CommonLookupPaymentResponse::getStatus)
                 .blockFirst(Duration.ofSeconds(10));
 
         log.info("Payment was included in `listPays` response after {}", sw);
 
         // payment might at first still be reported as PENDING
-        assertThat(initialStatus).isIn(ListpaysPaysStatus.PENDING, ListpaysPaysStatus.FAILED);
+        assertThat(initialStatus).isIn(PaymentStatus.PENDING, PaymentStatus.FAILED);
 
         // wait till payment state is reported as FAILED
-        ListpaysPaysStatus failedState = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
-                .map(it -> appNode.baseClient().listPays(listpaysRequest))
-                .filter(it -> it.getPaysCount() > 0)
-                .map(it -> it.getPays(it.getPaysCount() - 1).getStatus())
-                .filter(it -> it == ListpaysPaysStatus.FAILED)
+        PaymentStatus failedState = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
+                .flatMap(it -> appNode.lookupPayment(lookupPaymentRequest))
+                .map(CommonLookupPaymentResponse::getStatus)
+                .filter(it -> it == PaymentStatus.FAILED)
                 .blockFirst(expiry.plus(Duration.ofSeconds(1)));
 
         log.info("Payment switched from PENDING to FAILED after {}", sw.stop());
 
-        assertThat(failedState).isEqualTo(ListpaysPaysStatus.FAILED);
+        assertThat(failedState).isEqualTo(PaymentStatus.FAILED);
     }
 }
