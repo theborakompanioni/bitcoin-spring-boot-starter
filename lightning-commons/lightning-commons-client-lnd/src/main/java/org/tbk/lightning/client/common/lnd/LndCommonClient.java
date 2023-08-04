@@ -5,9 +5,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lightningj.lnd.proto.LightningApi;
+import org.lightningj.lnd.router.proto.RouterOuterClass;
 import org.lightningj.lnd.wrapper.ClientSideException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.message.*;
+import org.lightningj.lnd.wrapper.router.SynchronousRouterAPI;
+import org.lightningj.lnd.wrapper.router.message.SendPaymentRequest;
 import org.lightningj.lnd.wrapper.walletkit.SynchronousWalletKitAPI;
 import org.lightningj.lnd.wrapper.walletkit.message.AddrRequest;
 import org.lightningj.lnd.wrapper.walletkit.message.AddrResponse;
@@ -20,6 +23,7 @@ import org.tbk.lightning.client.common.core.proto.*;
 import reactor.core.publisher.Mono;
 
 import java.util.HexFormat;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +38,10 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
     private final SynchronousLndAPI client;
 
     @NonNull
-    private final SynchronousWalletKitAPI walletKitAPI;
+    private final SynchronousWalletKitAPI walletKitApi;
+
+    @NonNull
+    private final SynchronousRouterAPI routerApi;
 
     @Override
     public Mono<CommonInfoResponse> info(CommonInfoRequest request) {
@@ -86,7 +93,7 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
     @Override
     public Mono<CommonNewAddressResponse> newAddress(CommonNewAddressRequest request) {
         return Mono.fromCallable(() -> {
-            AddrResponse response = walletKitAPI.nextAddr(new AddrRequest());
+            AddrResponse response = walletKitApi.nextAddr(new AddrRequest());
             return CommonNewAddressResponse.newBuilder()
                     .setAddress(response.getAddr())
                     .build();
@@ -172,7 +179,7 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
     @Override
     public Mono<CommonListUnspentResponse> listUnspent(CommonListUnspentRequest request) {
         return Mono.fromCallable(() -> {
-            ListUnspentResponse response = walletKitAPI.listUnspent(new ListUnspentRequest());
+            ListUnspentResponse response = walletKitApi.listUnspent(new ListUnspentRequest());
 
             List<UnspentOutput> unspentOutputs = response.getUtxos().stream()
                     .map(it -> {
@@ -238,7 +245,53 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
     }
 
     @Override
+    public Mono<CommonPayResponse> pay(CommonPayRequest request) {
+        return Mono.fromCallable(() -> {
+            RouterOuterClass.SendPaymentRequest.Builder builder = RouterOuterClass.SendPaymentRequest.newBuilder()
+                    .setPaymentRequest(request.getPaymentRequest());
+
+            if (request.hasAmountMsat()) {
+                builder.setAmtMsat(request.getAmountMsat());
+            }
+            if (request.hasTimeoutSeconds()) {
+                builder.setTimeoutSeconds(request.getTimeoutSeconds());
+            }
+            if (request.hasMaxFeeMsat()) {
+                builder.setFeeLimitMsat(request.getMaxFeeMsat());
+            }
+
+            Iterator<Payment> paymentIterator = routerApi.sendPaymentV2(new SendPaymentRequest(builder.build()));
+            Payment payment = last(paymentIterator);
+
+            PaymentStatus status = switch (payment.getStatus()) {
+                case SUCCEEDED -> PaymentStatus.COMPLETE;
+                case IN_FLIGHT -> PaymentStatus.PENDING;
+                case FAILED -> PaymentStatus.FAILED;
+                case UNKNOWN -> PaymentStatus.UNKNOWN;
+            };
+
+            return CommonPayResponse.newBuilder()
+                    .setPaymentHash(ByteString.fromHex(payment.getPaymentHash()))
+                    .setStatus(status)
+                    .setAmountMsat(payment.getValueMsat())
+                    .setPaymentPreimage(Optional.ofNullable(payment.getPaymentPreimage())
+                            .map(ByteString::fromHex)
+                            .orElse(ByteString.EMPTY))
+                    .build();
+        });
+    }
+
+    @Override
     public SynchronousLndAPI baseClient() {
         return client;
+    }
+
+    private static <T> T last(Iterator<T> iterator) {
+        while (true) {
+            T current = iterator.next();
+            if (!iterator.hasNext()) {
+                return current;
+            }
+        }
     }
 }
