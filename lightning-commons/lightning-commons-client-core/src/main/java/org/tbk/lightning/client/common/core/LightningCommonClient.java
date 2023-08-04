@@ -20,6 +20,8 @@ public interface LightningCommonClient<T> {
 
     Mono<CommonListPeerChannelsResponse> listPeerChannels(CommonListPeerChannelsRequest request);
 
+    Mono<CommonPayResponse> pay(CommonPayRequest request);
+
     // TODO: consider removing access to the underlying client after all common functions are implemented
     T baseClient();
 }

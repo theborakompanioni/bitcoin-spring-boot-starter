@@ -13,10 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
-import org.tbk.lightning.client.common.core.proto.CommonCreateInvoiceRequest;
-import org.tbk.lightning.client.common.core.proto.CommonCreateInvoiceResponse;
-import org.tbk.lightning.cln.grpc.client.*;
+import org.tbk.lightning.client.common.core.proto.*;
+import org.tbk.lightning.cln.grpc.client.ListinvoicesInvoices;
+import org.tbk.lightning.cln.grpc.client.ListinvoicesRequest;
 import org.tbk.lightning.cln.grpc.client.ListpaysPays.ListpaysPaysStatus;
+import org.tbk.lightning.cln.grpc.client.ListpaysRequest;
+import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.RegtestLightningNetworkSetup;
 import org.tbk.lightning.regtest.setup.devel.impl.LocalRegtestLightningNetworkSetupConfig;
@@ -86,13 +88,14 @@ class RegtestLightningNetworkSetupDevelTest {
         Stopwatch sw = Stopwatch.createStarted();
 
         // pay invoice from app node
-        PayResponse cln1PayResponse = appNode.baseClient().pay(PayRequest.newBuilder()
-                .setBolt11(invoiceResponse.getPaymentRequest())
-                .build());
+        CommonPayResponse cln1PayResponse = requireNonNull(appNode.pay(CommonPayRequest.newBuilder()
+                        .setPaymentRequest(invoiceResponse.getPaymentRequest())
+                        .build())
+                .block(Duration.ofSeconds(30)));
 
-        assertThat(cln1PayResponse.getAmountMsat().getMsat()).isEqualTo(millisats.getMsat());
-        assertThat(cln1PayResponse.getStatus()).isEqualTo(PayResponse.PayStatus.COMPLETE);
+        assertThat(cln1PayResponse.getStatus()).isEqualTo(PaymentStatus.COMPLETE);
         assertThat(cln1PayResponse.getPaymentHash()).isEqualTo(invoiceResponse.getPaymentHash());
+        assertThat(cln1PayResponse.getPaymentPreimage()).isNotIn(null, ByteString.EMPTY);
 
         log.info("Payment sent on Node 1 after {}", sw);
 
@@ -143,10 +146,11 @@ class RegtestLightningNetworkSetupDevelTest {
 
         Duration timeout = Duration.ofSeconds(5);
         try {
-            PayResponse ignoredOnPurpose = appNode.baseClient().pay(PayRequest.newBuilder()
-                    .setBolt11(unaffordableInvoice)
-                    .setRetryFor(Math.toIntExact(timeout.toSeconds()))
-                    .build());
+            CommonPayResponse ignoredOnPurpose = appNode.pay(CommonPayRequest.newBuilder()
+                            .setPaymentRequest(unaffordableInvoice)
+                            .setTimeoutSeconds(Math.toIntExact(timeout.toSeconds()))
+                            .build())
+                    .block(timeout.plus(Duration.ofSeconds(10)));
 
             Assertions.fail("Should have thrown exception");
         } catch (Exception e) {
@@ -172,7 +176,9 @@ class RegtestLightningNetworkSetupDevelTest {
 
         // wait till payment state is reported as FAILED
         ListpaysPaysStatus failedState = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
-                .map(it -> appNode.baseClient().listPays(listpaysRequest).getPays(0).getStatus())
+                .map(it -> appNode.baseClient().listPays(listpaysRequest))
+                .filter(it -> it.getPaysCount() > 0)
+                .map(it -> it.getPays(it.getPaysCount() - 1).getStatus())
                 .filter(it -> it == ListpaysPaysStatus.FAILED)
                 .blockFirst(expiry.plus(Duration.ofSeconds(1)));
 
