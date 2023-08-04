@@ -4,10 +4,13 @@ import com.google.protobuf.ByteString;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lightningj.lnd.invoices.proto.InvoicesOuterClass;
 import org.lightningj.lnd.proto.LightningApi;
 import org.lightningj.lnd.router.proto.RouterOuterClass;
 import org.lightningj.lnd.wrapper.ClientSideException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
+import org.lightningj.lnd.wrapper.invoices.SynchronousInvoicesAPI;
+import org.lightningj.lnd.wrapper.invoices.message.LookupInvoiceMsg;
 import org.lightningj.lnd.wrapper.message.*;
 import org.lightningj.lnd.wrapper.router.SynchronousRouterAPI;
 import org.lightningj.lnd.wrapper.router.message.SendPaymentRequest;
@@ -18,8 +21,10 @@ import org.lightningj.lnd.wrapper.walletkit.message.ListUnspentRequest;
 import org.lightningj.lnd.wrapper.walletkit.message.ListUnspentResponse;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.Chain;
-import org.tbk.lightning.client.common.core.proto.Peer;
 import org.tbk.lightning.client.common.core.proto.*;
+import org.tbk.lightning.client.common.core.proto.CommonLookupInvoiceResponse.InvoiceStatus;
+import org.tbk.lightning.client.common.core.proto.Peer;
+import org.tbk.lightning.client.common.core.proto.CommonPayResponse.PaymentStatus;
 import reactor.core.publisher.Mono;
 
 import java.util.HexFormat;
@@ -42,6 +47,9 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
 
     @NonNull
     private final SynchronousRouterAPI routerApi;
+
+    @NonNull
+    private final SynchronousInvoicesAPI invoicesApi;
 
     @Override
     public Mono<CommonInfoResponse> info(CommonInfoRequest request) {
@@ -277,6 +285,30 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                     .setPaymentPreimage(Optional.ofNullable(payment.getPaymentPreimage())
                             .map(ByteString::fromHex)
                             .orElse(ByteString.EMPTY))
+                    .build();
+        });
+    }
+
+
+    @Override
+    public Mono<CommonLookupInvoiceResponse> lookupInvoice(CommonLookupInvoiceRequest request) {
+        return Mono.fromCallable(() -> {
+
+            Invoice invoice = invoicesApi.lookupInvoiceV2(new LookupInvoiceMsg(InvoicesOuterClass.LookupInvoiceMsg.newBuilder()
+                    .setPaymentHash(request.getPaymentHash())
+                    .build()));
+
+            InvoiceStatus status = switch (invoice.getState()) {
+                case OPEN, ACCEPTED -> InvoiceStatus.PENDING;
+                case SETTLED -> InvoiceStatus.COMPLETE;
+                case CANCELED -> InvoiceStatus.CANCELLED;
+            };
+
+            return CommonLookupInvoiceResponse.newBuilder()
+                    .setPaymentHash(ByteString.copyFrom(invoice.getRHash()))
+                    .setPaymentPreimage(ByteString.copyFrom(invoice.getRPreimage()))
+                    .setAmountMsat(invoice.getValueMsat())
+                    .setStatus(status)
                     .build();
         });
     }

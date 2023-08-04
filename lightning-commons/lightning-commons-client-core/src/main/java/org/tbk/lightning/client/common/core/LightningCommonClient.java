@@ -22,6 +22,8 @@ public interface LightningCommonClient<T> {
 
     Mono<CommonPayResponse> pay(CommonPayRequest request);
 
+    Mono<CommonLookupInvoiceResponse> lookupInvoice(CommonLookupInvoiceRequest request);
+
     // TODO: consider removing access to the underlying client after all common functions are implemented
     T baseClient();
 }
