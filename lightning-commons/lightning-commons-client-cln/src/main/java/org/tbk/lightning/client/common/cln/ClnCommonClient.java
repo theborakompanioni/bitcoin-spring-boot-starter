@@ -201,6 +201,7 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
 
                         if (it.hasToUsMsat()) {
                             builder.setLocalBalanceMsat(it.getToUsMsat().getMsat());
+                            builder.setRemoteBalanceMsat(it.getTotalMsat().getMsat() - it.getToUsMsat().getMsat());
                         }
                         if (it.hasSpendableMsat()) {
                             builder.setEstimatedSpendableMsat(it.getSpendableMsat().getMsat());
