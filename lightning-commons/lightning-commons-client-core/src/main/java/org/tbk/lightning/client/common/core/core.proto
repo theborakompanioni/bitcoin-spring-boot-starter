@@ -142,11 +142,30 @@ message CommonPayResponse {
   PaymentStatus status = 2 [json_name = "status"];
   uint64 amountMsat = 3 [json_name = "amount_msat"];
   optional bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+
+  enum PaymentStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    COMPLETE = 2;
+    FAILED = 3;
+  }
 }
 
-enum PaymentStatus {
-  UNKNOWN = 0;
-  PENDING = 1;
-  COMPLETE = 2;
-  FAILED = 3;
+
+message CommonLookupInvoiceRequest {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+}
+
+message CommonLookupInvoiceResponse {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+  InvoiceStatus status = 2 [json_name = "status"];
+  uint64 amountMsat = 3 [json_name = "amount_msat"];
+  bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+
+  enum InvoiceStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    COMPLETE = 2;
+    CANCELLED = 3;
+  }
 }

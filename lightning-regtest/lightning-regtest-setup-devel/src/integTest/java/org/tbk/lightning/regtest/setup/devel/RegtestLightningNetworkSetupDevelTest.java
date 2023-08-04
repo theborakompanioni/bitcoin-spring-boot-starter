@@ -14,8 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
-import org.tbk.lightning.cln.grpc.client.ListinvoicesInvoices;
-import org.tbk.lightning.cln.grpc.client.ListinvoicesRequest;
+import org.tbk.lightning.client.common.core.proto.CommonLookupInvoiceResponse.InvoiceStatus;
+import org.tbk.lightning.client.common.core.proto.CommonPayResponse.PaymentStatus;
 import org.tbk.lightning.cln.grpc.client.ListpaysPays.ListpaysPaysStatus;
 import org.tbk.lightning.cln.grpc.client.ListpaysRequest;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
@@ -63,7 +63,6 @@ class RegtestLightningNetworkSetupDevelTest {
     @Qualifier("nodeCharlieLightningCommonClient")
     private LightningCommonClient<NodeGrpc.NodeBlockingStub> userNode;
 
-
     @BeforeEach
     void setUp() {
         // verify nodes are connected via payment path
@@ -99,25 +98,21 @@ class RegtestLightningNetworkSetupDevelTest {
 
         log.info("Payment sent on Node 1 after {}", sw);
 
-        ListinvoicesRequest request = ListinvoicesRequest.newBuilder()
-                .setPaymentHash(ByteString.copyFrom(invoiceResponse.getPaymentHash().toByteArray()))
+        CommonLookupInvoiceRequest request = CommonLookupInvoiceRequest.newBuilder()
+                .setPaymentHash(invoiceResponse.getPaymentHash())
                 .build();
 
-        ListinvoicesInvoices userClnInvoices = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
-                .flatMap(it -> Mono.fromCallable(() -> userNode.baseClient().listInvoices(request)))
-                .filter(it -> it.getInvoicesCount() > 0)
-                .map(it -> it.getInvoicesList().stream()
-                        .filter(ListinvoicesInvoices::hasBolt11)
-                        .filter(invoice -> invoice.getBolt11().equals(invoiceResponse.getPaymentRequest()))
-                        .findFirst())
+        CommonLookupInvoiceResponse userClnInvoice = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
+                .flatMap(it -> userNode.lookupInvoice(request))
                 .flatMap(Mono::justOrEmpty)
-                .filter(it -> it.getStatus() == ListinvoicesInvoices.ListinvoicesInvoicesStatus.PAID)
+                .filter(it -> it.getStatus() == InvoiceStatus.COMPLETE)
                 .blockFirst(expiry.plus(Duration.ofSeconds(1)));
 
-        assertThat(userClnInvoices).isNotNull();
-        assertThat(userClnInvoices.getAmountMsat()).isNotNull();
-        assertThat(userClnInvoices.getAmountMsat().getMsat()).isEqualTo(millisats.getMsat());
-        assertThat(userClnInvoices.getLabel()).isEqualTo(userInvoiceLabel);
+        assertThat(userClnInvoice).isNotNull();
+        assertThat(userClnInvoice.getPaymentHash()).isEqualTo(cln1PayResponse.getPaymentHash());
+        assertThat(userClnInvoice.getPaymentPreimage()).isEqualTo(cln1PayResponse.getPaymentPreimage());
+        assertThat(userClnInvoice.getAmountMsat()).isEqualTo(cln1PayResponse.getAmountMsat());
+        assertThat(userClnInvoice.getStatus()).isEqualTo(InvoiceStatus.COMPLETE);
 
         log.info("Payment received on Node 2 after {}", sw.stop());
     }
