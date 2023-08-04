@@ -220,6 +220,44 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
     }
 
     @Override
+    public Mono<CommonPayResponse> pay(CommonPayRequest request) {
+        return Mono.fromCallable(() -> {
+            PayRequest.Builder builder = PayRequest.newBuilder()
+                    .setBolt11(request.getPaymentRequest());
+
+            if (request.hasAmountMsat()) {
+                builder.setAmountMsat(Amount.newBuilder()
+                        .setMsat(request.getAmountMsat())
+                        .build());
+            }
+            if (request.hasTimeoutSeconds()) {
+                builder.setRetryFor(request.getTimeoutSeconds());
+            }
+            if (request.hasMaxFeeMsat()) {
+                builder.setMaxfee(Amount.newBuilder()
+                        .setMsat(request.getMaxFeeMsat())
+                        .build());
+            }
+
+            PayResponse response = client.pay(builder.build());
+
+            PaymentStatus status = switch (response.getStatus()) {
+                case COMPLETE -> PaymentStatus.COMPLETE;
+                case PENDING -> PaymentStatus.PENDING;
+                case FAILED -> PaymentStatus.FAILED;
+                case UNRECOGNIZED -> PaymentStatus.UNKNOWN;
+            };
+
+            return CommonPayResponse.newBuilder()
+                    .setPaymentHash(response.getPaymentHash())
+                    .setStatus(status)
+                    .setAmountMsat(response.getAmountMsat().getMsat())
+                    .setPaymentPreimage(response.getPaymentPreimage())
+                    .build();
+        });
+    }
+
+    @Override
     public NodeGrpc.NodeBlockingStub baseClient() {
         return client;
     }

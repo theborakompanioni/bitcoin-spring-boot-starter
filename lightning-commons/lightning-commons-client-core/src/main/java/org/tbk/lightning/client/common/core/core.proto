@@ -128,3 +128,25 @@ message PeerChannel {
   optional uint64 estimatedSpendableMsat = 8 [json_name = "estimated_spendable_msat"];
   optional uint64 estimatedReceivableMsat = 9 [json_name = "estimated_receivable_msat"];
 }
+
+
+message CommonPayRequest {
+  string paymentRequest = 1 [json_name = "payment_request"];
+  optional uint64 amountMsat = 2 [json_name = "amount_msat"];
+  optional int32 timeoutSeconds = 3 [json_name = "timeout_seconds"];
+  optional int64 maxFeeMsat = 4 [json_name = "max_fee_msat"];
+}
+
+message CommonPayResponse {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+  PaymentStatus status = 2 [json_name = "status"];
+  uint64 amountMsat = 3 [json_name = "amount_msat"];
+  optional bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+}
+
+enum PaymentStatus {
+  UNKNOWN = 0;
+  PENDING = 1;
+  COMPLETE = 2;
+  FAILED = 3;
+}
