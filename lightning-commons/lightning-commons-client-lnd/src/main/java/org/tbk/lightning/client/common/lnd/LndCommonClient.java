@@ -14,6 +14,7 @@ import org.lightningj.lnd.wrapper.invoices.message.LookupInvoiceMsg;
 import org.lightningj.lnd.wrapper.message.*;
 import org.lightningj.lnd.wrapper.router.SynchronousRouterAPI;
 import org.lightningj.lnd.wrapper.router.message.SendPaymentRequest;
+import org.lightningj.lnd.wrapper.router.message.TrackPaymentRequest;
 import org.lightningj.lnd.wrapper.walletkit.SynchronousWalletKitAPI;
 import org.lightningj.lnd.wrapper.walletkit.message.AddrRequest;
 import org.lightningj.lnd.wrapper.walletkit.message.AddrResponse;
@@ -270,6 +271,9 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
 
             Iterator<Payment> paymentIterator = routerApi.sendPaymentV2(new SendPaymentRequest(builder.build()));
             Payment payment = last(paymentIterator);
+            if (payment == null) {
+                return null;
+            }
 
             PaymentStatus status = switch (payment.getStatus()) {
                 case SUCCEEDED -> PaymentStatus.COMPLETE;
@@ -289,11 +293,43 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
         });
     }
 
+    @Override
+    public Mono<CommonLookupPaymentResponse> lookupPayment(CommonLookupPaymentRequest request) {
+        return Mono.fromCallable(() -> {
+
+            Iterator<Payment> paymentIterator = routerApi.trackPaymentV2(new TrackPaymentRequest(RouterOuterClass.TrackPaymentRequest.newBuilder()
+                    .setPaymentHash(request.getPaymentHash())
+                    .build()));
+
+            Payment payment = last(paymentIterator);
+            if (payment == null) {
+                return null;
+            }
+
+            PaymentStatus status = switch (payment.getStatus()) {
+                case UNKNOWN -> PaymentStatus.UNKNOWN;
+                case IN_FLIGHT -> PaymentStatus.PENDING;
+                case SUCCEEDED -> PaymentStatus.COMPLETE;
+                case FAILED -> PaymentStatus.FAILED;
+            };
+
+            CommonLookupPaymentResponse.Builder responseBuilder = CommonLookupPaymentResponse.newBuilder()
+                    .setPaymentHash(ByteString.fromHex(payment.getPaymentHash()))
+                    .setAmountMsat(payment.getValueMsat())
+                    .setStatus(status);
+
+            Optional.ofNullable(payment.getPaymentPreimage())
+                    .filter(it -> !it.isBlank())
+                    .map(ByteString::fromHex)
+                    .ifPresent(responseBuilder::setPaymentPreimage);
+
+            return responseBuilder.build();
+        });
+    }
 
     @Override
     public Mono<CommonLookupInvoiceResponse> lookupInvoice(CommonLookupInvoiceRequest request) {
         return Mono.fromCallable(() -> {
-
             Invoice invoice = invoicesApi.lookupInvoiceV2(new LookupInvoiceMsg(InvoicesOuterClass.LookupInvoiceMsg.newBuilder()
                     .setPaymentHash(request.getPaymentHash())
                     .build()));
