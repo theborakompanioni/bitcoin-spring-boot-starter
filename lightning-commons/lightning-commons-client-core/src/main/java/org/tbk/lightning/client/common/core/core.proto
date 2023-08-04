@@ -121,6 +121,7 @@ message PeerChannel {
   bool active = 4 [json_name = "active"];
   bool initiator = 5 [json_name = "initiator"];
   optional uint64 localBalanceMsat = 6 [json_name = "local_balance_msat"];
-  optional uint64 estimatedSpendableMsat = 7 [json_name = "estimated_spendable_msat"];
-  optional uint64 estimatedReceivableMsat = 8 [json_name = "estimated_receivable_msat"];
+  optional uint64 remoteBalanceMsat = 7 [json_name = "remote_balance_msat"];
+  optional uint64 estimatedSpendableMsat = 8 [json_name = "estimated_spendable_msat"];
+  optional uint64 estimatedReceivableMsat = 9 [json_name = "estimated_receivable_msat"];
 }
