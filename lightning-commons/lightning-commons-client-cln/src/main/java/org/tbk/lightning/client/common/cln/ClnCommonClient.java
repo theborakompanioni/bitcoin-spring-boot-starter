@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
+import org.tbk.lightning.client.common.core.proto.CommonLookupInvoiceResponse.InvoiceStatus;
+import org.tbk.lightning.client.common.core.proto.CommonPayResponse.PaymentStatus;
 import org.tbk.lightning.cln.grpc.client.*;
 import reactor.core.publisher.Mono;
 
@@ -253,6 +255,35 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
                     .setStatus(status)
                     .setAmountMsat(response.getAmountMsat().getMsat())
                     .setPaymentPreimage(response.getPaymentPreimage())
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<CommonLookupInvoiceResponse> lookupInvoice(CommonLookupInvoiceRequest request) {
+        return Mono.fromCallable(() -> {
+            ListinvoicesResponse response = client.listInvoices(ListinvoicesRequest.newBuilder()
+                    .setPaymentHash(request.getPaymentHash())
+                    .build());
+
+            if (response.getInvoicesCount() <= 0) {
+                return null; // results in empty mono
+            }
+
+            ListinvoicesInvoices invoice = response.getInvoices(response.getInvoicesCount() - 1);
+
+            InvoiceStatus status = switch (invoice.getStatus()) {
+                case UNPAID -> InvoiceStatus.PENDING;
+                case PAID -> InvoiceStatus.COMPLETE;
+                case EXPIRED -> InvoiceStatus.CANCELLED;
+                case UNRECOGNIZED -> InvoiceStatus.UNKNOWN;
+            };
+
+            return CommonLookupInvoiceResponse.newBuilder()
+                    .setPaymentHash(invoice.getPaymentHash())
+                    .setPaymentPreimage(invoice.getPaymentPreimage())
+                    .setAmountMsat(invoice.getAmountMsat().getMsat())
+                    .setStatus(status)
                     .build();
         });
     }
