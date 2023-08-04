@@ -169,3 +169,15 @@ message CommonLookupInvoiceResponse {
     CANCELLED = 3;
   }
 }
+
+
+message CommonLookupPaymentRequest {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+}
+
+message CommonLookupPaymentResponse {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+  CommonPayResponse.PaymentStatus status = 2 [json_name = "status"];
+  optional uint64 amountMsat = 3 [json_name = "amount_msat"];
+  optional bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+}
