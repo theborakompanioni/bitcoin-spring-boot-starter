@@ -45,7 +45,7 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                     .setAlias(response.getAlias())
                     .setColor(ByteString.fromHex(response.getColor()))
                     .setNumPeers(response.getNumPeers())
-                    .setNumPendingChannels(response.getNumActiveChannels())
+                    .setNumPendingChannels(response.getNumPendingChannels())
                     .setNumActiveChannels(response.getNumActiveChannels())
                     .setNumInactiveChannels(response.getNumInactiveChannels())
                     .setVersion(response.getVersion())
@@ -93,7 +93,6 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
         });
     }
 
-
     @Override
     public Mono<CommonCreateInvoiceResponse> createInvoice(CommonCreateInvoiceRequest request) {
         return Mono.fromCallable(() -> {
@@ -135,7 +134,6 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                     .build();
         });
     }
-
 
     @Override
     public Mono<CommonOpenChannelResponse> openChannel(CommonOpenChannelRequest request) {
@@ -201,7 +199,6 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                     .build();
         });
     }
-
 
     @Override
     public Mono<CommonListPeerChannelsResponse> listPeerChannels(CommonListPeerChannelsRequest request) {
