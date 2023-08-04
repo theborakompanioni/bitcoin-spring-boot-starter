@@ -43,12 +43,14 @@ message CommonConnectRequest {
 message CommonConnectResponse {
 }
 
+
 message CommonNewAddressRequest {
 }
 
 message CommonNewAddressResponse {
   string address = 1 [json_name = "address"];
 }
+
 
 message CommonCreateInvoiceRequest {
   optional uint64 amountMsat = 1 [json_name = "amount_msat"];
@@ -61,6 +63,7 @@ message CommonCreateInvoiceResponse {
   string paymentRequest = 1 [json_name = "payment_request"];
   bytes paymentHash = 2 [json_name = "payment_hash"];
 }
+
 
 message CommonListPeersRequest {
 }

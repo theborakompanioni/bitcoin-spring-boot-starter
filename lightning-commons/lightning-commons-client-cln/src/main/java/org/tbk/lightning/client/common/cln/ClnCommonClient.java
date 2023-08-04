@@ -30,7 +30,7 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
                     .setAlias(response.getAlias())
                     .setColor(response.getColor())
                     .setNumPeers(response.getNumPeers())
-                    .setNumPendingChannels(response.getNumActiveChannels())
+                    .setNumPendingChannels(response.getNumPendingChannels())
                     .setNumActiveChannels(response.getNumActiveChannels())
                     .setNumInactiveChannels(response.getNumInactiveChannels())
                     .setVersion(response.getVersion())
