@@ -224,6 +224,7 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                                     .setActive(it.getActive())
                                     .setInitiator(it.getInitiator())
                                     .setLocalBalanceMsat(it.getLocalBalance())
+                                    .setRemoteBalanceMsat(it.getRemoteBalance())
                                     .setEstimatedSpendableMsat(spendable)
                                     .setEstimatedReceivableMsat(receivable)
                                     .build();
