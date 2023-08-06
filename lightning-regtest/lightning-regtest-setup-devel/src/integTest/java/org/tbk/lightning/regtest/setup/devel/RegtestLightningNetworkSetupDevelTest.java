@@ -29,7 +29,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -54,9 +53,6 @@ class RegtestLightningNetworkSetupDevelTest {
     @Qualifier("nodeAppLightningCommonClient")
     private LightningCommonClient<NodeGrpc.NodeBlockingStub> appNode;
 
-    // If the app node is not directly connected to this node,
-    // make sure that the channel graph is already synced, and
-    // the app node is aware of a path to this node!
     @Autowired
     @Qualifier("nodeCharlieLightningCommonClient")
     private LightningCommonClient<NodeGrpc.NodeBlockingStub> userNode;
@@ -74,45 +70,48 @@ class RegtestLightningNetworkSetupDevelTest {
         // generate an invoice on user node
         String userInvoiceLabel = randomLabel();
         Duration expiry = Duration.ofSeconds(30);
-        CommonCreateInvoiceResponse invoiceResponse = requireNonNull(userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
-                .setLabel(userInvoiceLabel)
-                .setExpiry(expiry.toSeconds())
-                .setAmountMsat(millisats.getMsat())
-                .build()).block(Duration.ofSeconds(30)));
+        CommonCreateInvoiceResponse userInvoiceResponse = userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
+                        .setLabel(userInvoiceLabel)
+                        .setExpiry(expiry.toSeconds())
+                        .setAmountMsat(millisats.getMsat())
+                        .build())
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
 
-        assertThat(invoiceResponse.getPaymentRequest()).startsWith("lnbcrt1");
+        assertThat(userInvoiceResponse.getPaymentRequest()).startsWith("lnbcrt1");
 
         Stopwatch sw = Stopwatch.createStarted();
 
         // pay invoice from app node
-        CommonPayResponse cln1PayResponse = requireNonNull(appNode.pay(CommonPayRequest.newBuilder()
-                        .setPaymentRequest(invoiceResponse.getPaymentRequest())
+        CommonPayResponse appPayResponse = appNode.pay(CommonPayRequest.newBuilder()
+                        .setPaymentRequest(userInvoiceResponse.getPaymentRequest())
                         .build())
-                .block(Duration.ofSeconds(30)));
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
 
-        assertThat(cln1PayResponse.getStatus()).isEqualTo(PaymentStatus.COMPLETE);
-        assertThat(cln1PayResponse.getPaymentHash()).isEqualTo(invoiceResponse.getPaymentHash());
-        assertThat(cln1PayResponse.getPaymentPreimage()).isNotIn(null, ByteString.EMPTY);
+        assertThat(appPayResponse.getStatus()).isEqualTo(PaymentStatus.COMPLETE);
+        assertThat(appPayResponse.getPaymentHash()).isEqualTo(userInvoiceResponse.getPaymentHash());
+        assertThat(appPayResponse.getPaymentPreimage()).isNotIn(null, ByteString.EMPTY);
 
-        log.info("Payment sent on Node 1 after {}", sw);
+        log.info("Payment sent on node 'app' after {}", sw);
 
         CommonLookupInvoiceRequest request = CommonLookupInvoiceRequest.newBuilder()
-                .setPaymentHash(invoiceResponse.getPaymentHash())
+                .setPaymentHash(userInvoiceResponse.getPaymentHash())
                 .build();
 
-        CommonLookupInvoiceResponse userClnInvoice = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
+        CommonLookupInvoiceResponse userLookupInvoiceResponse = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
                 .flatMap(it -> userNode.lookupInvoice(request))
                 .flatMap(Mono::justOrEmpty)
                 .filter(it -> it.getStatus() == InvoiceStatus.COMPLETE)
                 .blockFirst(expiry.plus(Duration.ofSeconds(1)));
 
-        assertThat(userClnInvoice).isNotNull();
-        assertThat(userClnInvoice.getPaymentHash()).isEqualTo(cln1PayResponse.getPaymentHash());
-        assertThat(userClnInvoice.getPaymentPreimage()).isEqualTo(cln1PayResponse.getPaymentPreimage());
-        assertThat(userClnInvoice.getAmountMsat()).isEqualTo(cln1PayResponse.getAmountMsat());
-        assertThat(userClnInvoice.getStatus()).isEqualTo(InvoiceStatus.COMPLETE);
+        assertThat(userLookupInvoiceResponse).isNotNull();
+        assertThat(userLookupInvoiceResponse.getPaymentHash()).isEqualTo(appPayResponse.getPaymentHash());
+        assertThat(userLookupInvoiceResponse.getPaymentPreimage()).isEqualTo(appPayResponse.getPaymentPreimage());
+        assertThat(userLookupInvoiceResponse.getAmountMsat()).isEqualTo(appPayResponse.getAmountMsat());
+        assertThat(userLookupInvoiceResponse.getStatus()).isEqualTo(InvoiceStatus.COMPLETE);
 
-        log.info("Payment received on Node 2 after {}", sw.stop());
+        log.info("Payment received on node 'user' after {}", sw.stop());
     }
 
     /**
@@ -129,13 +128,15 @@ class RegtestLightningNetworkSetupDevelTest {
 
         // generate an non-payable invoice on user node
         Duration expiry = Duration.ofMinutes(60);
-        CommonCreateInvoiceResponse invoiceResponse = requireNonNull(userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
-                .setLabel(randomLabel())
-                .setExpiry(expiry.toSeconds())
-                .setAmountMsat(nonPayableAmount.getMsat())
-                .build()).block(Duration.ofSeconds(30)));
+        CommonCreateInvoiceResponse userInvoiceResponse = userNode.createInvoice(CommonCreateInvoiceRequest.newBuilder()
+                        .setLabel(randomLabel())
+                        .setExpiry(expiry.toSeconds())
+                        .setAmountMsat(nonPayableAmount.getMsat())
+                        .build())
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
 
-        String unaffordableInvoice = invoiceResponse.getPaymentRequest();
+        String unaffordableInvoice = userInvoiceResponse.getPaymentRequest();
         assertThat(unaffordableInvoice).startsWith("lnbcrt1");
 
         Duration timeout = Duration.ofSeconds(5);
@@ -152,11 +153,11 @@ class RegtestLightningNetworkSetupDevelTest {
         }
 
         CommonLookupPaymentRequest lookupPaymentRequest = CommonLookupPaymentRequest.newBuilder()
-                .setPaymentHash(invoiceResponse.getPaymentHash())
+                .setPaymentHash(userInvoiceResponse.getPaymentHash())
                 .build();
 
         Stopwatch sw = Stopwatch.createStarted();
-        PaymentStatus initialStatus = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
+        PaymentStatus appInitialPaymentStatus = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
                 .flatMap(it -> appNode.lookupPayment(lookupPaymentRequest))
                 .doOnNext(it -> log.info("{}", it))
                 .map(CommonLookupPaymentResponse::getStatus)
@@ -165,7 +166,7 @@ class RegtestLightningNetworkSetupDevelTest {
         log.info("Payment was included in `listPays` response after {}", sw);
 
         // payment might at first still be reported as PENDING
-        assertThat(initialStatus).isIn(PaymentStatus.PENDING, PaymentStatus.FAILED);
+        assertThat(appInitialPaymentStatus).isIn(PaymentStatus.PENDING, PaymentStatus.FAILED);
 
         // wait till payment state is reported as FAILED
         PaymentStatus failedState = Flux.interval(Duration.ZERO, Duration.ofSeconds(2L))
