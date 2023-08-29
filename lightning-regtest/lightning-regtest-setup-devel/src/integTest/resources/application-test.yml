@@ -1,3 +1,5 @@
+logging.level.org.tbk.lightning.regtest.setup: DEBUG
+
 spring.docker.compose:
   enabled: true
   file: ./../../docker/regtest/lightning-regtest-setup-devel/docker-compose.yml
