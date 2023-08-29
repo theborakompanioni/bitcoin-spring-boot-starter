@@ -24,18 +24,24 @@ This is node solely exists to test the specific behaviour when no route can be f
 #### CLN 5 (Erin)
 A node with a single incoming private channel from Charlie.
 
+#### LND 5 (Farid)
+A user lightning node with a direct channel to Charlie.
+
+
 ### Channels
 ```mermaid
 flowchart TB
    app -->|16_777_215 sat| alice
    app -->|8_388_607 sat| bob
    bob -->|4_194_303 sat| charlie
+   farid -->|4_194_303 sat| bob
    charlie -. private 2_097_151 sat .-> erin
    app ~~~ dave
    alice ~~~ dave
    bob ~~~ dave
    charlie ~~~ dave
    erin ~~~ dave
+   farid ~~~ dave
 ```
 
 

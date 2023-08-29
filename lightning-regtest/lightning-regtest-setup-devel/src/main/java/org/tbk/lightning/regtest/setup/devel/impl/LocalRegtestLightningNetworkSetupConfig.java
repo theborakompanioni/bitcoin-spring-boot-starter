@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.consensusj.bitcoin.jsonrpc.RpcConfig;
+import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ import java.time.Duration;
         LocalClnNodeCharlieRegistrar.class,
         LocalClnNodeDaveRegistrar.class,
         LocalClnNodeErinRegistrar.class,
+        LocalLndNodeFaridRegistrar.class,
 })
 @Configuration(proxyBeanMethods = false)
 public class LocalRegtestLightningNetworkSetupConfig {
@@ -62,7 +64,8 @@ public class LocalRegtestLightningNetworkSetupConfig {
                                                               @Qualifier("nodeAliceLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> aliceClnNode,
                                                               @Qualifier("nodeBobLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> bobClnNode,
                                                               @Qualifier("nodeCharlieLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> charlieClnNode,
-                                                              @Qualifier("nodeErinLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> erinClnNode) throws IOException {
+                                                              @Qualifier("nodeErinLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> erinClnNode,
+                                                              @Qualifier("nodeFaridLightningCommonClient") LightningCommonClient<SynchronousLndAPI> faridLndNode) throws IOException {
         RegtestLightningNetworkSetup regtestLightningNetworkSetup = new RegtestLightningNetworkSetup(
                 bitcoinRegtestClient,
                 ImmutableList.<ChannelDefinition>builder()
@@ -84,6 +87,14 @@ public class LocalRegtestLightningNetworkSetupConfig {
                         .add(ChannelDefinition.builder()
                                 .origin(bobClnNode)
                                 .destination(charlieClnNode)
+                                .capacity(LightningNetworkConstants.LARGEST_CHANNEL_SIZE.div(4))
+                                .pushAmount(LightningNetworkConstants.LARGEST_CHANNEL_SIZE_MSAT.div(4).div(4))
+                                .build())
+                        // bob -> farid
+                        // TODO: make it "farid -> bob" once the macaroon is correct in AbstractDevelLndNodeRegistrar
+                        .add(ChannelDefinition.builder()
+                                .origin(bobClnNode)
+                                .destination(faridLndNode)
                                 .capacity(LightningNetworkConstants.LARGEST_CHANNEL_SIZE.div(4))
                                 .pushAmount(LightningNetworkConstants.LARGEST_CHANNEL_SIZE_MSAT.div(4).div(4))
                                 .build())
