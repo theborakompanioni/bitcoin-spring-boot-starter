@@ -16,16 +16,15 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 public class SimpleClnRouteVerifier implements ClnRouteVerifier {
     private static final Amount MILLISATOSHI = Amount.newBuilder().setMsat(1L).build();
 
     @Override
     public boolean hasDirectRoute(LightningCommonClient<NodeGrpc.NodeBlockingStub> origin, LightningCommonClient<?> destination) {
-        CommonInfoResponse destInfo = requireNonNull(destination.info(CommonInfoRequest.newBuilder().build())
-                .block(Duration.ofSeconds(30)));
+        CommonInfoResponse destInfo = destination.info(CommonInfoRequest.newBuilder().build())
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
         return getRouteInternal(origin, destInfo.getIdentityPubkey())
                 .map(it -> it.getRouteCount() > 0)
                 .orElse(false);
@@ -33,10 +32,12 @@ public class SimpleClnRouteVerifier implements ClnRouteVerifier {
 
     @Override
     public GetrouteResponse waitForRouteOrThrow(RouteVerification routeVerification) {
-        CommonInfoResponse originInfo = requireNonNull(routeVerification.getOrigin().info(CommonInfoRequest.newBuilder().build())
-                .block(Duration.ofSeconds(30)));
-        CommonInfoResponse destInfo = requireNonNull(routeVerification.getDestination().info(CommonInfoRequest.newBuilder().build())
-                .block(Duration.ofSeconds(30)));
+        CommonInfoResponse originInfo = routeVerification.getOrigin().info(CommonInfoRequest.newBuilder().build())
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
+        CommonInfoResponse destInfo = routeVerification.getDestination().info(CommonInfoRequest.newBuilder().build())
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
 
         log.debug("Waiting for a route from {} -> {} to become available…", originInfo.getAlias(), destInfo.getAlias());
 

@@ -59,7 +59,7 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
             return CommonInfoResponse.newBuilder()
                     .setIdentityPubkey(ByteString.fromHex(response.getIdentityPubkey()))
                     .setAlias(response.getAlias())
-                    .setColor(ByteString.fromHex(response.getColor()))
+                    .setColor(ByteString.fromHex(response.getColor().replace("#", "")))
                     .setNumPeers(response.getNumPeers())
                     .setNumPendingChannels(response.getNumPendingChannels())
                     .setNumActiveChannels(response.getNumActiveChannels())
