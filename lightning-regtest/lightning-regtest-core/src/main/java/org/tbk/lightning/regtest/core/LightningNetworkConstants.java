@@ -13,6 +13,9 @@ public final class LightningNetworkConstants {
 
     public static final Duration CLN_DEFAULT_INVOICE_EXPIRY = Duration.ofSeconds(604800);
 
+    public static final int CLN_DEFAULT_REGTEST_P2P_PORT = 19_846;
+    public static final int LND_DEFAULT_REGTEST_P2P_PORT = 9_735;
+
     public static final int CLN_DEFAULT_CHANNEL_FUNDING_TX_MIN_CONFIRMATIONS = 6;
 
     private LightningNetworkConstants() {

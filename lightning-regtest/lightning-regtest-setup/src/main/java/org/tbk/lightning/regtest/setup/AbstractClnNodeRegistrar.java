@@ -7,6 +7,7 @@ import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
@@ -18,6 +19,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.tbk.lightning.client.common.cln.ClnCommonClient;
 import org.tbk.lightning.cln.grpc.ClnRpcConfig;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
+import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public abstract class AbstractClnNodeRegistrar implements ImportBeanDefinitionRegistrar {
+public abstract class AbstractClnNodeRegistrar extends AbstractNodeRegistrar {
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         String beanPrefix = requireNonNull(beanNamePrefix());
         BeanDefinitionCustomizer beanCustomizer = requireNonNull(beanDefinitionCustomizer());
 
@@ -40,7 +42,16 @@ public abstract class AbstractClnNodeRegistrar implements ImportBeanDefinitionRe
         ManagedChannel clnChannel = createClnChannel(clnChannelBuilder);
         DisposableBean clnChannelShutdownHook = createClnChannelShutdownHook(clnChannel);
         NodeGrpc.NodeBlockingStub clnNodeBlockingStub = createClnNodeBlockingStub(clnChannel);
-        ClnCommonClient clnCommonClient = new ClnCommonClient(clnNodeBlockingStub);
+        ClnCommonClient commonClient = new ClnCommonClient(clnNodeBlockingStub);
+        NodeInfo nodeInfo = NodeInfo.builder()
+                .hostname(hostname())
+                .p2pPort(p2pPort())
+                .client(commonClient)
+                .build();
+
+        AbstractBeanDefinition nodeInfoDefinition = BeanDefinitionBuilder
+                .genericBeanDefinition(NodeInfo.class, () -> nodeInfo)
+                .getBeanDefinition();
 
         AbstractBeanDefinition clnChannelShutdownHookDefinition = BeanDefinitionBuilder
                 .genericBeanDefinition(DisposableBean.class, () -> clnChannelShutdownHook)
@@ -50,26 +61,19 @@ public abstract class AbstractClnNodeRegistrar implements ImportBeanDefinitionRe
                 .genericBeanDefinition(NodeGrpc.NodeBlockingStub.class, () -> clnNodeBlockingStub)
                 .getBeanDefinition();
 
-        AbstractBeanDefinition clnNodeCommonClientDefinition = BeanDefinitionBuilder
-                .genericBeanDefinition(ClnCommonClient.class, () -> clnCommonClient)
+        AbstractBeanDefinition commonClientDefinition = BeanDefinitionBuilder
+                .genericBeanDefinition(ClnCommonClient.class, () -> commonClient)
                 .getBeanDefinition();
 
         beanCustomizer.customize(clnChannelShutdownHookDefinition);
         beanCustomizer.customize(clnNodeBlockingStubDefinition);
-        beanCustomizer.customize(clnNodeCommonClientDefinition);
+        beanCustomizer.customize(commonClientDefinition);
 
         registry.registerBeanDefinition("%sClnChannelShutdownHook".formatted(beanPrefix), clnChannelShutdownHookDefinition);
         registry.registerBeanDefinition("%sClnNodeBlockingStub".formatted(beanPrefix), clnNodeBlockingStubDefinition);
-        registry.registerBeanDefinition("%sLightningCommonClient".formatted(beanPrefix), clnNodeCommonClientDefinition);
+        registry.registerBeanDefinition("%sLightningCommonClient".formatted(beanPrefix), commonClientDefinition);
+        registry.registerBeanDefinition("%sNodeInfo".formatted(beanPrefix), nodeInfoDefinition);
     }
-
-    protected BeanDefinitionCustomizer beanDefinitionCustomizer() {
-        return bd -> {
-            // empty on purpose
-        };
-    }
-
-    abstract protected String beanNamePrefix();
 
     abstract protected ClnRpcConfig createClnRpcConfig(SslContext sslContext);
 
@@ -78,6 +82,11 @@ public abstract class AbstractClnNodeRegistrar implements ImportBeanDefinitionRe
     abstract protected byte[] clientCert();
 
     abstract protected byte[] clientKey();
+
+    @Override
+    protected Integer p2pPort() {
+        return LightningNetworkConstants.CLN_DEFAULT_REGTEST_P2P_PORT;
+    }
 
     private SslContext createSslContext(byte[] caCert, byte[] clientCert, byte[] clientKey) {
         try {

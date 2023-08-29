@@ -25,6 +25,11 @@ class LocalClnNodeAppRegistrar extends AbstractDevelClnNodeRegistrar {
     }
 
     @Override
+    protected String hostname() {
+        return "regtest_cln0_app";
+    }
+
+    @Override
     protected ClnRpcConfig createClnRpcConfig(SslContext sslContext) {
         return ClnRpcConfigImpl.builder()
                 .host("localhost")
