@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.consensusj.bitcoin.jsonrpc.RpcConfig;
-import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -91,11 +90,10 @@ public class LocalRegtestLightningNetworkSetupConfig {
                                 .capacity(LightningNetworkConstants.LARGEST_CHANNEL_SIZE.div(4))
                                 .pushAmount(LightningNetworkConstants.LARGEST_CHANNEL_SIZE_MSAT.div(4).div(4))
                                 .build())
-                        // bob -> farid
-                        // TODO: make it "farid -> bob" once the macaroon is correct in AbstractDevelLndNodeRegistrar
+                        // farid -> bob
                         .add(ChannelDefinition.builder()
-                                .origin(bobClnNode)
-                                .destination(faridLndNode)
+                                .origin(faridLndNode)
+                                .destination(bobClnNode)
                                 .capacity(LightningNetworkConstants.LARGEST_CHANNEL_SIZE.div(4))
                                 .pushAmount(LightningNetworkConstants.LARGEST_CHANNEL_SIZE_MSAT.div(4).div(4))
                                 .build())

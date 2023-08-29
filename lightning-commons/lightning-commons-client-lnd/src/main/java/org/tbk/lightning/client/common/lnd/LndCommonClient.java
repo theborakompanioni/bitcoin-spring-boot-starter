@@ -156,8 +156,8 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
         return Mono.fromCallable(() -> {
             LightningApi.OpenChannelRequest.Builder builder = LightningApi.OpenChannelRequest.newBuilder()
                     .setNodePubkey(request.getIdentityPubkey())
-                    .setLocalFundingAmount(request.getAmountMsat())
-                    .setPushSat(request.hasPushMsat() ? request.getPushMsat() : 0)
+                    .setLocalFundingAmount(request.getAmountMsat() / 1_000)
+                    .setPushSat(request.hasPushMsat() ? request.getPushMsat() / 1_000 : 0)
                     .setPrivate(request.hasAnnounce() && !request.getAnnounce());
 
             if (request.hasSatPerVbyte()) {
@@ -173,7 +173,7 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                 builder.setCloseAddress(request.getCloseToAddress());
             }
 
-            ChannelPoint response = client.openChannelSync(new OpenChannelRequest());
+            ChannelPoint response = client.openChannelSync(new OpenChannelRequest(builder.build()));
 
             byte[] txid = Optional.ofNullable(response.getFundingTxidBytes())
                     .orElseGet(() -> HexFormat.of().parseHex(response.getFundingTxidStr()));

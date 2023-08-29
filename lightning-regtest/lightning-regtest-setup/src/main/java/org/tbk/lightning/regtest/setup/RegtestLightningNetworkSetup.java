@@ -12,7 +12,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.RegTestParams;
+import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
@@ -36,10 +38,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
 @Slf4j
-@RequiredArgsConstructor
 public class RegtestLightningNetworkSetup {
 
     private static final ClnRouteVerifier routeVerifier = new SimpleClnRouteVerifier();
+
 
     private static String hex(ByteString val) {
         return HexFormat.of().formatHex(val.toByteArray());
@@ -53,6 +55,15 @@ public class RegtestLightningNetworkSetup {
 
     @NonNull
     private final List<RouteVerification> routeVerifications;
+
+    private final OnchainFaucet onchainFaucet;
+
+    public RegtestLightningNetworkSetup(@NonNull BitcoinExtendedClient bitcoinClient, @NonNull List<ChannelDefinition> channelDefinitions, @NonNull List<RouteVerification> routeVerifications) {
+        this.bitcoinClient = bitcoinClient;
+        this.channelDefinitions = channelDefinitions;
+        this.routeVerifications = routeVerifications;
+        this.onchainFaucet = new OnchainFaucet(bitcoinClient);
+    }
 
     private final NodeInfos nodeInfos = new NodeInfos();
 
@@ -68,12 +79,7 @@ public class RegtestLightningNetworkSetup {
     }
 
     private void beforeSetup() throws IOException {
-        BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
-
-        // LND nodes need at least one block to start listening on the p2p port
-        // and one additional block to prevent error "server is still in the process of starting"
-        Address bitcoinNodeAddress = bitcoinClient.getNewAddress();
-        bitcoinClient.generateToAddress(2, bitcoinNodeAddress);
+        onchainFaucet.init();
 
         waitForNodesBlockHeightSynchronization();
     }
@@ -129,12 +135,6 @@ public class RegtestLightningNetworkSetup {
                 .block(Duration.ofSeconds(30));
     }
 
-    private void setupChannels() throws IOException {
-        beforeChannelSetup();
-        setupChannels(channelDefinitions);
-        afterChannelSetup();
-    }
-
     private void printSetupSummary() {
         Collection<NodeInfo> nodes = nodes();
 
@@ -179,6 +179,16 @@ public class RegtestLightningNetworkSetup {
         });
     }
 
+    private void setupChannels() throws IOException {
+        beforeChannelSetup();
+        setupChannels(channelDefinitions);
+        afterChannelSetup();
+    }
+
+    private void beforeChannelSetup() throws IOException {
+        fundOnchainWallets(this.channelDefinitions);
+    }
+
     private void afterChannelSetup() throws IOException {
         // mine a few more blocks to confirm the channels.
         // even if we do not need to mine any block, mine at least one just to confirm the nodes are syncing correctly!
@@ -205,10 +215,6 @@ public class RegtestLightningNetworkSetup {
         waitForNodesBlockHeightSynchronization();
     }
 
-    private void beforeChannelSetup() throws IOException {
-        fundOnchainWallets(this.channelDefinitions);
-    }
-
     private void fundOnchainWallets(List<ChannelDefinition> definitions) throws IOException {
         List<ChannelDefinition> missingChannels = definitions.stream()
                 .filter(this::needsCreation)
@@ -225,15 +231,29 @@ public class RegtestLightningNetworkSetup {
             int minUtxos = Math.toIntExact(missingChannels.stream()
                     .filter(it -> entry.getKey().equals(it.getOrigin()))
                     .count());
-            fundOnchainWallet(entry.getKey(), entry.getValue(), minUtxos);
+            Satoshi feeBuffer = new Satoshi(21_000);
+            Satoshi fundingAmount = entry.getValue().plus(feeBuffer);
+            fundOnchainWallet(entry.getKey(), fundingAmount, minUtxos);
         }
 
         if (!nodesThatNeedFunding.isEmpty()) {
-            int numBlocks = 100;
-            log.debug("Will now mature coinbase outputs by mining {} more blocks…", numBlocks);
+            int numBlocks = 6;
+            log.debug("Will now mine {} more blocks to confirm the funding UTXOs…", numBlocks);
             Address bitcoinNodeAddress = bitcoinClient.getNewAddress();
             bitcoinClient.generateToAddress(numBlocks, bitcoinNodeAddress);
             waitForNodesBlockHeightSynchronization();
+        }
+    }
+
+    private void fundOnchainWallet(NodeInfo target, Satoshi minAmount, int minUtxos) throws IOException {
+        // reusing the address here is okay (not taking privacy on regtest too seriously on purpose)
+        String address = target.getClient().newAddress(CommonNewAddressRequest.newBuilder().build())
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow()
+                .getAddress();
+
+        for (int i = 0; i < minUtxos; i++) {
+            this.onchainFaucet.send(Address.fromString(RegTestParams.get(), address), minAmount);
         }
     }
 
@@ -265,22 +285,6 @@ public class RegtestLightningNetworkSetup {
         return channelOrEmpty.isEmpty();
     }
 
-    private void fundOnchainWallet(NodeInfo target, int numBlocks) throws IOException {
-        String address = target.getClient().newAddress(CommonNewAddressRequest.newBuilder().build())
-                .blockOptional(Duration.ofSeconds(30))
-                .orElseThrow()
-                .getAddress();
-        log.debug("Will fund {}'s address {} with {} block reward(s)…", nodeInfos.nodeAlias(target), address, numBlocks);
-        bitcoinClient.generateToAddress(numBlocks, Address.fromString(RegTestParams.get(), address));
-    }
-
-    private void fundOnchainWallet(NodeInfo target, Satoshi minAmount, int minUtxos) throws IOException {
-        // TODO: For simplicity reasons, fund the wallet with ${minUtxos} blocks. _Might_ not be enough,
-        //  but we should be safe as block rewards are 50 btc when the network initially starts.
-        //  Refactor on demand!
-        fundOnchainWallet(target, minUtxos);
-    }
-
     private void createChannel(ChannelDefinition definition) {
         Satoshi onchainFunds = fetchOnchainFunds(definition.getOrigin().getClient());
         log.debug("{} controls on-chain funds amounting to {}", nodeInfos.nodeAlias(definition.getOrigin()), onchainFunds);
@@ -306,7 +310,6 @@ public class RegtestLightningNetworkSetup {
         CommonListUnspentResponse response = node.listUnspent(CommonListUnspentRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
-        ;
 
         return new MilliSatoshi(response.getUnspentOutputsList().stream()
                 .mapToLong(UnspentOutput::getAmountMsat)
@@ -369,6 +372,41 @@ public class RegtestLightningNetworkSetup {
                 })
                 .filter(it -> it)
                 .blockFirst(timeout);
+    }
+
+    @RequiredArgsConstructor
+    private static class OnchainFaucet {
+
+        @NonNull
+        private final BitcoinExtendedClient bitcoinClient;
+
+        private Address address;
+
+        public void init() throws IOException {
+            BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+
+            this.address = bitcoinClient.getNewAddress();
+
+            BlockChainInfo blockChainInfo = bitcoinClient.getBlockChainInfo();
+            if (blockChainInfo.getBlocks() < 100) {
+                bitcoinClient.generateToAddress(100 - blockChainInfo.getBlocks(), this.address);
+            }
+            this.mineTillBalanceIsPresent(new Satoshi(1));
+        }
+
+        private void mineTillBalanceIsPresent(Satoshi amount) throws IOException {
+            Coin balance = bitcoinClient.getBalance();
+            while (balance.isLessThan(Coin.ofSat(amount.getSat()))) {
+                bitcoinClient.generateToAddress(1, this.address);
+                balance = bitcoinClient.getBalance();
+            }
+        }
+
+        public void send(Address address, Satoshi amount) throws IOException {
+            requireNonNull(this.address, "`address` must not be null. Forgot to call `init`?");
+            this.mineTillBalanceIsPresent(amount);
+            this.bitcoinClient.sendToAddress(address, Coin.ofSat(amount.getSat()));
+        }
     }
 
     private static class NodeInfos {
