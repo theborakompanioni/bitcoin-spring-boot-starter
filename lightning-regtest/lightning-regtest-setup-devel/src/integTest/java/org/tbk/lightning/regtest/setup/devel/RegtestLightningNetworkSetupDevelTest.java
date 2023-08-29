@@ -54,8 +54,8 @@ class RegtestLightningNetworkSetupDevelTest {
     private LightningCommonClient<NodeGrpc.NodeBlockingStub> appNode;
 
     @Autowired
-    @Qualifier("nodeCharlieLightningCommonClient")
-    private LightningCommonClient<NodeGrpc.NodeBlockingStub> userNode;
+    @Qualifier("nodeFaridLightningCommonClient")
+    private LightningCommonClient<?> userNode;
 
     @BeforeEach
     void setUp() {
