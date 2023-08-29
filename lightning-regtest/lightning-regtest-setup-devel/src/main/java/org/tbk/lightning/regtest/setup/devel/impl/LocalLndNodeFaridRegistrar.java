@@ -14,6 +14,10 @@ class LocalLndNodeFaridRegistrar extends AbstractDevelLndNodeRegistrar {
     }
 
     @Override
+    protected String hostname() {
+        return "regtest_lnd6_farid";
+    }
+    @Override
     protected LndRpcConfig createLndRpcConfig(SslContext sslContext, MacaroonContext macaroonContext) {
         return LndRpcConfigImpl.builder()
                 .host("localhost")

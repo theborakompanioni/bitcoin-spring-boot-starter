@@ -14,6 +14,7 @@ import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.ChannelDefinition;
+import org.tbk.lightning.regtest.setup.NodeInfo;
 import org.tbk.lightning.regtest.setup.RegtestLightningNetworkSetup;
 import org.tbk.lightning.regtest.setup.util.RouteVerification;
 
@@ -60,12 +61,12 @@ public class LocalRegtestLightningNetworkSetupConfig {
      */
     @Bean
     RegtestLightningNetworkSetup regtestLightningNetworkSetup(BitcoinExtendedClient bitcoinRegtestClient,
-                                                              @Qualifier("nodeAppLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> appClnNode,
-                                                              @Qualifier("nodeAliceLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> aliceClnNode,
-                                                              @Qualifier("nodeBobLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> bobClnNode,
-                                                              @Qualifier("nodeCharlieLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> charlieClnNode,
-                                                              @Qualifier("nodeErinLightningCommonClient") LightningCommonClient<NodeGrpc.NodeBlockingStub> erinClnNode,
-                                                              @Qualifier("nodeFaridLightningCommonClient") LightningCommonClient<SynchronousLndAPI> faridLndNode) throws IOException {
+                                                              @Qualifier("nodeAppNodeInfo") NodeInfo appClnNode,
+                                                              @Qualifier("nodeAliceNodeInfo") NodeInfo aliceClnNode,
+                                                              @Qualifier("nodeBobNodeInfo") NodeInfo bobClnNode,
+                                                              @Qualifier("nodeCharlieNodeInfo") NodeInfo charlieClnNode,
+                                                              @Qualifier("nodeErinNodeInfo") NodeInfo erinClnNode,
+                                                              @Qualifier("nodeFaridNodeInfo") NodeInfo faridLndNode) throws IOException {
         RegtestLightningNetworkSetup regtestLightningNetworkSetup = new RegtestLightningNetworkSetup(
                 bitcoinRegtestClient,
                 ImmutableList.<ChannelDefinition>builder()
@@ -108,10 +109,10 @@ public class LocalRegtestLightningNetworkSetupConfig {
                                 .build())
                         .build(),
                 ImmutableList.<RouteVerification>builder()
-                        // app -> charlie
+                        // app -> farid
                         .add(RouteVerification.builder()
-                                .origin(appClnNode)
-                                .destination(charlieClnNode)
+                                .origin((LightningCommonClient<NodeGrpc.NodeBlockingStub>) appClnNode.getClient())
+                                .destination(faridLndNode)
                                 .checkInterval(Duration.ofSeconds(2))
                                 .timeout(Duration.ofMinutes(5))
                                 .build())

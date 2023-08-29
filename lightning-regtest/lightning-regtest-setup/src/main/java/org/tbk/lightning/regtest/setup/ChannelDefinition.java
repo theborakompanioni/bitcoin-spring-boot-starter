@@ -17,10 +17,10 @@ import java.util.Objects;
 public class ChannelDefinition {
 
     @NonNull
-    LightningCommonClient<?> origin;
+    NodeInfo origin;
 
     @NonNull
-    LightningCommonClient<?> destination;
+    NodeInfo destination;
 
     @NonNull
     Satoshi capacity;

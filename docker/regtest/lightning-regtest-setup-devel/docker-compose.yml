@@ -85,7 +85,7 @@ services:
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
-      - '--alias=regtest_cln0_app' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=cln0_app'
       - '--wallet=postgres://regtest_cln0_app:regtest_cln0_app@regtest_db:5432/regtest_cln0_app'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
@@ -121,7 +121,7 @@ services:
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
-      - '--alias=regtest_cln1_alice' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=cln1_alice'
       - '--wallet=postgres://regtest_cln1_alice:regtest_cln1_alice@regtest_db:5432/regtest_cln1_alice'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
@@ -157,7 +157,7 @@ services:
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
-      - '--alias=regtest_cln2_bob' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=cln2_bob'
       - '--wallet=postgres://regtest_cln2_bob:regtest_cln2_bob@regtest_db:5432/regtest_cln2_bob'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
@@ -193,7 +193,7 @@ services:
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
-      - '--alias=regtest_cln3_charlie' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=cln3_charlie'
       - '--wallet=postgres://regtest_cln3_charlie:regtest_cln3_charlie@regtest_db:5432/regtest_cln3_charlie'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
@@ -229,7 +229,7 @@ services:
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
-      - '--alias=regtest_cln4_dave' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=cln4_dave'
       - '--wallet=postgres://regtest_cln4_dave:regtest_cln4_dave@regtest_db:5432/regtest_cln4_dave'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
@@ -265,7 +265,7 @@ services:
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
-      - '--alias=regtest_cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
       - '--wallet=postgres://regtest_cln5_erin:regtest_cln5_erin@regtest_db:5432/regtest_cln5_erin'
       - '--bitcoin-rpcconnect=bitcoind_regtest'
       - '--bitcoin-rpcport=18443'
@@ -299,7 +299,7 @@ services:
       postgres:
         condition: service_started # service_healthy
     command:
-      - '--alias=regtest_lnd6_farid' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--alias=lnd6_farid'
       - '--bitcoin.active'
       - '--bitcoin.regtest'
       - '--bitcoin.node=bitcoind'
@@ -313,8 +313,6 @@ services:
       - '--db.postgres.dsn=postgresql://regtest_lnd6_farid:regtest_lnd6_farid@regtest_db:5432/regtest_lnd6_farid'
       - '--db.postgres.timeout=0'
       - '--noseedbackup'
-      # TODO: `19846` is the cln default port - use it for now BUT make it configurable in ChannelDefinition!
-      - '--listen=regtest_lnd6_farid:19846'
       - '--restlisten=regtest_lnd6_farid:8080'
       - '--rpclisten=regtest_lnd6_farid:10009'
       - '--tlscertduration=876000h'
