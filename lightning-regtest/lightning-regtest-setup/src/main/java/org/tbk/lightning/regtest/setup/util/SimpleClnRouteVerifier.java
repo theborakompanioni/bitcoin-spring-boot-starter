@@ -35,7 +35,7 @@ public class SimpleClnRouteVerifier implements ClnRouteVerifier {
         CommonInfoResponse originInfo = routeVerification.getOrigin().info(CommonInfoRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
-        CommonInfoResponse destInfo = routeVerification.getDestination().info(CommonInfoRequest.newBuilder().build())
+        CommonInfoResponse destInfo = routeVerification.getDestination().getClient().info(CommonInfoRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
 
