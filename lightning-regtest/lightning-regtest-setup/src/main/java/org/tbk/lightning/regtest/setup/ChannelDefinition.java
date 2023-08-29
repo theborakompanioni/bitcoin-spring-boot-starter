@@ -14,14 +14,13 @@ import java.util.Objects;
 
 @Value
 @Builder
-public
-class ChannelDefinition {
+public class ChannelDefinition {
 
     @NonNull
-    LightningCommonClient<NodeGrpc.NodeBlockingStub> origin;
+    LightningCommonClient<?> origin;
 
     @NonNull
-    LightningCommonClient<NodeGrpc.NodeBlockingStub> destination;
+    LightningCommonClient<?> destination;
 
     @NonNull
     Satoshi capacity;
