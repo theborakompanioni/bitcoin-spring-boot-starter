@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Value;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
+import org.tbk.lightning.regtest.setup.NodeInfo;
 
 import java.time.Duration;
 
@@ -12,11 +13,12 @@ import java.time.Duration;
 @Builder
 public class RouteVerification {
 
+    // TODO: change type to `NodeInfo`
     @NonNull
     LightningCommonClient<NodeGrpc.NodeBlockingStub> origin;
 
     @NonNull
-    LightningCommonClient<NodeGrpc.NodeBlockingStub> destination;
+    NodeInfo destination;
 
     @Builder.Default
     Duration checkInterval = Duration.ofSeconds(2);
