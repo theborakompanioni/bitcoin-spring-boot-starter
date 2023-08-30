@@ -119,8 +119,16 @@ public class RegtestLightningNetworkSetup {
             String targetNodeName = nodeInfos.nodeAlias(entry.getT2());
 
             log.debug("Will now connect {} with {}…", originNodeName, targetNodeName);
-            CommonConnectResponse ignoredOnPurpose = connectPeers(entry.getT1(), entry.getT2());
-            log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
+            try {
+                CommonConnectResponse ignoredOnPurpose = connectPeers(entry.getT1(), entry.getT2());
+                log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
+            } catch (Exception e) {
+                // LND error if peer is already connected `UNKNOWN: already connected to peer: ${pubkey}@${ip}:${port}`
+                boolean isAlreadyConnected = e.getMessage().contains("already connected to peer");
+                if (!isAlreadyConnected) {
+                    throw e;
+                }
+            }
         }
 
         log.debug("Successfully finished connecting peers.");
@@ -132,7 +140,8 @@ public class RegtestLightningNetworkSetup {
                         .setHost(dest.getHostname())
                         .setPort(dest.getP2pPort())
                         .build())
-                .block(Duration.ofSeconds(30));
+                .blockOptional(Duration.ofSeconds(30))
+                .orElseThrow();
     }
 
     private void printSetupSummary() {
