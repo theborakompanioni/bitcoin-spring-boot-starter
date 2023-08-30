@@ -22,8 +22,7 @@ import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 })
 public class LocalTestUserAliceClnNodeApi extends AbstractClnNodeApi {
 
-    public LocalTestUserAliceClnNodeApi(@Qualifier("nodeAliceClnNodeBlockingStub")
-                                               NodeGrpc.NodeBlockingStub node) {
+    public LocalTestUserAliceClnNodeApi(@Qualifier("nodeAliceClnNodeBlockingStub") NodeGrpc.NodeBlockingStub node) {
         super(node);
     }
 }
