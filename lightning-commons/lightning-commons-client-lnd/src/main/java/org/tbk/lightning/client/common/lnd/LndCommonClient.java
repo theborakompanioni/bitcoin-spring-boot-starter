@@ -328,6 +328,36 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
     }
 
     @Override
+    public Mono<CommonQueryRouteResponse> queryRoutes(CommonQueryRouteRequest request) {
+        return Mono.fromCallable(() -> {
+            LightningApi.QueryRoutesRequest.Builder builder = LightningApi.QueryRoutesRequest.newBuilder()
+                    .setPubKey(HexFormat.of().formatHex(request.getRemoteIdentityPubkey().toByteArray()))
+                    .setAmtMsat(request.getAmountMsat());
+
+            QueryRoutesResponse queryRoutesResponse = client.queryRoutes(new QueryRoutesRequest(builder.build()));
+
+            return CommonQueryRouteResponse.newBuilder()
+                    .addAllRoutes(queryRoutesResponse.getRoutes().stream()
+                            .map(it -> {
+                                try {
+                                    return CommonQueryRouteResponse.Route.newBuilder()
+                                            .addAllHops(it.getHops().stream()
+                                                    .map(hop -> CommonQueryRouteResponse.Hop.newBuilder()
+                                                            .setIdentityPubkey(ByteString.fromHex(hop.getPubKey()))
+                                                            .setAmountMsat(hop.getAmtToForwardMsat())
+                                                            .build())
+                                                    .toList())
+                                            .build();
+                                } catch (ClientSideException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            })
+                            .toList())
+                    .build();
+        });
+    }
+
+    @Override
     public Mono<CommonLookupInvoiceResponse> lookupInvoice(CommonLookupInvoiceRequest request) {
         return Mono.fromCallable(() -> {
             Invoice invoice = invoicesApi.lookupInvoiceV2(new LookupInvoiceMsg(InvoicesOuterClass.LookupInvoiceMsg.newBuilder()
