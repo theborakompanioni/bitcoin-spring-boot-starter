@@ -20,9 +20,9 @@ import org.tbk.bitcoin.regtest.BitcoindRegtestTestHelper;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
-import org.tbk.lightning.regtest.setup.util.ClnRouteVerifier;
+import org.tbk.lightning.regtest.setup.util.PaymentRouteVerifier;
 import org.tbk.lightning.regtest.setup.util.RouteVerification;
-import org.tbk.lightning.regtest.setup.util.SimpleClnRouteVerifier;
+import org.tbk.lightning.regtest.setup.util.SimplePaymentRouteVerifier;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.*;
 @Slf4j
 public class RegtestLightningNetworkSetup {
 
-    private static final ClnRouteVerifier routeVerifier = new SimpleClnRouteVerifier();
+    private static final PaymentRouteVerifier routeVerifier = new SimplePaymentRouteVerifier();
 
 
     private static String hex(ByteString val) {

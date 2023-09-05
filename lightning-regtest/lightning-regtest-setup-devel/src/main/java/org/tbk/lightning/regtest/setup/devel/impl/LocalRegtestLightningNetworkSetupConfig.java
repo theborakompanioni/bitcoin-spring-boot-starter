@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.ChannelDefinition;
@@ -109,8 +108,15 @@ public class LocalRegtestLightningNetworkSetupConfig {
                 ImmutableList.<RouteVerification>builder()
                         // app -> farid
                         .add(RouteVerification.builder()
-                                .origin((LightningCommonClient<NodeGrpc.NodeBlockingStub>) appClnNode.getClient())
+                                .origin(appClnNode)
                                 .destination(faridLndNode)
+                                .checkInterval(Duration.ofSeconds(2))
+                                .timeout(Duration.ofMinutes(5))
+                                .build())
+                        // farid -> alice
+                        .add(RouteVerification.builder()
+                                .origin(faridLndNode)
+                                .destination(aliceClnNode)
                                 .checkInterval(Duration.ofSeconds(2))
                                 .timeout(Duration.ofMinutes(5))
                                 .build())

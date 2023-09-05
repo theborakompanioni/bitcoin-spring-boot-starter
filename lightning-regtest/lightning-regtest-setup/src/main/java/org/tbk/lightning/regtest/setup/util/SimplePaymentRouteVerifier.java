@@ -2,39 +2,42 @@ package org.tbk.lightning.regtest.setup.util;
 
 import com.google.common.base.Stopwatch;
 import com.google.protobuf.ByteString;
+import fr.acinq.bitcoin.Satoshi;
+import fr.acinq.lightning.MilliSatoshi;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.CommonInfoRequest;
 import org.tbk.lightning.client.common.core.proto.CommonInfoResponse;
-import org.tbk.lightning.cln.grpc.client.Amount;
-import org.tbk.lightning.cln.grpc.client.GetrouteRequest;
-import org.tbk.lightning.cln.grpc.client.GetrouteResponse;
-import org.tbk.lightning.cln.grpc.client.NodeGrpc;
+import org.tbk.lightning.client.common.core.proto.CommonQueryRouteRequest;
+import org.tbk.lightning.client.common.core.proto.CommonQueryRouteResponse;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class SimpleClnRouteVerifier implements ClnRouteVerifier {
-    private static final Amount MILLISATOSHI = Amount.newBuilder().setMsat(1L).build();
+public class SimplePaymentRouteVerifier implements PaymentRouteVerifier {
 
     @Override
-    public boolean hasDirectRoute(LightningCommonClient<NodeGrpc.NodeBlockingStub> origin, LightningCommonClient<?> destination) {
+    public boolean hasDirectRoute(LightningCommonClient<?> origin, LightningCommonClient<?> destination) {
         CommonInfoResponse destInfo = destination.info(CommonInfoRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
+
         return getRouteInternal(origin, destInfo.getIdentityPubkey())
-                .map(it -> it.getRouteCount() > 0)
+                .map(it -> it.getRoutesCount() > 0)
+                .onErrorComplete()
+                .blockOptional(Duration.ofSeconds(30L))
                 .orElse(false);
     }
 
     @Override
-    public GetrouteResponse waitForRouteOrThrow(RouteVerification routeVerification) {
-        CommonInfoResponse originInfo = routeVerification.getOrigin().info(CommonInfoRequest.newBuilder().build())
+    public CommonQueryRouteResponse waitForRouteOrThrow(RouteVerification routeVerification) {
+        CommonInfoResponse originInfo = routeVerification.getOrigin().getClient().info(CommonInfoRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
+
         CommonInfoResponse destInfo = routeVerification.getDestination().getClient().info(CommonInfoRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
@@ -43,11 +46,10 @@ public class SimpleClnRouteVerifier implements ClnRouteVerifier {
 
         AtomicInteger tries = new AtomicInteger();
         Stopwatch sw = Stopwatch.createStarted();
-        GetrouteResponse route = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
+        CommonQueryRouteResponse route = Flux.interval(Duration.ZERO, Duration.ofSeconds(1L))
                 .doOnNext(it -> tries.incrementAndGet())
-                .map(it -> getRouteInternal(routeVerification.getOrigin(), destInfo.getIdentityPubkey()))
-                .mapNotNull(it -> it.orElse(null))
-                .filter(it -> it.getRouteCount() > 0)
+                .flatMap(it -> getRouteInternal(routeVerification.getOrigin().getClient(), destInfo.getIdentityPubkey()).onErrorComplete())
+                .filter(it -> it.getRoutesCount() > 0)
                 .blockFirst(routeVerification.getTimeout());
 
         if (route != null) {
@@ -62,18 +64,13 @@ public class SimpleClnRouteVerifier implements ClnRouteVerifier {
         return route;
     }
 
-    private Optional<GetrouteResponse> getRouteInternal(LightningCommonClient<NodeGrpc.NodeBlockingStub> origin, ByteString destId) {
-        try {
-            // see https://lightning.readthedocs.io/lightning-getroute.7.html
-            return Optional.ofNullable(origin.baseClient().getRoute(GetrouteRequest.newBuilder()
-                    .setAmountMsat(MILLISATOSHI)
-                    .setId(destId)
-                    .setRiskfactor(0) // we are just interested if a route exists
-                    .setFuzzpercent(0)
-                    .build()));
-        } catch (Exception e) {
-            log.trace("Checking route - ignore exception on purpose: {}", e.getMessage());
-            return Optional.empty();
-        }
+    private Mono<CommonQueryRouteResponse> getRouteInternal(LightningCommonClient<?> origin, ByteString destId) {
+        // take 1 sat instead of 1 msat, as though CLN would allow it, it does not seem to work for LND nodes
+        MilliSatoshi amount = new MilliSatoshi(new Satoshi(1));
+
+        return origin.queryRoutes(CommonQueryRouteRequest.newBuilder()
+                .setAmountMsat(amount.getMsat())
+                .setRemoteIdentityPubkey(destId)
+                .build());
     }
 }

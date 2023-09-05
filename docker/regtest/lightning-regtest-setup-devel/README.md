@@ -24,7 +24,7 @@ This is node solely exists to test the specific behaviour when no route can be f
 #### CLN 5 (Erin)
 A node with a single incoming private channel from Charlie.
 
-#### LND 5 (Farid)
+#### LND 6 (Farid)
 A user lightning node with a direct channel to Charlie.
 
 
