@@ -326,6 +326,36 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
     }
 
     @Override
+    public Mono<CommonQueryRouteResponse> queryRoutes(CommonQueryRouteRequest request) {
+        return Mono.fromCallable(() -> {
+            GetrouteResponse response = this.client.getRoute(GetrouteRequest.newBuilder()
+                    .setAmountMsat(Amount.newBuilder().setMsat(request.getAmountMsat()).build())
+                    .setId(request.getRemoteIdentityPubkey())
+                    .setRiskfactor(0) // we are just interested if a route exists
+                    .setFuzzpercent(0)
+                    .build());
+
+            if (response.getRouteList().isEmpty()) {
+                return CommonQueryRouteResponse.newBuilder().build();
+            }
+
+            // cln `getroute` response represents a single route
+            CommonQueryRouteResponse.Route route = CommonQueryRouteResponse.Route.newBuilder()
+                    .addAllHops(response.getRouteList().stream()
+                            .map(hop -> CommonQueryRouteResponse.Hop.newBuilder()
+                                    .setIdentityPubkey(hop.getId())
+                                    .setAmountMsat(hop.getAmountMsat().getMsat())
+                                    .build())
+                            .toList())
+                    .build();
+
+            return CommonQueryRouteResponse.newBuilder()
+                    .addRoutes(route)
+                    .build();
+        });
+    }
+
+    @Override
     public NodeGrpc.NodeBlockingStub baseClient() {
         return client;
     }

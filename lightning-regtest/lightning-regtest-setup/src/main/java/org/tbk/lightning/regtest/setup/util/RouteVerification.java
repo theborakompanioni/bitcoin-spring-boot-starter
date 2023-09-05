@@ -13,9 +13,8 @@ import java.time.Duration;
 @Builder
 public class RouteVerification {
 
-    // TODO: change type to `NodeInfo`
     @NonNull
-    LightningCommonClient<NodeGrpc.NodeBlockingStub> origin;
+    NodeInfo origin;
 
     @NonNull
     NodeInfo destination;
