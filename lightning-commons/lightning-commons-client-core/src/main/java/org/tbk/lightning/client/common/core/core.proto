@@ -181,3 +181,23 @@ message CommonLookupPaymentResponse {
   optional uint64 amountMsat = 3 [json_name = "amount_msat"];
   optional bytes paymentPreimage = 4 [json_name = "payment_preimage"];
 }
+
+
+message CommonQueryRouteRequest {
+  bytes remoteIdentityPubkey = 1 [json_name = "remote_identity_pubkey"];
+  uint64 amountMsat = 2 [json_name = "amount_msat"];
+}
+
+message CommonQueryRouteResponse {
+  repeated Route routes = 1 [json_name = "routes"];
+
+  message Route {
+    repeated Hop hops = 1 [json_name = "hops"];
+  }
+
+  message Hop {
+    bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+    // uint64 shortChannelId = 2 [json_name = "short_channel_id"];
+    uint64 amountMsat = 2 [json_name = "amount_msat"];
+  }
+}

@@ -20,8 +20,8 @@ import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.RegtestLightningNetworkSetup;
 import org.tbk.lightning.regtest.setup.devel.impl.LocalRegtestLightningNetworkSetupConfig;
-import org.tbk.lightning.regtest.setup.util.ClnRouteVerifier;
-import org.tbk.lightning.regtest.setup.util.SimpleClnRouteVerifier;
+import org.tbk.lightning.regtest.setup.util.PaymentRouteVerifier;
+import org.tbk.lightning.regtest.setup.util.SimplePaymentRouteVerifier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -43,7 +43,7 @@ class RegtestLightningNetworkSetupDevelTest {
         return LocalDateTime.now(ZoneOffset.UTC).toString();
     }
 
-    private static final ClnRouteVerifier routeVerifier = new SimpleClnRouteVerifier();
+    private static final PaymentRouteVerifier routeVerifier = new SimplePaymentRouteVerifier();
 
     // autowiring the setup verifies it finished without errors
     @Autowired
@@ -51,7 +51,7 @@ class RegtestLightningNetworkSetupDevelTest {
 
     @Autowired
     @Qualifier("nodeAppLightningCommonClient")
-    private LightningCommonClient<NodeGrpc.NodeBlockingStub> appNode;
+    private LightningCommonClient<?> appNode;
 
     @Autowired
     @Qualifier("nodeFaridLightningCommonClient")
