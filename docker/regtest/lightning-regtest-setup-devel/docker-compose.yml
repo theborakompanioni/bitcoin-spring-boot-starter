@@ -65,7 +65,7 @@ services:
 
   cln0_app:
     container_name: regtest_cln0_app
-    image: polarlightning/clightning:23.05.2
+    image: polarlightning/clightning:23.08
     restart: always
     depends_on:
       bitcoind_regtest:
@@ -111,7 +111,7 @@ services:
 
   cln1_alice:
     container_name: regtest_cln1_alice
-    image: polarlightning/clightning:23.05.2
+    image: polarlightning/clightning:23.08
     restart: always
     depends_on:
       bitcoind_regtest:
@@ -147,7 +147,7 @@ services:
 
   cln2_bob:
     container_name: regtest_cln2_bob
-    image: polarlightning/clightning:23.05.2
+    image: polarlightning/clightning:23.08
     restart: always
     depends_on:
       bitcoind_regtest:
@@ -183,7 +183,7 @@ services:
 
   cln3_charlie:
     container_name: regtest_cln3_charlie
-    image: polarlightning/clightning:23.05.2
+    image: polarlightning/clightning:23.08
     restart: always
     depends_on:
       bitcoind_regtest:
@@ -219,7 +219,7 @@ services:
 
   cln4_dave:
     container_name: regtest_cln4_dave
-    image: polarlightning/clightning:23.05.2
+    image: polarlightning/clightning:23.08
     restart: always
     depends_on:
       bitcoind_regtest:
@@ -255,7 +255,7 @@ services:
 
   cln5_erin:
     container_name: regtest_cln5_erin
-    image: polarlightning/clightning:23.05.2
+    image: polarlightning/clightning:23.08
     restart: always
     depends_on:
       bitcoind_regtest:
