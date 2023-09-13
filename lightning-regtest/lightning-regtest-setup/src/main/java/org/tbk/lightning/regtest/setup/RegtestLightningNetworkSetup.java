@@ -315,7 +315,7 @@ public class RegtestLightningNetworkSetup {
         log.debug("Created channel with capacity {}: {} (pushed {})", definition.getCapacity(), channelOutpoint, definition.getPushAmount());
     }
 
-    private Satoshi fetchOnchainFunds(LightningCommonClient<?> node) {
+    private Satoshi fetchOnchainFunds(LightningCommonClient node) {
         CommonListUnspentResponse response = node.listUnspent(CommonListUnspentRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
@@ -357,7 +357,7 @@ public class RegtestLightningNetworkSetup {
         lnNodes.forEach(it -> waitForNodeBlockHeightSynchronization(it.getClient(), currentBlockHeight, checkInterval, timeout));
     }
 
-    private static void waitForNodeBlockHeightSynchronization(LightningCommonClient<?> client,
+    private static void waitForNodeBlockHeightSynchronization(LightningCommonClient client,
                                                               int minBlockHeight,
                                                               Duration checkInterval,
                                                               Duration timeout) {
@@ -420,11 +420,12 @@ public class RegtestLightningNetworkSetup {
 
     private static class NodeInfos {
 
-        private final LoadingCache<LightningCommonClient<?>, CommonInfoResponse> initialClientInfo = CacheBuilder.newBuilder()
+        private final LoadingCache<LightningCommonClient, CommonInfoResponse> initialClientInfo = CacheBuilder.newBuilder()
                 .build(new CacheLoader<>() {
                     @Override
-                    public CommonInfoResponse load(@NonNull LightningCommonClient<?> client) {
-                        return client.info(CommonInfoRequest.newBuilder().build()).block(Duration.ofSeconds(30));
+                    public CommonInfoResponse load(@NonNull LightningCommonClient client) {
+                        return client.info(CommonInfoRequest.newBuilder().build())
+                                .block(Duration.ofSeconds(30));
                     }
                 });
 
