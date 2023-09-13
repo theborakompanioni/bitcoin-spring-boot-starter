@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlockingStub> {
+public class ClnCommonClient implements LightningCommonClient {
 
     @NonNull
     private final NodeGrpc.NodeBlockingStub client;
@@ -353,10 +353,5 @@ public class ClnCommonClient implements LightningCommonClient<NodeGrpc.NodeBlock
                     .addRoutes(route)
                     .build();
         });
-    }
-
-    @Override
-    public NodeGrpc.NodeBlockingStub baseClient() {
-        return client;
     }
 }
