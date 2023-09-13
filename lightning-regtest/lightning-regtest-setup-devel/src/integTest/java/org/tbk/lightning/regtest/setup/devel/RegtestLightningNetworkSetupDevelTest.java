@@ -16,7 +16,6 @@ import org.tbk.lightning.client.common.core.LightningCommonClient;
 import org.tbk.lightning.client.common.core.proto.*;
 import org.tbk.lightning.client.common.core.proto.CommonLookupInvoiceResponse.InvoiceStatus;
 import org.tbk.lightning.client.common.core.proto.CommonPayResponse.PaymentStatus;
-import org.tbk.lightning.cln.grpc.client.NodeGrpc;
 import org.tbk.lightning.regtest.core.LightningNetworkConstants;
 import org.tbk.lightning.regtest.setup.RegtestLightningNetworkSetup;
 import org.tbk.lightning.regtest.setup.devel.impl.LocalRegtestLightningNetworkSetupConfig;
@@ -51,11 +50,11 @@ class RegtestLightningNetworkSetupDevelTest {
 
     @Autowired
     @Qualifier("nodeAppLightningCommonClient")
-    private LightningCommonClient<?> appNode;
+    private LightningCommonClient appNode;
 
     @Autowired
     @Qualifier("nodeFaridLightningCommonClient")
-    private LightningCommonClient<?> userNode;
+    private LightningCommonClient userNode;
 
     @BeforeEach
     void setUp() {

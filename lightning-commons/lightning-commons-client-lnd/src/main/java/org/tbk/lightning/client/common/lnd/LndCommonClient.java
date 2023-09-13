@@ -38,7 +38,7 @@ import java.util.Optional;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI> {
+public class LndCommonClient implements LightningCommonClient {
 
     @NonNull
     private final SynchronousLndAPI client;
@@ -377,11 +377,6 @@ public class LndCommonClient implements LightningCommonClient<SynchronousLndAPI>
                     .setStatus(status)
                     .build();
         });
-    }
-
-    @Override
-    public SynchronousLndAPI baseClient() {
-        return client;
     }
 
     private static <T> T last(Iterator<T> iterator) {
