@@ -32,7 +32,6 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.cln.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class ClnContainerAutoConfiguration {
-
     private final ClnContainerProperties properties;
 
     public ClnContainerAutoConfiguration(ClnContainerProperties properties) {
