@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SimplePaymentRouteVerifier implements PaymentRouteVerifier {
 
     @Override
-    public boolean hasDirectRoute(LightningCommonClient<?> origin, LightningCommonClient<?> destination) {
+    public boolean hasDirectRoute(LightningCommonClient origin, LightningCommonClient destination) {
         CommonInfoResponse destInfo = destination.info(CommonInfoRequest.newBuilder().build())
                 .blockOptional(Duration.ofSeconds(30))
                 .orElseThrow();
@@ -64,7 +64,7 @@ public class SimplePaymentRouteVerifier implements PaymentRouteVerifier {
         return route;
     }
 
-    private Mono<CommonQueryRouteResponse> getRouteInternal(LightningCommonClient<?> origin, ByteString destId) {
+    private Mono<CommonQueryRouteResponse> getRouteInternal(LightningCommonClient origin, ByteString destId) {
         // take 1 sat instead of 1 msat, as though CLN would allow it, it does not seem to work for LND nodes
         MilliSatoshi amount = new MilliSatoshi(new Satoshi(1));
 

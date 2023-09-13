@@ -16,5 +16,5 @@ public class NodeInfo {
     Integer p2pPort;
 
     @NonNull
-    LightningCommonClient<?> client;
+    LightningCommonClient client;
 }
