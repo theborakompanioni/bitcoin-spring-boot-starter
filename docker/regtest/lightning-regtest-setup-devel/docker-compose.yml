@@ -10,13 +10,18 @@ services:
       - postgres-data:/postgresql_data
       - ./data/pg/init:/docker-entrypoint-initdb.d/
     environment:
-      POSTGRES_ADDITIONAL_DATABASES: regtest_cln0_app,regtest_cln1_alice,regtest_cln2_bob,regtest_cln3_charlie,regtest_cln4_dave,regtest_cln5_erin,regtest_lnd6_farid
+      POSTGRES_ADDITIONAL_DATABASES: regtest_cln1_alice,regtest_cln2_bob,regtest_cln3_charlie,regtest_cln4_dave,regtest_cln5_erin,regtest_lnd6_farid,regtest_cln0_app
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
       PGDATA: /postgresql_data
     ports:
       - "5889:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "regtest_cln0_app" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   bitcoind_regtest:
     container_name: bitcoind_regtest
@@ -71,7 +76,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
       cln1_alice:
         condition: service_started # service_healthy
       cln2_bob:
@@ -81,6 +86,8 @@ services:
       cln4_dave:
         condition: service_started # service_healthy
       cln5_erin:
+        condition: service_started # service_healthy
+      lnd6_farid:
         condition: service_started # service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
@@ -117,7 +124,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
@@ -153,7 +160,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
@@ -189,7 +196,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
@@ -225,7 +232,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
@@ -261,7 +268,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
@@ -297,7 +304,7 @@ services:
       bitcoind_regtest:
         condition: service_started # service_healthy
       postgres:
-        condition: service_started # service_healthy
+        condition: service_healthy
     command:
       - '--alias=lnd6_farid'
       - '--bitcoin.active'
