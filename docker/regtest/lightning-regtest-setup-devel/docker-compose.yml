@@ -1,4 +1,3 @@
-
 version: "3"
 
 services:
@@ -18,13 +17,13 @@ services:
     ports:
       - "5889:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-d", "regtest_cln0_app" ]
+      test: [ "CMD-SHELL", "pg_isready", "--dbname=regtest_cln0_app" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  bitcoind_regtest:
-    container_name: bitcoind_regtest
+  bitcoind:
+    container_name: regtest_bitcoind
     image: polarlightning/bitcoind:25.0
     restart: always
     volumes:
@@ -39,6 +38,7 @@ services:
       -dnsseed=0
       -networkactive=0
       -uacomment=tbkdevbitcoindregtest
+      -printtoconsole=1
       -printpriority=1
       -logtimemicros=1
       -rpcauth=regtest:169f6ba28badca1d912ac0defebc8ceb$$2550c68dfde8ca3b4892415fa8779b6ea656a44e7af1642332afa06c1979e014
@@ -67,14 +67,16 @@ services:
       - "28333:28333"
       - "28334:28334"
       - "28335:28335"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "bitcoin-cli","-chain=regtest", "-getinfo" ]
 
   cln0_app:
     container_name: regtest_cln0_app
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       cln1_alice:
@@ -94,7 +96,7 @@ services:
     command:
       - '--alias=cln0_app'
       - '--wallet=postgres://regtest_cln0_app:regtest_cln0_app@regtest_db:5432/regtest_cln0_app'
-      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=app'
       - '--bitcoin-rpcpassword=app'
@@ -121,8 +123,8 @@ services:
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     environment:
@@ -130,7 +132,7 @@ services:
     command:
       - '--alias=cln1_alice'
       - '--wallet=postgres://regtest_cln1_alice:regtest_cln1_alice@regtest_db:5432/regtest_cln1_alice'
-      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=alice'
       - '--bitcoin-rpcpassword=alice'
@@ -157,8 +159,8 @@ services:
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     environment:
@@ -166,7 +168,7 @@ services:
     command:
       - '--alias=cln2_bob'
       - '--wallet=postgres://regtest_cln2_bob:regtest_cln2_bob@regtest_db:5432/regtest_cln2_bob'
-      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=bob'
       - '--bitcoin-rpcpassword=bob'
@@ -193,8 +195,8 @@ services:
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     environment:
@@ -202,7 +204,7 @@ services:
     command:
       - '--alias=cln3_charlie'
       - '--wallet=postgres://regtest_cln3_charlie:regtest_cln3_charlie@regtest_db:5432/regtest_cln3_charlie'
-      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=charlie'
       - '--bitcoin-rpcpassword=charlie'
@@ -229,8 +231,8 @@ services:
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     environment:
@@ -238,7 +240,7 @@ services:
     command:
       - '--alias=cln4_dave'
       - '--wallet=postgres://regtest_cln4_dave:regtest_cln4_dave@regtest_db:5432/regtest_cln4_dave'
-      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=dave'
       - '--bitcoin-rpcpassword=dave'
@@ -265,8 +267,8 @@ services:
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     environment:
@@ -274,7 +276,7 @@ services:
     command:
       - '--alias=cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
       - '--wallet=postgres://regtest_cln5_erin:regtest_cln5_erin@regtest_db:5432/regtest_cln5_erin'
-      - '--bitcoin-rpcconnect=bitcoind_regtest'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=erin'
       - '--bitcoin-rpcpassword=erin'
@@ -301,8 +303,8 @@ services:
     image: polarlightning/lnd:0.16.4-beta
     restart: always
     depends_on:
-      bitcoind_regtest:
-        condition: service_started # service_healthy
+      bitcoind:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     command:
@@ -311,9 +313,9 @@ services:
       - '--bitcoin.regtest'
       - '--bitcoin.node=bitcoind'
       - '--bitcoin.defaultchanconfs=1'
-      - '--bitcoind.rpchost=bitcoind_regtest:18443'
-      - '--bitcoind.zmqpubrawblock=tcp://bitcoind_regtest:28332'
-      - '--bitcoind.zmqpubrawtx=tcp://bitcoind_regtest:28333'
+      - '--bitcoind.rpchost=regtest_bitcoind:18443'
+      - '--bitcoind.zmqpubrawblock=tcp://regtest_bitcoind:28332'
+      - '--bitcoind.zmqpubrawtx=tcp://regtest_bitcoind:28333'
       - '--bitcoind.rpcuser=regtest'
       - '--bitcoind.rpcpass=regtest'
       - '--db.backend=postgres'
