@@ -119,10 +119,10 @@ services:
       - ./data/cln0_app/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19935:19935"
-    #healthcheck:
-    #  test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
-    #  interval: 10s
-    #  retries: 5
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
 
   cln1_alice:
     container_name: regtest_cln1_alice
@@ -159,6 +159,10 @@ services:
       - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19936:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
 
   cln2_bob:
     container_name: regtest_cln2_bob
@@ -195,6 +199,10 @@ services:
       - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19937:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
 
   cln3_charlie:
     container_name: regtest_cln3_charlie
@@ -231,6 +239,10 @@ services:
       - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19938:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
 
   cln4_dave:
     container_name: regtest_cln4_dave
@@ -267,6 +279,10 @@ services:
       - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19939:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
 
   cln5_erin:
     container_name: regtest_cln5_erin
@@ -303,6 +319,10 @@ services:
       - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19940:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
 
   lnd6_farid:
     container_name: regtest_lnd6_farid
