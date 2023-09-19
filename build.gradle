@@ -369,6 +369,8 @@ subprojects {
 // enable publishing for all subproject except for "example applications"
 configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
         !project.pluginManager.hasPlugin('org.springframework.boot') &&
-        project.name.indexOf('-example-application') < 0 }) {
+        project.name.indexOf('-example-application') < 0 &&
+        !project.name.startsWith('lightning-commons-') &&
+        !project.name.startsWith('lightning-regtest-') }) {
     apply from: "${project.rootDir}/publish.gradle"
 }
