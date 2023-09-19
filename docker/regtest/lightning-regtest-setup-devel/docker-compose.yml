@@ -68,7 +68,9 @@ services:
       - "28334:28334"
       - "28335:28335"
     healthcheck:
-      test: [ "CMD", "/entrypoint.sh", "bitcoin-cli","-chain=regtest", "-getinfo" ]
+      test: [ "CMD", "/entrypoint.sh", "bitcoin-cli", "-chain=regtest", "-getinfo" ]
+      interval: 10s
+      retries: 5
 
   cln0_app:
     container_name: regtest_cln0_app
@@ -90,7 +92,7 @@ services:
       cln5_erin:
         condition: service_started # service_healthy
       lnd6_farid:
-        condition: service_started # service_healthy
+        condition: service_healthy
     environment:
       LIGHTNINGD_POSTGRES_NO_VACUUM: 1
     command:
@@ -117,6 +119,10 @@ services:
       - ./data/cln0_app/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
     ports:
       - "19935:19935"
+    #healthcheck:
+    #  test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+    #  interval: 10s
+    #  retries: 5
 
   cln1_alice:
     container_name: regtest_cln1_alice
@@ -324,6 +330,7 @@ services:
       - '--noseedbackup'
       - '--restlisten=regtest_lnd6_farid:8080'
       - '--rpclisten=regtest_lnd6_farid:10009'
+      - '--rpclisten=localhost:10009' # needed for healthcheck
       - '--tlscertduration=876000h'
       - '--debuglevel=debug'
       - '--maxpendingchannels=21'
@@ -338,6 +345,10 @@ services:
     ports:
       - "19841:8080"
       - "19941:10009"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lncli", "--network=regtest", "--no-macaroons", "getinfo" ]
+      interval: 10s
+      retries: 5
 
 volumes:
   bitcoind-data:
