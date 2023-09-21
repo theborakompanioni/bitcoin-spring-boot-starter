@@ -19,21 +19,27 @@ jobs:
     needs: validation
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        java-version: [ 17, 18 ]
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup JDK 17
+      - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: ${{ matrix.java-version }}
 
       - name: Print Java Version
         run: java --version
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/devel' }}
 
       - name: Lint Gradle File
         run: ./gradlew autoLintGradle
