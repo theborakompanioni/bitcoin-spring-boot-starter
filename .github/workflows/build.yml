@@ -19,15 +19,19 @@ jobs:
     needs: validation
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        java-version: [ 17, 18 ]
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup JDK 17
+      - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: ${{ matrix.java-version }}
 
       - name: Print Java Version
         run: java --version
