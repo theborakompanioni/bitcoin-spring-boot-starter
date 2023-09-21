@@ -32,15 +32,8 @@ jobs:
       - name: Print Java Version
         run: java --version
 
-      - name: Cache Gradle Packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ secrets.CACHE_VERSION }}-${{ hashFiles('versions.gradle', '**/gradle.properties', '**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ secrets.CACHE_VERSION }}
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Lint Gradle File
         run: ./gradlew autoLintGradle
@@ -67,10 +60,3 @@ jobs:
         with:
           name: Package
           path: ./**/build/libs/*.jar
-
-      - name: Cleanup Gradle Cache
-        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
