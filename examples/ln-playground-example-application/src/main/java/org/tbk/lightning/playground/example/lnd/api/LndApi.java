@@ -117,7 +117,7 @@ public class LndApi {
 
     @GetMapping(value = "/wallet/balance")
     public ResponseEntity<JsonNode> walletBalance() throws StatusException, ValidationException {
-        WalletBalanceResponse walletBalance = lndApi.walletBalance();
+        WalletBalanceResponse walletBalance = lndApi.walletBalance(new WalletBalanceRequest());
         return ResponseEntity.ok(toJson(walletBalance));
     }
 
