@@ -28,9 +28,6 @@ import static java.util.Objects.requireNonNull;
 @EnableConfigurationProperties(BitcoindContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.bitcoind.enabled", havingValue = "true")
 public class BitcoindContainerAutoConfiguration {
-    // currently only the image from "polarlightning" is supported
-    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/bitcoind:25.0";
-    private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
     private final BitcoindContainerProperties properties;
 
@@ -86,8 +83,7 @@ public class BitcoindContainerAutoConfiguration {
                 .build();
 
         DockerImageName dockerImageName = this.properties.getImage()
-                .map(DockerImageName::parse)
-                .orElse(defaultDockerImageName);
+                .orElseThrow(() -> new RuntimeException("Container image must not be empty"));
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))

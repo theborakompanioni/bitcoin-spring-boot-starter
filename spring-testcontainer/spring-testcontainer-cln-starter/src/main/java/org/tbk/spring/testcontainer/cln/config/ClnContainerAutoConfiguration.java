@@ -33,10 +33,6 @@ import static java.util.Objects.requireNonNull;
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class ClnContainerAutoConfiguration {
 
-    private static final String DOCKER_IMAGE_NAME = "polarlightning/clightning:23.05";
-
-    private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
-
     private final ClnContainerProperties properties;
 
     public ClnContainerAutoConfiguration(ClnContainerProperties properties) {
@@ -74,6 +70,10 @@ public class ClnContainerAutoConfiguration {
                 .withStrategy(portWaitStrategy)
                 .withStrategy(Wait.forLogMessage(".*Server started with public key.*", 1))
                 .withStartupTimeout(ClnContainerProperties.DEFAULT_STARTUP_TIMEOUT);
+
+
+        DockerImageName dockerImageName = this.properties.getImage()
+                .orElseThrow(() -> new RuntimeException("Container image must not be empty"));
 
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))

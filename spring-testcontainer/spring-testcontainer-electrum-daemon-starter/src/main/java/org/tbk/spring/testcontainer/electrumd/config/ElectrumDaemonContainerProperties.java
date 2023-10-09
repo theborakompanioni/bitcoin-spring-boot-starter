@@ -39,7 +39,7 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
     private String defaultWallet;
 
     public ElectrumDaemonContainerProperties() {
-        super(Collections.emptyList(), defaultEnvironment);
+        super(null, Collections.emptyList(), defaultEnvironment);
     }
 
     public Optional<String> getDefaultWallet() {

@@ -50,7 +50,7 @@ public class ElectrumxContainerProperties extends AbstractContainerProperties im
     private Integer rpcport;
 
     public ElectrumxContainerProperties() {
-        super(Collections.emptyList(), defaultEnvironment);
+        super(null, Collections.emptyList(), defaultEnvironment);
     }
 
     @Override

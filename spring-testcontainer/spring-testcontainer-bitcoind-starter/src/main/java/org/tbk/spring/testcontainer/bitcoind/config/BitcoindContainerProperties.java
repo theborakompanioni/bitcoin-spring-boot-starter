@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,9 @@ import static com.google.common.base.Preconditions.checkArgument;
         ignoreUnknownFields = false
 )
 public class BitcoindContainerProperties extends AbstractContainerProperties implements Validator {
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/bitcoind:25.0";
+    private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
+
     private static final int MAINNET_DEFAULT_RPC_PORT = 8332;
     private static final int MAINNET_DEFAULT_P2P_PORT = 8333;
 
@@ -65,7 +69,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     }
 
     public BitcoindContainerProperties() {
-        super(reservedCommands);
+        super(defaultDockerImageName, reservedCommands);
     }
 
     private Chain chain;

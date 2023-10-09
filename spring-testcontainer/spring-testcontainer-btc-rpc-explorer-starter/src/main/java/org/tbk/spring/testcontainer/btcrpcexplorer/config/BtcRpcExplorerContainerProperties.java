@@ -51,7 +51,7 @@ public class BtcRpcExplorerContainerProperties extends AbstractContainerProperti
     private ElectrumxProperties electrumx;
 
     public BtcRpcExplorerContainerProperties() {
-        super(Collections.emptyList(), defaultEnvironment);
+        super(null, Collections.emptyList(), defaultEnvironment);
     }
 
     @Override

@@ -2,7 +2,9 @@ package org.tbk.spring.testcontainer.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.testcontainers.utility.DockerImageName;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +17,14 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 //   in this version of spring boot the "validator" related classes are in an own module and can be integrated better
 public abstract class AbstractContainerProperties implements ContainerProperties {
 
-    private boolean enabled;
-
     private final List<String> reservedCommands;
 
     private final Map<String, String> defaultEnvironment;
+
+    @Nullable
+    private final DockerImageName defaultImage;
+
+    private boolean enabled;
 
     private String image;
 
@@ -30,14 +35,37 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     private Map<String, String> environment;
 
     protected AbstractContainerProperties() {
-        this(Collections.emptyList());
+        this(null, Collections.emptyList());
     }
 
+    protected AbstractContainerProperties(@Nullable DockerImageName defaultImage) {
+        this(defaultImage, Collections.emptyList());
+    }
+
+    /**
+     * @deprecated use {@link #AbstractContainerProperties(DockerImageName, List<String>)}
+     * @apiNote Scheduled to be removed in v0.13.0
+     */
+    @Deprecated
     protected AbstractContainerProperties(List<String> reservedCommands) {
-        this(reservedCommands, Collections.emptyMap());
+        this(null, reservedCommands, Collections.emptyMap());
     }
 
+    /**
+     * @deprecated use {@link #AbstractContainerProperties(DockerImageName, List<String>, Map<String, String>)}
+     * @apiNote Scheduled to be removed in v0.13.0
+     */
+    @Deprecated
     protected AbstractContainerProperties(List<String> reservedCommands, Map<String, String> defaultEnvironment) {
+        this(null, reservedCommands, defaultEnvironment);
+    }
+
+    protected AbstractContainerProperties(@Nullable DockerImageName defaultImage, List<String> reservedCommands) {
+        this(defaultImage, reservedCommands, Collections.emptyMap());
+    }
+
+    protected AbstractContainerProperties(@Nullable DockerImageName defaultImage, List<String> reservedCommands, Map<String, String> defaultEnvironment) {
+        this.defaultImage = defaultImage;
         this.reservedCommands = ImmutableList.copyOf(reservedCommands);
         this.defaultEnvironment = ImmutableMap.copyOf(defaultEnvironment);
     }
@@ -48,8 +76,15 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     @Override
-    public final Optional<String> getImage() {
-        return Optional.ofNullable(image);
+    public final Optional<DockerImageName> getImage() {
+        return Optional.ofNullable(image)
+                .map(DockerImageName::parse)
+                .or(this::getDefaultImage);
+    }
+
+    @Override
+    public final  Optional<DockerImageName> getDefaultImage() {
+        return Optional.ofNullable(defaultImage);
     }
 
     @Override

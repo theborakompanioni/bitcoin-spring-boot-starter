@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
+import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 import java.util.List;
@@ -24,6 +25,9 @@ import static com.google.common.base.Preconditions.checkArgument;
         ignoreUnknownFields = false
 )
 public class ClnContainerProperties extends AbstractContainerProperties implements Validator {
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/clightning:23.05";
+    private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
+
     private static final String DEFAULT_NETWORK = "regtest";
 
     // If 'PORT' is not specified, the default port 9735 is used for mainnet
@@ -53,7 +57,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
             .build();
 
     public ClnContainerProperties() {
-        super(reservedCommands);
+        super(defaultDockerImageName, reservedCommands);
     }
 
     private Integer port;

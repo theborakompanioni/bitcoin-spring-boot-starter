@@ -29,7 +29,7 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
     private Map<String, HiddenServiceDefinition> hiddenServices;
 
     public TorContainerProperties() {
-        super(Collections.emptyList(), defaultEnvironment);
+        super(null, Collections.emptyList(), defaultEnvironment);
     }
 
     public Map<String, HiddenServiceDefinition> getHiddenServices() {

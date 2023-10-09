@@ -44,7 +44,7 @@ public class LndContainerProperties extends AbstractContainerProperties implemen
             .build();
 
     public LndContainerProperties() {
-        super(reservedCommands);
+        super(null, reservedCommands);
     }
 
     /**

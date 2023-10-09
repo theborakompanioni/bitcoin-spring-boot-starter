@@ -1,6 +1,7 @@
 package org.tbk.spring.testcontainer.core;
 
 import com.google.common.annotations.Beta;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,9 +34,11 @@ public interface ContainerProperties {
      */
     boolean isEnabled();
 
-    default Optional<String> getImage() {
+    default Optional<DockerImageName> getImage() {
         return Optional.empty();
     }
+
+    Optional<DockerImageName> getDefaultImage();
 
     default List<String> getCommands() {
         return Collections.emptyList();
