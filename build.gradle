@@ -20,6 +20,9 @@ buildscript {
         classpath platform("org.jmolecules:jmolecules-bom:${jmoleculesBomVersion}")
         classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
     }
+    configurations.classpath {
+        resolutionStrategy.activateDependencyLocking()
+    }
 }
 
 plugins {
