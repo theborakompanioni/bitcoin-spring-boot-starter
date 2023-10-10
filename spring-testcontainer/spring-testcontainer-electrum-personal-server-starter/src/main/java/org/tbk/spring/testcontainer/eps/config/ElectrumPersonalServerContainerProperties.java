@@ -118,7 +118,7 @@ public class ElectrumPersonalServerContainerProperties extends AbstractContainer
     }
 
     private static boolean containsWhitespaces(String value) {
-        return CharMatcher.WHITESPACE.matchesAnyOf(value);
+        return CharMatcher.whitespace().matchesAnyOf(value);
     }
 }
 

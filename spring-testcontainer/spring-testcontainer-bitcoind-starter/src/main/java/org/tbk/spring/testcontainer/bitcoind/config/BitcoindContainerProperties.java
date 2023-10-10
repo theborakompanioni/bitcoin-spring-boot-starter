@@ -183,7 +183,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     }
 
     private static boolean containsWhitespaces(String value) {
-        return CharMatcher.WHITESPACE.matchesAnyOf(value);
+        return CharMatcher.whitespace().matchesAnyOf(value);
     }
 }
 

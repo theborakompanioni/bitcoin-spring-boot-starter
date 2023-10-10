@@ -203,6 +203,7 @@
          <trusted-key id="84789d24df77a32433ce1f079eb80e92eb2135b1">
             <trusting group="org.apache" name="apache" version="27"/>
             <trusting group="org.apache" name="apache" version="29"/>
+            <trusting group="org.apache" name="apache" version="30"/>
             <trusting group="org.codehaus.mojo"/>
          </trusted-key>
          <trusted-key id="859be8d7c586f538430b19c2467b942d3a79bd29" group="mysql" name="mysql-connector-java" version="8.0.30"/>
