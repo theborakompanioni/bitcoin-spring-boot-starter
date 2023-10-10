@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update bitcoin-kmp from v0.12.0 to v0.13.0
 - upgrade: update lightningj from v0.16.2-Beta to v0.17.0-Beta
 - upgrade: update testcontainers from v1.18.3 to v1.19.1
+- upgrade: update jeromq from v0.5.3 to v0.5.4
 - upgrade: update lnd testcontainer from v0.16.2-beta to v0.17.0-beta
 - upgrade: update cln testcontainer from v23.05 to v23.08
 

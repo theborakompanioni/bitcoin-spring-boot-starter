@@ -7,7 +7,7 @@ ext {
     clnGrpcClientVersion = '23.8.1'
     consensusJVersion = '0.6.4'
     guavaVersion = '30.1-jre'
-    jeroMqVersion = '0.5.3'
+    jeroMqVersion = '0.5.4'
     testcontainersVersion = '1.19.1'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
