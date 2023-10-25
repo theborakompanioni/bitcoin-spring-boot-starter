@@ -36,11 +36,6 @@ import static java.util.Objects.requireNonNull;
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class ElectrumPersonalServerContainerAutoConfiguration {
 
-    // currently only the image from "btcpayserver" is supported
-    private static final String DOCKER_IMAGE_NAME = "btcpayserver/eps:0.2.2";
-
-    private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
-
     private static final int hardcodedRpcPort = 50002;
 
     private static final List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
@@ -102,14 +97,14 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
 
         initPhaseContainer.start();
 
-        // electrum personal server exits after everything is setup correctly - we need to restart it again afterwards.
+        // electrum personal server exits after everything is set up correctly - we need to restart it again afterwards.
         initPhaseContainer.stop();
 
         ElectrumPersonalServerContainer<?> mainPhaseContainer = initPhaseContainer
                 .withStartupTimeout(Duration.ofMinutes(2))
                 .waitingFor(mainPhaseWaitStrategy());
 
-        // restart again - this time is should stay running
+        // restart again - this time it should stay running
         mainPhaseContainer.start();
 
         // expose all mapped ports of the host so other containers can communication with the container
@@ -121,22 +116,23 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
     private ElectrumPersonalServerContainer<?> createContainer(String epsBitcoindConfig) {
         Map<String, String> env = buildEnvMap(epsBitcoindConfig);
 
+        DockerImageName dockerImageName = this.properties.getImage()
+                .orElseThrow(() -> new RuntimeException("Container image must not be empty"));
+
         ElectrumPersonalServerContainer<?> container = new ElectrumPersonalServerContainer<>(dockerImageName)
-                .withCreateContainerCmdModifier(cmdModifier())
+                .withCreateContainerCmdModifier(cmdModifier(dockerImageName))
                 .withExposedPorts(hardcodedStandardPorts.toArray(new Integer[]{}))
                 .withEnv(env);
 
         return container;
     }
 
-    private Consumer<CreateContainerCmd> cmdModifier() {
-        return MoreTestcontainers.cmdModifiers().withName(dockerContainerName());
-    }
-
-    private String dockerContainerName() {
-        return String.format("%s-%s", dockerImageName.getUnversionedPart(),
+    private Consumer<CreateContainerCmd> cmdModifier(DockerImageName dockerImageName) {
+        String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
+
+        return MoreTestcontainers.cmdModifiers().withName(dockerContainerName);
     }
 
     private Map<String, String> buildEnvMap(String epsBitcoindConfig) {

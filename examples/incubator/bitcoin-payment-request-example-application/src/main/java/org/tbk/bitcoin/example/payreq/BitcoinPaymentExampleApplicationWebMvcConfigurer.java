@@ -21,7 +21,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration(proxyBeanMethods = false)
-class BitcoinPaymentExampleApplicationWebMvcConfig implements WebMvcConfigurer {
+class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",

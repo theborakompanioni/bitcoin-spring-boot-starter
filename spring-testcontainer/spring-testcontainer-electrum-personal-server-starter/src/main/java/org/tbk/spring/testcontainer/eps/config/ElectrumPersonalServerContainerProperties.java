@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,6 +21,11 @@ import java.util.Optional;
         ignoreUnknownFields = false
 )
 public class ElectrumPersonalServerContainerProperties extends AbstractContainerProperties implements Validator {
+
+    // currently only the image from "btcpayserver" is supported
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "btcpayserver/eps:0.2.2";
+
+    private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
             .put("EPS_CONFIG", "")
@@ -45,7 +51,7 @@ public class ElectrumPersonalServerContainerProperties extends AbstractContainer
     private Integer rpcport;
 
     public ElectrumPersonalServerContainerProperties() {
-        super(Collections.emptyList(), defaultEnvironment);
+        super(defaultDockerImageName, Collections.emptyList(), defaultEnvironment);
     }
 
     @Override
