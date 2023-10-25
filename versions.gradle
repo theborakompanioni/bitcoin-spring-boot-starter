@@ -22,7 +22,7 @@ ext {
     acinqLightningKmpVersion = '1.5.9' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.42.0.0'
     hibernateCommunityDialectsVersion = '6.2.5.Final'
-    lombokVersion = '1.18.26'
+    lombokVersion = '1.18.30'
     springdocOpenApiVersion = '2.1.0'
     mockserverVersion = '5.11.2'
     checkstyleVersion = '10.3.4'
