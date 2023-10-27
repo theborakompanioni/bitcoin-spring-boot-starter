@@ -2,6 +2,8 @@ package org.tbk.bitcoin.tool.fee.bitgo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.bitgo.proto.BtcTxFeeRequest;
+import org.tbk.bitcoin.tool.fee.bitgo.proto.BtcTxFeeResponse;
 
 import java.util.Map;
 

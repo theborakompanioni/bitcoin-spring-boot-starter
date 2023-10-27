@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.mempoolspace.proto.FeesRecommended;
+import org.tbk.bitcoin.tool.fee.mempoolspace.proto.ProjectedMempoolBlocks;
 
 import java.security.SecureRandom;
 import java.util.List;

@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.blockstreaminfo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.blockstreaminfo.proto.FeeEstimates;
 
 import java.util.List;
 

@@ -1,5 +1,8 @@
 package org.tbk.bitcoin.tool.fee.jsonrpc;
 
+import org.tbk.bitcoin.tool.fee.jsonrpc.proto.EstimateSmartFeeRequest;
+import org.tbk.bitcoin.tool.fee.jsonrpc.proto.EstimateSmartFeeResponse;
+
 public interface BitcoinJsonRpcFeeApiClient {
     /**
      * estimatesmartfee

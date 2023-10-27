@@ -5,6 +5,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.tbk.bitcoin.tool.fee.blockchaininfo.proto.MempoolFees;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 
@@ -17,7 +18,6 @@ public class BlockchainInfoFeeApiClientImpl implements BlockchainInfoFeeApiClien
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final URI url;
-
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     private final String apiToken;
 

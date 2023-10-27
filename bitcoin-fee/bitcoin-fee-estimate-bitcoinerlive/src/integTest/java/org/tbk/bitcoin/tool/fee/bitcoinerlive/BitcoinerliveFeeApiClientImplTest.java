@@ -2,7 +2,10 @@ package org.tbk.bitcoin.tool.fee.bitcoinerlive;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimate;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestRequest;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestRequest.Confidence;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestResponse;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestResponse.Estimate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +13,6 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confidence;
 
 class BitcoinerliveFeeApiClientImplTest {
     private static final String BASE_URL = "https://bitcoiner.live";

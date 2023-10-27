@@ -2,6 +2,8 @@ package org.tbk.bitcoin.tool.fee.bitcore;
 
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.bitcore.proto.FeeEstimationRequest;
+import org.tbk.bitcoin.tool.fee.bitcore.proto.FeeEstimationResponse;
 import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
 

@@ -2,6 +2,9 @@ package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.FeesSummaryEntry;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.RecommendedTransactionFees;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.TransactionFeesSummary;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

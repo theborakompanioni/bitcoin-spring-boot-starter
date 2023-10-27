@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.blockchaininfo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.blockchaininfo.proto.MempoolFees;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

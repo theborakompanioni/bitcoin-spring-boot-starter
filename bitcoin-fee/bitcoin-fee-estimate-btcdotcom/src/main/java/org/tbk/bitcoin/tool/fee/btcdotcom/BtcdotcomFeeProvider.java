@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.btcdotcom;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.btcdotcom.proto.FeeDistribution;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;

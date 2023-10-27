@@ -5,7 +5,7 @@ package blockchair;
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
-option java_package = "org.tbk.bitcoin.tool.fee.blockchair";
+option java_package = "org.tbk.bitcoin.tool.fee.blockchair.proto";
 option java_outer_classname = "BlockchairProtos";
 option java_multiple_files = true;
 

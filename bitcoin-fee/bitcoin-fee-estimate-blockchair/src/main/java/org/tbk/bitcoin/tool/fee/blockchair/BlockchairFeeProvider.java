@@ -2,6 +2,7 @@ package org.tbk.bitcoin.tool.fee.blockchair;
 
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
+import org.tbk.bitcoin.tool.fee.blockchair.proto.BitcoinStatsFeesOnly;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import reactor.core.publisher.Flux;
 

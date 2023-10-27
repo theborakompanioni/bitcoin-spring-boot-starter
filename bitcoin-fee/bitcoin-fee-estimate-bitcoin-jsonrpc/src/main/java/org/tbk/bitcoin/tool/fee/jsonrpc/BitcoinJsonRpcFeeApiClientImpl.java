@@ -1,7 +1,10 @@
 package org.tbk.bitcoin.tool.fee.jsonrpc;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
+import org.tbk.bitcoin.tool.fee.jsonrpc.proto.EstimateSmartFeeRequest;
+import org.tbk.bitcoin.tool.fee.jsonrpc.proto.EstimateSmartFeeResponse;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -14,6 +17,7 @@ import static java.util.Objects.requireNonNull;
 public class BitcoinJsonRpcFeeApiClientImpl implements BitcoinJsonRpcFeeApiClient {
     private final BitcoinClient client;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "class from external dependency")
     public BitcoinJsonRpcFeeApiClientImpl(BitcoinClient client) {
         this.client = requireNonNull(client);
     }
@@ -25,7 +29,7 @@ public class BitcoinJsonRpcFeeApiClientImpl implements BitcoinJsonRpcFeeApiClien
                     .add(request.getConfTarget())
                     .build());
 
-            // "errors", when present, can be safely casted to List<String>
+            // "errors", when present, can be safely cast to List<String>
             @SuppressWarnings("unchecked")
             List<String> errors = Optional.ofNullable(estimatesmartfee.get("errors"))
                     .map(val -> (List<String>) val)

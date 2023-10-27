@@ -5,6 +5,8 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.Builder;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.RecommendedTransactionFees;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.TransactionFeesSummary;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;

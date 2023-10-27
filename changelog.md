@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking
+- move protobuf classes to own package in bitcoin-fee modules
+
 ## [0.11.0] - 2023-09-21
 ### Breaking
 - module bitcoin-jsonrpc-client-autoconfigure: dependencies not included in anymore

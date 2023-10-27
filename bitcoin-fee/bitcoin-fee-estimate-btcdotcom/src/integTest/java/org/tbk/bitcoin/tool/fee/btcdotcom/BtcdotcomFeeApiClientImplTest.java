@@ -3,6 +3,7 @@ package org.tbk.bitcoin.tool.fee.btcdotcom;
 import com.google.protobuf.ListValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.btcdotcom.proto.FeeDistribution;
 
 import java.util.List;
 

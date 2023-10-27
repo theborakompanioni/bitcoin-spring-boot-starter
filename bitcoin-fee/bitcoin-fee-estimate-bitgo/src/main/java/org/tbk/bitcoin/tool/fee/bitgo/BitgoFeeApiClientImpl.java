@@ -1,11 +1,14 @@
 package org.tbk.bitcoin.tool.fee.bitgo;
 
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.tbk.bitcoin.tool.fee.bitgo.proto.BtcTxFeeRequest;
+import org.tbk.bitcoin.tool.fee.bitgo.proto.BtcTxFeeResponse;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 import org.tbk.bitcoin.tool.fee.util.MoreQueryString;
@@ -24,6 +27,7 @@ public class BitgoFeeApiClientImpl implements BitgoFeeApiClient {
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final String baseUrl;
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     private final String apiToken;
 
     public BitgoFeeApiClientImpl(String baseUrl, String apiToken) {

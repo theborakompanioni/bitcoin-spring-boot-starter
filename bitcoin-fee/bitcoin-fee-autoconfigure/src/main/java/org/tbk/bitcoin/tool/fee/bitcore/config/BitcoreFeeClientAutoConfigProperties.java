@@ -9,6 +9,10 @@ import org.tbk.bitcoin.tool.fee.config.AbstractFeeClientAutoConfigProperties;
 )
 public class BitcoreFeeClientAutoConfigProperties extends AbstractFeeClientAutoConfigProperties {
 
+    public BitcoreFeeClientAutoConfigProperties(boolean enabled, String baseUrl, String token) {
+        super(enabled, baseUrl, token);
+    }
+
     @Override
     protected String getDefaultBaseUrl() {
         return "https://api.bitcore.io";

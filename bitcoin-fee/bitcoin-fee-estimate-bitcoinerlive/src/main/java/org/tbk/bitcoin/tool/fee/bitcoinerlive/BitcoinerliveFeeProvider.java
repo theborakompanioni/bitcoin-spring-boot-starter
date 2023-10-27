@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
-import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestRequest.Confidence;
-import org.tbk.bitcoin.tool.fee.bitcoinerlive.FeeEstimatesLatestResponse.Estimate;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestRequest;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestRequest.Confidence;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestResponse;
+import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestResponse.Estimate;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -54,11 +56,9 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
         FeeEstimatesLatestRequest request = toApiRequest(feeRecommendationRequest);
         FeeEstimatesLatestResponse response = client.feeEstimatesLatest(request);
 
-        log.debug("data: {}", response);
-
         Map<String, Estimate> estimateMap = response.getEstimateMap();
         if (estimateMap.isEmpty()) {
-            log.warn("no estimation entries present in response for request: {}", feeRecommendationRequest);
+            log.warn("No estimation entries present in response for request.");
             return Flux.empty();
         }
 
@@ -107,7 +107,7 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
     /**
      * Extracts the confidence value from the request and maps it to
      * a value the api understands. If it is higher than the highest supported value,
-     * then this implementation wont simply fail, but use the highest default value.
+     * then this implementation won't simply fail, but use the highest default value.
      *
      * <p>This may or may not what the user wants or expect and is subject to change.
      * As this api provides values with up to 90% confidence, it might be safe to do so.

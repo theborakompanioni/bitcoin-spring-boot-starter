@@ -1,13 +1,17 @@
 package org.tbk.bitcoin.tool.fee.config;
 
 import com.google.common.base.Strings;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Optional;
 
-@Data
+@Getter
+@AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public abstract class AbstractFeeClientAutoConfigProperties implements Validator {
 
     private boolean enabled;

@@ -2,6 +2,8 @@ package org.tbk.bitcoin.tool.fee.bitcore;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.bitcore.proto.FeeEstimationRequest;
+import org.tbk.bitcoin.tool.fee.bitcore.proto.FeeEstimationResponse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

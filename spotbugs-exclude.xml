@@ -29,16 +29,15 @@
             <Bug pattern="SPRING_CSRF_PROTECTION_DISABLED"/>
             <!-- disable minor 'include CRLF characters into log messages' warning in example apps -->
             <Bug pattern="CRLF_INJECTION_LOGS"/>
+            <Bug pattern="CT_CONSTRUCTOR_THROW"/>
         </Or>
     </Match>
 
     <Match>
         <!-- disable some known risks or minor warnings in test classes -->
         <Class name="~.*Test"/>
-        <Or>
-            <!-- disable minor 'include CRLF characters into log messages' warning in test classes -->
-            <Bug pattern="CRLF_INJECTION_LOGS"/>
-        </Or>
+        <!-- disable minor 'include CRLF characters into log messages' warning in test classes -->
+        <Bug pattern="CRLF_INJECTION_LOGS"/>
     </Match>
 
     <Match>
@@ -54,14 +53,29 @@
         <Bug pattern="UCF_USELESS_CONTROL_FLOW"/>
     </Match>
 
+    <!-- prevents protobuf false positives in fee module -->
     <Match>
-        <!-- prevents protobuf false positives in fee module -->
         <Or>
-            <Class name="~org\.tbk\.bitcoin\.tool\.fee\..*Response(\$.*)?"/>
-            <Class name="~org\.tbk\.bitcoin\.tool\.fee\..*Request(\$.*)?"/>
+            <Class name="~org\.tbk\.bitcoin\.tool\.fee\.proto\..*"/>
+            <Class name="~org\.tbk\.bitcoin\.tool\.fee\..*\.proto\..*"/>
+            <Class name="~org\.tbk\.bitcoin\.fee\.example\..*\.proto\..*"/>
         </Or>
-        <Bug pattern="SE_BAD_FIELD"/>
+        <Or>
+            <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+            <Bug pattern="EI_EXPOSE_REP"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+            <Bug pattern="MS_EXPOSE_REP"/>
+            <Bug pattern="PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES"/>
+            <Bug pattern="SE_BAD_FIELD"/>
+            <Bug pattern="UC_USELESS_VOID_METHOD"/>
+            <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+        </Or>
     </Match>
+    <Match>
+        <Class name="~org\.tbk\.bitcoin\.tool\.fee\..*Protos(\$.*)?"/>
+        <Bug pattern="MS_EXPOSE_REP"/>
+    </Match>
+    <!-- END - prevents protobuf false positives in fee module - END -->
 
     <Match>
         <!-- prevents false positives in flyway migration scripts -->
@@ -90,7 +104,10 @@
             <Class name="~.*Api"/>
             <Class name="~.*Ctrl"/>
         </Or>
-        <Bug pattern="SPRING_ENDPOINT"/>
+        <Or>
+            <Bug pattern="SPRING_ENDPOINT"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+        </Or>
     </Match>
 
     <Match>

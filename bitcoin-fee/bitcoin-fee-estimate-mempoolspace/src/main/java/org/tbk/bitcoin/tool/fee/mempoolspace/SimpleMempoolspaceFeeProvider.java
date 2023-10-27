@@ -6,6 +6,7 @@ import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationI
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl.SatPerVbyteImplBuilder;
 import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
+import org.tbk.bitcoin.tool.fee.mempoolspace.proto.FeesRecommended;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;

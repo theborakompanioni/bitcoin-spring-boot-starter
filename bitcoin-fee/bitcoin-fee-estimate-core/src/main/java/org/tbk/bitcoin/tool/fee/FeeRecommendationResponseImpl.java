@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.tool.fee;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Singular;
@@ -17,6 +18,7 @@ import static java.util.Objects.requireNonNull;
 public class FeeRecommendationResponseImpl implements FeeRecommendationResponse {
 
     @Singular("addFeeRecommendation")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "immutable list")
     List<FeeRecommendation> feeRecommendations;
 
     ProviderInfo providerInfo;

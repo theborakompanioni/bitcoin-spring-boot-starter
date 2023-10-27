@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.blockcypher.proto.ChainInfo;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;

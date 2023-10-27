@@ -2,7 +2,9 @@ package org.tbk.bitcoin.fee.example.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
-import lombok.*;
+import lombok.Builder;
+import lombok.Singular;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -21,10 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/fee", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor
 public class FeeCtrl {
     private static final Duration defaultDuration = Duration.ofMinutes(30);
 
@@ -41,11 +44,14 @@ public class FeeCtrl {
             .add(Duration.ofHours(24))
             .build();
 
-    @NonNull
     private final List<FeeProvider> feeProviders;
 
-    @NonNull
     private final FeeProvider primaryFeeProvider;
+
+    public FeeCtrl(List<FeeProvider> feeProviders, FeeProvider primaryFeeProvider) {
+        this.feeProviders = List.copyOf(requireNonNull(feeProviders));
+        this.primaryFeeProvider = requireNonNull(primaryFeeProvider);
+    }
 
     @GetMapping("/recommendations")
     public ResponseEntity<Map<Duration, List<FeeRecommendationResponse>>> recommendations() {
@@ -95,12 +101,12 @@ public class FeeCtrl {
     }
 
     @GetMapping("/provider")
-    public ResponseEntity<ProviderResponse> provider() {
+    public ResponseEntity<ProviderResponseDto> provider() {
         List<ProviderInfo> providerInfos = feeProviders.stream()
                 .map(FeeProvider::info)
                 .toList();
 
-        return ResponseEntity.ok(ProviderResponse.builder()
+        return ResponseEntity.ok(ProviderResponseDto.builder()
                 .primaryProvider(primaryFeeProvider.info())
                 .providers(providerInfos)
                 .build());
@@ -117,7 +123,7 @@ public class FeeCtrl {
     @Value
     @Builder
     @Jacksonized
-    public static class ProviderResponse {
+    public static class ProviderResponseDto {
         @JsonProperty("primary_provider")
         ProviderInfo primaryProvider;
 

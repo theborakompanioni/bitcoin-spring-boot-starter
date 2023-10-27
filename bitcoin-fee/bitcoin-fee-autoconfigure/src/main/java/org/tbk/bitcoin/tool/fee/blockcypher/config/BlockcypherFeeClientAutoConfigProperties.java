@@ -9,6 +9,10 @@ import org.tbk.bitcoin.tool.fee.config.AbstractFeeClientAutoConfigProperties;
 )
 public class BlockcypherFeeClientAutoConfigProperties extends AbstractFeeClientAutoConfigProperties {
 
+    public BlockcypherFeeClientAutoConfigProperties(boolean enabled, String baseUrl, String token) {
+        super(enabled, baseUrl, token);
+    }
+
     @Override
     protected String getDefaultBaseUrl() {
         return "https://api.blockcypher.com";

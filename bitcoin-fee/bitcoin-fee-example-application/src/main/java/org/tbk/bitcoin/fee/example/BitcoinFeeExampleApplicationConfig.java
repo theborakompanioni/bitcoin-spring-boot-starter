@@ -38,7 +38,8 @@ class BitcoinFeeExampleApplicationConfig {
                 List<FeeRecommendationResponse> response = feeProvider.request(request)
                         .onErrorContinue((e, o) -> log.warn("Error on requesting fee recommendation: {}", e.getMessage()))
                         .collectList()
-                        .block(Duration.ofSeconds(30));
+                        .blockOptional(Duration.ofSeconds(30))
+                        .orElse(List.of());
 
                 log.info("=====================");
                 log.info("Duration: {}", duration);

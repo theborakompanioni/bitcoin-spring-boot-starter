@@ -5,7 +5,7 @@ package earndotcom;
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
-option java_package = "org.tbk.bitcoin.tool.fee.earndotcom.client";
+option java_package = "org.tbk.bitcoin.tool.fee.earndotcom.client.proto";
 option java_outer_classname = "EarndotcomProtos";
 option java_multiple_files = true;
 

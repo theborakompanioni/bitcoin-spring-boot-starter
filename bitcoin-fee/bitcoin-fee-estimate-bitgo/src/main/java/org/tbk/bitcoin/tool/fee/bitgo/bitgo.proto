@@ -6,7 +6,7 @@ import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-option java_package = "org.tbk.bitcoin.tool.fee.bitgo";
+option java_package = "org.tbk.bitcoin.tool.fee.bitgo.proto";
 option java_outer_classname = "BitGoProtos";
 option java_multiple_files = true;
 

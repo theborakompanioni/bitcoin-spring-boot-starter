@@ -9,6 +9,10 @@ import org.tbk.bitcoin.tool.fee.config.AbstractFeeClientAutoConfigProperties;
 )
 public class EarndotcomFeeClientAutoConfigProperties extends AbstractFeeClientAutoConfigProperties {
 
+    public EarndotcomFeeClientAutoConfigProperties(boolean enabled, String baseUrl, String token) {
+        super(enabled, baseUrl, token);
+    }
+
     @Override
     protected String getDefaultBaseUrl() {
         return "https://bitcoinfees.earn.com";

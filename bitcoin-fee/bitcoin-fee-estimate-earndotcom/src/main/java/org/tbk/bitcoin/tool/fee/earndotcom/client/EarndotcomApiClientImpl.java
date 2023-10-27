@@ -1,10 +1,13 @@
 package org.tbk.bitcoin.tool.fee.earndotcom.client;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.SneakyThrows;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.RecommendedTransactionFees;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.TransactionFeesSummary;
 import org.tbk.bitcoin.tool.fee.util.MoreHttpClient;
 import org.tbk.bitcoin.tool.fee.util.MoreJsonFormat;
 
@@ -17,6 +20,7 @@ public class EarndotcomApiClientImpl implements EarndotcomApiClient {
     private final CloseableHttpClient client = HttpClients.createDefault();
 
     private final String baseUrl;
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     private final String apiToken;
 
     public EarndotcomApiClientImpl(String baseUrl, String apiToken) {

@@ -2,6 +2,8 @@ package org.tbk.bitcoin.tool.fee.blockchair;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tbk.bitcoin.tool.fee.blockchair.proto.BitcoinStatsDataFeesOnly;
+import org.tbk.bitcoin.tool.fee.blockchair.proto.BitcoinStatsFeesOnly;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

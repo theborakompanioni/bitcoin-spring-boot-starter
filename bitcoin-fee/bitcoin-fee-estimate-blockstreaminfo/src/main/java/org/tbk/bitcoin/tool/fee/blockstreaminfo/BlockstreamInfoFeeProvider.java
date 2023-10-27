@@ -3,6 +3,7 @@ package org.tbk.bitcoin.tool.fee.blockstreaminfo;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.blockstreaminfo.proto.FeeEstimates;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public class BlockstreamInfoFeeProvider extends AbstractFeeProvider {
                 .max(Comparator.comparingLong(FeeEstimates.Entry::getNumberOfBlocks));
 
         if (feeEstimateOrEmpty.isEmpty()) {
-            log.warn("no suitable estimation entries present in response for request: {}", request);
+            log.warn("No suitable estimation entries present in response for request.");
             return Flux.empty();
         }
 

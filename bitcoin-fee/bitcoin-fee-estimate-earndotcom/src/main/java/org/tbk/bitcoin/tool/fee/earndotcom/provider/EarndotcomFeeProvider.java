@@ -5,8 +5,8 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.earndotcom.client.EarndotcomApiClient;
-import org.tbk.bitcoin.tool.fee.earndotcom.client.FeesSummaryEntry;
-import org.tbk.bitcoin.tool.fee.earndotcom.client.TransactionFeesSummary;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.FeesSummaryEntry;
+import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.TransactionFeesSummary;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -47,7 +47,7 @@ public class EarndotcomFeeProvider extends AbstractFeeProvider {
         Optional<FeesSummaryEntry> summaryEntryOrEmpty = feeSelectionStrategy.select(request, transactionFeesSummary);
 
         if (summaryEntryOrEmpty.isEmpty()) {
-            log.warn("no suitable estimation entries present in response for request: {}", request);
+            log.warn("No suitable estimation entries present for request.");
             return Flux.empty();
         }
 

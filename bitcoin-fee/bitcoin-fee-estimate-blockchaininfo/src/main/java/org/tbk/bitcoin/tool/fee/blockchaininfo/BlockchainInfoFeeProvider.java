@@ -3,6 +3,7 @@ package org.tbk.bitcoin.tool.fee.blockchaininfo;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
+import org.tbk.bitcoin.tool.fee.blockchaininfo.proto.MempoolFees;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -10,9 +11,9 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
-
 @Slf4j
 public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
+    private static final Duration MAX_DURATION_TARGET = Duration.ofMinutes(60 * 6);
 
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
             .name("Blockchain.info")
@@ -38,12 +39,11 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
     public Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
         MempoolFees mempoolFees = client.mempoolFees();
 
-        log.debug("data: {}", mempoolFees);
-
-        boolean isLessOrEqualToSixHours = Duration.ofMinutes(60 * 6).compareTo(request.getDurationTarget()) >= 0;
+        boolean isLessOrEqualToSixHours = MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
 
         if (!isLessOrEqualToSixHours) {
-            log.warn("Unsupported call to Blockchain.info fee provider: period out of range: {}", request);
+            log.warn("Unsupported call to Blockchain.info fee provider: period out of range: {} > {}",
+                    request.getDurationTarget(), MAX_DURATION_TARGET);
             return Flux.empty();
         }
 

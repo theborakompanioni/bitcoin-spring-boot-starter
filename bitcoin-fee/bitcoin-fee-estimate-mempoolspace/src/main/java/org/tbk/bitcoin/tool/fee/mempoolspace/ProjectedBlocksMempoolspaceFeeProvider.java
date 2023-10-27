@@ -8,7 +8,8 @@ import org.tbk.bitcoin.tool.fee.FeeRecommendationResponse.FeeUnit;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.FeeRecommendationImpl;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
-import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedMempoolBlocks.ProjectedBlock;
+import org.tbk.bitcoin.tool.fee.mempoolspace.proto.ProjectedMempoolBlocks;
+import org.tbk.bitcoin.tool.fee.mempoolspace.proto.ProjectedMempoolBlocks.ProjectedBlock;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import reactor.core.publisher.Flux;
 
