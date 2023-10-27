@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Slf4j
-abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider implements ExchangeRateProvider {
+abstract class AbstractStandardExchangeRateProvider extends AbstractRateProvider {
 
     protected AbstractStandardExchangeRateProvider(ProviderContext providerContext) {
         super(providerContext);

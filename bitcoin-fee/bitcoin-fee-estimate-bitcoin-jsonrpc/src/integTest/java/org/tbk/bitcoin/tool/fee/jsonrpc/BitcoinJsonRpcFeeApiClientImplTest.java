@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.tool.fee.jsonrpc.proto.EstimateSmartFeeRequest;
+import org.tbk.bitcoin.tool.fee.jsonrpc.proto.EstimateSmartFeeResponse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -58,5 +60,4 @@ class BitcoinJsonRpcFeeApiClientImplTest {
         String errorMessage = response.getError(0);
         assertThat(errorMessage, is("Insufficient data or no feerate found"));
     }
-
 }

@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import java.net.URI;
 
 @Getter
 @RequiredArgsConstructor
+@SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
 public class RpcConfigBuilder {
     @NonNull NetworkParameters netParams;
     @NonNull String host;

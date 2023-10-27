@@ -4,13 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
-import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.ProviderContext;
 import javax.money.convert.ProviderContextBuilder;
 import javax.money.convert.RateType;
 
 @Slf4j
-public final class BitcoinStandardExchangeRateProvider extends AbstractStandardExchangeRateProvider implements ExchangeRateProvider {
+public final class BitcoinStandardExchangeRateProvider extends AbstractStandardExchangeRateProvider {
     private static final ProviderContext providerContext = ProviderContextBuilder.of("BITCOIN-STANDARD", RateType.DEFERRED)
             .set("providerDescription", "Exchange Rate Provider using BTC as base currency.")
             .build();

@@ -55,12 +55,10 @@ public class FeeCtrl {
 
     @GetMapping("/recommendations")
     public ResponseEntity<Map<Duration, List<FeeRecommendationResponse>>> recommendations() {
-
-        List<FeeRecommendationRequest> requests = durations.stream()
+        List<FeeRecommendationRequestImpl> requests = durations.stream()
                 .map(val -> FeeRecommendationRequestImpl.builder()
                         .durationTarget(val)
-                        .build())
-                .collect(Collectors.toList());
+                        .build()).toList();
 
         Map<Duration, List<FeeRecommendationResponse>> durationToFeeRecommendations = requests.stream()
                 .collect(Collectors.toMap(FeeRecommendationRequest::getDurationTarget, val -> primaryFeeProvider.request(val)

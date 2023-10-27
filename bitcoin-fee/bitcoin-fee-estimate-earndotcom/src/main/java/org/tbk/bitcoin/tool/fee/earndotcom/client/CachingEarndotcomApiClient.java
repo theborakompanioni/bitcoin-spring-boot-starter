@@ -30,20 +30,10 @@ public final class CachingEarndotcomApiClient implements EarndotcomApiClient {
         this.client = requireNonNull(delegate);
 
         this.feesListCache = CacheBuilder.from(firstNonNull(feesListCacheBuilderSpec, defaultFeesListCacheBuilderSpec))
-                .build(new CacheLoader<>() {
-                    @Override
-                    public TransactionFeesSummary load(String key) {
-                        return client.transactionFeesSummary();
-                    }
-                });
+                .build(CacheLoader.from((key) -> client.transactionFeesSummary()));
 
         this.feesRecommendedCache = CacheBuilder.from(firstNonNull(feesRecommendedCacheBuilderSpec, defaultFeesRecommendedCacheBuilderSpec))
-                .build(new CacheLoader<>() {
-                    @Override
-                    public RecommendedTransactionFees load(String key) {
-                        return client.recommendedTransactionFees();
-                    }
-                });
+                .build(CacheLoader.from((key) -> client.recommendedTransactionFees()));
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.tbk.bitcoin.jsonrpc.config;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 import lombok.NonNull;
 import org.bitcoinj.core.Block;
@@ -46,12 +47,14 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnMissingBean(TransactionCache.class)
     TransactionCache bitcoinJsonRpcTransactionCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, Transaction> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
-                .build(new CacheLoader<>() {
-                    @Override
-                    public Transaction load(Sha256Hash key) throws IOException {
+                .build(CacheLoader.from((key) -> {
+                    try {
                         return bitcoinClient.getRawTransaction(key);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                });
+                }));
+
         return new TransactionCache(cache);
     }
 
@@ -60,12 +63,13 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnMissingBean(RawTransactionInfoCache.class)
     RawTransactionInfoCache bitcoinJsonRpcRawTransactionInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, RawTransactionInfo> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
-                .build(new CacheLoader<>() {
-                    @Override
-                    public RawTransactionInfo load(Sha256Hash key) throws IOException {
+                .build(CacheLoader.from((key) -> {
+                    try {
                         return bitcoinClient.getRawTransactionInfo(key);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                });
+                }));
         return new RawTransactionInfoCache(cache);
     }
 
@@ -74,12 +78,13 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnMissingBean(BlockCache.class)
     BlockCache bitcoinJsonRpcBlockCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, Block> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
-                .build(new CacheLoader<>() {
-                    @Override
-                    public Block load(Sha256Hash key) throws IOException {
+                .build(CacheLoader.from((key) -> {
+                    try {
                         return bitcoinClient.getBlock(key);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                });
+                }));
         return new BlockCache(cache);
     }
 
@@ -88,12 +93,13 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     @ConditionalOnMissingBean(BlockInfoCache.class)
     BlockInfoCache bitcoinJsonRpcBlockInfoCache(BitcoinClient bitcoinClient) {
         LoadingCache<Sha256Hash, BlockInfo> cache = CacheBuilder.from(properties.getTransaction().getCacheBuilderSpec())
-                .build(new CacheLoader<>() {
-                    @Override
-                    public BlockInfo load(Sha256Hash key) throws IOException {
+                .build(CacheLoader.from((key) -> {
+                    try {
                         return bitcoinClient.getBlockInfo(key);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                });
+                }));
         return new BlockInfoCache(cache);
     }
 
@@ -118,6 +124,11 @@ public class BitcoinJsonRpcCacheAutoConfiguration {
     }
 
     @Builder
+    @SuppressFBWarnings(value = {
+            "CT_CONSTRUCTOR_THROW",
+            "EI_EXPOSE_REP",
+            "EI_EXPOSE_REP2"
+    }, justification = "on purpose - it's a facade")
     public static class SimpleCacheFacade implements CacheFacade {
         @NonNull
         private final TransactionCache transactionCache;

@@ -1,8 +1,10 @@
 package org.tbk.bitcoin.jsonrpc.config;
 
 import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Longs;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.micrometer.common.lang.NonNullApi;
 import io.micrometer.common.lang.NonNullFields;
 import io.micrometer.core.instrument.Gauge;
@@ -26,9 +28,7 @@ import org.tbk.bitcoin.jsonrpc.cache.CacheFacade;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -64,7 +64,6 @@ public class BitcoinJsonRpcMetricsConfiguration {
 
     }
 
-
     @Bean
     @ConditionalOnBean(BitcoinClient.class)
     BitcoinJsonRpcClientMetrics bitcoinJsonRpcClientMetrics(BitcoinClient client) {
@@ -74,6 +73,7 @@ public class BitcoinJsonRpcMetricsConfiguration {
     @Slf4j
     @NonNullApi
     @NonNullFields
+    @SuppressFBWarnings(value = "SECCRLFLOG", justification = "reasonable usage")
     public static class BitcoinJsonRpcClientMetrics implements MeterBinder {
         private static final Function<Object, Optional<String>> tryParseString = (obj) -> Optional.ofNullable(obj)
                 .map(Object::toString);
@@ -101,12 +101,13 @@ public class BitcoinJsonRpcMetricsConfiguration {
                 .memoizeWithExpiration(this::fetchMemoryInfo, 1, TimeUnit.SECONDS);
 
         public BitcoinJsonRpcClientMetrics(BitcoinClient client) {
-            this(client, Tags.empty());
+            this(client, Tags.empty().stream().toList());
         }
 
-        public BitcoinJsonRpcClientMetrics(BitcoinClient client, Iterable<Tag> tags) {
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "class from external dependency")
+        public BitcoinJsonRpcClientMetrics(BitcoinClient client, Collection<Tag> tags) {
             this.client = requireNonNull(client);
-            this.tags = requireNonNull(tags);
+            this.tags = List.copyOf(requireNonNull(tags));
 
             this.network = Optional.of(client.getNetParams())
                     .map(NetworkParameters::getId)

@@ -38,12 +38,7 @@ public final class ConversionQueryCache<T> extends SimpleForwardingLoadingCache<
                     log.debug("remove from cache because of {}: {}->{}",
                             notification.getCause(), notification.getKey(), notification.getValue());
                 })
-                .build(new CacheLoader<>() {
-                    @Override
-                    public T load(ConversionQuery conversionQuery) {
-                        return mapper.apply(provider, conversionQuery);
-                    }
-                }));
+                .build(CacheLoader.from((conversionQuery) -> mapper.apply(provider, conversionQuery))));
     }
 
     private ConversionQueryCache(LoadingCache<ConversionQuery, T> delegate) {

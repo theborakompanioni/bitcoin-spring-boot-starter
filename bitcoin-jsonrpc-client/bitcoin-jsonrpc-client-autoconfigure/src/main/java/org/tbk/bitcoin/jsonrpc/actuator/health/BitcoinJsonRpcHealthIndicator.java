@@ -1,13 +1,13 @@
 package org.tbk.bitcoin.jsonrpc.actuator.health;
 
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.consensusj.jsonrpc.JsonRpcStatusException;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthContributor;
 
 import java.util.Map;
 
@@ -15,9 +15,11 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class BitcoinJsonRpcHealthIndicator extends AbstractHealthIndicator implements HealthContributor {
+@SuppressFBWarnings(value = "SECCRLFLOG", justification = "reasonable usage")
+public class BitcoinJsonRpcHealthIndicator extends AbstractHealthIndicator {
     private final BitcoinClient client;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "class from external dependency")
     public BitcoinJsonRpcHealthIndicator(BitcoinClient client) {
         this.client = requireNonNull(client);
     }

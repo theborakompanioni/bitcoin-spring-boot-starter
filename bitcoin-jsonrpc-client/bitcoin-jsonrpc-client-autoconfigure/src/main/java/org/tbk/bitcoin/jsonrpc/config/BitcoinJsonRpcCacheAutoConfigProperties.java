@@ -2,9 +2,7 @@ package org.tbk.bitcoin.jsonrpc.config;
 
 import com.google.common.cache.CacheBuilderSpec;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
@@ -55,9 +53,8 @@ public class BitcoinJsonRpcCacheAutoConfigProperties {
         return Objects.requireNonNullElseGet(blockInfo, () -> new CacheBuilderSpecOption(true, defaultBlockInfoCacheSpec.toParsableString()));
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Getter
+    @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
     public static class CacheBuilderSpecOption {
 
         boolean enabled = true;

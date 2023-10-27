@@ -4,6 +4,7 @@ import javax.money.format.AmountFormatContextBuilder;
 import javax.money.format.AmountFormatQuery;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.spi.MonetaryAmountFormatProviderSpi;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -41,7 +42,7 @@ public final class BitcoinAmountFormatProvider implements MonetaryAmountFormatPr
             return Collections.emptySet();
         }
         if (!(amountFormatQuery.getFormatName() == null
-                || getAvailableFormatNames().contains(amountFormatQuery.getFormatName().toLowerCase()))) {
+                || getAvailableFormatNames().contains(amountFormatQuery.getFormatName().toLowerCase(Locale.ENGLISH)))) {
             return Collections.emptySet();
         }
         AmountFormatContextBuilder builder = AmountFormatContextBuilder.of(getProviderName());

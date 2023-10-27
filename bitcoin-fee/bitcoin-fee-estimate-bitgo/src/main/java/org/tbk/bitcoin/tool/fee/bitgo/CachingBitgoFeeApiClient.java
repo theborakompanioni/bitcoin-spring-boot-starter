@@ -14,22 +14,15 @@ import static java.util.Objects.requireNonNull;
 public final class CachingBitgoFeeApiClient implements BitgoFeeApiClient {
     private static final CacheBuilderSpec defaultResponseCacheBuilderSpec = CacheBuilderSpec.parse("");
 
-    private final BitgoFeeApiClient client;
-
     private final LoadingCache<BtcTxFeeRequest, BtcTxFeeResponse> responseCache;
 
     @Builder
     private CachingBitgoFeeApiClient(BitgoFeeApiClient delegate,
                                      CacheBuilderSpec responseCacheBuilderSpec) {
-        this.client = requireNonNull(delegate);
+        requireNonNull(delegate);
 
         this.responseCache = CacheBuilder.from(firstNonNull(responseCacheBuilderSpec, defaultResponseCacheBuilderSpec))
-                .build(new CacheLoader<>() {
-                    @Override
-                    public BtcTxFeeResponse load(BtcTxFeeRequest key) {
-                        return client.btcTxFee(key);
-                    }
-                });
+                .build(CacheLoader.from(delegate::btcTxFee));
     }
 
     @Override

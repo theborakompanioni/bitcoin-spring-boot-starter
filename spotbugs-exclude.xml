@@ -32,6 +32,18 @@
             <Bug pattern="CT_CONSTRUCTOR_THROW"/>
         </Or>
     </Match>
+    <Match>
+        <!-- disable some known risks or minor warnings in example apps dto classes -->
+        <Or>
+            <Class name="~org\.tbk\..*\.example\..*Dto"/>
+            <Class name="~org\.tbk\..*\.example\..*DtoBuilder"/>
+        </Or>
+        <Or>
+            <Bug pattern="EI_EXPOSE_REP"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+        </Or>
+    </Match>
+
 
     <Match>
         <!-- disable some known risks or minor warnings in test classes -->
