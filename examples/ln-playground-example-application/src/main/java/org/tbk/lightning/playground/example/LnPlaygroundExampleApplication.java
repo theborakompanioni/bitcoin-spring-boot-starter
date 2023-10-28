@@ -24,7 +24,6 @@ public class LnPlaygroundExampleApplication {
                 .sources(LnPlaygroundExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
                 .run(args);
     }
 
