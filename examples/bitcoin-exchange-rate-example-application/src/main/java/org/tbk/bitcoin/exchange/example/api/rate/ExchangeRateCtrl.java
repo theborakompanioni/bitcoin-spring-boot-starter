@@ -43,7 +43,7 @@ public class ExchangeRateCtrl {
     }
 
     @GetMapping("/latest")
-    public ResponseEntity<ExchangeRateResponseImpl> latest(
+    public ResponseEntity<ExchangeRateResponse> latest(
             @RequestParam(name = "base", required = false) CurrencyUnit baseParamOrNull,
             @Parameter(array = @ArraySchema(schema = @Schema(implementation = String.class)))
             @RequestParam(name = "target", required = false) List<CurrencyUnit> targetParamOrNull,
@@ -64,7 +64,7 @@ public class ExchangeRateCtrl {
         ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
                 .setBaseCurrency(baseCurrency);
 
-        Optional<ExchangeRateResponseImpl> exchangeRateResponse = Flux.fromIterable(targetCurrencies)
+        Optional<ExchangeRateResponse> exchangeRateResponse = Flux.fromIterable(targetCurrencies)
                 .map(conversionQueryBuilder::setTermCurrency)
                 .map(ConversionQueryBuilder::build)
                 .flatMap(conversionQuery -> {
@@ -89,7 +89,7 @@ public class ExchangeRateCtrl {
                 })
                 .map(exchangeRate -> ExchangeRateImpl.toDto(exchangeRate).build())
                 .collectList()
-                .map(rates -> ExchangeRateResponseImpl.builder()
+                .map(rates -> (ExchangeRateResponse) ExchangeRateResponseImpl.builder()
                         .base(baseCurrency.getCurrencyCode())
                         .rates(rates)
                         .build())

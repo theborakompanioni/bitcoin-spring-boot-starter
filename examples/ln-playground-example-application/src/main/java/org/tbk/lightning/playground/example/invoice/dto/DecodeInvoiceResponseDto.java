@@ -1,22 +1,18 @@
 package org.tbk.lightning.playground.example.invoice.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
 @Value
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = DecodeInvoiceResponseDto.DecodeInvoiceResponseDtoBuilder.class)
+@Jacksonized
 public class DecodeInvoiceResponseDto {
-    @JsonPOJOBuilder(withPrefix = "")
-    public static final class DecodeInvoiceResponseDtoBuilder {
-    }
 
     @NonNull
     @Schema(example = "a9014f...fcb044", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -58,15 +54,10 @@ public class DecodeInvoiceResponseDto {
     @Singular("routingInfo")
     List<RoutingInfoDto> routingInfos;
 
-
     @Value
     @Builder(toBuilder = true)
-    @JsonDeserialize(builder = RoutingInfoDto.RoutingInfoDtoBuilder.class)
+    @Jacksonized
     public static class RoutingInfoDto {
-        @JsonPOJOBuilder(withPrefix = "")
-        public static final class RoutingInfoDtoBuilder {
-        }
-
         @Singular("routingHint")
         List<RoutingHintDto> routingHints;
     }
@@ -82,12 +73,8 @@ public class DecodeInvoiceResponseDto {
      */
     @Value
     @Builder(toBuilder = true)
-    @JsonDeserialize(builder = RoutingHintDto.RoutingHintDtoBuilder.class)
+    @Jacksonized
     public static class RoutingHintDto {
-        @JsonPOJOBuilder(withPrefix = "")
-        public static final class RoutingHintDtoBuilder {
-        }
-
         String pubkey;
         String shortChannelId;
         Long feeBaseMsat;

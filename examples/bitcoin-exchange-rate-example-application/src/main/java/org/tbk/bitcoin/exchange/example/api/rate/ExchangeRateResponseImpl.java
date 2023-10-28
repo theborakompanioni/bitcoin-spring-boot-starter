@@ -2,11 +2,10 @@ package org.tbk.bitcoin.exchange.example.api.rate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.money.AbstractContext;
 import java.math.BigDecimal;
@@ -17,18 +16,15 @@ import java.util.stream.Collectors;
 
 @Value
 @Builder
-@JsonDeserialize(builder = ExchangeRateResponseImpl.ExchangeRateResponseImplBuilder.class)
+@Jacksonized
 public class ExchangeRateResponseImpl implements ExchangeRateResponse {
-    @JsonPOJOBuilder(withPrefix = "")
-    public static final class ExchangeRateResponseImplBuilder {
-    }
 
     String base;
     List<? extends ExchangeRate> rates;
 
     @Value
     @Builder
-    @JsonDeserialize(builder = ExchangeRateImpl.ExchangeRateImplBuilder.class)
+    @Jacksonized
     public static class ExchangeRateImpl implements ExchangeRate {
 
         private static final class ContextUtil {
@@ -53,10 +49,6 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
                             .toList())
                     .meta(ContextUtil.toMap(exchangeRate.getContext()))
                     .date(exchangeRate.getContext().get(LocalDate.class));
-        }
-
-        @JsonPOJOBuilder(withPrefix = "")
-        public static final class ExchangeRateImplBuilder {
         }
 
         String base;
