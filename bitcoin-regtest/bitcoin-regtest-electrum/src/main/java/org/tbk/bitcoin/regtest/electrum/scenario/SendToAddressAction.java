@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.regtest.electrum.scenario;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -31,6 +32,7 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
         this(client, address, amount, defaultTxFee);
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
     public SendToAddressAction(BitcoinjElectrumClient client, Address address, Coin amount, Coin txFee) {
         this.client = requireNonNull(client);
         this.address = requireNonNull(address);

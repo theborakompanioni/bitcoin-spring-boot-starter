@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.regtest.electrum.scenario;
 
 import com.google.common.base.Stopwatch;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -33,6 +34,7 @@ public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction
         this(client, expectedAmount, address, defaultTimeout, defaultCheckInterval);
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
     public AwaitSpendableBalanceOnAddressAction(BitcoinjElectrumClient client,
                                                 Coin expectedAmount,
                                                 Address address,
@@ -47,7 +49,7 @@ public final class AwaitSpendableBalanceOnAddressAction implements RegtestAction
         checkArgument(expectedAmount.isPositive(), "'expectedAmount' must be positive");
         checkArgument(!checkInterval.isNegative(), "'checkInterval' must be positive");
 
-        // users may made a mistake when 'timeout' is smaller than or equal to 'checkInterval'
+        // users made a mistake when 'timeout' is smaller than or equal to 'checkInterval'
         checkArgument(timeout.compareTo(checkInterval) > 0, "'timeout' must be greater than 'checkInterval");
     }
 

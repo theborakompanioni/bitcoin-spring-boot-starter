@@ -38,6 +38,7 @@ public final class ElectrumRegtestActions {
         return new AwaitTransactionAction(electrumClient.delegate(), txid, confirmations);
     }
 
+    @Deprecated
     public SendToAddressAction sendPayment(Address address, Coin amount) {
         return new SendToAddressAction(electrumClient, address, amount);
     }

@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.regtest.electrum.scenario;
 
 import com.google.common.base.Stopwatch;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
@@ -30,15 +31,15 @@ public final class AwaitWalletSynchronizedAction implements RegtestAction<Boolea
         this(client, timeout, defaultCheckInterval);
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
     public AwaitWalletSynchronizedAction(ElectrumClient client, Duration timeout, Duration checkInterval) {
-
         this.client = requireNonNull(client);
         this.timeout = requireNonNull(timeout);
         this.checkInterval = requireNonNull(checkInterval);
 
         checkArgument(!checkInterval.isNegative(), "'checkInterval' must be positive");
 
-        // users may made a mistake when 'timeout' is smaller than or equal to 'checkInterval'
+        // user made a mistake when 'timeout' is smaller than or equal to 'checkInterval'
         checkArgument(timeout.compareTo(checkInterval) > 0, "'timeout' must be greater than 'checkInterval");
     }
 
