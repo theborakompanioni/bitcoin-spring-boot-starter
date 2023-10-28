@@ -1,8 +1,10 @@
 package org.tbk.bitcoin.regtest.mining;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.params.RegTestParams;
 
+@SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "on purpose")
 public final class RegtestEaterAddressSupplier implements CoinbaseRewardAddressSupplier {
     // an address not controlled by the bitcoin core testcontainer (taken from second_wallet in electrum module)
     // replace with "real" eater address aka "bcrt1b1tco1neaterdntsend1111111xqc4j" but with valid checksum

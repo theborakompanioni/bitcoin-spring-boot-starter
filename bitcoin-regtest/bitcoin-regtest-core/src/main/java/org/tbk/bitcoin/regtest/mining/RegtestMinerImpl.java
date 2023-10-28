@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.regtest.mining;
 
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Sha256Hash;
@@ -21,6 +22,7 @@ public final class RegtestMinerImpl implements RegtestMiner {
         this(client, new RegtestEaterAddressSupplier());
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "class from external dependency")
     public RegtestMinerImpl(BitcoinClient client, CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
         this.client = requireNonNull(client);
         this.coinbaseRewardAddressSupplier = requireNonNull(coinbaseRewardAddressSupplier);
