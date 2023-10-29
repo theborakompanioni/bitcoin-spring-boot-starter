@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.tbk.bitcoin.exchange.example.api.rate.ExchangeRateResponseImpl.ExchangeRateImpl;
+import org.tbk.bitcoin.exchange.example.api.rate.ExchangeRateResponseDtoImpl.ExchangeRateDtoImpl;
 import reactor.core.publisher.Flux;
 
 import javax.money.CurrencyUnit;
@@ -43,7 +43,7 @@ public class ExchangeRateCtrl {
     }
 
     @GetMapping("/latest")
-    public ResponseEntity<ExchangeRateResponse> latest(
+    public ResponseEntity<ExchangeRateResponseDto> latest(
             @RequestParam(name = "base", required = false) CurrencyUnit baseParamOrNull,
             @Parameter(array = @ArraySchema(schema = @Schema(implementation = String.class)))
             @RequestParam(name = "target", required = false) List<CurrencyUnit> targetParamOrNull,
@@ -64,7 +64,7 @@ public class ExchangeRateCtrl {
         ConversionQueryBuilder conversionQueryBuilder = ConversionQueryBuilder.of()
                 .setBaseCurrency(baseCurrency);
 
-        Optional<ExchangeRateResponse> exchangeRateResponse = Flux.fromIterable(targetCurrencies)
+        Optional<ExchangeRateResponseDto> exchangeRateResponse = Flux.fromIterable(targetCurrencies)
                 .map(conversionQueryBuilder::setTermCurrency)
                 .map(ConversionQueryBuilder::build)
                 .flatMap(conversionQuery -> {
@@ -87,9 +87,9 @@ public class ExchangeRateCtrl {
                                 }
                             });
                 })
-                .map(exchangeRate -> ExchangeRateImpl.toDto(exchangeRate).build())
+                .map(exchangeRate -> ExchangeRateDtoImpl.toDto(exchangeRate).build())
                 .collectList()
-                .map(rates -> (ExchangeRateResponse) ExchangeRateResponseImpl.builder()
+                .map(rates -> (ExchangeRateResponseDto) ExchangeRateResponseDtoImpl.builder()
                         .base(baseCurrency.getCurrencyCode())
                         .rates(rates)
                         .build())

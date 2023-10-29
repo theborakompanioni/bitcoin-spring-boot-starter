@@ -1,5 +1,6 @@
 package org.tbk.lightning.playground.example.api;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
@@ -27,6 +28,7 @@ import java.util.List;
 @Schema(
         name = "ApiError"
 )
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"}, justification = "on purpose")
 public class ErrorAttributesSchema {
     @Schema(example = "2019-01-17T16:12:45.977+0000")
     String timestamp;

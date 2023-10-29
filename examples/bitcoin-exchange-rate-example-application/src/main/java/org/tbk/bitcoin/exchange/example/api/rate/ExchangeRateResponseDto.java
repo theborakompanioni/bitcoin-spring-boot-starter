@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
-@JsonDeserialize(as = ExchangeRateResponseImpl.class)
-public interface ExchangeRateResponse {
+@JsonDeserialize(as = ExchangeRateResponseDtoImpl.class)
+public interface ExchangeRateResponseDto {
     String getBase();
 
-    List<? extends ExchangeRate> getRates();
+    List<? extends ExchangeRateDto> getRates();
 }

@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-@JsonDeserialize(as = ExchangeRateResponseImpl.ExchangeRateImpl.class)
-public interface ExchangeRate {
+@JsonDeserialize(as = ExchangeRateResponseDtoImpl.ExchangeRateDtoImpl.class)
+public interface ExchangeRateDto {
     String getBase();
 
     boolean isDerived();
@@ -20,7 +20,7 @@ public interface ExchangeRate {
 
     String getType();
 
-    List<ExchangeRate> getChain();
+    List<ExchangeRateDto> getChain();
 
     Map<String, Object> getMeta();
 }

@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 @Value
 @Builder
 @Jacksonized
-public class ExchangeRateResponseImpl implements ExchangeRateResponse {
+public class ExchangeRateResponseDtoImpl implements ExchangeRateResponseDto {
 
     String base;
-    List<? extends ExchangeRate> rates;
+    List<? extends ExchangeRateDto> rates;
 
     @Value
     @Builder
     @Jacksonized
-    public static class ExchangeRateImpl implements ExchangeRate {
+    public static class ExchangeRateDtoImpl implements ExchangeRateDto {
 
         private static final class ContextUtil {
             public static Map<String, Object> toMap(AbstractContext context) {
@@ -34,8 +34,8 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
             }
         }
 
-        public static ExchangeRateImplBuilder toDto(javax.money.convert.ExchangeRate exchangeRate) {
-            return ExchangeRateResponseImpl.ExchangeRateImpl.builder()
+        public static ExchangeRateDtoImplBuilder toDto(javax.money.convert.ExchangeRate exchangeRate) {
+            return ExchangeRateDtoImpl.builder()
                     .factor(new BigDecimal(exchangeRate.getFactor().toString()))
                     .base(exchangeRate.getBaseCurrency().getCurrencyCode())
                     .target(exchangeRate.getCurrency().getCurrencyCode())
@@ -44,8 +44,8 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
                     .type(exchangeRate.getContext().getRateType().name())
                     .chain(exchangeRate.getExchangeRateChain().stream()
                             .filter(val -> !exchangeRate.equals(val))
-                            .map(ExchangeRateImpl::toDto)
-                            .map(ExchangeRateImplBuilder::build)
+                            .map(ExchangeRateDtoImpl::toDto)
+                            .map(ExchangeRateDtoImplBuilder::build)
                             .toList())
                     .meta(ContextUtil.toMap(exchangeRate.getContext()))
                     .date(exchangeRate.getContext().get(LocalDate.class));
@@ -65,7 +65,7 @@ public class ExchangeRateResponseImpl implements ExchangeRateResponse {
         LocalDate date;
 
         @Singular("addChain")
-        List<ExchangeRate> chain;
+        List<ExchangeRateDto> chain;
 
         @Singular("addMeta")
         Map<String, Object> meta;

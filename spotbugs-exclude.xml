@@ -35,8 +35,8 @@
     <Match>
         <!-- disable some known risks or minor warnings in example apps dto classes -->
         <Or>
-            <Class name="~org\.tbk\..*\.example\..*Dto"/>
-            <Class name="~org\.tbk\..*\.example\..*DtoBuilder"/>
+            <Class name="~org\.tbk\..*\.example\..*Dto(Impl)?"/>
+            <Class name="~org\.tbk\..*\.example\..*Dto(Impl)?Builder"/>
         </Or>
         <Or>
             <Bug pattern="EI_EXPOSE_REP"/>
