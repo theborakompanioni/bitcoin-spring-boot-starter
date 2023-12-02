@@ -326,7 +326,7 @@ services:
 
   lnd6_farid:
     container_name: regtest_lnd6_farid
-    image: polarlightning/lnd:0.17.0-beta
+    image: polarlightning/lnd:0.17.2-beta
     restart: always
     depends_on:
       bitcoind:
