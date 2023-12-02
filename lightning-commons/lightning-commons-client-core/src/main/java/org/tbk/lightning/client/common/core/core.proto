@@ -24,6 +24,8 @@ message CommonInfoResponse {
   // A list of active chains the node is connected to
   repeated Chain chain = 9 [json_name = "chains"];
   uint32 blockheight = 10 [json_name = "blockheight"];
+  // a warning if either bitcoin or lightning node is not yet synced to chain; can be empty.
+  string warning_block_sync = 11  [json_name = "warning_block_sync"];
 }
 
 message Chain {
