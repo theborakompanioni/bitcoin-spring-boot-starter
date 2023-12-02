@@ -79,9 +79,19 @@ public class RegtestLightningNetworkSetup {
     }
 
     private void beforeSetup() throws IOException {
-        onchainFaucet.init();
+        BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
 
+        // it seems to be necessary to mine a single block and wait for the nodes to synchronize.
+        // otherwise, LND seems to be stuck on regtest indefinitely (last check: 2023-12-02).
+        log.debug("Mine a single block and await node synchronization…");
+        bitcoinClient.generateToAddress(1, bitcoinClient.getNewAddress());
         waitForNodesBlockHeightSynchronization();
+        log.debug("Mine a single block and await node synchronization: Done.");
+
+        log.debug("Initialize on-chain faucet and await node synchronization…");
+        onchainFaucet.init();
+        waitForNodesBlockHeightSynchronization();
+        log.debug("Initialize on-chain faucet and await node synchronization: Done.");
     }
 
     private void afterSetup() {
@@ -123,7 +133,7 @@ public class RegtestLightningNetworkSetup {
                 CommonConnectResponse ignoredOnPurpose = connectPeers(entry.getT1(), entry.getT2());
                 log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
             } catch (Exception e) {
-                // LND error if peer is already connected `UNKNOWN: already connected to peer: ${pubkey}@${ip}:${port}`
+                // LND error if peer is already connected: `UNKNOWN: already connected to peer: ${pubkey}@${ip}:${port}`
                 boolean isAlreadyConnected = e.getMessage().contains("already connected to peer");
                 if (!isAlreadyConnected) {
                     throw e;
@@ -347,12 +357,14 @@ public class RegtestLightningNetworkSetup {
     // wait for cln nodes to catch up to the newest block height.
     // prevents `io.grpc.StatusRuntimeException: RpcError { code: Some(304), message: "Still syncing with bitcoin network" }`
     private static void waitForNodeBlockHeightSynchronization(BitcoinExtendedClient bitcoin, Collection<NodeInfo> lnNodes) throws IOException {
-        int currentBlockHeight = bitcoin.getBlockChainInfo().getBlocks();
+        BlockChainInfo blockChainInfo = bitcoin.getBlockChainInfo();
+        int currentBlockHeight = blockChainInfo.getBlocks();
 
-        // does not need to be more often than every 5 seconds - cln can take quite long to synchronize
+        // does not need to be more often than every 5 seconds - cln can take quite long to synchronize.
         Duration checkInterval = Duration.ofSeconds(5);
-        // cln sometimes takes up to ~30 seconds when catching up to more than 100 blocks
-        Duration timeout = Duration.ofSeconds(180);
+        // cln sometimes takes up to ~30 seconds when catching up to more than 100 blocks.
+        // lnd can take even longer as it fetches blocks every 1 seconds if it missed blocks via zmq.
+        Duration timeout = Duration.ofMinutes(3).plusSeconds(2L * currentBlockHeight);
 
         lnNodes.forEach(it -> waitForNodeBlockHeightSynchronization(it.getClient(), currentBlockHeight, checkInterval, timeout));
     }
@@ -367,10 +379,13 @@ public class RegtestLightningNetworkSetup {
                     try {
                         CommonInfoResponse info = requireNonNull(client.info(CommonInfoRequest.newBuilder().build())
                                 .block(Duration.ofSeconds(30)));
-                        boolean finished = info.getBlockheight() >= minBlockHeight;
+                        boolean hasSyncWarning = !info.getWarningBlockSync().isEmpty();
+                        boolean blockHeightInSync = info.getBlockheight() >= minBlockHeight;
+                        boolean finished = !hasSyncWarning && blockHeightInSync;
 
-                        log.debug("Waiting for blockheight to reach {} on {}, currently at height {}: {}",
+                        log.debug("Waiting for block height to reach {} on {}, currently at height {} (warning={}): {}",
                                 minBlockHeight, info.getAlias(), info.getBlockheight(),
+                                info.getWarningBlockSync(),
                                 finished ? "Done" : "Still waiting…");
 
                         return finished;
