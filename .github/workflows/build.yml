@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew autoLintGradle
 
       - name: Build project
-        run: ./gradlew build -x test
+        run: ./gradlew build spotbugsMain -x test
 
       - name: Unit Test
         run: ./gradlew test
