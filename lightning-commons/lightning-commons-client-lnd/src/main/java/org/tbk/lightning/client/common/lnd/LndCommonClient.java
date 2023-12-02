@@ -72,6 +72,7 @@ public class LndCommonClient implements LightningCommonClient {
                                     .build())
                             .toList())
                     .setBlockheight(response.getBlockHeight())
+                    .setWarningBlockSync(response.getSyncedToChain() ? "" : "Node is not synced to chain")
                     .build();
         });
     }

@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * See: <a href="https://docs.corelightning.org/reference">CLN API Docs</a>
@@ -41,6 +42,10 @@ public class ClnCommonClient implements LightningCommonClient {
                             .setNetwork(response.getNetwork())
                             .build())
                     .setBlockheight(response.getBlockheight())
+                    .setWarningBlockSync(Optional.of(response.getWarningBitcoindSync())
+                            .filter(it -> !it.isBlank())
+                            .or(() -> Optional.of(response.getWarningLightningdSync()).filter(it -> !it.isBlank()))
+                            .orElse(""))
                     .build();
         });
     }
