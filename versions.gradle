@@ -17,9 +17,9 @@ ext {
     jmoleculesBomVersion = '2022.3.0'
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.0'
-    acinqSecp256k1KmpVersion = '0.11.0'
-    acinqBitcoinKmpVersion = '0.14.0' // keep in sync with `acinqSecp256k1KmpVersion`
-    acinqLightningKmpVersion = '1.5.12' // keep in sync with `acinqBitcoinKmpVersion`
+    acinqSecp256k1KmpVersion = '0.12.0'
+    acinqBitcoinKmpVersion = '0.15.0' // keep in sync with `acinqSecp256k1KmpVersion`
+    acinqLightningKmpVersion = '1.5.13' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.42.0.0'
     hibernateCommunityDialectsVersion = '6.2.5.Final'
     lombokVersion = '1.18.30'

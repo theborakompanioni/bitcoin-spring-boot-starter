@@ -21,8 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - improved default specs for bitcoin jsonrpc client caches
 - upgrade: update spring-boot from v3.1.0 to v3.1.6
 - upgrade: update cln-grpc-client-core from v23.5.1 to v23.8.1
-- upgrade: update lightning-kmp from v1.4.4 to v1.5.12
-- upgrade: update bitcoin-kmp from v0.12.0 to v0.14.0
+- upgrade: update lightning-kmp from v1.4.4 to v1.5.13
+- upgrade: update bitcoin-kmp from v0.12.0 to v0.15.0
 - upgrade: update lightningj from v0.16.2-Beta to v0.17.0-Beta
 - upgrade: update testcontainers from v1.18.3 to v1.19.1
 - upgrade: update jeromq from v0.5.3 to v0.5.4
