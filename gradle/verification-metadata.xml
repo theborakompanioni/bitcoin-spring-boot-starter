@@ -289,6 +289,7 @@
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.41.2.2"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.42.0.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.43.2.0"/>
+            <trusting group="org.xerial" name="sqlite-jdbc" version="3.44.1.0"/>
          </trusted-key>
          <trusted-key id="c25a288a842eaf7aa5b5303f7a73fe77de2c4027" group="^fr[.]acinq($|([.].*))" regex="true"/>
          <trusted-key id="c6f7d1c804c821f49af3bfc13ad93c3c677a106e">

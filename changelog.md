@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update cln testcontainer from v23.05 to v23.08
 - upgrade: update lombok from v1.18.26 to v1.18.30
 - upgrade: update consensusj from v0.6.4 to v0.6.5
+- upgrade: update sqlite from v3.42.0.0 to v3.44.1.0
 
 ## [0.10.0] - 2023-06-27
 ### Breaking
