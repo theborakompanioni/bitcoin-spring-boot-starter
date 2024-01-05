@@ -9,6 +9,8 @@ import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.tbk.bitcoin.example.payreq.bitcoin.block.BitcoinBlock;
 
@@ -24,6 +26,7 @@ class LndInfoUpdateListener {
     private final LndInfoService lndInfoService;
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     void on(BitcoinBlock.BitcoinBlockCreatedEvent event) {
         try {

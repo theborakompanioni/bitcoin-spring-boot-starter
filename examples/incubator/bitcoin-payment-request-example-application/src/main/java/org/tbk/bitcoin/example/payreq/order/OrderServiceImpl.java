@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.tbk.bitcoin.example.payreq.payment.PaymentRequest;
@@ -32,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Async
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     void on(OrderEvents.CreatedEvent event) {
         Order order = orders.findById(event.orderId())
@@ -42,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Async
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     void on(OrderEvents.ReadyEvent event) {
         Order order = orders.findById(event.orderId())
@@ -52,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Async
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     void on(PaymentRequestStateChanged event) {
         Order order = paymentRequestService.findPaymentRequestBy(event.getPaymentRequestId())

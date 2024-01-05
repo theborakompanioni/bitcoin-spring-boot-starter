@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - move protobuf classes to own package in bitcoin-fee modules
 
+### Changed
+- upgrade: update spring-boot from v3.1.4 to v3.2.1
+- upgrade: update cln-grpc-client-core from v23.5.2 to v23.8.1
+- upgrade: update lightning-kmp from v1.5.6 to v1.5.14
+- upgrade: update bitcoin-kmp from v0.13.0 to v0.15.0
+- upgrade: update lightningj from v0.16.2-Beta to v0.17.0-Beta
+- upgrade: update testcontainers from v1.18.3 to v1.19.1
+- upgrade: update jeromq from v0.5.3 to v0.5.4
+- upgrade: update lnd testcontainer from v0.16.2-beta to v0.17.0-beta
+- upgrade: update cln testcontainer from v23.05 to v23.08
+- upgrade: update lombok from v1.18.26 to v1.18.30
+- upgrade: update consensusj from v0.6.4 to v0.6.5
+- upgrade: update sqlite from v3.42.0.0 to v3.44.1.0
+- upgrade: update jmolecules from v2022.3.0 to v2023.1.1
+
 ## [0.11.0] - 2023-09-21
 ### Breaking
 - module bitcoin-jsonrpc-client-autoconfigure: dependencies not included in anymore
@@ -19,19 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - improved default specs for bitcoin jsonrpc client caches
-- upgrade: update spring-boot from v3.1.0 to v3.1.6
-- upgrade: update cln-grpc-client-core from v23.5.1 to v23.8.1
-- upgrade: update lightning-kmp from v1.4.4 to v1.5.14
-- upgrade: update bitcoin-kmp from v0.12.0 to v0.15.0
-- upgrade: update lightningj from v0.16.2-Beta to v0.17.0-Beta
-- upgrade: update testcontainers from v1.18.3 to v1.19.1
-- upgrade: update jeromq from v0.5.3 to v0.5.4
-- upgrade: update lnd testcontainer from v0.16.2-beta to v0.17.0-beta
-- upgrade: update cln testcontainer from v23.05 to v23.08
-- upgrade: update lombok from v1.18.26 to v1.18.30
-- upgrade: update consensusj from v0.6.4 to v0.6.5
-- upgrade: update sqlite from v3.42.0.0 to v3.44.1.0
-- upgrade: update jmolecules from v2022.3.0 to v2023.1.1
+- upgrade: update spring-boot from v3.1.0 to v3.1.4
+- upgrade: update cln-grpc-client-core from v23.5.1 to v23.5.2
+- upgrade: update lightning-kmp from v1.4.4 to v1.5.6
+- upgrade: update bitcoin-kmp from v0.12.0 to v0.13.0
 
 ## [0.10.0] - 2023-06-27
 ### Breaking

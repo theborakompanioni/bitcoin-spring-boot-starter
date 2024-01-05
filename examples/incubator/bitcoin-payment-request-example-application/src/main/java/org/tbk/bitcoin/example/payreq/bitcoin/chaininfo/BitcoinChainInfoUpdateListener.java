@@ -7,6 +7,8 @@ import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.tbk.bitcoin.example.payreq.bitcoin.block.BitcoinBlock;
 
@@ -24,6 +26,7 @@ class BitcoinChainInfoUpdateListener {
     private final BitcoinChainInfoService chainInfoService;
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     void on(BitcoinBlock.BitcoinBlockCreatedEvent event) {
         try {

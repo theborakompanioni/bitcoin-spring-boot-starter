@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
@@ -28,6 +30,7 @@ class BitcoinBlockEventListener {
     }
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     void onConfirmationEvent(BitcoinBlock.BitcoinBlockConfirmationEvent event) {
         BitcoinBlock domain = blocks.findById(event.getDomainId())
