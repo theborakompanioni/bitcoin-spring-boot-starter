@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.util.ForwardedHeaderUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tbk.lnurl.auth.*;
 import org.tbk.lnurl.simple.auth.SimpleK1;
@@ -75,8 +76,8 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         super.successfulAuthentication(request, response, chain, authResult);
 
         if (authResult instanceof LnurlAuthWalletToken walletToken && this.eventPublisher != null) {
-
-            URI requestUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request)).build().toUri();
+            var sshr = request instanceof ServletServerHttpRequest ? (ServletServerHttpRequest) request : new ServletServerHttpRequest(request);
+            URI requestUri = ForwardedHeaderUtils.adaptFromForwardedHeaders(sshr.getURI(), sshr.getHeaders()).build().toUri();
             SignedLnurlAuth signedLnurlAuth = SimpleSignedLnurlAuth.from(requestUri);
 
             this.eventPublisher.publishEvent(new LnurlAuthWalletActionEvent(this, walletToken, signedLnurlAuth));
