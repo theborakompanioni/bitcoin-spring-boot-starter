@@ -5,7 +5,6 @@ spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo-test'
 spring.http.log-request-details: false
 
 server.port: 8080
-server.use-forward-headers: true
 server.compression.enabled: true
 
 management.server.port: 9001
