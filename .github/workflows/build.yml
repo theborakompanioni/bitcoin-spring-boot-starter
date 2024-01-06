@@ -51,7 +51,7 @@ jobs:
         run: ./gradlew test
 
       - name: Integration Test
-        run: ./gradlew integrationTest
+        run: ./gradlew integrationTest -PtestcontainerTest -PexampleTest
 
       - name: Publish Candidate
         if: |
