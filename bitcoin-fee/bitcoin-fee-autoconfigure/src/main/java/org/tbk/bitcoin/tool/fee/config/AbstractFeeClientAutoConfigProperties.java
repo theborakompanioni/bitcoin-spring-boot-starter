@@ -2,7 +2,6 @@ package org.tbk.bitcoin.tool.fee.config;
 
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.Errors;

@@ -34,7 +34,7 @@ public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo
                                    Address address) {
         this(client, expectedAmount, address, defaultTimeout, defaultCheckInterval);
     }
-    
+
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
     public AwaitExactPaymentAction(BitcoinjElectrumClient client,
                                    Coin expectedAmount,

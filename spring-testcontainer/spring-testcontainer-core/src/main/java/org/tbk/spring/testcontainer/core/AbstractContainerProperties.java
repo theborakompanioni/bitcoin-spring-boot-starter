@@ -43,8 +43,8 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     /**
-     * @deprecated use {@link #AbstractContainerProperties(DockerImageName, List<String>)}
      * @apiNote Scheduled to be removed in v0.13.0
+     * @deprecated use {@link #AbstractContainerProperties(DockerImageName, List<String>)}
      */
     @Deprecated
     protected AbstractContainerProperties(List<String> reservedCommands) {
@@ -52,8 +52,8 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     /**
-     * @deprecated use {@link #AbstractContainerProperties(DockerImageName, List<String>, Map<String, String>)}
      * @apiNote Scheduled to be removed in v0.13.0
+     * @deprecated use {@link #AbstractContainerProperties(DockerImageName, List<String>, Map<String, String>)}
      */
     @Deprecated
     protected AbstractContainerProperties(List<String> reservedCommands, Map<String, String> defaultEnvironment) {
@@ -83,7 +83,7 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     @Override
-    public final  Optional<DockerImageName> getDefaultImage() {
+    public final Optional<DockerImageName> getDefaultImage() {
         return Optional.ofNullable(defaultImage);
     }
 

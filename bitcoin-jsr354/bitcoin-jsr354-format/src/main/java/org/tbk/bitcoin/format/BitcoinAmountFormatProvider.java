@@ -4,7 +4,6 @@ import javax.money.format.AmountFormatContextBuilder;
 import javax.money.format.AmountFormatQuery;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.spi.MonetaryAmountFormatProviderSpi;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
