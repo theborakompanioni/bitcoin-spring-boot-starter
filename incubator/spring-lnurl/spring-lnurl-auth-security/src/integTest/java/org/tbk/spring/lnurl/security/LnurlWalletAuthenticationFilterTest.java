@@ -1,5 +1,6 @@
 package org.tbk.spring.lnurl.security;
 
+import com.google.common.net.HttpHeaders;
 import fr.acinq.secp256k1.Hex;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -122,6 +123,7 @@ class LnurlWalletAuthenticationFilterTest {
                 .orElseThrow(() -> new IllegalStateException("No LnurlAuthWalletActionEvent received"));
         assertThat(lnurlAuthWalletActionEvent.getAuthentication(), is(walletToken));
         assertThat(lnurlAuthWalletActionEvent.getAction().isEmpty(), is(true));
+        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().toLnurl().toUri().getHost(), is("localhost"));
     }
 
     @Test
@@ -145,6 +147,29 @@ class LnurlWalletAuthenticationFilterTest {
                 .orElseThrow(() -> new IllegalStateException("No LnurlAuthWalletActionEvent received"));
         assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().getK1(), is(lnurlAuth.getK1()));
         assertThat(lnurlAuthWalletActionEvent.getAction().orElse(null), is(action));
+    }
+
+    @Test
+    void walletLoginSuccessWithForwardHeader() throws Exception {
+        String forwardedHost = "example.com";
+        URI url = URI.create("https://localhost" + LnurlAuthConfigurer.defaultWalletLoginUrl());
+        LnurlAuth lnurlAuth = SimpleLnurlAuth.create(url, k1Manager.create());
+
+        SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
+
+        mockMvc.perform(get(signedLnurlAuth.toLnurl().toUri())
+                        .header(HttpHeaders.X_FORWARDED_HOST, forwardedHost))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("OK")));
+
+        // assert that an `LnurlAuthWalletActionEvent` event has been received
+        LnurlAuthWalletActionEvent lnurlAuthWalletActionEvent = applicationEvents
+                .stream(LnurlAuthWalletActionEvent.class)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No LnurlAuthWalletActionEvent received"));
+        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().getK1(), is(lnurlAuth.getK1()));
+        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().toLnurl().toUri().getHost(), is(forwardedHost));
     }
 
     @Test
