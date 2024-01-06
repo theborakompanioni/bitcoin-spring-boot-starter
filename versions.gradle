@@ -30,7 +30,7 @@ ext {
     torSpringBootStarterVersion = '0.8.0'
     springBootGradlePluginVersion = '3.2.1'
     protobufGradleVersion = '0.9.4'
-    bytebuddyPluginVersion = '1.12.19'
+    bytebuddyPluginVersion = '1.14.11'
 }
 
 // hack: 2021-11-10T00:00Z - change this timestamp to invalidate GitHub Actions gradle caches.
