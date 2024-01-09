@@ -107,7 +107,7 @@ example applications showing basic usage of the functionality provided by these 
 
 Example apps can be started with a single command, e.g.:
 ```shell script
-./gradlew -p incubator/spring-lnurl/spring-lnurl-auth-example-application bootRun
+./gradlew -p incubator/spring-lnurl/spring-lnurl-auth-example-application bootRun --args="--spring.profiles.active=development --debug"
 ```
 
 
