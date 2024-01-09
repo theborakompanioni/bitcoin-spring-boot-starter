@@ -36,7 +36,7 @@ public class LineItem implements Entity<Order, LineItem.LineItemId> {
     private Integer position;
 
     public LineItem(String name, MonetaryAmount price) {
-        this.id = LineItemId.of(UUID.randomUUID());
+        this.id = LineItemId.create();
         this.name = name;
         this.price = price.getNumber();
         this.currencyUnit = price.getCurrency();
@@ -66,7 +66,12 @@ public class LineItem implements Entity<Order, LineItem.LineItemId> {
 
     @Value(staticConstructor = "of")
     public static class LineItemId implements Identifier {
+
+        public static LineItem.LineItemId create() {
+            return LineItem.LineItemId.of(UUID.randomUUID().toString());
+        }
+
         @NonNull
-        UUID id;
+        String id;
     }
 }

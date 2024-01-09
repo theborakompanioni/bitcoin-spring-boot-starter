@@ -2,10 +2,7 @@ package org.tbk.bitcoin.example.payreq.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableMap;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OrderColumn;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -41,6 +38,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     @UpdateTimestamp
     private Instant updatedAt;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @JsonIgnore
