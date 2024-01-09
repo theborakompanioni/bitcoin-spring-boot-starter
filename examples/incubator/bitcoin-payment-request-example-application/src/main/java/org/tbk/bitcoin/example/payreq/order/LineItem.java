@@ -9,9 +9,9 @@ import lombok.Value;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.types.Entity;
 import org.jmolecules.ddd.types.Identifier;
+import org.tbk.bitcoin.example.payreq.common.MonetaryAmountFormats;
 
 import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import javax.money.NumberValue;
 import java.util.UUID;
@@ -40,7 +40,7 @@ public class LineItem implements Entity<Order, LineItem.LineItemId> {
         this.name = name;
         this.price = price.getNumber();
         this.currencyUnit = price.getCurrency();
-        this.displayPrice = price.with(Monetary.getRounding(price.getCurrency())).toString();
+        this.displayPrice = MonetaryAmountFormats.bitcoin.format(price);
         this.quantity = 1;
     }
 

@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update sqlite from v3.42.0.0 to v3.44.1.0
 - upgrade: update jmolecules from v2022.3.0 to v2023.1.1
 
+### Fixed
+- fix: format sats with space grouping char in BitcoinAmountFormat
+
 ## [0.11.0] - 2023-09-21
 ### Breaking
 - module bitcoin-jsonrpc-client-autoconfigure: dependencies not included in anymore
