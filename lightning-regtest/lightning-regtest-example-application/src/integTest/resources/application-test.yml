@@ -1,7 +1,7 @@
 app.name: tbk-bitcoin-spring-boot-starter-demo (test)
 app.description: A spring boot bitcoin demo application
 
-spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo (test)'
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo-test'
 spring.http.log-request-details: true
 
 logging.level.org.tbk: DEBUG
