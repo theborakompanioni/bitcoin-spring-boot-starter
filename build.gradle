@@ -37,6 +37,7 @@ plugins {
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
+    id 'org.graalvm.buildtools.native' version '0.9.28' apply false
 }
 
 contacts {
