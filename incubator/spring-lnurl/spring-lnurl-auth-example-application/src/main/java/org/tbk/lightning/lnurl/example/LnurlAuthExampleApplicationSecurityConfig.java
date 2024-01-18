@@ -84,8 +84,8 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                 .headers(headers -> headers
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
-                                + "script-src 'self'; "
-                                + "img-src 'self' data: https://robohash.org"))
+                                                                           + "script-src 'self'; "
+                                                                           + "img-src 'self' data: https://robohash.org"))
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
@@ -105,27 +105,27 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                  * An overly verbose definition of the lnurl-auth authorization filter configuration.
                  * This should demonstrate the ability of creating more customized setups.
                  */
-                .apply(new LnurlAuthConfigurer()
-                        .k1Manager(lnurlAuthk1Manager)
-                        .pairingService(lnurlAuthPairingService)
-                        .lnurlAuthFactory(lnurlAuthFactory)
-                        .authenticationUserDetailsService(userDetailsService)
-                        .loginPageEndpoint(login -> login
-                                .enable(true)
-                                .baseUri(lnurlAuthLoginPagePath())
-                        )
-                        .sessionEndpoint(session -> session
-                                .baseUri(lnurlAuthSessionLoginPath())
-                                .sessionK1Key(lnurlAuthSessionK1Key())
-                                .successHandlerCustomizer(successHandler -> {
-                                    successHandler.setDefaultTargetUrl("/");
-                                    successHandler.setTargetUrlParameter("redirect");
-                                    successHandler.setAlwaysUseDefaultTargetUrl(false);
-                                    successHandler.setUseReferer(false);
-                                })
-                        )
-                        .walletEndpoint(wallet -> wallet.baseUri(lnurlAuthWalletLoginPath()))
-                );
+                .with(new LnurlAuthConfigurer(), lnurlAuthConfigurer -> {
+                    lnurlAuthConfigurer.k1Manager(lnurlAuthk1Manager)
+                            .pairingService(lnurlAuthPairingService)
+                            .lnurlAuthFactory(lnurlAuthFactory)
+                            .authenticationUserDetailsService(userDetailsService)
+                            .loginPageEndpoint(login -> login
+                                    .enable(true)
+                                    .baseUri(lnurlAuthLoginPagePath())
+                            )
+                            .sessionEndpoint(session -> session
+                                    .baseUri(lnurlAuthSessionLoginPath())
+                                    .sessionK1Key(lnurlAuthSessionK1Key())
+                                    .successHandlerCustomizer(successHandler -> {
+                                        successHandler.setDefaultTargetUrl("/");
+                                        successHandler.setTargetUrlParameter("redirect");
+                                        successHandler.setAlwaysUseDefaultTargetUrl(false);
+                                        successHandler.setUseReferer(false);
+                                    })
+                            )
+                            .walletEndpoint(wallet -> wallet.baseUri(lnurlAuthWalletLoginPath()));
+                });
 
         return http.build();
     }

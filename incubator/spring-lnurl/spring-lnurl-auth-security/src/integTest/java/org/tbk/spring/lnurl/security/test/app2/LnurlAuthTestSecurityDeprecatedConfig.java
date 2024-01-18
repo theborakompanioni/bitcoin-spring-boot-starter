@@ -57,7 +57,7 @@ class LnurlAuthTestSecurityDeprecatedConfig implements WebSecurityCustomizer {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .apply(LnurlAuthConfigurer.create(k1Manager, pairingService));
+                .with(LnurlAuthConfigurer.create(k1Manager, pairingService), it -> {});
 
         return http.build();
     }

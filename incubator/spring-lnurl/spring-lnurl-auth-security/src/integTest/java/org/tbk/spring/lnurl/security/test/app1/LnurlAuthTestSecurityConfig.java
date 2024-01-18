@@ -54,8 +54,7 @@ class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .apply(LnurlAuthConfigurer.create(k1Manager, pairingService)
-                        .authenticationUserDetailsService(userDetailsService));
+                .with(LnurlAuthConfigurer.create(k1Manager, pairingService), it -> it.authenticationUserDetailsService(userDetailsService));
 
         return http.build();
     }
