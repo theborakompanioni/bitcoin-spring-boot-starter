@@ -15,11 +15,35 @@ A lnurl-auth example application.
 </p>
 
 ### Run
-In order for lnurl-auth to work you must either serve your app over `https` (no self-signed cert allowed) or over tor.
-Currently, there is only [Simple Bitcoin Wallet](https://github.com/btcontract/wallet/) that natively supports `onion` addresses.
-Other wallets will probably support it in the near future.
+In order for lnurl-auth to work you must either serve your app over `https` (no self-signed cert allowed) or as Onion Service.
+Currently, there is only [Simple Bitcoin Wallet][simple_bitcoin_wallet_github] that natively supports `onion` addresses (last checked 2021-07-27).
+Other wallets will probably support it in the near future. Alternatively, you can use [lnpass][lnpass_homepage]
+during development for testing or demonstrating the Lightning Login process.
 
-Serving your app with `https` during development can be done with [ngrok](https://ngrok.com/):
+#### Onion Service
+
+Start the application with
+```shell
+./gradlew -p incubator/spring-lnurl/spring-lnurl-auth-example-application bootRun --args="--spring.profiles.active=development"
+```
+
+Example console output:
+```
+2021-07-27 13:33:13.626  INFO 1221814 --- [  restartedMain] o.t.l.l.e.LnurlAuthExampleApplication    : Starting LnurlAuthExampleApplication using Java 21.0.1
+2021-07-27 13:33:17.724  INFO 1221814 --- [  restartedMain] org.berndpruenster.netlayer.tor.Tor      : Starting Tor
+2021-07-27 13:33:21.382  INFO 1221814 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-07-27 13:33:21.524  INFO 1221814 --- [  restartedMain] o.t.l.l.e.LnurlAuthExampleApplication    : Started LnurlAuthExampleApplication in 8.305 seconds (JVM running for 8.974)
+2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
+2021-07-27 13:33:21.572  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : ===== TOR IS ENABLED ============================
+2021-07-27 13:33:21.573  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : onion login: http://abcdef0123456789abcdef0123456789abcdef0123456789abcdef42.onion/login
+2021-07-27 13:33:21.573  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
+```
+
+Then visit the onion url in your Tor browser and log in with [lnpass][lnpass_homepage].
+
+#### Clearnet
+
+If you do not use Onion Services, serving your app with `https` during development can be done with [ngrok][ngrok_homepage]:
 ```shell
 ./ngrok http 8080
 # Forwarding  https://abcdef012345.ngrok.io -> http://localhost:8080 
@@ -32,31 +56,23 @@ app:
   lnurl-auth-base-url: https://abcdef012345.ngrok.io
 ```
 
+...or start the app with argument `app.lnurl-auth-base-url`:
+
 Start the application with
 ```shell
-./gradlew -p incubator/spring-lnurl/spring-lnurl-auth-example-application bootRun
+./gradlew -p incubator/spring-lnurl/spring-lnurl-auth-example-application bootRun --args="--spring.profiles.active=development --app.lnurl-auth-base-url=https://abcdef012345.ngrok.io"
 ```
 
-Example console output:
-```
-2021-07-27 13:33:13.626  INFO 1221814 --- [  restartedMain] o.t.l.l.e.LnurlAuthExampleApplication    : Starting LnurlAuthExampleApplication using Java 11.0.11 on localhost.localdomain
-2021-07-27 13:33:17.724  INFO 1221814 --- [  restartedMain] org.berndpruenster.netlayer.tor.Tor      : Starting Tor
-2021-07-27 13:33:21.382  INFO 1221814 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-07-27 13:33:21.524  INFO 1221814 --- [  restartedMain] o.t.l.l.e.LnurlAuthExampleApplication    : Started LnurlAuthExampleApplication in 8.305 seconds (JVM running for 8.974)
-2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
-2021-07-27 13:33:21.562  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : ===== LNURL_AUTH ================================
-2021-07-27 13:33:21.565  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : example auth url: https://abcdef012345.ngrok.io?tag=login&k1=90fcb971de936e7bb9a97015e537980e92f5c49f7550094edfc359be2feec270
-2021-07-27 13:33:21.572  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : ===== TOR IS ENABLED ============================
-2021-07-27 13:33:21.573  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : onion login: http://abcdef0123456789abcdef0123456789abcdef0123456789abcdef42.onion/login
-2021-07-27 13:33:21.573  INFO 1221814 --- [  restartedMain] .l.l.e.LnurlAuthExampleApplicationConfig : =================================================
-```
 
 # Resources
 - lnurl RFC (GitHub): https://github.com/fiatjaf/lnurl-rfc
 - Wallets supporting lnurl: https://github.com/fiatjaf/lnurl-rfc#lnurl-documents
+- lnpass: https://lnpass.github.io
 - Simple Bitcoin Wallet (GitHub): https://github.com/btcontract/wallet/
-- Lightning Login Buttons (GitHub): https://github.com/dergigi/lightning-buttons
 - jMolecules (GitHub): https://github.com/xmolecules/jmolecules
 - sqlite (GitHub): https://github.com/sqlite/sqlite
 - ngrok Website: https://ngrok.com
 
+[lnpass_homepage]: https://lnpass.github.io
+[simple_bitcoin_wallet_github]: https://github.com/btcontract/wallet/
+[ngrok_homepage]: https://ngrok.com/
