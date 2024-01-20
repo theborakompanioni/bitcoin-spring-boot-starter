@@ -272,7 +272,7 @@ subprojects {
 
         enabled = subprojects.isEmpty() && !srcDirs.isEmpty()
 
-        ext.outputDir = file("$buildDir/delombok")
+        ext.outputDir = file("$layout.buildDirectory/delombok")
         outputs.dir(outputDir)
         srcDirs.each {
             inputs.dir(it)
@@ -296,7 +296,7 @@ subprojects {
         reportLevel = Confidence.LOW
         ignoreFailures = false
         excludeFilter = rootProject.file('./spotbugs-exclude.xml')
-        reportsDir = rootProject.file("$rootProject.buildDir/reports/spotbugs/$project.name")
+        reportsDir = rootProject.file("$rootProject.layout.buildDirectory/reports/spotbugs/$project.name")
     }
     tasks.withType(SpotBugsTask) {
         onlyIf { gradle.taskGraph.hasTask('build') }
@@ -311,7 +311,7 @@ subprojects {
         configFile = rootProject.file('./checkstyle.xml')
         maxErrors = 0
         ignoreFailures = false
-        reportsDir = rootProject.file("$rootProject.buildDir/reports/checkstyle/$project.name")
+        reportsDir = rootProject.file("$rootProject.layout.buildDirectory/reports/checkstyle/$project.name")
     }
     tasks.withType(Checkstyle) {
         onlyIf { gradle.taskGraph.hasTask('build') }
