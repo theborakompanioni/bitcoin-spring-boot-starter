@@ -8,11 +8,10 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 @Slf4j
 final class LnurlAuthWalletAuthenticationFailureHandler implements AuthenticationFailureHandler {
-
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) {
         if (log.isDebugEnabled()) {
-            log.debug("Received invalid lnurl-auth request: {}", e.getMessage());
+            log.debug("Received invalid lnurl-auth request: {} {}", e.getClass().getName(), e.getMessage());
         }
     }
 }
