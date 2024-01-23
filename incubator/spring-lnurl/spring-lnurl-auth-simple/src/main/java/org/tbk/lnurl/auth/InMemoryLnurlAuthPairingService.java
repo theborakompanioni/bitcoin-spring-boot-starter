@@ -11,9 +11,8 @@ import java.util.Optional;
 
 @Slf4j
 public final class InMemoryLnurlAuthPairingService implements LnurlAuthPairingService {
-    private static final RemovalListener<K1, LinkingKey> LOG_REMOVAL_LISTENER = new RemovalListener<>() {
-        @Override
-        public void onRemoval(RemovalNotification<K1, LinkingKey> notification) {
+    private static final RemovalListener<K1, LinkingKey> LOG_REMOVAL_LISTENER = notification -> {
+        if (log.isDebugEnabled()) {
             log.debug("Remove k1 '{}' from in-memory pairing cache: {}", notification.getKey(), notification.getCause());
         }
     };

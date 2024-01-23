@@ -1,5 +1,6 @@
 package org.tbk.lnurl.simple.auth;
 
+import com.google.common.base.MoreObjects;
 import fr.acinq.secp256k1.Hex;
 import org.tbk.lnurl.auth.K1;
 
@@ -22,5 +23,12 @@ public final class SimpleK1 extends AbstractByteArrayView implements K1 {
     @Override
     protected void validate(byte[] data) {
         checkArgument(data.length == 32, "data must be an array of size 32");
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("data", this.toHex())
+                .toString();
     }
 }

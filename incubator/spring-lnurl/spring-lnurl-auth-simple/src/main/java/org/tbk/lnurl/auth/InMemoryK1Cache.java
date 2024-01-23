@@ -10,9 +10,8 @@ import java.time.Duration;
 
 @Slf4j
 public final class InMemoryK1Cache implements K1Cache {
-    private static final RemovalListener<K1, K1> LOG_REMOVAL_LISTENER = new RemovalListener<>() {
-        @Override
-        public void onRemoval(RemovalNotification<K1, K1> notification) {
+    private static final RemovalListener<K1, K1> LOG_REMOVAL_LISTENER = notification -> {
+        if (log.isDebugEnabled()) {
             log.debug("Remove k1 '{}' from in-memory k1 cache: {}", notification.getKey(), notification.getCause());
         }
     };
