@@ -22,8 +22,7 @@ import java.util.Optional;
 @Slf4j
 public class LnurlAuthSessionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     @FunctionalInterface
-    public
-    interface SuccessHandlerCustomizer {
+    public interface SuccessHandlerCustomizer {
         void customize(LnurlAuthSessionAuthenticationSuccessHandler successHandler);
     }
 
