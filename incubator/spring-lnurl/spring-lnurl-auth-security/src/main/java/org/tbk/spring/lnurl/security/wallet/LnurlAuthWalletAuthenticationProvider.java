@@ -34,12 +34,13 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
 
     @Override
     protected LinkingKey retrieveLinkingKey(Authentication authentication) throws AuthenticationException {
-        LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
+        LnurlAuthWalletToken token = (LnurlAuthWalletToken) authentication;
 
-        if (auth.isAuthenticated()) {
+        if (token.isAuthenticated()) {
             throw new LnurlAuthenticationException("Already authenticated.");
         }
 
+        SignedLnurlAuth auth = token.getAuth();
         K1 k1 = auth.getK1();
 
         boolean validK1 = k1Manager.isValid(k1);
@@ -72,13 +73,18 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
     protected Authentication createSuccessAuthentication(LinkingKey linkingKey, Authentication authentication, UserDetails user) {
         LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
 
-        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getK1(), auth.getSignature(), linkingKey, user.getAuthorities());
+        // Sanity check that the given linking key is actually the same as in the auth object
+        if (!auth.getAuth().getLinkingKey().equals(linkingKey)) {
+            throw new IllegalStateException("Given linking key does not match key in authentication data.");
+        }
+
+        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getAuth(), user.getAuthorities());
         newAuth.setDetails(user);
 
         return newAuth;
     }
 
-    private boolean verifyLogin(LnurlAuthWalletToken auth) {
+    private boolean verifyLogin(SignedLnurlAuth auth) {
         return verifyLogin(auth.getK1(), auth.getSignature(), auth.getLinkingKey());
     }
 

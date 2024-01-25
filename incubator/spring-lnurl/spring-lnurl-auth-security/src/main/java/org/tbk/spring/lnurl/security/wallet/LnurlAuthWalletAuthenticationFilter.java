@@ -16,16 +16,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.util.ForwardedHeaderUtils;
-import org.tbk.lnurl.auth.*;
-import org.tbk.lnurl.simple.auth.SimpleK1;
-import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
-import org.tbk.lnurl.simple.auth.SimpleSignature;
+import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Optional;
 
 @Slf4j
 public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -33,13 +29,13 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
     private static final LnurlAuthWalletAuthenticationSuccessHandler successHandler = new LnurlAuthWalletAuthenticationSuccessHandler();
 
     private static final String successBody = "{\n"
-            + "  \"status\": \"OK\"\n"
-            + "}";
+                                              + "  \"status\": \"OK\"\n"
+                                              + "}";
 
     private static final String errorBody = "{\n"
-            + "  \"status\": \"ERROR\",\n"
-            + "  \"reason\": \"Request could not be authenticated.\"\n"
-            + "}";
+                                            + "  \"status\": \"ERROR\",\n"
+                                            + "  \"reason\": \"Request could not be authenticated.\"\n"
+                                            + "}";
 
     public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern) {
         this(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()));
@@ -62,7 +58,8 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         LnurlAuthWalletToken authRequest = buildToken(request);
 
         if (log.isDebugEnabled()) {
-            log.debug("got lnurl-auth wallet authentication request for k1 '{}'", authRequest.getK1().toHex());
+            SignedLnurlAuth auth = authRequest.getAuth();
+            log.debug("got lnurl-auth wallet authentication request for k1 '{}' from '{}'", auth.getK1().toHex(), auth.getLinkingKey().toHex());
         }
 
         setDetails(request, authRequest);
@@ -75,11 +72,7 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         super.successfulAuthentication(request, response, chain, authResult);
 
         if (authResult instanceof LnurlAuthWalletToken walletToken && this.eventPublisher != null) {
-            var sshr = request instanceof ServletServerHttpRequest ? (ServletServerHttpRequest) request : new ServletServerHttpRequest(request);
-            URI requestUri = ForwardedHeaderUtils.adaptFromForwardedHeaders(sshr.getURI(), sshr.getHeaders()).build().toUri();
-            SignedLnurlAuth signedLnurlAuth = SimpleSignedLnurlAuth.from(requestUri);
-
-            this.eventPublisher.publishEvent(new LnurlAuthWalletActionEvent(this, walletToken, signedLnurlAuth));
+            this.eventPublisher.publishEvent(new LnurlAuthWalletActionEvent(this, walletToken));
         }
 
         if (!response.isCommitted()) {
@@ -112,11 +105,10 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
 
     protected LnurlAuthWalletToken buildToken(HttpServletRequest request) {
         try {
-            K1 k1 = obtainK1(request).orElseThrow(() -> new LnurlAuthenticationException("k1 is missing or invalid."));
-            Signature sig = obtainSig(request).orElseThrow(() -> new LnurlAuthenticationException("Signature is missing or invalid."));
-            LinkingKey key = obtainKey(request).orElseThrow(() -> new LnurlAuthenticationException("Key is missing or invalid."));
-
-            return new LnurlAuthWalletToken(k1, sig, key);
+            var sshr = request instanceof ServletServerHttpRequest ? (ServletServerHttpRequest) request : new ServletServerHttpRequest(request);
+            URI requestUri = ForwardedHeaderUtils.adaptFromForwardedHeaders(sshr.getURI(), sshr.getHeaders()).build().toUri();
+            SignedLnurlAuth signedLnurlAuth = SimpleSignedLnurlAuth.from(requestUri);
+            return new LnurlAuthWalletToken(signedLnurlAuth);
         } catch (LnurlAuthenticationException e) {
             throw e;
         } catch (IllegalArgumentException e) {
@@ -124,21 +116,6 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         } catch (Exception e) {
             throw new LnurlAuthenticationException("Cannot build wallet token from request", e);
         }
-    }
-
-    protected Optional<K1> obtainK1(HttpServletRequest request) {
-        return Optional.ofNullable(request.getParameter(LnurlAuth.LNURL_AUTH_K1_KEY))
-                .map(SimpleK1::fromHex);
-    }
-
-    protected Optional<Signature> obtainSig(HttpServletRequest request) {
-        return Optional.ofNullable(request.getParameter(SignedLnurlAuth.LNURL_AUTH_SIG_KEY))
-                .map(SimpleSignature::fromHex);
-    }
-
-    protected Optional<LinkingKey> obtainKey(HttpServletRequest request) {
-        return Optional.ofNullable(request.getParameter(SignedLnurlAuth.LNURL_AUTH_KEY_KEY))
-                .map(SimpleLinkingKey::fromHex);
     }
 
     protected void setDetails(HttpServletRequest request, LnurlAuthWalletToken authRequest) {
