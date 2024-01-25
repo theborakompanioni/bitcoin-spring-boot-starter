@@ -9,7 +9,7 @@ server.compression.enabled: true
 
 server.servlet.session.timeout: 24h # Session timeout. If a duration suffix is not specified, seconds are used.
 
-spring.datasource.url: 'jdbc:sqlite:lnurl_auth_example_application.db'
+spring.datasource.url: 'jdbc:sqlite:lnurl_auth_example_application.db?foreign_keys=true'
 spring.datasource.driver-class-name: org.sqlite.JDBC
 spring.datasource.hikari.pool-name: SQLitePool
 spring.datasource.hikari.connection-timeout: 30000 # maximum number of milliseconds that a client will wait for a connection

@@ -15,6 +15,8 @@ server.error:
 
 management.server.port: 9001
 
+spring.datasource.url: 'jdbc:sqlite:bitcoin_payment_request_example_application-dev.db?foreign_keys=true'
+
 # LOGGING
 logging.file.path: ./var/log
 logging.file.name: application-dev.log

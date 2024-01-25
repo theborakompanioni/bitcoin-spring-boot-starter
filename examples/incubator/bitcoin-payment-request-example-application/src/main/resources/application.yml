@@ -30,7 +30,7 @@ logging.level.org.springframework: INFO
 #logging.level.web: DEBUG
 logging.level.org.javamoney.moneta.Money: WARN
 
-spring.datasource.url: 'jdbc:sqlite:bitcoin_payment_request_example_application.db'
+spring.datasource.url: 'jdbc:sqlite:bitcoin_payment_request_example_application.db?foreign_keys=true'
 spring.datasource.driver-class-name: org.sqlite.JDBC
 spring.datasource.hikari.pool-name: SQLitePool
 spring.datasource.hikari.connection-timeout: 30000 #maximum number of milliseconds that a client will wait for a connection
