@@ -47,8 +47,7 @@ class LnurlAuthExampleApplicationConfig {
         String callbackBaseUrl = properties.getLnurlAuthBaseUrl()
                 .or(() -> applicationHiddenServiceDefinition.flatMap(this::buildOnionUrl))
                 .orElseThrow(() -> {
-                    String errorMessage = "Cannot build lnurl-auth callback base url. "
-                            + "Please enable tor or provide an `app.lnurl-auth-base-url` property. ";
+                    String errorMessage = "Cannot build lnurl-auth callback base url. Please enable tor or provide an `app.lnurl-auth-base-url` property.";
                     return new IllegalStateException(errorMessage);
                 });
 
@@ -57,11 +56,6 @@ class LnurlAuthExampleApplicationConfig {
                 .build();
 
         return new SimpleLnurlAuthFactory(callbackUrl, k1Manager);
-    }
-
-    @Bean
-    SimpleK1Manager k1Manager() {
-        return new SimpleK1Manager();
     }
 
     @Bean
