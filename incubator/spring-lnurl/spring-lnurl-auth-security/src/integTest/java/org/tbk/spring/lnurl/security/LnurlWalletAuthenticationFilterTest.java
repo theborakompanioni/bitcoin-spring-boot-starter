@@ -112,9 +112,9 @@ class LnurlWalletAuthenticationFilterTest {
         assertThat(authenticationSuccessEvent.getAuthentication(), instanceOf(LnurlAuthWalletToken.class));
 
         LnurlAuthWalletToken walletToken = (LnurlAuthWalletToken) authenticationSuccessEvent.getAuthentication();
-        assertThat(walletToken.getK1(), is(signedLnurlAuth.getK1()));
-        assertThat(walletToken.getSignature(), is(signedLnurlAuth.getSignature()));
-        assertThat(walletToken.getLinkingKey(), is(signedLnurlAuth.getLinkingKey()));
+        assertThat(walletToken.getAuth().getK1(), is(signedLnurlAuth.getK1()));
+        assertThat(walletToken.getAuth().getSignature(), is(signedLnurlAuth.getSignature()));
+        assertThat(walletToken.getAuth().getLinkingKey(), is(signedLnurlAuth.getLinkingKey()));
 
         // assert that an `LnurlAuthWalletActionEvent` event has been received
         LnurlAuthWalletActionEvent lnurlAuthWalletActionEvent = applicationEvents
@@ -122,8 +122,8 @@ class LnurlWalletAuthenticationFilterTest {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No LnurlAuthWalletActionEvent received"));
         assertThat(lnurlAuthWalletActionEvent.getAuthentication(), is(walletToken));
-        assertThat(lnurlAuthWalletActionEvent.getAction().isEmpty(), is(true));
-        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().toLnurl().toUri().getHost(), is("localhost"));
+        assertThat(lnurlAuthWalletActionEvent.getAuthentication().getAuth().getAction().isEmpty(), is(true));
+        assertThat(lnurlAuthWalletActionEvent.getAuthentication().getAuth().toLnurl().toUri().getHost(), is("localhost"));
     }
 
     @Test
@@ -145,8 +145,8 @@ class LnurlWalletAuthenticationFilterTest {
                 .stream(LnurlAuthWalletActionEvent.class)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No LnurlAuthWalletActionEvent received"));
-        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().getK1(), is(lnurlAuth.getK1()));
-        assertThat(lnurlAuthWalletActionEvent.getAction().orElse(null), is(action));
+        assertThat(lnurlAuthWalletActionEvent.getAuthentication().getAuth().getK1(), is(lnurlAuth.getK1()));
+        assertThat(lnurlAuthWalletActionEvent.getAuthentication().getAuth().getAction().orElse(null), is(action));
     }
 
     @Test
@@ -168,8 +168,8 @@ class LnurlWalletAuthenticationFilterTest {
                 .stream(LnurlAuthWalletActionEvent.class)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No LnurlAuthWalletActionEvent received"));
-        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().getK1(), is(lnurlAuth.getK1()));
-        assertThat(lnurlAuthWalletActionEvent.getLnurlAuth().toLnurl().toUri().getHost(), is(forwardedHost));
+        assertThat(lnurlAuthWalletActionEvent.getAuthentication().getAuth().getK1(), is(lnurlAuth.getK1()));
+        assertThat(lnurlAuthWalletActionEvent.getAuthentication().getAuth().toLnurl().toUri().getHost(), is(forwardedHost));
     }
 
     @Test
@@ -180,6 +180,7 @@ class LnurlWalletAuthenticationFilterTest {
         SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
 
         mockMvc.perform(get(loginUri)
+                        .queryParam(LnurlAuth.LNURL_AUTH_TAG_KEY, LnurlAuth.LNURL_AUTH_TAG_PARAM_VALUE)
                         .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, "00".repeat(32))
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
@@ -197,9 +198,9 @@ class LnurlWalletAuthenticationFilterTest {
         assertThat(badCredentialsEvent.getAuthentication(), instanceOf(LnurlAuthWalletToken.class));
 
         LnurlAuthWalletToken walletToken = (LnurlAuthWalletToken) badCredentialsEvent.getAuthentication();
-        assertThat(walletToken.getK1().toHex(), is("00".repeat(32)));
-        assertThat(walletToken.getSignature(), is(signedLnurlAuth.getSignature()));
-        assertThat(walletToken.getLinkingKey(), is(signedLnurlAuth.getLinkingKey()));
+        assertThat(walletToken.getAuth().getK1().toHex(), is("00".repeat(32)));
+        assertThat(walletToken.getAuth().getSignature(), is(signedLnurlAuth.getSignature()));
+        assertThat(walletToken.getAuth().getLinkingKey(), is(signedLnurlAuth.getLinkingKey()));
     }
 
     @Test
@@ -213,6 +214,7 @@ class LnurlWalletAuthenticationFilterTest {
         SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
 
         mockMvc.perform(get(loginUri)
+                        .queryParam(LnurlAuth.LNURL_AUTH_TAG_KEY, LnurlAuth.LNURL_AUTH_TAG_PARAM_VALUE)
                         .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, realK1.toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
@@ -230,9 +232,9 @@ class LnurlWalletAuthenticationFilterTest {
         assertThat(badCredentialsEvent.getAuthentication(), instanceOf(LnurlAuthWalletToken.class));
 
         LnurlAuthWalletToken walletToken = (LnurlAuthWalletToken) badCredentialsEvent.getAuthentication();
-        assertThat(walletToken.getK1(), is(realK1));
-        assertThat(walletToken.getSignature(), is(signedLnurlAuth.getSignature()));
-        assertThat(walletToken.getLinkingKey(), is(signedLnurlAuth.getLinkingKey()));
+        assertThat(walletToken.getAuth().getK1(), is(realK1));
+        assertThat(walletToken.getAuth().getSignature(), is(signedLnurlAuth.getSignature()));
+        assertThat(walletToken.getAuth().getLinkingKey(), is(signedLnurlAuth.getLinkingKey()));
     }
 
     @Test
@@ -246,6 +248,7 @@ class LnurlWalletAuthenticationFilterTest {
         String invalidKeyHex = signedLnurlAuth.getLinkingKey().toHex().replaceAll("[0-9a-fA-F]", "0");
 
         mockMvc.perform(get(loginUri)
+                        .queryParam(LnurlAuth.LNURL_AUTH_TAG_KEY, LnurlAuth.LNURL_AUTH_TAG_PARAM_VALUE)
                         .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, invalidKeyHex))
@@ -280,6 +283,7 @@ class LnurlWalletAuthenticationFilterTest {
         LinkingKey mismatchingKey = SimpleLnurlWallet.fromSeed(Hex.decode("00".repeat(256))).deriveLinkingPublicKey(loginUri);
 
         mockMvc.perform(get(loginUri)
+                        .queryParam(LnurlAuth.LNURL_AUTH_TAG_KEY, LnurlAuth.LNURL_AUTH_TAG_PARAM_VALUE)
                         .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
                         .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, mismatchingKey.toHex()))
@@ -297,8 +301,74 @@ class LnurlWalletAuthenticationFilterTest {
         assertThat(badCredentialsEvent.getAuthentication(), instanceOf(LnurlAuthWalletToken.class));
 
         LnurlAuthWalletToken walletToken = (LnurlAuthWalletToken) badCredentialsEvent.getAuthentication();
-        assertThat(walletToken.getK1(), is(signedLnurlAuth.getK1()));
-        assertThat(walletToken.getSignature(), is(signedLnurlAuth.getSignature()));
-        assertThat(walletToken.getLinkingKey(), is(mismatchingKey));
+        assertThat(walletToken.getAuth().getK1(), is(signedLnurlAuth.getK1()));
+        assertThat(walletToken.getAuth().getSignature(), is(signedLnurlAuth.getSignature()));
+        assertThat(walletToken.getAuth().getLinkingKey(), is(mismatchingKey));
+    }
+
+    @Test
+    void walletLoginMissingTagParam() throws Exception {
+        URI loginUri = URI.create("https://localhost" + LnurlAuthConfigurer.defaultWalletLoginUrl());
+
+        LnurlAuth lnurlAuth = SimpleLnurlAuth.create(loginUri, k1Manager.create());
+
+        SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
+
+        mockMvc.perform(get(loginUri)
+                        // Notice the missing "tag" query param (which must have value "login")
+                        .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status", is("ERROR")))
+                .andExpect(jsonPath("$.reason", is("Request could not be authenticated.")));
+
+        // generates no `AuthorizationFailureEvent` as success/failure events are published by an `AuthenticationManager`
+        // which will not even be invoked for invalid requests in the first place.
+        // in this case the "tag" param is missing.
+        assertThat("no AuthorizationFailureEvent received", applicationEvents
+                .stream(AbstractAuthenticationFailureEvent.class)
+                .count(), is(0L));
+
+        assertThat("no AuthenticationSuccessEvent received", applicationEvents
+                .stream(AuthenticationSuccessEvent.class)
+                .count(), is(0L));
+
+        assertThat("no LnurlAuthWalletActionEvent received", applicationEvents
+                .stream(LnurlAuthWalletActionEvent.class)
+                .count(), is(0L));
+    }
+
+    @Test
+    void walletLoginInvalidTagParam() throws Exception {
+        URI loginUri = URI.create("https://localhost" + LnurlAuthConfigurer.defaultWalletLoginUrl());
+
+        LnurlAuth lnurlAuth = SimpleLnurlAuth.create(loginUri, k1Manager.create());
+
+        SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
+
+        mockMvc.perform(get(loginUri)
+                        .queryParam(LnurlAuth.LNURL_AUTH_TAG_KEY, "some-invalid-value")
+                        .queryParam(LnurlAuth.LNURL_AUTH_K1_KEY, signedLnurlAuth.getK1().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_SIG_KEY, signedLnurlAuth.getSignature().toHex())
+                        .queryParam(SignedLnurlAuth.LNURL_AUTH_KEY_KEY, signedLnurlAuth.getLinkingKey().toHex()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status", is("ERROR")))
+                .andExpect(jsonPath("$.reason", is("Request could not be authenticated.")));
+
+        // generates no `AuthorizationFailureEvent` as success/failure events are published by an `AuthenticationManager`
+        // which will not even be invoked for invalid requests in the first place.
+        // in this case the "tag" param is invalid.
+        assertThat("no AuthorizationFailureEvent received", applicationEvents
+                .stream(AbstractAuthenticationFailureEvent.class)
+                .count(), is(0L));
+
+        assertThat("no AuthenticationSuccessEvent received", applicationEvents
+                .stream(AuthenticationSuccessEvent.class)
+                .count(), is(0L));
+
+        assertThat("no LnurlAuthWalletActionEvent received", applicationEvents
+                .stream(LnurlAuthWalletActionEvent.class)
+                .count(), is(0L));
     }
 }

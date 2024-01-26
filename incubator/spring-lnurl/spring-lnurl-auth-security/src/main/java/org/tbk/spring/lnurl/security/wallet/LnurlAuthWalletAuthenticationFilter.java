@@ -29,16 +29,16 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
     private static final LnurlAuthWalletAuthenticationSuccessHandler successHandler = new LnurlAuthWalletAuthenticationSuccessHandler();
 
     private static final String successBody = """
-                                              {
-                                                "status": "OK"
-                                              }
-                                              """;
+            {
+              "status": "OK"
+            }
+            """;
     private static final String errorBody = """
-                                            {
-                                              "status": "ERROR",
-                                              "reason": "Request could not be authenticated."
-                                            }
-                                            """;
+            {
+              "status": "ERROR",
+              "reason": "Request could not be authenticated."
+            }
+            """;
 
     public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern) {
         this(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()));

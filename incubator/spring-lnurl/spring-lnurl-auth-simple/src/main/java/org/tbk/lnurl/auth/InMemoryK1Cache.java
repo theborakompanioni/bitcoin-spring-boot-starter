@@ -3,7 +3,6 @@ package org.tbk.lnurl.auth;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
