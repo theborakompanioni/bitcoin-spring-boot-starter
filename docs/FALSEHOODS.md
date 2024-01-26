@@ -151,6 +151,11 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **All transaction hashes in the blockchain are unique.**
 
+Nope. See [BIP30](https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki).
+
+To counter this problem, the following network rule has been introduced:
+* Blocks are not allowed to contain a transaction whose identifier matches that of an earlier, not-fully-spent transaction in the same chain.
+
 1. **Fees are a specified explicitly in a transaction.**
 
 No, the transaction fee is the difference between the amount being spent and the amount being received.
