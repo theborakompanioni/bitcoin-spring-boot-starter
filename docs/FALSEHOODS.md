@@ -151,20 +151,21 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **All transaction hashes in the blockchain are unique.**
 
-Nope. See [BIP30](https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki).
+   Nope. See [BIP30](https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki).
+    
+   To counter this problem, the following network rule has been introduced:
+   * Blocks are not allowed to contain a transaction whose identifier matches that of an earlier, not-fully-spent transaction in the same chain.
 
-To counter this problem, the following network rule has been introduced:
-* Blocks are not allowed to contain a transaction whose identifier matches that of an earlier, not-fully-spent transaction in the same chain.
 
 1. **Fees are a specified explicitly in a transaction.**
 
-No, the transaction fee is the difference between the amount being spent and the amount being received.
-It is not explicitly specified in a transaction, instead it must be calculated with `sum(inputs) - sum(outputs)`.
+   No, the transaction fee is the difference between the amount being spent and the amount being received.
+   It is not explicitly specified in a transaction, instead it must be calculated with `sum(inputs) - sum(outputs)`.
 
 1. **Okay, but every transaction must pay a fee, right?**
 
-No, the only rule is that transaction fees must be greater than or equal to zero.
-For example: [See this transaction where input and output amounts are equal](https://mempool.space/tx/0301e0480b374b32851a9462db29dc19fe830a7f7d7a88b81612b9d42099c0ae), which means: No fees were paid (at least not on-chain).
+   No, the only rule is that transaction fees must be greater than or equal to zero.
+   For example: [See this transaction where input and output amounts are equal](https://mempool.space/tx/0301e0480b374b32851a9462db29dc19fe830a7f7d7a88b81612b9d42099c0ae), which means: No fees were paid (at least not on-chain).
 
 1. **If I make an RBF marked transaction I can always replace it by a different one, as long as it is still unconfirmed.**
 
