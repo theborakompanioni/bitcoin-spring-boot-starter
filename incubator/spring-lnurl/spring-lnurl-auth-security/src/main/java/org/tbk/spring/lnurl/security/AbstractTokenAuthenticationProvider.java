@@ -24,24 +24,18 @@ public abstract class AbstractTokenAuthenticationProvider implements Authenticat
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Assert.isTrue(supports(authentication.getClass()), "Unsupported authentication class");
 
-        LinkingKey linkingKey = retrieveLinkingKey(authentication);
-
-        Assert.notNull(linkingKey, "linkingKey returned null - a violation of the interface contract");
-
-        UserDetails userDetails = retrieveUser(linkingKey, authentication);
+        UserDetails userDetails = retrieveUser(authentication);
 
         Assert.notNull(userDetails, "retrieveUser returned null - a violation of the interface contract");
 
         getAuthenticationChecks().check(userDetails);
 
-        return createSuccessAuthentication(linkingKey, authentication, userDetails);
+        return createSuccessAuthentication(authentication, userDetails);
     }
 
-    protected abstract LinkingKey retrieveLinkingKey(Authentication authentication) throws AuthenticationException;
+    protected abstract UserDetails retrieveUser(Authentication authentication) throws AuthenticationException;
 
-    protected abstract UserDetails retrieveUser(LinkingKey linkingKey, Authentication authentication) throws AuthenticationException;
-
-    protected abstract Authentication createSuccessAuthentication(LinkingKey linkingKey, Authentication authentication, UserDetails user);
+    protected abstract Authentication createSuccessAuthentication(Authentication authentication, UserDetails user);
 
     protected UserDetailsChecker getAuthenticationChecks() {
         return this.authenticationChecks;

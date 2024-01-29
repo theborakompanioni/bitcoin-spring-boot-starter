@@ -4,10 +4,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.SecurityConfigurer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -15,16 +13,14 @@ import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
-import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationFilter;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationFilter.SuccessHandlerCustomizer;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationProvider;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionAuthenticationSuccessHandler;
 import org.tbk.spring.lnurl.security.ui.LnurlAuthLoginPageGeneratingFilter;
+import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationFilter;
 import org.tbk.spring.lnurl.security.wallet.LnurlAuthWalletAuthenticationProvider;
-
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -57,7 +53,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
      *
      * @return a new instance of {@link LnurlAuthConfigurer} with default login page disabled
      */
-    public static LnurlAuthConfigurer create(K1Manager k1Manager, LnurlAuthPairingService pairingService) {
+    public static LnurlAuthConfigurer create(K1Manager k1Manager, LnurlAuthUserPairingService pairingService) {
         return new LnurlAuthConfigurer()
                 .k1Manager(k1Manager)
                 .pairingService(pairingService)
@@ -70,7 +66,7 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
      * @return a new instance of {@link LnurlAuthConfigurer} with default login page enabled
      */
     public static LnurlAuthConfigurer createWithDefaultLoginPage(K1Manager k1Manager,
-                                                                 LnurlAuthPairingService pairingService,
+                                                                 LnurlAuthUserPairingService pairingService,
                                                                  LnurlAuthFactory lnurlAuthFactory) {
         return create(k1Manager, pairingService)
                 .lnurlAuthFactory(lnurlAuthFactory)
@@ -83,11 +79,9 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
 
     private K1Manager k1Manager;
 
-    private LnurlAuthPairingService pairingService;
+    private LnurlAuthUserPairingService pairingService;
 
     private LnurlAuthFactory lnurlAuthFactory;
-
-    private UserDetailsService authenticationUserDetailsService;
 
     /**
      * Creates a new instance
@@ -113,20 +107,15 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     }
 
     /**
-     * Add the {@link LnurlAuthPairingService} that is used to link session and wallet authorization
+     * Add the {@link LnurlAuthUserPairingService} that is used to link session and wallet authorization
      * mechanisms. This service is used to pair a users browser session with a previously made wallet
      * authentication request.
      *
-     * @param pairingService the {@link LnurlAuthPairingService}
+     * @param pairingService the {@link LnurlAuthUserPairingService}
      * @return the {@link LnurlAuthConfigurer} for further customizations
      */
-    public LnurlAuthConfigurer pairingService(LnurlAuthPairingService pairingService) {
+    public LnurlAuthConfigurer pairingService(LnurlAuthUserPairingService pairingService) {
         this.pairingService = requireNonNull(pairingService);
-        return this;
-    }
-
-    public LnurlAuthConfigurer authenticationUserDetailsService(UserDetailsService authenticationUserDetailsService) {
-        this.authenticationUserDetailsService = requireNonNull(authenticationUserDetailsService);
         return this;
     }
 
@@ -149,20 +138,20 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     public void init(HttpSecurity http) {
         if (k1Manager == null) {
             String errorMessage = "Cannot create lnurl-auth authentication handling when 'k1Manager' is null. "
-                    + "Please add the necessary bean or disable lnurl-auth authentication.";
+                                  + "Please add the necessary bean or disable lnurl-auth authentication.";
             throw new IllegalStateException(errorMessage);
         }
 
         if (pairingService == null) {
             String errorMessage = "Cannot create lnurl-auth authentication handling when 'pairingService' is null. "
-                    + "Please add the necessary bean or disable lnurl-auth authentication.";
+                                  + "Please add the necessary bean or disable lnurl-auth authentication.";
             throw new IllegalStateException(errorMessage);
         }
 
         if (loginPageEndpointConfig.enabled) {
             if (lnurlAuthFactory == null) {
                 String errorMessage = "Cannot create default lnurl-auth login page when 'lnurlAuthFactory' is null. "
-                        + "Consider adding the necessary bean or disable default login page generation.";
+                                      + "Consider adding the necessary bean or disable default login page generation.";
                 throw new IllegalStateException(errorMessage);
             }
         }
@@ -172,13 +161,6 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     public void configure(HttpSecurity http) {
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http.getSharedObject(SessionAuthenticationStrategy.class);
-        UserDetailsService userDetailsService = Optional.ofNullable(authenticationUserDetailsService)
-                // try to get UserDetailsService applied via {@link HttpSecurity#userDetailsService}
-                .or(() -> Optional.ofNullable(http.getSharedObject(AuthenticationManagerBuilder.class))
-                        .map(AuthenticationManagerBuilder::getDefaultUserDetailsService))
-                // try to get UserDetailsService from old {@link WebSecurityConfigurerAdapter} approach
-                .or(() -> Optional.ofNullable(http.getSharedObject(UserDetailsService.class)))
-                .orElseThrow(() -> new IllegalStateException("'userDetailsService' must not be null."));
 
         LnurlAuthWalletAuthenticationFilter walletAuthFilter = new LnurlAuthWalletAuthenticationFilter(walletEndpointConfig.authorizationRequestBaseUri);
         walletAuthFilter.setAuthenticationManager(authenticationManager);
@@ -191,11 +173,11 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         sessionAuthFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
 
         http
-                .authenticationProvider(postProcess(walletAuthenticationProvider(userDetailsService)))
+                .authenticationProvider(postProcess(walletAuthenticationProvider()))
                 .addFilterAfter(postProcess(walletAuthFilter), SecurityContextHolderAwareRequestFilter.class);
 
         http
-                .authenticationProvider(postProcess(sessionAuthenticationProvider(userDetailsService)))
+                .authenticationProvider(postProcess(sessionAuthenticationProvider()))
                 .addFilterAfter(postProcess(sessionAuthFilter), SecurityContextHolderAwareRequestFilter.class);
 
         if (loginPageEndpointConfig.enabled) {
@@ -208,12 +190,12 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
         }
     }
 
-    protected LnurlAuthWalletAuthenticationProvider walletAuthenticationProvider(UserDetailsService userDetailsService) {
-        return new LnurlAuthWalletAuthenticationProvider(k1Manager, pairingService, userDetailsService);
+    protected LnurlAuthWalletAuthenticationProvider walletAuthenticationProvider() {
+        return new LnurlAuthWalletAuthenticationProvider(k1Manager, pairingService);
     }
 
-    protected LnurlAuthSessionAuthenticationProvider sessionAuthenticationProvider(UserDetailsService userDetailsService) {
-        return new LnurlAuthSessionAuthenticationProvider(pairingService, userDetailsService);
+    protected LnurlAuthSessionAuthenticationProvider sessionAuthenticationProvider() {
+        return new LnurlAuthSessionAuthenticationProvider(pairingService);
     }
 
     /**

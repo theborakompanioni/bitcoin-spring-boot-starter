@@ -10,10 +10,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.tbk.lnurl.auth.*;
 import org.tbk.spring.lnurl.security.AbstractTokenAuthenticationProvider;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
+import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
 
 @RequiredArgsConstructor
 public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenticationProvider {
@@ -22,10 +22,7 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
     private final K1Manager k1Manager;
 
     @NonNull
-    private final LnurlAuthPairingService lnurlAuthPairingService;
-
-    @NonNull
-    private final UserDetailsService userDetailsService;
+    private final LnurlAuthUserPairingService lnurlAuthUserPairingService;
 
     @Override
     public boolean supports(Class<?> authentication) {
@@ -33,7 +30,7 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
     }
 
     @Override
-    protected LinkingKey retrieveLinkingKey(Authentication authentication) throws AuthenticationException {
+    protected UserDetails retrieveUser(Authentication authentication) throws AuthenticationException {
         LnurlAuthWalletToken token = (LnurlAuthWalletToken) authentication;
 
         if (token.isAuthenticated()) {
@@ -53,32 +50,24 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
             throw new BadCredentialsException("k1 and signature could not be verified.");
         }
 
+        UserDetails userDetails;
         try {
-            lnurlAuthPairingService.pairK1WithLinkingKey(k1, auth.getLinkingKey());
+            userDetails = lnurlAuthUserPairingService.pairUserWithK1(auth);
         } catch (Exception e) {
-            throw new AuthenticationServiceException("Could not pair k1 with linkingKey", e);
+            throw new AuthenticationServiceException("Could not pair k1 with user", e);
         }
 
         k1Manager.invalidate(k1);
 
-        return auth.getLinkingKey();
+        return userDetails;
     }
 
-    @Override
-    protected UserDetails retrieveUser(LinkingKey linkingKey, Authentication authentication) throws AuthenticationException {
-        return userDetailsService.loadUserByUsername(linkingKey.toHex());
-    }
 
     @Override
-    protected Authentication createSuccessAuthentication(LinkingKey linkingKey, Authentication authentication, UserDetails user) {
+    protected Authentication createSuccessAuthentication(Authentication authentication, UserDetails user) {
         LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
 
-        // Sanity check that the given linking key is actually the same as in the auth object
-        if (!auth.getAuth().getLinkingKey().equals(linkingKey)) {
-            throw new IllegalStateException("Given linking key does not match key in authentication data.");
-        }
-
-        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getAuth(), user.getAuthorities());
+        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getAuth(), user.getUsername(), user.getAuthorities());
         newAuth.setDetails(user);
 
         return newAuth;

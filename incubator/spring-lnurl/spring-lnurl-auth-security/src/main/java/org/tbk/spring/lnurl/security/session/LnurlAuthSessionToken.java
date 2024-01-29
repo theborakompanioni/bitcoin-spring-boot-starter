@@ -22,8 +22,7 @@ public final class LnurlAuthSessionToken extends AbstractAuthenticationToken {
     private final K1 k1;
 
     @Nullable
-    @Getter
-    private LinkingKey linkingKey;
+    private Object principal;
 
     LnurlAuthSessionToken(K1 k1) {
         super(null);
@@ -31,10 +30,10 @@ public final class LnurlAuthSessionToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    LnurlAuthSessionToken(K1 k1, LinkingKey linkingKey, Collection<? extends GrantedAuthority> authorities) {
+    LnurlAuthSessionToken(K1 k1, Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.k1 = requireNonNull(k1);
-        this.linkingKey = requireNonNull(linkingKey);
+        this.principal = principal;
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -45,11 +44,11 @@ public final class LnurlAuthSessionToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        if (!this.isAuthenticated() || linkingKey == null) {
+        if (!this.isAuthenticated()) {
             throw new IllegalStateException("Cannot call method 'getPrincipal' on unauthenticated session token");
         }
 
-        return linkingKey.toHex();
+        return principal;
     }
 
     @Override

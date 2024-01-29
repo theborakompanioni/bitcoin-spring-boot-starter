@@ -14,13 +14,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.web.servlet.MockMvc;
-import org.tbk.lnurl.auth.K1;
-import org.tbk.lnurl.auth.K1Manager;
-import org.tbk.lnurl.auth.LinkingKey;
-import org.tbk.lnurl.auth.LnurlAuthPairingService;
+import org.tbk.lnurl.auth.*;
+import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 import org.tbk.lnurl.test.SimpleLnurlWallet;
 import org.tbk.spring.lnurl.security.session.LnurlAuthSessionToken;
 import org.tbk.spring.lnurl.security.test.app1.LnurlAuthTestApplication;
+import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
 
 import java.net.URI;
 import java.security.SecureRandom;
@@ -47,7 +46,7 @@ class LnurlSessionAuthenticationFilterTest {
     private K1Manager k1Manager;
 
     @Autowired
-    private LnurlAuthPairingService pairingService;
+    private LnurlAuthUserPairingService pairingService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -89,10 +88,14 @@ class LnurlSessionAuthenticationFilterTest {
     @Test
     void sessionLoginSuccessBrowser() throws Exception {
         K1 k1 = k1Manager.create();
+        URI serviceUri = URI.create("https://localhost");
+        LnurlAuth lnurlAuth = SimpleLnurlAuth.create(serviceUri, k1);
+
+        SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
+        assertThat(signedLnurlAuth.getLinkingKey(), is(testWallet.deriveLinkingPublicKey(serviceUri)));
 
         // simulate linking with wallet
-        LinkingKey linkingKey = testWallet.deriveLinkingPublicKey(URI.create("https://localhost"));
-        pairingService.pairK1WithLinkingKey(k1, linkingKey);
+        pairingService.pairUserWithK1(signedLnurlAuth);
 
         mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
                         .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex()))
@@ -111,16 +114,22 @@ class LnurlSessionAuthenticationFilterTest {
 
         LnurlAuthSessionToken sessionToken = (LnurlAuthSessionToken) authenticationSuccessEvent.getAuthentication();
         assertThat(sessionToken.getK1(), is(k1));
-        assertThat(sessionToken.getLinkingKey(), is(linkingKey));
+        // just in our case, the principal is also the linking key
+        // Note: Other implementation might use something else!
+        assertThat(sessionToken.getPrincipal(), is(signedLnurlAuth.getLinkingKey().toHex()));
     }
 
     @Test
     void sessionLoginSuccessXhr() throws Exception {
         K1 k1 = k1Manager.create();
+        URI serviceUri = URI.create("https://localhost");
+        LnurlAuth lnurlAuth = SimpleLnurlAuth.create(serviceUri, k1);
+
+        SignedLnurlAuth signedLnurlAuth = testWallet.authorize(lnurlAuth);
+        assertThat(signedLnurlAuth.getLinkingKey(), is(testWallet.deriveLinkingPublicKey(serviceUri)));
 
         // simulate linking with wallet
-        LinkingKey linkingKey = testWallet.deriveLinkingPublicKey(URI.create("https://localhost"));
-        pairingService.pairK1WithLinkingKey(k1, linkingKey);
+        pairingService.pairUserWithK1(signedLnurlAuth);
 
         mockMvc.perform(get(LnurlAuthConfigurer.defaultSessionLoginUrl())
                         .sessionAttr(LnurlAuthConfigurer.defaultSessionK1Key(), k1.toHex())
@@ -140,7 +149,9 @@ class LnurlSessionAuthenticationFilterTest {
 
         LnurlAuthSessionToken sessionToken = (LnurlAuthSessionToken) authenticationSuccessEvent.getAuthentication();
         assertThat(sessionToken.getK1(), is(k1));
-        assertThat(sessionToken.getLinkingKey(), is(linkingKey));
+        // just in our case, the principal is also the linking key
+        // Note: Other implementation might use something else!
+        assertThat(sessionToken.getPrincipal(), is(signedLnurlAuth.getLinkingKey().toHex()));
     }
 
     @Test

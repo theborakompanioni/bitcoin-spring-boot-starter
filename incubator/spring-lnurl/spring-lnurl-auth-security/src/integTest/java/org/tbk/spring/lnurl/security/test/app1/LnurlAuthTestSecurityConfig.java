@@ -11,12 +11,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.tbk.lnurl.auth.K1Manager;
-import org.tbk.lnurl.auth.LnurlAuthPairingService;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
+import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -27,12 +26,10 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
 
     @NonNull
-    private final LnurlAuthPairingService pairingService;
+    private final LnurlAuthUserPairingService pairingService;
 
     @NonNull
     private final K1Manager k1Manager;
-    @NonNull
-    private final UserDetailsService userDetailsService;
 
     @Override
     public void customize(WebSecurity web) {
@@ -54,7 +51,8 @@ class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .with(LnurlAuthConfigurer.create(k1Manager, pairingService), it -> it.authenticationUserDetailsService(userDetailsService));
+                .with(LnurlAuthConfigurer.create(k1Manager, pairingService), it -> {
+                });
 
         return http.build();
     }

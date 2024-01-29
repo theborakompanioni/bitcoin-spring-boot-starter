@@ -9,6 +9,7 @@ import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.Signature;
 import org.tbk.lnurl.auth.SignedLnurlAuth;
 
+import javax.annotation.Nullable;
 import java.io.Serial;
 import java.util.Collection;
 
@@ -22,15 +23,20 @@ public final class LnurlAuthWalletToken extends AbstractAuthenticationToken {
     @Getter
     private final SignedLnurlAuth auth;
 
+    @Nullable
+    private final Object principal;
+
     LnurlAuthWalletToken(SignedLnurlAuth auth) {
         super(null);
         this.auth = requireNonNull(auth);
+        this.principal = null;
         setAuthenticated(false);
     }
 
-    LnurlAuthWalletToken(SignedLnurlAuth auth, Collection<? extends GrantedAuthority> authorities) {
+    LnurlAuthWalletToken(SignedLnurlAuth auth, Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.auth = requireNonNull(auth);
+        this.principal = principal;
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -41,7 +47,11 @@ public final class LnurlAuthWalletToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return this.getAuth().getLinkingKey().toHex();
+        if (!this.isAuthenticated()) {
+            throw new IllegalStateException("Cannot call method 'getPrincipal' on unauthenticated wallet token");
+        }
+
+        return principal;
     }
 
     @Override

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking
+- replace `LnurlAuthPairingService` with `LnurlAuthUserPairingService`
+
 ### Fixed
 - fix: cyclic dependency issue in spring-lnurl-auth-autoconfigure
   

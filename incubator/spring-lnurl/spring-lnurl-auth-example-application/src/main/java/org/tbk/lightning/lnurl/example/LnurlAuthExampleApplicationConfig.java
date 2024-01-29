@@ -13,9 +13,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
-import org.tbk.lightning.lnurl.example.security.LnurlAuthPairingServiceImpl;
+import org.tbk.lightning.lnurl.example.security.LnurlAuthUserPairingServiceImpl;
 import org.tbk.lightning.lnurl.example.security.UserDetailsServiceImpl;
-import org.tbk.lnurl.auth.*;
+import org.tbk.lnurl.auth.K1Manager;
+import org.tbk.lnurl.auth.LnurlAuth;
+import org.tbk.lnurl.auth.LnurlAuthFactory;
+import org.tbk.lnurl.auth.SimpleLnurlAuthFactory;
+import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
 import org.tbk.tor.hs.HiddenServiceDefinition;
 
 import java.net.URI;
@@ -64,8 +68,8 @@ class LnurlAuthExampleApplicationConfig {
     }
 
     @Bean
-    LnurlAuthPairingService lnurlAuthSecurityService(WalletUserService walletUserService) {
-        return new LnurlAuthPairingServiceImpl(walletUserService);
+    LnurlAuthUserPairingService lnurlAuthUserPairingService(WalletUserService walletUserService) {
+        return new LnurlAuthUserPairingServiceImpl(walletUserService);
     }
 
     @Bean
