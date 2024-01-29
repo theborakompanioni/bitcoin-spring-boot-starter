@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.LinkingKey;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Best parts copied from {@link AbstractUserDetailsAuthenticationProvider}
  * and applied to lnurl-auth token authentication.
@@ -46,6 +48,6 @@ public abstract class AbstractTokenAuthenticationProvider implements Authenticat
     }
 
     public void setAuthenticationChecks(UserDetailsChecker authenticationChecks) {
-        this.authenticationChecks = authenticationChecks;
+        this.authenticationChecks = requireNonNull(authenticationChecks);
     }
 }
