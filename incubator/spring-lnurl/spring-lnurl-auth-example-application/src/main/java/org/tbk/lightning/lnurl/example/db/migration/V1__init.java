@@ -22,7 +22,8 @@ public class V1__init extends BaseJavaMigration {
                     account_disabled_at integer,
                     account_locked_at integer,
                     account_expired_at integer,
-                    credentials_expired_at integer
+                    credentials_expired_at integer,
+                    UNIQUE(name)
                 ) STRICT;
                 """;
         String sql2 = """

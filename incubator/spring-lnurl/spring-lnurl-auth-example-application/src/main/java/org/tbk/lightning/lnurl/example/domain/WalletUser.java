@@ -12,12 +12,10 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.tbk.lnurl.auth.K1;
 import org.tbk.lnurl.auth.LinkingKey;
-import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -54,7 +52,7 @@ public class WalletUser extends AbstractAggregateRoot<WalletUser> implements Agg
     WalletUser(AuthLinkingKey linkingKey) {
         this.id = WalletUserId.create();
         this.createdAt = Instant.now().toEpochMilli();
-        this.name = "anon";
+        this.name = linkingKey.toPublicKey().toHex();
 
         linkingKeys.add(requireNonNull(linkingKey));
 

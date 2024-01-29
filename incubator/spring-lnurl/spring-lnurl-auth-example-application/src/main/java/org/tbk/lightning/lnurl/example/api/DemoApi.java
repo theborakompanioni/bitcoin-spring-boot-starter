@@ -2,7 +2,6 @@ package org.tbk.lightning.lnurl.example.api;
 
 import fr.acinq.bitcoin.Base58;
 import fr.acinq.bitcoin.Crypto;
-import fr.acinq.secp256k1.Hex;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriUtils;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +34,7 @@ public class DemoApi {
     }
 
     @GetMapping(path = "/image/avatar", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<?> avatar(Principal principal) {
+    public ResponseEntity<?> avatar(@Nullable Principal principal) {
         String nameHashed = toUsername(principal);
 
         String url = String.format("https://robohash.org/%s.png", UriUtils.encodePath(nameHashed, StandardCharsets.UTF_8));
@@ -44,7 +44,7 @@ public class DemoApi {
     }
 
     @GetMapping(path = "/image/name", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> get(Principal principal) {
+    public ResponseEntity<BufferedImage> get(@Nullable Principal principal) {
         String nameHashed = toUsername(principal);
 
         return ResponseEntity.ok(createImageWithText("@" + nameHashed));
@@ -53,7 +53,7 @@ public class DemoApi {
     private static String toUsername(Principal principal) {
         return Optional.ofNullable(principal)
                 .map(Principal::getName)
-                .map(Hex::decode)
+                .map(it -> principal.getName().getBytes(StandardCharsets.UTF_8))
                 .map(Crypto::sha256)
                 .map(Base58::encode)
                 .map(it -> it.substring(0, 30))

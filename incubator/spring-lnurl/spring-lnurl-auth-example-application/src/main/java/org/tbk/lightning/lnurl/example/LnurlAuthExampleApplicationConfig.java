@@ -11,10 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lightning.lnurl.example.security.LnurlAuthUserPairingServiceImpl;
-import org.tbk.lightning.lnurl.example.security.UserDetailsServiceImpl;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuth;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
@@ -60,11 +58,6 @@ class LnurlAuthExampleApplicationConfig {
                 .build();
 
         return new SimpleLnurlAuthFactory(callbackUrl, k1Manager);
-    }
-
-    @Bean
-    UserDetailsService userDetailsService(WalletUserService walletUserService) {
-        return new UserDetailsServiceImpl(walletUserService);
     }
 
     @Bean

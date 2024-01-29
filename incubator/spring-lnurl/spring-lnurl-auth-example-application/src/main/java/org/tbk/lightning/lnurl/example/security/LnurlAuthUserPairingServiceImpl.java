@@ -42,10 +42,10 @@ public class LnurlAuthUserPairingServiceImpl implements LnurlAuthUserPairingServ
                 .username(user.getName())
                 .password("") // password must not be null -_-
                 .authorities(new SimpleGrantedAuthority("ROLE_USER"))
+                .disabled(!user.isAccountEnabled(now))
+                .credentialsExpired(user.isCredentialsExpired(now))
                 .accountExpired(user.isAccountExpired(now))
                 .accountLocked(user.isAccountLocked(now))
-                .credentialsExpired(user.isCredentialsExpired(now))
-                .disabled(!user.isAccountEnabled(now))
                 .build();
     }
 }
