@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - fix: cyclic dependency issue in spring-lnurl-auth-autoconfigure
-
+  
 ### Changed
 - upgrade: update sqlite from v3.44.1.0 to v3.45.1.0
+- upgrade: update hibernate-community-dialects from v6.2.5.Final to v6.4.3.Final
 
 ## [0.12.0] - 2024-01-19
 
