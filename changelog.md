@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - upgrade: update sqlite from v3.44.1.0 to v3.45.1.0
 - upgrade: update hibernate-community-dialects from v6.2.5.Final to v6.4.3.Final
+- upgrade: update secp256k1-kmp from v0.12.0 to v0.13.0
+- upgrade: update bitcoin-kmp from v0.15.0 to v0.16.0
+- upgrade: update lightning-kmp from v1.5.14 to v1.5.15
 
 ## [0.12.0] - 2024-01-19
 
