@@ -20,7 +20,7 @@ ext {
     acinqSecp256k1KmpVersion = '0.12.0'
     acinqBitcoinKmpVersion = '0.15.0' // keep in sync with `acinqSecp256k1KmpVersion`
     acinqLightningKmpVersion = '1.5.14' // keep in sync with `acinqBitcoinKmpVersion`
-    sqliteVersion = '3.44.1.0'
+    sqliteVersion = '3.45.1.0'
     hibernateCommunityDialectsVersion = '6.2.5.Final'
     lombokVersion = '1.18.30'
     springdocOpenApiVersion = '2.1.0'

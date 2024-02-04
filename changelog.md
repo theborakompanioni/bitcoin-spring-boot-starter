@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - fix: cyclic dependency issue in spring-lnurl-auth-autoconfigure
 
+### Changed
+- upgrade: update sqlite from v3.44.1.0 to v3.45.1.0
+
 ## [0.12.0] - 2024-01-19
 
 ### Breaking
