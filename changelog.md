@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update secp256k1-kmp from v0.12.0 to v0.13.0
 - upgrade: update bitcoin-kmp from v0.15.0 to v0.16.0
 - upgrade: update lightning-kmp from v1.5.14 to v1.5.15
+- upgrade: update guava from v30.1-jre to 33.0.0-jre
 
 ## [0.12.0] - 2024-01-19
 

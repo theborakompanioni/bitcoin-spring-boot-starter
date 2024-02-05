@@ -295,6 +295,7 @@
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.42.0.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.43.2.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.44.1.0"/>
+            <trusting group="org.xerial" name="sqlite-jdbc" version="3.45.1.0"/>
          </trusted-key>
          <trusted-key id="c25a288a842eaf7aa5b5303f7a73fe77de2c4027" group="^fr[.]acinq($|([.].*))" regex="true"/>
          <trusted-key id="c6f7d1c804c821f49af3bfc13ad93c3c677a106e">
@@ -305,6 +306,7 @@
          <trusted-key id="c7be5bcc9fec15518cfda882b0f3710fa64900e7" group="com.google.code.gson"/>
          <trusted-key id="c888b9955815ea83b48531784896f7312a5ace4d" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="c89074fc8be681b7c7eaab6e4c5eed3c53b75933" group="org.skyscreamer" name="jsonassert" version="1.5.1"/>
+         <trusted-key id="c8d37e9675158ff5b29b6d6452fc3551da8dc57e" group="^org[.]graalvm[.]buildtools($|([.].*))" regex="true"/>
          <trusted-key id="c8e3234ea6e8804cf50b4b587d9c4872d31f6f2b" group="org.kodein.log"/>
          <trusted-key id="ca491704d613780d2bee00f2c6fc46eb51cf569c">
             <trusting group="jaxen"/>
@@ -362,6 +364,7 @@
          </trusted-key>
          <trusted-key id="e82d2eaf2e83830ce1f7f6be571a5291e827e1c7" group="net.java" name="jvnet-parent" version="3"/>
          <trusted-key id="e85aed155021af8a6c6b7a4a7c7d8456294423ba" group="org.objenesis"/>
+         <trusted-key id="eb1b3de71713c9ec2e87cc26ee92349ad86de446" group="com.google.j2objc" name="j2objc-annotations" version="2.8"/>
          <trusted-key id="ec86f41279f2ec8ffd2f54906ccc36cc6c69fc17" group="com.google" name="google" version="5"/>
          <trusted-key id="ee0ca873074092f806f59b65d364abaa39a47320" group="com.google.errorprone"/>
          <trusted-key id="ef6ad6684034b0cb67a9b5714406b84c1661dcd1" group="^org[.]springframework[.]data($|([.].*))" regex="true"/>
