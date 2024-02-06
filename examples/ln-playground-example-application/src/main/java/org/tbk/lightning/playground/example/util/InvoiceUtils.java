@@ -8,7 +8,7 @@ public final class InvoiceUtils {
     public static Mono<PaymentRequest> decodeInvoice(String invoice) {
         return Mono.fromCallable(() -> {
             try {
-                return PaymentRequest.Companion.read(invoice);
+                return PaymentRequest.Companion.read(invoice).get();
             } catch (Exception e) {
                 // exception can be of type IllegalArgumentException, ArrayIndexOutOfBoundsException, etc..
                 throw new IllegalStateException("Failed to decode invoice.", e);
