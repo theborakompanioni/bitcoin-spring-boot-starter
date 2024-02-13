@@ -67,7 +67,7 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
     protected Authentication createSuccessAuthentication(Authentication authentication, UserDetails user) {
         LnurlAuthWalletToken auth = (LnurlAuthWalletToken) authentication;
 
-        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getAuth(), user.getUsername(), user.getAuthorities());
+        LnurlAuthWalletToken newAuth = new LnurlAuthWalletToken(auth.getAuth(), user, user.getAuthorities());
         newAuth.setDetails(user);
 
         return newAuth;

@@ -2,6 +2,7 @@ package org.tbk.spring.lnurl.security;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
@@ -114,9 +116,8 @@ class LnurlSessionAuthenticationFilterTest {
 
         LnurlAuthSessionToken sessionToken = (LnurlAuthSessionToken) authenticationSuccessEvent.getAuthentication();
         assertThat(sessionToken.getK1(), is(k1));
-        // just in our case, the principal is also the linking key
-        // Note: Other implementation might use something else!
-        assertThat(sessionToken.getPrincipal(), is(signedLnurlAuth.getLinkingKey().toHex()));
+        assertThat(sessionToken.getPrincipal(), instanceOf(UserDetails.class));
+        assertThat(((UserDetails) sessionToken.getPrincipal()).getUsername(), is(signedLnurlAuth.getLinkingKey().toHex()));
     }
 
     @Test
@@ -149,9 +150,8 @@ class LnurlSessionAuthenticationFilterTest {
 
         LnurlAuthSessionToken sessionToken = (LnurlAuthSessionToken) authenticationSuccessEvent.getAuthentication();
         assertThat(sessionToken.getK1(), is(k1));
-        // just in our case, the principal is also the linking key
-        // Note: Other implementation might use something else!
-        assertThat(sessionToken.getPrincipal(), is(signedLnurlAuth.getLinkingKey().toHex()));
+        assertThat(sessionToken.getPrincipal(), instanceOf(UserDetails.class));
+        assertThat(((UserDetails) sessionToken.getPrincipal()).getUsername(), is(signedLnurlAuth.getLinkingKey().toHex()));
     }
 
     @Test

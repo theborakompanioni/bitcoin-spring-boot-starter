@@ -10,7 +10,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-
 @SpringBootTest
 @ActiveProfiles("test")
 class LnurlAuthExampleApplicationTest {

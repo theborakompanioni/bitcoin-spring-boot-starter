@@ -37,7 +37,7 @@ public class LnurlAuthSessionAuthenticationProvider extends AbstractTokenAuthent
     protected Authentication createSuccessAuthentication(Authentication authentication, UserDetails user) {
         LnurlAuthSessionToken auth = (LnurlAuthSessionToken) authentication;
 
-        LnurlAuthSessionToken newAuth = new LnurlAuthSessionToken(auth.getK1(), user.getUsername(), user.getAuthorities());
+        LnurlAuthSessionToken newAuth = new LnurlAuthSessionToken(auth.getK1(), user, user.getAuthorities());
         newAuth.setDetails(user);
 
         return newAuth;
