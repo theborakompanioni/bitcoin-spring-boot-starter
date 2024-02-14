@@ -9,6 +9,10 @@ import java.nio.charset.StandardCharsets;
 
 final class StaticTemplateUtils {
 
+    private StaticTemplateUtils() {
+        throw new UnsupportedOperationException();
+    }
+
     static String readContents(String filename) {
         String file = StaticTemplateUtils.class.getPackage().getName().replace(".", "/") + "/" + filename;
 

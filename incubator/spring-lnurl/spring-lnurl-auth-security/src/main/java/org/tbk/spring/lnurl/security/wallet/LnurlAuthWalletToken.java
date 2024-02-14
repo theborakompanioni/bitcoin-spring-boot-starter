@@ -36,7 +36,7 @@ public final class LnurlAuthWalletToken extends AbstractAuthenticationToken {
     LnurlAuthWalletToken(SignedLnurlAuth auth, Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.auth = requireNonNull(auth);
-        this.principal = principal;
+        this.principal = requireNonNull(principal, "'principal' must be provided for an authenticated token");
         super.setAuthenticated(true); // must use super, as we override
     }
 

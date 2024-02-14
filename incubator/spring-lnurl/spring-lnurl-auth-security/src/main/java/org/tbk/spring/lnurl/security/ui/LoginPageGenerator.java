@@ -50,7 +50,6 @@ final class LoginPageGenerator {
                 .replace("%%_LNURL_AUTH_LOGIN_CSS_HREF_%%", HtmlUtils.htmlEscape(stylesheetUrl))
                 .replace("%%_LNURL_AUTH_LOGIN_SCRIPT_SRC_%%", HtmlUtils.htmlEscape(scriptUrl))
                 .replace("%%_LNURL_AUTH_LOGIN_QR_CODE_SECTION_%%", lnurlQrcode.createHtmlImageTagOrFallbackTag())
-                .replace("%%_LNURL_AUTH_LOGIN_LNURL_STRING_%%", lnurlQrcode.toLnurlString())
-                ;
+                .replace("%%_LNURL_AUTH_LOGIN_LNURL_STRING_%%", lnurlQrcode.toLnurlString());
     }
 }

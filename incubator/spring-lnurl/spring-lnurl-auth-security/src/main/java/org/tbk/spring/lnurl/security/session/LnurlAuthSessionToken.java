@@ -5,7 +5,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.K1;
-import org.tbk.lnurl.auth.LinkingKey;
 
 import javax.annotation.Nullable;
 import java.io.Serial;
@@ -33,7 +32,7 @@ public final class LnurlAuthSessionToken extends AbstractAuthenticationToken {
     LnurlAuthSessionToken(K1 k1, Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.k1 = requireNonNull(k1);
-        this.principal = principal;
+        this.principal = requireNonNull(principal, "'principal' must be provided for an authenticated token");
         super.setAuthenticated(true); // must use super, as we override
     }
 
