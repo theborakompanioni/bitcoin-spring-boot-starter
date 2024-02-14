@@ -26,6 +26,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 )
 @ActiveProfiles("test")
 class AuthenticatedApiTest {
+    private static final String GUARDED_ENDPOINT = "/api/v1/authenticated/self";
+
     private static final SecureRandom random = new SecureRandom();
 
     private static SimpleLnurlWallet testWallet;
@@ -41,15 +43,12 @@ class AuthenticatedApiTest {
 
     @Test
     void itShouldFetchAuthenticatedUserJson() {
-        ResponseEntity<Object> request0 = restTemplate.exchange(RequestEntity
-                .get("/api/v1/authenticated/self")
-                .build(), Object.class);
+        ResponseEntity<Object> request0 = restTemplate.exchange(RequestEntity.get(GUARDED_ENDPOINT).build(), Object.class);
         assertThat("user cannot see any guarded resource", request0.getStatusCode(), is(HttpStatus.FORBIDDEN));
 
         Pair<SignedLnurlAuth, String> signedAuthAndSessionId = new LnurlAuthFlowTest.LnurlAuthFlowTestHelper(restTemplate, testWallet).login();
 
-        ResponseEntity<String> authTestRequest2ResponseEntity = restTemplate.exchange(RequestEntity
-                .get("/api/v1/authenticated/self")
+        ResponseEntity<String> authTestRequest2ResponseEntity = restTemplate.exchange(RequestEntity.get(GUARDED_ENDPOINT)
                 .header(HttpHeaders.COOKIE, "SESSION=%s".formatted(signedAuthAndSessionId.getSecond()))
                 .build(), String.class);
         assertThat(authTestRequest2ResponseEntity.getStatusCode(), is(HttpStatus.OK));
