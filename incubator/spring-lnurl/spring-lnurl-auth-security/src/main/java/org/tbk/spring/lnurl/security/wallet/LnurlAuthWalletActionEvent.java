@@ -23,20 +23,4 @@ public final class LnurlAuthWalletActionEvent extends ApplicationEvent {
     public LnurlAuthWalletToken getAuthentication() {
         return authentication;
     }
-
-    /**
-     * @deprecated Use {@link #getAuthentication()} instead
-     */
-    @Deprecated(since = "0.13.0", forRemoval = true)
-    public LnurlAuth getLnurlAuth() {
-        return authentication.getAuth();
-    }
-
-    /**
-     * @deprecated Use {@link #getAuthentication()} instead
-     */
-    @Deprecated(since = "0.13.0", forRemoval = true)
-    public Optional<LnurlAuth.Action> getAction() {
-        return getLnurlAuth().getAction();
-    }
 }

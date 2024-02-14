@@ -59,28 +59,4 @@ public final class LnurlAuthWalletToken extends AbstractAuthenticationToken {
         Assert.isTrue(!isAuthenticated, "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
         super.setAuthenticated(false);
     }
-
-    /**
-     * @deprecated Use {@link #getAuth()} instead
-     */
-    @Deprecated(since = "0.13.0", forRemoval = true)
-    public K1 getK1() {
-        return auth.getK1();
-    }
-
-    /**
-     * @deprecated Use {@link #getAuth()} instead
-     */
-    @Deprecated(since = "0.13.0", forRemoval = true)
-    public Signature getSignature() {
-        return auth.getSignature();
-    }
-
-    /**
-     * @deprecated Use {@link #getAuth()} instead
-     */
-    @Deprecated(since = "0.13.0", forRemoval = true)
-    public LinkingKey getLinkingKey() {
-        return auth.getLinkingKey();
-    }
 }
