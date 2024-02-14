@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2024-02-14
+
 ### Breaking
 - replace `LnurlAuthPairingService` with `LnurlAuthUserPairingService`
 
@@ -268,7 +270,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.11.0...0.12.0
 [0.11.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.9.0...0.10.0
