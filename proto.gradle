@@ -7,8 +7,8 @@ sourceSets {
             srcDir file('src/main/java')
         }
         java {
-            srcDir new File("${layout.buildDirectory}", '/generated/source/proto/main/java')
-            srcDir new File("${layout.buildDirectory}", '/generated/source/proto/main/grpc')
+            srcDir layout.buildDirectory.dir('./generated/source/proto/main/java').get().asFile
+            srcDir layout.buildDirectory.dir('./generated/source/proto/main/grpc').get().asFile
         }
     }
 }
