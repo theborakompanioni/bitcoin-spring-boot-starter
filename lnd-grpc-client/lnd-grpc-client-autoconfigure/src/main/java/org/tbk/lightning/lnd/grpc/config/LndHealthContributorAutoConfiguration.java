@@ -12,17 +12,17 @@ import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnable
 import org.springframework.boot.actuate.autoconfigure.info.ConditionalOnEnabledInfoContributor;
 import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.info.InfoContributor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.actuator.health.LndHealthIndicator;
 
 import java.util.Map;
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({
         HealthContributor.class,
@@ -31,7 +31,7 @@ import java.util.Map;
 @AutoConfigureAfter(LndClientAutoConfiguration.class)
 public class LndHealthContributorAutoConfiguration {
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnEnabledHealthIndicator("lndApi")
     @ConditionalOnBean(SynchronousLndAPI.class)
     @AutoConfigureAfter(LndClientAutoConfiguration.class)

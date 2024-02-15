@@ -32,11 +32,11 @@ import org.lightningj.lnd.wrapper.watchtower.SynchronousWatchtowerAPI;
 import org.lightningj.lnd.wrapper.wtclient.AsynchronousWatchtowerClientAPI;
 import org.lightningj.lnd.wrapper.wtclient.SynchronousWatchtowerClientAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import org.tbk.lightning.lnd.grpc.LndRpcConfig;
 import org.tbk.lightning.lnd.grpc.LndRpcConfigImpl;
@@ -50,7 +50,7 @@ import java.util.HexFormat;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(LndClientAutoConfigProperties.class)
 @ConditionalOnClass(LndRpcConfig.class)
 @ConditionalOnProperty(value = "org.tbk.lightning.lnd.grpc.enabled", havingValue = "true", matchIfMissing = true)

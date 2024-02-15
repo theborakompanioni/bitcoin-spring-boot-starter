@@ -4,13 +4,13 @@ import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(ElectrumPersonalServerContainerProperties.class)
 @ConditionalOnProperty(value = "org.tbk.spring.testcontainer.eps.enabled", havingValue = "true")
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
@@ -176,10 +176,10 @@ public class ElectrumPersonalServerContainerAutoConfiguration {
 
     private String buildEpsBitcoindConfig(String host, int port) {
         String template = "[bitcoin-rpc]\n"
-                + "host = %s\n"
-                + "port = %d\n"
-                + "rpc_user = %s\n"
-                + "rpc_password = %s\n";
+                          + "host = %s\n"
+                          + "port = %d\n"
+                          + "rpc_user = %s\n"
+                          + "rpc_password = %s\n";
 
         return String.format(template, host, port, this.properties.getRpcuser(), this.properties.getRpcpass());
     }

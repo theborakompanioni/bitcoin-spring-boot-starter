@@ -1,12 +1,12 @@
 package org.tbk.bitcoin.tool.fee.mempoolspace.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeApiClient;
 import org.tbk.bitcoin.tool.fee.mempoolspace.MempoolspaceFeeApiClientImpl;
 import org.tbk.bitcoin.tool.fee.mempoolspace.ProjectedBlocksMempoolspaceFeeProvider;
@@ -15,7 +15,7 @@ import org.tbk.bitcoin.tool.fee.mempoolspace.SimpleMempoolspaceFeeProvider;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(MempoolspaceFeeClientAutoConfigProperties.class)
 @ConditionalOnClass({
         MempoolspaceFeeApiClient.class

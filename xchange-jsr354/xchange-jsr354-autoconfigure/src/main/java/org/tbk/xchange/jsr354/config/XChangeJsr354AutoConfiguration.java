@@ -8,10 +8,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.xchange.jsr354.CachingExchangeRateProvider;
 import org.tbk.xchange.jsr354.XChangeExchangeRateProvider;
 import org.tbk.xchange.jsr354.cache.ConversionQueryCache;
@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 import static org.tbk.xchange.jsr354.MoreProviderContexts.createSimpleProviderContextBuilder;
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(Exchange.class)
 @AutoConfigureAfter(XChangeAutoConfiguration.class)
 public class XChangeJsr354AutoConfiguration {

@@ -2,12 +2,12 @@ package org.tbk.spring.testcontainer.tor.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.spring.testcontainer.tor.TorContainer;
 import org.tbk.tor.http.SimpleTorHttpClientBuilder;
 
@@ -16,7 +16,7 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(CloseableHttpClient.class)
 @AutoConfigureAfter(TorContainerAutoConfiguration.class)
 public class TorContainerHttpClientAutoConfiguration {

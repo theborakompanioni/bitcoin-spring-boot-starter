@@ -4,6 +4,7 @@ import org.bitcoinj.core.NetworkParameters;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -11,7 +12,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.tbk.bitcoin.jsonrpc.BitcoinJsonRpcClientFactory;
 import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfigProperties;
@@ -19,7 +19,7 @@ import org.tbk.bitcoin.jsonrpc.config.BitcoinJsonRpcClientAutoConfiguration;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(BitcoinRegtestAutoConfigProperties.class)
 @ConditionalOnClass(BitcoinJsonRpcClientFactory.class)
 @AutoConfigureAfter(BitcoinJsonRpcClientAutoConfiguration.class)

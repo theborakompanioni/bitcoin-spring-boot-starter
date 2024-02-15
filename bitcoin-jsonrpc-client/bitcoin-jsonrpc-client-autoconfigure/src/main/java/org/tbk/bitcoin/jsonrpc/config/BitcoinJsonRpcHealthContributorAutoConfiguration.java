@@ -13,10 +13,10 @@ import org.springframework.boot.actuate.autoconfigure.info.ConditionalOnEnabledI
 import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.jsonrpc.actuator.health.BitcoinJsonRpcHealthIndicator;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.Map;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static java.util.Objects.requireNonNull;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty(value = "org.tbk.bitcoin.jsonrpc.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({
         HealthContributor.class,
@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 })
 public class BitcoinJsonRpcHealthContributorAutoConfiguration {
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnEnabledHealthIndicator("bitcoinJsonRpc")
     @ConditionalOnBean(BitcoinClient.class)
     @AutoConfigureAfter({

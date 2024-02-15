@@ -1,11 +1,11 @@
 package org.tbk.spring.lnurl.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.lnurl.auth.*;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnMissingBean(K1Manager.class)
 public class K1AutoConfiguration {
 

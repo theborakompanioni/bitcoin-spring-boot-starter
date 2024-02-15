@@ -1,12 +1,12 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.zeromq.config.BitcoinZeroMqClientAutoConfiguration;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfigBuilderCustomizer;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(BitcoinZmqClientConfigBuilderCustomizer.class)
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 @AutoConfigureBefore(BitcoinZeroMqClientAutoConfiguration.class)

@@ -1,19 +1,19 @@
 package org.tbk.bitcoin.zeromq.config;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.zeromq.client.BitcoinZeroMqTopics;
 import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 import org.tbk.bitcoin.zeromq.config.BitcoinZmqClientConfig.BitcoinZmqClientConfigBuilder;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @ConditionalOnProperty(value = "org.tbk.bitcoin.zeromq.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass(ZeroMqMessagePublisherFactory.class)

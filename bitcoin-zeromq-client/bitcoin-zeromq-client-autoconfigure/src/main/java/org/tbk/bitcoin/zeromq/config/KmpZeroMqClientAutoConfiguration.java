@@ -3,6 +3,7 @@ package org.tbk.bitcoin.zeromq.config;
 import fr.acinq.bitcoin.Block;
 import fr.acinq.bitcoin.Transaction;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -10,13 +11,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.bitcoin.zeromq.client.ZeroMqMessagePublisherFactory;
 import org.tbk.bitcoin.zeromq.kmp.KmpBlockPublisherFactory;
 import org.tbk.bitcoin.zeromq.kmp.KmpTransactionPublisherFactory;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(BitcoinZeroMqClientAutoConfigurationProperties.class)
 @AutoConfigureAfter(BitcoinZeroMqClientAutoConfiguration.class)
 @ConditionalOnProperty(value = {
