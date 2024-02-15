@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - remove deprecated methods from `LnurlAuthWalletToken`
 
+### Changed
+- upgrade: update secp256k1-kmp from v0.13.0 to v0.14.0
+- upgrade: update bitcoin-kmp from v0.16.0 to v0.17.0
+
 
 ## [0.13.0] - 2024-02-14
 
