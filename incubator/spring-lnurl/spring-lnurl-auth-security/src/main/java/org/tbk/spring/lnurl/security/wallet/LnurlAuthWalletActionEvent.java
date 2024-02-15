@@ -1,9 +1,6 @@
 package org.tbk.spring.lnurl.security.wallet;
 
 import org.springframework.context.ApplicationEvent;
-import org.tbk.lnurl.auth.LnurlAuth;
-
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 

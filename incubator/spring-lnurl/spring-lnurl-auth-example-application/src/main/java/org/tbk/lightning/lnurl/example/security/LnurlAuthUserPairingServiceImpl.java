@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.tbk.lightning.lnurl.example.domain.WalletUser;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lnurl.auth.K1;
-import org.tbk.lnurl.auth.LinkingKey;
 import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
 

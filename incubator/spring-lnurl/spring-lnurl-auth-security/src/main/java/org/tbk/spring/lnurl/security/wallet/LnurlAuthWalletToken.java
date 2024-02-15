@@ -4,9 +4,6 @@ import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
-import org.tbk.lnurl.auth.K1;
-import org.tbk.lnurl.auth.LinkingKey;
-import org.tbk.lnurl.auth.Signature;
 import org.tbk.lnurl.auth.SignedLnurlAuth;
 
 import javax.annotation.Nullable;
