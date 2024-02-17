@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 - remove deprecated methods from `LnurlAuthWalletToken`
 
+### Added
+- import lnurl-simple in spring-lnurl-auth-starter
+
 ### Changed
 - upgrade: update secp256k1-kmp from v0.13.0 to v0.14.0
 - upgrade: update bitcoin-kmp from v0.16.0 to v0.17.0
