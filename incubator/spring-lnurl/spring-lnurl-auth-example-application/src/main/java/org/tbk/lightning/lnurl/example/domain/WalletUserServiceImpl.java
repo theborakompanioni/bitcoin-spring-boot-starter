@@ -32,7 +32,7 @@ class WalletUserServiceImpl implements WalletUserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<WalletUser> findUser(LinkingKey linkingKey) {
         return users.findByLinkingKey(linkingKey.toHex());
     }
@@ -59,7 +59,7 @@ class WalletUserServiceImpl implements WalletUserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<WalletUser> findByLeastRecentlyUsedK1(K1 k1) {
         return users.findByLeastRecentlyUsedK1(k1);
     }

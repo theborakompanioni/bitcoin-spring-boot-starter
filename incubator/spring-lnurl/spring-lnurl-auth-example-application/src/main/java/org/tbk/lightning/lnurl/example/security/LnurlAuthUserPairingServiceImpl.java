@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.tbk.lightning.lnurl.example.domain.WalletUser;
 import org.tbk.lightning.lnurl.example.domain.WalletUserService;
 import org.tbk.lnurl.auth.K1;
@@ -21,6 +22,7 @@ public class LnurlAuthUserPairingServiceImpl implements LnurlAuthUserPairingServ
     private final WalletUserService walletUserService;
 
     @Override
+    @Transactional
     public UserDetails pairUserWithK1(SignedLnurlAuth auth) {
         WalletUser user = walletUserService.findUserOrCreateIfMissing(auth.getLinkingKey());
         walletUserService.pairLinkingKeyWithK1(auth.getLinkingKey(), auth.getK1());
