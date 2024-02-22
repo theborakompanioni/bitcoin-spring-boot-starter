@@ -4,6 +4,8 @@ import fr.acinq.bitcoin.ByteVector;
 import fr.acinq.bitcoin.ByteVector32;
 import fr.acinq.lightning.CltvExpiryDelta;
 import fr.acinq.lightning.MilliSatoshi;
+import fr.acinq.lightning.payment.Bolt11Invoice;
+import fr.acinq.lightning.payment.Bolt12Invoice;
 import fr.acinq.lightning.payment.PaymentRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +53,7 @@ public class LnInvoiceApi {
     })
     @PostMapping(path = "/decode")
     public ResponseEntity<DecodeInvoiceResponseDto> decodeInvoice(@RequestBody DecodeInvoiceRequestDto body) {
-        PaymentRequest decodedInvoice = InvoiceUtils.decodeInvoice(body.getInvoice())
+        Bolt11Invoice decodedInvoice = InvoiceUtils.decodeBolt11Invoice(body.getInvoice())
                 .onErrorComplete()
                 .blockOptional()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to decode invoice."));
@@ -72,7 +74,7 @@ public class LnInvoiceApi {
                         .orElse(null))
                 .timestamp(decodedInvoice.getTimestampSeconds())
                 .expirySeconds(decodedInvoice.getExpirySeconds())
-                .features(decodedInvoice.getFeatures().toHex())
+                .features(decodedInvoice.getFeatures().toString())
                 .minFinalCltvExpiry(Optional.ofNullable(decodedInvoice.getMinFinalExpiryDelta())
                         .map(CltvExpiryDelta::toLong)
                         .orElse(null))

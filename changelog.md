@@ -8,14 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 - remove deprecated methods from `LnurlAuthWalletToken`
+- upgrade: update lightning-kmp from v1.5.15 to v1.6.1
 
 ### Added
 - import lnurl-simple in spring-lnurl-auth-starter
 
 ### Changed
 - upgrade: update secp256k1-kmp from v0.13.0 to v0.14.0
-- upgrade: update bitcoin-kmp from v0.16.0 to v0.17.0
-
+- upgrade: update bitcoin-kmp from v0.16.0 to v0.18.0
 
 ## [0.13.0] - 2024-02-14
 
