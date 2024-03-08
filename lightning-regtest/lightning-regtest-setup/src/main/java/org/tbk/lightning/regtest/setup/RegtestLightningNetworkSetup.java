@@ -79,7 +79,7 @@ public class RegtestLightningNetworkSetup {
     }
 
     private void beforeSetup() throws IOException {
-        BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+        BitcoindRegtestTestHelper.createDescriptorWallet(bitcoinClient, "");
 
         // it seems to be necessary to mine a single block and wait for the nodes to synchronize.
         // otherwise, LND seems to be stuck on regtest indefinitely (last check: 2023-12-02).
@@ -407,7 +407,7 @@ public class RegtestLightningNetworkSetup {
         private Address address;
 
         public void init() throws IOException {
-            BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+            BitcoindRegtestTestHelper.createDescriptorWallet(bitcoinClient, "");
 
             this.address = bitcoinClient.getNewAddress();
 
