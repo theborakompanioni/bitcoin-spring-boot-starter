@@ -16,7 +16,7 @@ ext {
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2023.1.1'
     jacksonDatatypeMoneyVersion = '1.2.2'
-    zxingVersion = '3.5.0'
+    zxingVersion = '3.5.3'
     acinqSecp256k1KmpVersion = '0.14.0'
     acinqBitcoinKmpVersion = '0.18.0' // keep in sync with `acinqSecp256k1KmpVersion`
     acinqLightningKmpVersion = '1.6.1' // keep in sync with `acinqBitcoinKmpVersion`
