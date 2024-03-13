@@ -5,6 +5,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.blockchaininfo.proto.MempoolFees;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -32,11 +33,15 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
     public boolean supports(FeeRecommendationRequest request) {
         // blockchain.info fees do not support any customized request
         return request.getDesiredConfidence().isEmpty()
-                && Duration.ofMinutes(360).compareTo(request.getDurationTarget()) >= 0;
+               && Duration.ofMinutes(360).compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override
-    public Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+    protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         MempoolFees mempoolFees = client.mempoolFees();
 
         boolean isLessOrEqualToSixHours = MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
@@ -44,7 +49,7 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
         if (!isLessOrEqualToSixHours) {
             log.warn("Unsupported call to Blockchain.info fee provider: period out of range: {} > {}",
                     request.getDurationTarget(), MAX_DURATION_TARGET);
-            return Flux.empty();
+            return null;
         }
 
         boolean isZeroOrLess = Duration.ZERO.compareTo(request.getDurationTarget()) >= 0;
@@ -60,11 +65,11 @@ public class BlockchainInfoFeeProvider extends AbstractFeeProvider {
                 .satPerVbyteValue(BigDecimal.valueOf(satsPerByte))
                 .build();
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
                         .feeUnit(satPerVbyte)
                         .build())
-                .build());
+                .build();
     }
 
     /**

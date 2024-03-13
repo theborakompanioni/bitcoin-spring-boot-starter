@@ -10,6 +10,7 @@ import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestRequest.Co
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestResponse;
 import org.tbk.bitcoin.tool.fee.bitcoinerlive.proto.FeeEstimatesLatestResponse.Estimate;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -52,14 +53,18 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
     }
 
     @Override
-    public Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest feeRecommendationRequest) {
+    protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest feeRecommendationRequest) {
         FeeEstimatesLatestRequest request = toApiRequest(feeRecommendationRequest);
         FeeEstimatesLatestResponse response = client.feeEstimatesLatest(request);
 
         Map<String, Estimate> estimateMap = response.getEstimateMap();
         if (estimateMap.isEmpty()) {
             log.warn("No estimation entries present in response for request.");
-            return Flux.empty();
+            return null;
         }
 
         long minutes = feeRecommendationRequest.getDurationTarget().toMinutes();
@@ -87,13 +92,13 @@ public class BitcoinerliveFeeProvider extends AbstractFeeProvider {
         // the map is guaranteed to have entries (empty maps return early)
         Estimate estimate = estimateMapWithMinutesAsKeys.get(minutesKey);
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(SatPerVbyteImpl.builder()
                                 .satPerVbyteValue(BigDecimal.valueOf(estimate.getSatPerVbyte()))
                                 .build())
                         .build())
-                .build());
+                .build();
     }
 
     private FeeEstimatesLatestRequest toApiRequest(FeeRecommendationRequest request) {

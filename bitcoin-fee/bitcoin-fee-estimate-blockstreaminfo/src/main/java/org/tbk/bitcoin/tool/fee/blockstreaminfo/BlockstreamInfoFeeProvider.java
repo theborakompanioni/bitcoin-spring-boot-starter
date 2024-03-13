@@ -5,6 +5,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl;
 import org.tbk.bitcoin.tool.fee.blockstreaminfo.proto.FeeEstimates;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -33,7 +34,12 @@ public class BlockstreamInfoFeeProvider extends AbstractFeeProvider {
         return request.getDesiredConfidence().isEmpty();
     }
 
+    @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         FeeEstimates feeEstimates = client.feeEstimates();
 
         Optional<FeeEstimates.Entry> feeEstimateOrEmpty = feeEstimates.getEntryList().stream()
@@ -42,7 +48,7 @@ public class BlockstreamInfoFeeProvider extends AbstractFeeProvider {
 
         if (feeEstimateOrEmpty.isEmpty()) {
             log.warn("No suitable estimation entries present in response for request.");
-            return Flux.empty();
+            return null;
         }
 
         BigDecimal satPerVbyteValue = BigDecimal.valueOf(feeEstimateOrEmpty.get().getEstimatedFeerateInSatPerVbyte());
@@ -51,10 +57,10 @@ public class BlockstreamInfoFeeProvider extends AbstractFeeProvider {
                 .satPerVbyteValue(satPerVbyteValue)
                 .build();
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
                         .feeUnit(satPerVbyte)
                         .build())
-                .build());
+                .build();
     }
 }

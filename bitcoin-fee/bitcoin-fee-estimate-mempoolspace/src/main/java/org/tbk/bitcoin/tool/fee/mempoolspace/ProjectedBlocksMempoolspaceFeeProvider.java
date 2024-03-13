@@ -12,6 +12,7 @@ import org.tbk.bitcoin.tool.fee.mempoolspace.proto.ProjectedMempoolBlocks;
 import org.tbk.bitcoin.tool.fee.mempoolspace.proto.ProjectedMempoolBlocks.ProjectedBlock;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -84,16 +85,20 @@ public class ProjectedBlocksMempoolspaceFeeProvider extends AbstractFeeProvider 
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         return request.getDesiredConfidence().isEmpty()
-                && request.getDurationTarget().compareTo(MAX_DURATION) <= 0;
+               && request.getDurationTarget().compareTo(MAX_DURATION) <= 0;
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         ProjectedMempoolBlocks projectedBlocks = this.projectedMempoolBlocksSupplier.get();
 
         boolean isBlockInRange = request.getBlockTarget() <= projectedBlocks.getBlocksCount();
         if (!isBlockInRange) {
-            return Flux.empty();
+            return null;
         }
 
         int index = Math.max(0, ((int) request.getBlockTarget()) - 1);
@@ -101,11 +106,11 @@ public class ProjectedBlocksMempoolspaceFeeProvider extends AbstractFeeProvider 
 
         FeeUnit feeRate = feesFromProjectedBlockSupplier.get(request, projectedBlock);
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(feeRate)
                         .build())
-                .build());
+                .build();
     }
 
     private static final class DefaultFeesFromProjectedBlockStrategy implements FeesFromProjectedBlockStrategy {

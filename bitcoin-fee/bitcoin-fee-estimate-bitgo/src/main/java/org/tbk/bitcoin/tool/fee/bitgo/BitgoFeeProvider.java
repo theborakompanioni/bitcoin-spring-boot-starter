@@ -8,6 +8,7 @@ import org.tbk.bitcoin.tool.fee.bitgo.proto.BtcTxFeeRequest;
 import org.tbk.bitcoin.tool.fee.bitgo.proto.BtcTxFeeResponse;
 import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
@@ -43,6 +44,10 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         BtcTxFeeRequest apiRequest = buildApiRequest(request);
         BtcTxFeeResponse response = client.btcTxFee(apiRequest);
 
@@ -52,11 +57,11 @@ public class BitgoFeeProvider extends AbstractFeeProvider {
                 .satPerVbyteValue(MoreSatPerVbyte.fromSatPerKVbyte(BigDecimal.valueOf(satPerKilobyte)))
                 .build();
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(satPerVbyte)
                         .build())
-                .build());
+                .build();
     }
 
     private BtcTxFeeRequest buildApiRequest(FeeRecommendationRequest request) {

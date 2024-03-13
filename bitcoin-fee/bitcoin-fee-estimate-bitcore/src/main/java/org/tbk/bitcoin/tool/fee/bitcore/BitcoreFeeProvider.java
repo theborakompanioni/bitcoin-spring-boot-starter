@@ -6,6 +6,7 @@ import org.tbk.bitcoin.tool.fee.bitcore.proto.FeeEstimationRequest;
 import org.tbk.bitcoin.tool.fee.bitcore.proto.FeeEstimationResponse;
 import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
@@ -38,6 +39,10 @@ public class BitcoreFeeProvider extends AbstractFeeProvider {
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         FeeEstimationResponse feeEstimationResponse = client.bitcoinMainnetFee(buildApiRequest(request));
 
         double btcPerKB = feeEstimationResponse.getFeerate();
@@ -46,11 +51,11 @@ public class BitcoreFeeProvider extends AbstractFeeProvider {
                 .satPerVbyteValue(MoreSatPerVbyte.fromBtcPerKVbyte(BigDecimal.valueOf(btcPerKB)))
                 .build();
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
                         .feeUnit(satPerVbyte)
                         .build())
-                .build());
+                .build();
     }
 
     private FeeEstimationRequest buildApiRequest(FeeRecommendationRequest request) {

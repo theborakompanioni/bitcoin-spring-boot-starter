@@ -5,6 +5,7 @@ import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.blockchair.proto.BitcoinStatsFeesOnly;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -34,22 +35,26 @@ public class BlockchairFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         return request.getDesiredConfidence().isEmpty()
-                && !request.isTargetDurationZeroOrLess()
-                && MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
+               && !request.isTargetDurationZeroOrLess()
+               && MAX_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         BitcoinStatsFeesOnly bitcoinStatsFeesOnly = this.client.bitcoinStatsFeesOnly();
 
         FeeRecommendationResponseImpl.SatPerVbyteImpl satPerVbyte = FeeRecommendationResponseImpl.SatPerVbyteImpl.builder()
                 .satPerVbyteValue(BigDecimal.valueOf(bitcoinStatsFeesOnly.getData().getSuggestedTransactionFeePerByteSat()))
                 .build();
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
                         .feeUnit(satPerVbyte)
                         .build())
-                .build());
+                .build();
     }
 }

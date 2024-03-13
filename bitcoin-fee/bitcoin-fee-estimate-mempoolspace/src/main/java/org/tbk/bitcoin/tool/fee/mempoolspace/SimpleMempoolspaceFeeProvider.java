@@ -8,6 +8,7 @@ import org.tbk.bitcoin.tool.fee.FeeRecommendationResponseImpl.SatPerVbyteImpl.Sa
 import org.tbk.bitcoin.tool.fee.ProviderInfo.SimpleProviderInfo;
 import org.tbk.bitcoin.tool.fee.mempoolspace.proto.FeesRecommended;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -40,11 +41,15 @@ public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         return request.getDesiredConfidence().isEmpty()
-                && request.getDurationTarget().compareTo(HOUR) <= 0;
+               && request.getDurationTarget().compareTo(HOUR) <= 0;
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         FeesRecommended feesRecommended = this.client.feesRecommended();
 
         SatPerVbyteImplBuilder feeBuilder = SatPerVbyteImpl.builder();
@@ -58,10 +63,10 @@ public class SimpleMempoolspaceFeeProvider extends AbstractFeeProvider {
             throw new IllegalStateException("Unsupported request: duration target is greater than " + HOUR);
         }
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(feeBuilder.build())
                         .build())
-                .build());
+                .build();
     }
 }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.tbk.bitcoin.tool.fee.*;
 import org.tbk.bitcoin.tool.fee.btcdotcom.proto.FeeDistribution;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
@@ -28,12 +29,16 @@ public class BtcdotcomFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         return request.getDesiredConfidence().isEmpty()
-                && !request.isTargetDurationZeroOrLess()
-                && request.isNextBlockTarget();
+               && !request.isTargetDurationZeroOrLess()
+               && request.isNextBlockTarget();
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         FeeDistribution feeDistribution = this.client.feeDistribution();
 
         BigDecimal satPerVbyteValue = BigDecimal.valueOf(feeDistribution.getFeesRecommended().getOneBlockFee());
@@ -41,10 +46,10 @@ public class BtcdotcomFeeProvider extends AbstractFeeProvider {
                 .satPerVbyteValue(satPerVbyteValue)
                 .build();
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationResponseImpl.FeeRecommendationImpl.builder()
                         .feeUnit(satPerVbyte)
                         .build())
-                .build());
+                .build();
     }
 }

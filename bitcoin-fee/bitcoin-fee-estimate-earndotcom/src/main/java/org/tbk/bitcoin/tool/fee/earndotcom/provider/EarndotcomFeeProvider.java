@@ -8,6 +8,7 @@ import org.tbk.bitcoin.tool.fee.earndotcom.client.EarndotcomApiClient;
 import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.FeesSummaryEntry;
 import org.tbk.bitcoin.tool.fee.earndotcom.client.proto.TransactionFeesSummary;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,14 +42,17 @@ public class EarndotcomFeeProvider extends AbstractFeeProvider {
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
 
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         TransactionFeesSummary transactionFeesSummary = this.client.transactionFeesSummary();
 
         Optional<FeesSummaryEntry> summaryEntryOrEmpty = feeSelectionStrategy.select(request, transactionFeesSummary);
 
         if (summaryEntryOrEmpty.isEmpty()) {
             log.warn("No suitable estimation entries present for request.");
-            return Flux.empty();
+            return null;
         }
 
         FeesSummaryEntry feesSummaryEntry = summaryEntryOrEmpty.orElseThrow();
@@ -64,12 +68,12 @@ public class EarndotcomFeeProvider extends AbstractFeeProvider {
                     .divide(BigDecimal.valueOf(2), 1, RoundingMode.HALF_UP);
         }
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(SatPerVbyteImpl.builder()
                                 .satPerVbyteValue(satPerVbyte)
                                 .build())
                         .build())
-                .build());
+                .build();
     }
 }

@@ -8,6 +8,7 @@ import org.tbk.bitcoin.tool.fee.blockcypher.proto.ChainInfo;
 import org.tbk.bitcoin.tool.fee.util.MoreBitcoin;
 import org.tbk.bitcoin.tool.fee.util.MoreSatPerVbyte;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -37,23 +38,27 @@ public class BlockcypherFeeProvider extends AbstractFeeProvider {
     @Override
     public boolean supports(FeeRecommendationRequest request) {
         return request.getDesiredConfidence().isEmpty()
-                && LOW_FEE_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
+               && LOW_FEE_DURATION_TARGET.compareTo(request.getDurationTarget()) >= 0;
     }
 
     @Override
     protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest request) {
+        return Mono.fromCallable(() -> requestHookInternal(request)).flux();
+    }
+
+    private FeeRecommendationResponse requestHookInternal(FeeRecommendationRequest request) {
         ChainInfo chainInfo = this.client.btcMain();
 
         BigDecimal satPerKByte = BigDecimal.valueOf(getSatBerKByte(request, chainInfo));
         BigDecimal satPerVbyte = MoreSatPerVbyte.fromSatPerKVbyte(satPerKByte);
 
-        return Flux.just(FeeRecommendationResponseImpl.builder()
+        return FeeRecommendationResponseImpl.builder()
                 .addFeeRecommendation(FeeRecommendationImpl.builder()
                         .feeUnit(SatPerVbyteImpl.builder()
                                 .satPerVbyteValue(satPerVbyte)
                                 .build())
                         .build())
-                .build());
+                .build();
     }
 
     private long getSatBerKByte(FeeRecommendationRequest request, ChainInfo chainInfo) {

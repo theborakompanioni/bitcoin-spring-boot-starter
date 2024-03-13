@@ -23,7 +23,7 @@ public class StrikeFeeProvider extends AbstractFeeProvider {
 
     private static final ProviderInfo providerInfo = ProviderInfo.SimpleProviderInfo.builder()
             .name("Strike")
-            .description("")
+            .description("A blend of mempool-based and history-based Bitcoin fee estimates.")
             .build();
 
     private static final int MAX_BLOCK_TARGET = 576;
@@ -43,7 +43,7 @@ public class StrikeFeeProvider extends AbstractFeeProvider {
     }
 
     @Override
-    public Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest feeRecommendationRequest) {
+    protected Flux<FeeRecommendationResponse> requestHook(FeeRecommendationRequest feeRecommendationRequest) {
         return Mono.fromCallable(() -> requestHookInternal(feeRecommendationRequest)).flux();
     }
 
