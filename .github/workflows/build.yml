@@ -44,9 +44,8 @@ jobs:
       - name: Lint Gradle File
         run: ./gradlew autoLintGradle
 
-      # `--no-parallel` to prevent https://github.com/xmolecules/jmolecules-integrations/issues/218 (last checked: 2024-01-06)
       - name: Build project
-        run: ./gradlew --no-parallel build spotbugsMain -x test
+        run: ./gradlew build spotbugsMain -x test
 
       - name: Unit Test
         run: ./gradlew test
