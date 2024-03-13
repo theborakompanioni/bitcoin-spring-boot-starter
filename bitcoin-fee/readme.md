@@ -21,6 +21,7 @@ See fee distribution: https://jochen-hoenicke.de/queue/#0,2h
 - [x] BTC.com API
 - [x] earn.com API
 - [x] mempool.space API
+- [x] Strike Blended Fee Estimate API
 
 Incubating: 
 - [ ] https://btcpriceequivalent.com/fee-estimates -> https://btcpriceequivalent.com/n/{n}
@@ -267,5 +268,31 @@ Incubating:
   [...]
 ]
 ```
+
+### Strike Blended Fee Estimate API
+
+- [`https://bitcoinchainfees.strike.me/`](https://bitcoinchainfees.strike.me/)
+- [`https://bitcoinchainfees.strike.me/v1/fee-estimates`](https://bitcoinchainfees.strike.me/v1/fee-estimates)
+- [documentation](https://github.com/LN-Zap/bitcoin-blended-fee-estimator)
+- Last check: 2024-03-13
+- Unit of measurement: **`sat/vKB`**
+
+`https://bitcoinchainfees.strike.me/v1/fee-estimates`
+```json
+{
+  // [...]
+  "fee_by_block_target": {
+    "1": 22000,
+    "3": 19000,
+    "6": 17000,
+    "7": 14128,
+    "8": 13609,
+    "11": 13009,
+    "288": 12227,
+    "576": 11042
+  }
+}
+```
+
 
 All text and images in this readme.md are licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).

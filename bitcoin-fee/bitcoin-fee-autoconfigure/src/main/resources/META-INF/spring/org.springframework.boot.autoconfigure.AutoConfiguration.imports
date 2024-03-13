@@ -9,3 +9,4 @@ org.tbk.bitcoin.tool.fee.blockstreaminfo.config.BlockstreamInfoFeeClientAutoConf
 org.tbk.bitcoin.tool.fee.btcdotcom.config.BtcdotcomFeeClientAutoConfiguration
 org.tbk.bitcoin.tool.fee.earndotcom.config.EarndotcomFeeClientAutoConfiguration
 org.tbk.bitcoin.tool.fee.mempoolspace.config.MempoolspaceFeeClientAutoConfiguration
+org.tbk.bitcoin.tool.fee.strike.config.StrikeFeeClientAutoConfiguration
