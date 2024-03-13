@@ -14,7 +14,7 @@ ext {
     grpcVersion = '1.56.0' // must be compatible with lightningj
     protobufVersion = '3.22.3'
     protocVersion = protobufVersion
-    jmoleculesBomVersion = '2023.1.1'
+    jmoleculesBomVersion = '2023.1.2'
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.3'
     acinqSecp256k1KmpVersion = '0.14.0'
@@ -30,7 +30,7 @@ ext {
     torSpringBootStarterVersion = '0.8.0'
     springBootGradlePluginVersion = '3.2.1'
     protobufGradleVersion = '0.9.4'
-    bytebuddyPluginVersion = '1.14.11'
+    bytebuddyPluginVersion = '1.14.12'
 }
 
 // hack: 2021-11-10T00:00Z - change this timestamp to invalidate GitHub Actions gradle caches.
