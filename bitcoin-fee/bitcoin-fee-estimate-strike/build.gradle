@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+description = 'strike blended fee estimator client package'
+
+dependencies {
+    api project(':bitcoin-fee:bitcoin-fee-estimate-core')
+
+    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+}

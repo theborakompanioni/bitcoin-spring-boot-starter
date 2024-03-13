@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - import lnurl-simple in spring-lnurl-auth-starter
+- fee: new module bitcoin-fee-estimate-strike
 
 ### Changed
 - upgrade: update secp256k1-kmp from v0.13.0 to v0.14.0

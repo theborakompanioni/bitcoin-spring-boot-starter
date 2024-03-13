@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package bitcoinerlive;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "org.tbk.bitcoin.tool.fee.strike.proto";
+option java_outer_classname = "StrikeProtos";
+option java_multiple_files = true;
+
+/**
+ * Fee Estimates
+ * https://bitcoinchainfees.strike.me/
+ *
+ * A blend of mempool-based and history-based Bitcoin fee estimates.
+ *
+ * GET https://bitcoinchainfees.strike.me/v1/fee-estimates
+ * For example:
+{
+  "current_block_height": 834508,
+  "current_block_hash": "00000000000000000001d2e13ab177cf7a5a450aa8261795b613a50cde3e7562",
+  "fee_by_block_target": {
+    "1": 22000,
+    "3": 19000,
+    "6": 17000,
+    "7": 14128,
+    "8": 13609,
+    "11": 13009,
+    "288": 12227,
+    "576": 11042
+  }
+}
+ */
+message BlendedFeeEstimateResponse {
+    int64 currentBlockHeight = 1 [json_name = "current_block_height"];
+    string currentBlockHash = 2 [json_name = "current_block_hash"];
+    map<string, int64> feeByBlockTarget = 3 [json_name = "fee_by_block_target"];
+}

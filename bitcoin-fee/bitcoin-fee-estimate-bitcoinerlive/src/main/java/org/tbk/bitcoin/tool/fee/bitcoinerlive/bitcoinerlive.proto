@@ -15,7 +15,7 @@ option java_multiple_files = true;
  * https://bitcoiner.live/api/fees/estimates/latest
  * https://bitcoiner.live/doc/api
  *
-  * GET https://bitcoiner.live/api/fees/estimates/latest
+ * GET https://bitcoiner.live/api/fees/estimates/latest
  * Return latest fee estimates.
  * Total fees are given for a "typical" transaction of 1 input/2 outputs:
  * p2wpkh (Pay-To-Witness-Public-Key-Hash) refers to native Segwit transactions (141 vbytes, cheapest).
