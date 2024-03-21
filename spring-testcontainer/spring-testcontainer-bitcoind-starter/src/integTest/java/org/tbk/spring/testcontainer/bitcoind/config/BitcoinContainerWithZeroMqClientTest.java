@@ -52,7 +52,7 @@ class BitcoinContainerWithZeroMqClientTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+        BitcoindRegtestTestHelper.createDescriptorWallet(bitcoinClient, "");
     }
 
     @Test

@@ -44,7 +44,7 @@ class LnPlaygroundExampleApplicationConfig {
     @Bean
     @Profile("!test")
     InitializingBean createWalletIfMissing(BitcoinClient bitcoinClient) {
-        return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinClient);
+        return () -> BitcoindRegtestTestHelper.createDescriptorWallet(bitcoinClient, "");
     }
 
     @Bean

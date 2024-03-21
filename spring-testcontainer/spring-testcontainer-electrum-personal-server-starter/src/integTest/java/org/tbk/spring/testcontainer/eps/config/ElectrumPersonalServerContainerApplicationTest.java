@@ -49,7 +49,7 @@ class ElectrumPersonalServerContainerApplicationTest {
              */
             @Bean
             InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
-                return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinRegtestClient);
+                return () -> BitcoindRegtestTestHelper.createLegacyDefaultWalletIfNecessary(bitcoinRegtestClient);
             }
         }
     }

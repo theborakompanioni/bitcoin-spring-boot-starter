@@ -23,5 +23,4 @@ class BitcoindContainerExampleApplicationTest {
         assertThat(bitcoindContainer, is(notNullValue()));
         assertThat(bitcoindContainer.isRunning(), is(true));
     }
-
 }

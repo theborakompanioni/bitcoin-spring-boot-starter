@@ -39,7 +39,7 @@ import static com.google.common.base.Preconditions.checkArgument;
         ignoreUnknownFields = false
 )
 public class BitcoindContainerProperties extends AbstractContainerProperties implements Validator {
-    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/bitcoind:25.0";
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/bitcoind:26.0";
     private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
     private static final int MAINNET_DEFAULT_RPC_PORT = 8332;

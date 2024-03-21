@@ -33,7 +33,7 @@ class BitcoinPaymentRequestExampleApplicationConfig {
      */
     @Bean
     InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
-        return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinRegtestClient);
+        return () -> BitcoindRegtestTestHelper.createDescriptorWallet(bitcoinRegtestClient, "");
     }
 
     @Bean

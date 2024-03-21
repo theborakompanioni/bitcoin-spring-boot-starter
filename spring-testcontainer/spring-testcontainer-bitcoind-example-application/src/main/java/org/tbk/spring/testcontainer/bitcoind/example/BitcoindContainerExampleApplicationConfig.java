@@ -17,6 +17,6 @@ class BitcoindContainerExampleApplicationConfig {
      */
     @Bean
     InitializingBean createWalletIfMissing(BitcoinExtendedClient bitcoinRegtestClient) {
-        return () -> BitcoindRegtestTestHelper.createDefaultWalletIfNecessary(bitcoinRegtestClient);
+        return () -> BitcoindRegtestTestHelper.createDescriptorWallet(bitcoinRegtestClient, "");
     }
 }

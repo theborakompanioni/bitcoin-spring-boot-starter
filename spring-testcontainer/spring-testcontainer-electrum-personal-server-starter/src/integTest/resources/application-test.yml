@@ -43,6 +43,9 @@ org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: this-is-my-rpc-user-20201218
   rpcpassword: correct_horse_battery_staple_20201218
+  commands:
+    # enable legacy wallets (>= Bitcoin Core v26)
+    - '-deprecatedrpc=create_bdb'
 
 org.tbk.bitcoin.regtest:
   enabled: true

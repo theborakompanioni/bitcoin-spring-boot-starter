@@ -38,7 +38,7 @@ org.tbk.spring.testcontainer.bitcoind:
     # [debug]
     # Enable debug logging for categories.
     # '-debug=1' would log ALL messages
-    - '-debug=rpc,zmq'
+    - '-debug=rpc'
     # Log IP Addresses in debug output.
     - '-logips=1'
     # Append comment to the user agent string.
