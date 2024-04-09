@@ -12,6 +12,7 @@ import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,9 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     private static final List<String> reservedCommands = ImmutableList.<String>builder()
             .add("rpcuser")
             .add("rpcpassword")
+            .add("rpcport")
             .add("chain")
+            .add("network")
             .add("testnet")
             .add("regtest")
             .build();
@@ -74,6 +77,16 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
 
     private Chain chain;
 
+    /**
+     * Bitcoin Network
+     */
+    private String network = DEFAULT_CHAIN.toString();
+    
+    /**
+     * RPC port
+     */
+    private Integer rpcport = REGTEST_DEFAULT_RPC_PORT;
+    
     /**
      * RPC username.
      */
@@ -95,7 +108,15 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     public Optional<String> getRpcpassword() {
         return Optional.ofNullable(rpcpassword);
     }
+    
+    public Optional<Integer> getRpcport(){
+    	return Optional.ofNullable(rpcport);
+    }
 
+    public Optional<String> getNetwork(){
+    	return Optional.ofNullable(network);
+    }
+    
     public Optional<String> getCommandValueByKey(String key) {
         String commandWithPrefix = "-" + key;
         return this.getCommands().stream()
@@ -148,6 +169,21 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
                 String errorMessage = "'rpcpassword' must not contain whitespaces - unsupported value";
                 errors.rejectValue("rpcpassword", "rpcpassword.unsupported", errorMessage);
             }
+        }
+        
+        Integer rpcportValue = properties.getRpcport().orElse(null);
+        if (rpcportValue != null && (rpcportValue < 0 || rpcportValue > 65535)) {
+        	String errorMessage = "'rpcport' must be in the range 0-65535 - invalid port.";
+        	errors.rejectValue("rpcport", "rpcport.invalid", errorMessage);
+        }
+        
+        String networkValue = properties.getNetwork().orElse(null);
+        if (networkValue != null &&
+	        	Arrays.stream(Chain.values()).noneMatch(
+	        			c -> c.toString().contentEquals(networkValue))) {
+        	
+        	String errorMessage = "'network' must be mainnet, regtest, or testnet - invalid network";
+        	errors.rejectValue("network", "network.invalid", errorMessage);
         }
 
         reservedCommands.stream()

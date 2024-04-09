@@ -64,8 +64,10 @@ org.tbk.lightning.lnd.grpc:
 
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
+  network: regtest
   rpcuser: myoneandonlyrpcuser
   rpcpassword: correcthorsebatterystaple123
+  rpcport: 18443
   exposed-ports:
     - 28332
     - 28333
@@ -96,7 +98,7 @@ org.tbk.spring.testcontainer.bitcoind:
 org.tbk.spring.testcontainer.electrumx:
   enabled: true # disable if you do not need this functionality
   rpchost: localhost
-  rpcport: 18443
+  rpcport: ${org.tbk.spring.testcontainer.bitcoind.rpcport}
   rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
   rpcpass: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
   environment:
@@ -120,9 +122,9 @@ org.tbk.bitcoin.regtest:
       max-duration: PT120S
 
 org.tbk.bitcoin.jsonrpc:
-  network: regtest
+  network: ${org.tbk.spring.testcontainer.bitcoind.network}
   rpchost: http://localhost
-  rpcport: 18443
+  rpcport: ${org.tbk.spring.testcontainer.bitcoind.rpcport}
   rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
   rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
 

@@ -62,23 +62,28 @@ public class BitcoindContainerAutoConfiguration {
         List<String> commands = buildCommandList();
 
         // TODO: expose ports specified via auto configuration properties
-        List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
-                .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332, 8333) : Collections.emptyList())
-                .addAll(this.properties.getChain() == Chain.testnet ? Lists.newArrayList(18332, 18333) : Collections.emptyList())
-                .addAll(this.properties.getChain() == Chain.regtest ? Lists.newArrayList(18443, 18444) : Collections.emptyList())
-                .build();
+//        List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
+//                .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332, 8333) : Collections.emptyList())
+//                .addAll(this.properties.getChain() == Chain.testnet ? Lists.newArrayList(18332, 18333) : Collections.emptyList())
+//                .addAll(this.properties.getChain() == Chain.regtest ? Lists.newArrayList(18443, 18444) : Collections.emptyList())
+//                .build();
 
+        log.debug("Chain: {}", this.properties.getChain().toString());
+        log.debug("RpcPort: {}", this.properties.getRpcport().get());
+        log.debug("Network: {}", this.properties.getNetwork().get());
         List<Integer> exposedPorts = ImmutableList.<Integer>builder()
-                .addAll(hardcodedStandardPorts)
+//                .addAll(hardcodedStandardPorts)
+        		.add(this.properties.getRpcport().get())
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
         // only wait for rpc ports - p2p ports might be disabled (networkactive=0); zeromq ports won't work (we can live with that for now)
         CustomHostPortWaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(ImmutableList.<Integer>builder()
-                        .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332) : Collections.emptyList())
-                        .addAll(this.properties.getChain() == Chain.testnet ? Lists.newArrayList(18332) : Collections.emptyList())
-                        .addAll(this.properties.getChain() == Chain.regtest ? Lists.newArrayList(18443) : Collections.emptyList())
+//                        .addAll(this.properties.getChain() == Chain.mainnet ? Lists.newArrayList(8332) : Collections.emptyList())
+//                        .addAll(this.properties.getChain() == Chain.testnet ? Lists.newArrayList(18332) : Collections.emptyList())
+//                        .addAll(this.properties.getChain() == Chain.regtest ? Lists.newArrayList(18443) : Collections.emptyList())
+                		.add(this.properties.getRpcport().get())
                         .build())
                 .build();
 
