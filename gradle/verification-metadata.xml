@@ -71,6 +71,7 @@
             <trusting group="org.yaml" name="snakeyaml" version="2.2"/>
          </trusted-key>
          <trusted-key id="124dac8350968ec2a8260584ee8ecbbbc188fd5d" group="org.ajoberstar.grgit" name="grgit-core" version="4.1.1"/>
+         <trusted-key id="1357b30309df9589a97da56562dd826536d24571" group="org.springdoc"/>
          <trusted-key id="144219b604dde6a2383fa0ee9c6404ebce3e4464" group="com.github.zafarkhaja" name="java-semver" version="0.9.0"/>
          <trusted-key id="147b691a19097624902f4ea9689cbe64f4bc997f" group="org.mockito"/>
          <trusted-key id="19beab2d799c020f17c69126b16698a4adf4d638">
@@ -275,6 +276,7 @@
             <trusting group="io.grpc"/>
          </trusted-key>
          <trusted-key id="b2d1ac7be5a3eeb9773a49fe6eb9de4d7e01b1e1" group="org.antlr"/>
+         <trusted-key id="b2f967b67dadc1f07172dbdade453e55dc86fc9b" group="co.touchlab"/>
          <trusted-key id="b41089a2da79b0fa5810252872385ff0af338d52" group="joda-time" name="joda-time" version="2.10"/>
          <trusted-key id="b6e73d84ea4fcc47166087253faad2cd5ecbb314">
             <trusting group="commons-beanutils"/>
@@ -298,6 +300,7 @@
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.43.2.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.44.1.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.45.1.0"/>
+            <trusting group="org.xerial" name="sqlite-jdbc" version="3.45.3.0"/>
          </trusted-key>
          <trusted-key id="c25a288a842eaf7aa5b5303f7a73fe77de2c4027" group="^fr[.]acinq($|([.].*))" regex="true"/>
          <trusted-key id="c6f7d1c804c821f49af3bfc13ad93c3c677a106e">

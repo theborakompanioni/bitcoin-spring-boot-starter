@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update secp256k1-kmp from v0.13.0 to v0.14.0
 - upgrade: update bitcoin-kmp from v0.16.0 to v0.18.0
 - upgrade: update jmolecules from v2023.1.1 to v2023.1.3
+- upgrade: update sqlite from v3.45.1.0 to v3.45.3.0
 
 ## [0.13.0] - 2024-02-14
 
