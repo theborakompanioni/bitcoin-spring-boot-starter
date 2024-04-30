@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkArgument;
         ignoreUnknownFields = false
 )
 public class ClnContainerProperties extends AbstractContainerProperties implements Validator {
-    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/clightning:23.08";
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/clightning:24.02.2";
     private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
     private static final String DEFAULT_NETWORK = "regtest";
