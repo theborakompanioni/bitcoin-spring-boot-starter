@@ -14,10 +14,13 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.hamcrest.Matcher;
+
 class BitcoindContainerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
     private static final String RPC_PORT_ERROR_MSG = "'rpcport' must be in the range 0-65535 - invalid port.";
+	private static final String P2P_PORT_ERROR_MSG = "'p2pport' must be in the range 0-65535 - invalid port.";
 
     @Test
     void noBeansAreCreated() {
@@ -180,4 +183,142 @@ class BitcoindContainerAutoConfigurationTest {
                     }
                 });
     }
-}
+    
+    @Test
+    void throwOnLowP2pPortPropertiesValues() {
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
+                .withPropertyValues(
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=password",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcport=7777",
+                        "org.tbk.spring.testcontainer.bitcoind.p2pport=-1",
+                        "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
+                )
+                .run(context -> {
+                    try {
+                        context.start();
+                        // triggers creation of container
+                        BitcoindContainer<?> ignoredOnPurpose = context.getBean(BitcoindContainer.class);
+                        fail("Should have failed to start application context");
+                    } catch (Exception e) {
+                        Throwable rootCause = Throwables.getRootCause(e);
+                        BindValidationException validationException = (BindValidationException) rootCause;
+                        
+                        FieldError error = (FieldError) validationException.getValidationErrors().getAllErrors().get(0);
+                        assertThat(error.getField(), is("p2pport"));
+                        assertThat(error.getCode(), is("p2pport.invalid"));
+                        assertThat(error.getDefaultMessage(), is(P2P_PORT_ERROR_MSG));
+                    }
+                });
+    }
+    
+    @Test
+    void throwOnHighP2pPortPropertiesValues() {
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
+                .withPropertyValues(
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=password",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcport=7777",
+                        "org.tbk.spring.testcontainer.bitcoind.p2pport=65536",
+                        "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
+                )
+                .run(context -> {
+                    try {
+                        context.start();
+                        // triggers creation of container
+                        BitcoindContainer<?> ignoredOnPurpose = context.getBean(BitcoindContainer.class);
+                        fail("Should have failed to start application context");
+                    } catch (Exception e) {
+                        Throwable rootCause = Throwables.getRootCause(e);
+                        BindValidationException validationException = (BindValidationException) rootCause;
+                        
+                        FieldError error = (FieldError) validationException.getValidationErrors().getAllErrors().get(0);
+                        assertThat(error.getField(), is("p2pport"));
+                        assertThat(error.getCode(), is("p2pport.invalid"));
+                        assertThat(error.getDefaultMessage(), is(P2P_PORT_ERROR_MSG));
+                    }
+                });
+    }
+    
+    @Test
+    void defaultRegtestValuesTest() {
+        this.contextRunner.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
+                .withPropertyValues(
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
+                        "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
+                )
+                .run(context -> {
+                    assertThat(context.containsBean("bitcoindContainer"), is(true));
+                    assertThat(context.getBean(BitcoindContainer.class), is(notNullValue()));
+
+                    BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
+                    assertThat(properties, is(notNullValue()));
+                    assertThat(properties.getRpcuser().orElseThrow(), is("myrpcuser"));
+                    assertThat(properties.getRpcpassword().orElseThrow(), is("correcthorsebatterystaple"));
+
+                    //Defaults
+                    assertThat(properties.getNetwork(), is("regtest"));
+                    assertThat(properties.getRpcport(), is(18443));
+                    assertThat(properties.getP2pport(), is(18444));
+                    		
+                });
+    }
+    
+    @Test
+    void defaultMainnetValuesTest() {
+        this.contextRunner
+        //.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
+        .withBean(BitcoindContainerProperties.class)
+                .withPropertyValues(
+                        "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                        "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
+                        "org.tbk.spring.testcontainer.bitcoind.network=mainnet",
+                        "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
+                )
+                .run(context -> {
+
+                    BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
+                    assertThat(properties, is(notNullValue()));
+                    //assertThat(properties.getRpcuser().orElseThrow(), is("myrpcuser"));
+                    //assertThat(properties.getRpcpassword().orElseThrow(), is("correcthorsebatterystaple"));
+
+                    //Defaults
+                    assertThat(properties.getNetwork(), is("mainnet"));
+                    assertThat(properties.getRpcport(), is(8332));
+                    assertThat(properties.getP2pport(), is(8333));
+                    		
+                });
+    }
+    
+    @Test
+    void defaultTestnetValuesTest() {
+        this.contextRunner
+        //.withUserConfiguration(BitcoindContainerAutoConfiguration.class)
+        .withBean(BitcoindContainerProperties.class)
+        .withPropertyValues(
+                "org.tbk.spring.testcontainer.bitcoind.enabled=true",
+                "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
+                "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
+                "org.tbk.spring.testcontainer.bitcoind.network=testnet",
+                "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
+        )
+        .run(context -> {
+        	
+            BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
+            assertThat(properties, is(notNullValue()));
+            //assertThat(properties.getRpcuser().orElseThrow(), is("myrpcuser"));
+            //assertThat(properties.getRpcpassword().orElseThrow(), is("correcthorsebatterystaple"));
+
+            //Defaults
+            assertThat(properties.getNetwork(), is("testnet"));
+            assertThat(properties.getRpcport(), is(18332));
+            assertThat(properties.getP2pport(), is(18333));
+            		
+        });
+    }
+ }
