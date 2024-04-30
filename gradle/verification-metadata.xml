@@ -83,7 +83,7 @@
          <trusted-key id="1d339b6a68ae2e8daeda65d5276962ca56e73c81" group="io.vavr"/>
          <trusted-key id="1dbb44e80f61493d6369b5fb95c15058a5eda4f1" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="1f47744c9b6e14f2049c2857f1f111af65925306" group="io.github.classgraph" name="classgraph" version="4.8.149"/>
-         <trusted-key id="22394bc36212ed3694aef8dcfb2ea0369c925ee1" group="org.zeromq" name="jeromq" version="0.5.4"/>
+         <trusted-key id="22394bc36212ed3694aef8dcfb2ea0369c925ee1" group="org.zeromq" name="jeromq" version="0.6.0"/>
          <trusted-key id="2518174f4111f02779592a6f9757d7e7e06dd2ac" group="io.prometheus"/>
          <trusted-key id="264b9ee9c35b105db1abcea835341680d17a378c" group="org.axonframework"/>
          <trusted-key id="2655176f748fd83725b4805ff2a01147d830c125">
