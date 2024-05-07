@@ -1,7 +1,6 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -11,12 +10,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.tbk.spring.testcontainer.bitcoind.BitcoindContainer;
-import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerProperties.Chain;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,20 +58,16 @@ public class BitcoindContainerAutoConfiguration {
     BitcoindContainer<?> bitcoindContainer() {
         List<String> commands = buildCommandList();
 
-        log.debug("Chain: {}", this.properties.getChain().toString());
-        log.debug("RpcPort: {}", this.properties.getRpcport());
-        log.debug("P2Pport: {}", this.properties.getP2pport());
-        log.debug("Network: {}", this.properties.getNetwork());
         List<Integer> exposedPorts = ImmutableList.<Integer>builder()
-        		.add(this.properties.getRpcport())
-        		.add(this.properties.getP2pport())
+                .add(this.properties.getRpcport())
+                .add(this.properties.getP2pport())
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
         // only wait for rpc ports - p2p ports might be disabled (networkactive=0); zeromq ports won't work (we can live with that for now)
         CustomHostPortWaitStrategy waitStrategy = CustomHostPortWaitStrategy.builder()
                 .ports(ImmutableList.<Integer>builder()
-                		.add(this.properties.getRpcport())
+                        .add(this.properties.getRpcport())
                         .build())
                 .build();
 
@@ -103,14 +96,10 @@ public class BitcoindContainerAutoConfiguration {
     }
 
     private List<String> buildCommandList() {
-        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.builder();
-
-        Optional.of(this.properties.getChain())
-                .filter(it -> it != Chain.mainnet)
-                .map(Enum::name)
-                .map(String::toLowerCase)
-                .map(it -> "-chain=" + it)
-                .ifPresent(requiredCommandsBuilder::add);
+        ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder()
+                .add("-chain=" + this.properties.getNetwork().getChain())
+                .add("-rpcport=" + this.properties.getRpcport())
+                .add("-port=" + this.properties.getP2pport());
 
         List<String> overridingDefaults = ImmutableList.<String>builder()
                 // dns: Allow DNS lookups for -addnode, -seednode and -connect values.
