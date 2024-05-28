@@ -3,10 +3,7 @@ package org.tbk.spring.testcontainer.bitcoind.config;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
-
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -14,7 +11,6 @@ import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +37,6 @@ import static com.google.common.base.Preconditions.checkArgument;
         prefix = "org.tbk.spring.testcontainer.bitcoind",
         ignoreUnknownFields = false
 )
-@Slf4j
 public class BitcoindContainerProperties extends AbstractContainerProperties implements Validator {
     private static final String DEFAULT_DOCKER_IMAGE_NAME = "polarlightning/bitcoind:25.0";
     private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
@@ -62,39 +57,45 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
             .add("rpcuser")
             .add("rpcpassword")
             .add("rpcport")
+            .add("port")
             .add("chain")
-            .add("network")
             .add("testnet")
             .add("regtest")
+            .add("signet")
             .build();
 
+    /**
+     * See <a href="https://github.com/bitcoin/bitcoin/blob/v27.0/src/chainparamsbase.cpp">chainparamsbase.cpp</a>.
+     */
+    @Getter
+    @RequiredArgsConstructor
     public enum Chain {
-        mainnet,
-        testnet,
-        regtest
+        mainnet("main"),
+        testnet("test"),
+        regtest("regtest");
+
+        @NonNull
+        private final String chain;
     }
 
     public BitcoindContainerProperties() {
         super(defaultDockerImageName, reservedCommands);
     }
 
-    private Chain chain;
+    // TODO: rename to "chain"
+    private Chain network;
 
-    /**
-     * Bitcoin Network
-     */
-    private String network;
-    
     /**
      * RPC port
      */
     private Integer rpcport;
-    
+
     /**
      * P2P Port
      */
+    // TODO: rename to "port"
     private Integer p2pport;
-    
+
     /**
      * RPC username.
      */
@@ -105,8 +106,8 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
      */
     private String rpcpassword;
 
-    public Chain getChain() {
-        return this.chain != null ? this.chain : DEFAULT_CHAIN;
+    public Chain getNetwork() {
+        return this.network != null ? this.network : DEFAULT_CHAIN;
     }
 
     public Optional<String> getRpcuser() {
@@ -116,46 +117,23 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     public Optional<String> getRpcpassword() {
         return Optional.ofNullable(rpcpassword);
     }
-    
-    public Integer getRpcport(){
-    	Integer port = rpcport;
-		log.debug("RPC Port: {}" + this.rpcport);
-    	if(port == null) {
-    		log.debug("RPC Port not set...using default vaule");
-    		port = switch(getNetwork().toLowerCase()) {
-	    		case "mainnet" -> MAINNET_DEFAULT_RPC_PORT;
-	    		case "testnet" -> TESTNET_DEFAULT_RPC_PORT;
-	    		case "regtest" -> REGTEST_DEFAULT_RPC_PORT;
-	    		default -> throw new IllegalArgumentException("Invalid network: " + getNetwork());
-    		};//getNetwork never returns null, and must be
-    		//one of the above options, but need a default anyway
-    	}
-    	
-    	return port;
+
+    public int getRpcport() {
+        return rpcport != null ? rpcport : switch (getNetwork()) {
+            case mainnet -> MAINNET_DEFAULT_RPC_PORT;
+            case testnet -> TESTNET_DEFAULT_RPC_PORT;
+            case regtest -> REGTEST_DEFAULT_RPC_PORT;
+        };
     }
 
-    public String getNetwork(){
-    	
-    	log.debug("Network: {}", this.network);
-    	return (this.network != null && !this.network.isBlank()) ? this.network : DEFAULT_CHAIN.toString();
-    }
-    
     public Integer getP2pport() {
-    	Integer port = p2pport;
-    	log.debug("P2P Port: {}", p2pport);
-    	if(port == null) {
-    		log.debug("P2P Port not set...providing using default value");
-    		port = switch(getNetwork().toLowerCase()) {
-	    		case "mainnet" -> MAINNET_DEFAULT_P2P_PORT;
-	    		case "testnet" -> TESTNET_DEFAULT_P2P_PORT;
-	    		case "regtest" -> REGTEST_DEFAULT_P2P_PORT;
-	    		default -> throw new IllegalArgumentException("Invalid network: " + getNetwork());
-    		};//getNetwork never returns null, and must be
-    		//one of the above options, but need a default anyway
-    	}
-    	return port;
+        return p2pport != null ? p2pport : switch (getNetwork()) {
+            case mainnet -> MAINNET_DEFAULT_P2P_PORT;
+            case testnet -> TESTNET_DEFAULT_P2P_PORT;
+            case regtest -> REGTEST_DEFAULT_P2P_PORT;
+        };
     }
-    
+
     public Optional<String> getCommandValueByKey(String key) {
         String commandWithPrefix = "-" + key;
         return this.getCommands().stream()
@@ -186,7 +164,6 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
      */
     @Override
     public void validate(Object target, Errors errors) {
-
         BitcoindContainerProperties properties = (BitcoindContainerProperties) target;
 
         String rpcuserValue = properties.getRpcuser().orElse(null);
@@ -211,25 +188,16 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
             }
         }
 
-        String networkValue = this.network;
-        if (networkValue != null &&
-                Arrays.stream(Chain.values()).noneMatch(
-                        c -> c.toString().contentEquals(networkValue))) {
-
-            String errorMessage = "'network' must be mainnet, regtest, or testnet - invalid network";
-            errors.rejectValue("network", "network.invalid", errorMessage);
-        }
-
         Integer rpcportValue = this.rpcport;
-        if (rpcportValue != null && !portIsValid(rpcportValue)) {
-        	String errorMessage = "'rpcport' must be in the range 0-65535 - invalid port.";
-        	errors.rejectValue("rpcport", "rpcport.invalid", errorMessage);
+        if (rpcportValue != null && !isValidPort(rpcportValue)) {
+            String errorMessage = "'rpcport' must be in the range 0-65535";
+            errors.rejectValue("rpcport", "rpcport.invalid", errorMessage);
         }
-        
+
         Integer p2pport = this.p2pport;
-        if (p2pport != null && !portIsValid(p2pport)) {
-        	String errorMessage = "'p2pport' must be in the range 0-65535 - invalid port.";
-        	errors.rejectValue("p2pport", "p2pport.invalid", errorMessage);
+        if (p2pport != null && !isValidPort(p2pport)) {
+            String errorMessage = "'p2pport' must be in the range 0-65535";
+            errors.rejectValue("p2pport", "p2pport.invalid", errorMessage);
         }
 
         reservedCommands.stream()
@@ -267,9 +235,9 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     private static boolean containsWhitespaces(String value) {
         return CharMatcher.whitespace().matchesAnyOf(value);
     }
-    
-    private boolean portIsValid(Integer port) {
-    	return port >= 0 && port <= 65535;
+
+    private static boolean isValidPort(int port) {
+        return port >= 0 && port <= 65535;
     }
 }
 
