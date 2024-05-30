@@ -82,8 +82,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
         super(defaultDockerImageName, reservedCommands);
     }
 
-    // TODO: rename to "chain"
-    private Chain network;
+    private Chain chain;
 
     /**
      * RPC port
@@ -93,8 +92,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     /**
      * P2P Port
      */
-    // TODO: rename to "port"
-    private Integer p2pport;
+    private Integer port;
 
     /**
      * RPC username.
@@ -106,8 +104,8 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
      */
     private String rpcpassword;
 
-    public Chain getNetwork() {
-        return this.network != null ? this.network : DEFAULT_CHAIN;
+    public Chain getChain() {
+        return this.chain != null ? this.chain : DEFAULT_CHAIN;
     }
 
     public Optional<String> getRpcuser() {
@@ -119,15 +117,15 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     }
 
     public int getRpcport() {
-        return rpcport != null ? rpcport : switch (getNetwork()) {
+        return rpcport != null ? rpcport : switch (getChain()) {
             case mainnet -> MAINNET_DEFAULT_RPC_PORT;
             case testnet -> TESTNET_DEFAULT_RPC_PORT;
             case regtest -> REGTEST_DEFAULT_RPC_PORT;
         };
     }
 
-    public Integer getP2pport() {
-        return p2pport != null ? p2pport : switch (getNetwork()) {
+    public Integer getPort() {
+        return port != null ? port : switch (getChain()) {
             case mainnet -> MAINNET_DEFAULT_P2P_PORT;
             case testnet -> TESTNET_DEFAULT_P2P_PORT;
             case regtest -> REGTEST_DEFAULT_P2P_PORT;
@@ -194,10 +192,10 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
             errors.rejectValue("rpcport", "rpcport.invalid", errorMessage);
         }
 
-        Integer p2pport = this.p2pport;
+        Integer p2pport = this.port;
         if (p2pport != null && !isValidPort(p2pport)) {
-            String errorMessage = "'p2pport' must be in the range 0-65535";
-            errors.rejectValue("p2pport", "p2pport.invalid", errorMessage);
+            String errorMessage = "'port' must be in the range 0-65535";
+            errors.rejectValue("port", "port.invalid", errorMessage);
         }
 
         reservedCommands.stream()

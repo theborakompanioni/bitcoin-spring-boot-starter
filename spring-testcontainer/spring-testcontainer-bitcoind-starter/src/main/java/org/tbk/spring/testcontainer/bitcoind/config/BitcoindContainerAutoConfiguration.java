@@ -60,7 +60,7 @@ public class BitcoindContainerAutoConfiguration {
 
         List<Integer> exposedPorts = ImmutableList.<Integer>builder()
                 .add(this.properties.getRpcport())
-                .add(this.properties.getP2pport())
+                .add(this.properties.getPort())
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
@@ -97,9 +97,9 @@ public class BitcoindContainerAutoConfiguration {
 
     private List<String> buildCommandList() {
         ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder()
-                .add("-chain=" + this.properties.getNetwork().getChain())
+                .add("-chain=" + this.properties.getChain().getChain())
                 .add("-rpcport=" + this.properties.getRpcport())
-                .add("-port=" + this.properties.getP2pport());
+                .add("-port=" + this.properties.getPort());
 
         List<String> overridingDefaults = ImmutableList.<String>builder()
                 // dns: Allow DNS lookups for -addnode, -seednode and -connect values.

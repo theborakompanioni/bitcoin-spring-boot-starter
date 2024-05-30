@@ -59,7 +59,7 @@ class BitcoindContainerAutoConfigurationTest {
                     assertThat(properties, is(notNullValue()));
                     assertThat(properties.getRpcuser().orElseThrow(), is("myrpcuser"));
                     assertThat(properties.getRpcpassword().orElseThrow(), is("correcthorsebatterystaple"));
-                    assertThat(properties.getNetwork(), is(BitcoindContainerProperties.Chain.regtest));
+                    assertThat(properties.getChain(), is(BitcoindContainerProperties.Chain.regtest));
 
                     assertThat(properties.getCommands(), hasSize(3));
                     assertThat(properties.getCommands(), hasItem("-printtoconsole"));
@@ -156,7 +156,7 @@ class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
                         "org.tbk.spring.testcontainer.bitcoind.rpcpassword=password",
                         "org.tbk.spring.testcontainer.bitcoind.rpcport=7777",
-                        "org.tbk.spring.testcontainer.bitcoind.network=nakamoto",
+                        "org.tbk.spring.testcontainer.bitcoind.chain=nakamoto",
                         "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
@@ -181,7 +181,7 @@ class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
                         "org.tbk.spring.testcontainer.bitcoind.rpcpassword=password",
                         "org.tbk.spring.testcontainer.bitcoind.rpcport=7777",
-                        "org.tbk.spring.testcontainer.bitcoind.p2pport=-1",
+                        "org.tbk.spring.testcontainer.bitcoind.port=-1",
                         "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
@@ -194,9 +194,9 @@ class BitcoindContainerAutoConfigurationTest {
                         BindValidationException validationException = (BindValidationException) rootCause;
 
                         FieldError error = (FieldError) validationException.getValidationErrors().getAllErrors().get(0);
-                        assertThat(error.getField(), is("p2pport"));
-                        assertThat(error.getCode(), is("p2pport.invalid"));
-                        assertThat(error.getDefaultMessage(), is("'p2pport' must be in the range 0-65535"));
+                        assertThat(error.getField(), is("port"));
+                        assertThat(error.getCode(), is("port.invalid"));
+                        assertThat(error.getDefaultMessage(), is("'port' must be in the range 0-65535"));
                     }
                 });
     }
@@ -209,7 +209,7 @@ class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
                         "org.tbk.spring.testcontainer.bitcoind.rpcpassword=password",
                         "org.tbk.spring.testcontainer.bitcoind.rpcport=7777",
-                        "org.tbk.spring.testcontainer.bitcoind.p2pport=65536",
+                        "org.tbk.spring.testcontainer.bitcoind.port=65536",
                         "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
@@ -222,9 +222,9 @@ class BitcoindContainerAutoConfigurationTest {
                         BindValidationException validationException = (BindValidationException) rootCause;
 
                         FieldError error = (FieldError) validationException.getValidationErrors().getAllErrors().get(0);
-                        assertThat(error.getField(), is("p2pport"));
-                        assertThat(error.getCode(), is("p2pport.invalid"));
-                        assertThat(error.getDefaultMessage(), is("'p2pport' must be in the range 0-65535"));
+                        assertThat(error.getField(), is("port"));
+                        assertThat(error.getCode(), is("port.invalid"));
+                        assertThat(error.getDefaultMessage(), is("'port' must be in the range 0-65535"));
                     }
                 });
     }
@@ -245,9 +245,9 @@ class BitcoindContainerAutoConfigurationTest {
                     BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
                     assertThat(properties, is(notNullValue()));
 
-                    assertThat(properties.getNetwork(), is(BitcoindContainerProperties.Chain.regtest));
+                    assertThat(properties.getChain(), is(BitcoindContainerProperties.Chain.regtest));
                     assertThat(properties.getRpcport(), is(18443));
-                    assertThat(properties.getP2pport(), is(18444));
+                    assertThat(properties.getPort(), is(18444));
 
                 });
     }
@@ -259,16 +259,16 @@ class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.enabled=true",
                         "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
                         "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
-                        "org.tbk.spring.testcontainer.bitcoind.network=mainnet",
+                        "org.tbk.spring.testcontainer.bitcoind.chain=mainnet",
                         "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
                     BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
                     assertThat(properties, is(notNullValue()));
 
-                    assertThat(properties.getNetwork(), is(BitcoindContainerProperties.Chain.mainnet));
+                    assertThat(properties.getChain(), is(BitcoindContainerProperties.Chain.mainnet));
                     assertThat(properties.getRpcport(), is(8332));
-                    assertThat(properties.getP2pport(), is(8333));
+                    assertThat(properties.getPort(), is(8333));
                 });
     }
 
@@ -279,16 +279,16 @@ class BitcoindContainerAutoConfigurationTest {
                         "org.tbk.spring.testcontainer.bitcoind.enabled=true",
                         "org.tbk.spring.testcontainer.bitcoind.rpcuser=myrpcuser",
                         "org.tbk.spring.testcontainer.bitcoind.rpcpassword=correcthorsebatterystaple",
-                        "org.tbk.spring.testcontainer.bitcoind.network=testnet",
+                        "org.tbk.spring.testcontainer.bitcoind.chain=testnet",
                         "org.tbk.spring.testcontainer.bitcoind.commands=-printtoconsole, -debug=1, -logips=1"
                 )
                 .run(context -> {
                     BitcoindContainerProperties properties = context.getBean(BitcoindContainerProperties.class);
                     assertThat(properties, is(notNullValue()));
 
-                    assertThat(properties.getNetwork(), is(BitcoindContainerProperties.Chain.testnet));
+                    assertThat(properties.getChain(), is(BitcoindContainerProperties.Chain.testnet));
                     assertThat(properties.getRpcport(), is(18332));
-                    assertThat(properties.getP2pport(), is(18333));
+                    assertThat(properties.getPort(), is(18333));
                 });
     }
 }
