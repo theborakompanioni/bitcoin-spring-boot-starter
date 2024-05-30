@@ -15,7 +15,7 @@ public final class InMemoryK1Cache implements K1Cache {
         }
     };
 
-    public final Cache<K1, K1> cache = CacheBuilder.newBuilder()
+    private final Cache<K1, K1> cache = CacheBuilder.newBuilder()
             .expireAfterAccess(Duration.ofMinutes(5))
             .maximumSize(100_000)
             .removalListener(LOG_REMOVAL_LISTENER)
