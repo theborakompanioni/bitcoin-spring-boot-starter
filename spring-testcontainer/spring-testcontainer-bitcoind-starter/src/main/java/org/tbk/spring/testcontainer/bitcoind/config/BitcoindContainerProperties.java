@@ -124,7 +124,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
         };
     }
 
-    public Integer getPort() {
+    public int getPort() {
         return port != null ? port : switch (getChain()) {
             case mainnet -> MAINNET_DEFAULT_P2P_PORT;
             case testnet -> TESTNET_DEFAULT_P2P_PORT;
@@ -186,14 +186,14 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
             }
         }
 
-        Integer rpcportValue = this.rpcport;
-        if (rpcportValue != null && !isValidPort(rpcportValue)) {
+        int rpcportValue = properties.getRpcport();
+        if (!isValidPort(rpcportValue)) {
             String errorMessage = "'rpcport' must be in the range 0-65535";
             errors.rejectValue("rpcport", "rpcport.invalid", errorMessage);
         }
 
-        Integer p2pport = this.port;
-        if (p2pport != null && !isValidPort(p2pport)) {
+        int p2pport = properties.getPort();
+        if (!isValidPort(p2pport)) {
             String errorMessage = "'port' must be in the range 0-65535";
             errors.rejectValue("port", "port.invalid", errorMessage);
         }
