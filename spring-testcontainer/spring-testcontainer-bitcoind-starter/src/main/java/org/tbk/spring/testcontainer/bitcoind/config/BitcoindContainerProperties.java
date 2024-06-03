@@ -50,7 +50,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     private static final int REGTEST_DEFAULT_RPC_PORT = 18443;
     private static final int REGTEST_DEFAULT_P2P_PORT = 18444;
 
-    private static final Chain DEFAULT_CHAIN = Chain.regtest;
+    private static final Network DEFAULT_NETWORK = Network.regtest;
 
     @Beta
     private static final List<String> reservedCommands = ImmutableList.<String>builder()
@@ -69,7 +69,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
      */
     @Getter
     @RequiredArgsConstructor
-    public enum Chain {
+    public enum Network {
         mainnet("main"),
         testnet("test"),
         regtest("regtest");
@@ -82,7 +82,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
         super(defaultDockerImageName, reservedCommands);
     }
 
-    private Chain chain;
+    private Network network;
 
     /**
      * RPC port
@@ -104,8 +104,8 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
      */
     private String rpcpassword;
 
-    public Chain getChain() {
-        return this.chain != null ? this.chain : DEFAULT_CHAIN;
+    public Network getNetwork() {
+        return this.network != null ? this.network : DEFAULT_NETWORK;
     }
 
     public Optional<String> getRpcuser() {
@@ -117,7 +117,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     }
 
     public int getRpcport() {
-        return rpcport != null ? rpcport : switch (getChain()) {
+        return rpcport != null ? rpcport : switch (getNetwork()) {
             case mainnet -> MAINNET_DEFAULT_RPC_PORT;
             case testnet -> TESTNET_DEFAULT_RPC_PORT;
             case regtest -> REGTEST_DEFAULT_RPC_PORT;
@@ -125,7 +125,7 @@ public class BitcoindContainerProperties extends AbstractContainerProperties imp
     }
 
     public int getPort() {
-        return port != null ? port : switch (getChain()) {
+        return port != null ? port : switch (getNetwork()) {
             case mainnet -> MAINNET_DEFAULT_P2P_PORT;
             case testnet -> TESTNET_DEFAULT_P2P_PORT;
             case regtest -> REGTEST_DEFAULT_P2P_PORT;

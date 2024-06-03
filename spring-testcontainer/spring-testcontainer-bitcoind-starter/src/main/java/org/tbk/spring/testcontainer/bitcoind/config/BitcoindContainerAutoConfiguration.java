@@ -97,7 +97,7 @@ public class BitcoindContainerAutoConfiguration {
 
     private List<String> buildCommandList() {
         ImmutableList.Builder<String> requiredCommandsBuilder = ImmutableList.<String>builder()
-                .add("-chain=" + this.properties.getChain().getChain())
+                .add("-chain=" + this.properties.getNetwork().getChain())
                 .add("-rpcport=" + this.properties.getRpcport())
                 .add("-port=" + this.properties.getPort());
 
