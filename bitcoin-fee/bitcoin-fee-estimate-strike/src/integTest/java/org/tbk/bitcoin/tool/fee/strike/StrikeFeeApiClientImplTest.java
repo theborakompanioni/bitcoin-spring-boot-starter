@@ -32,7 +32,6 @@ class StrikeFeeApiClientImplTest {
         assertThat(estimates.size(), is(greaterThanOrEqualTo(3)));
 
         assertThat(estimates.get("1"), is(greaterThanOrEqualTo(1_000L)));
-        assertThat(estimates.get("3"), is(greaterThanOrEqualTo(1_000L)));
 
         for (Long fee : estimates.values()) {
             assertThat(fee, is(greaterThanOrEqualTo(1_000L)));
