@@ -27,7 +27,7 @@ ext {
     checkstyleVersion = '10.3.4'
     findsecbugsPluginVersion = '1.12.0'
     torSpringBootStarterVersion = '0.8.0'
-    springBootGradlePluginVersion = '3.2.1'
+    springBootGradlePluginVersion = '3.3.0'
     protobufGradleVersion = '0.9.4'
     bytebuddyPluginVersion = '1.14.12'
 }
