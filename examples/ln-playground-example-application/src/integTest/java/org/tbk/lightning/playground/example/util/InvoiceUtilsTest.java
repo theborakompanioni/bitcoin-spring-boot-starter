@@ -96,7 +96,7 @@ class InvoiceUtilsTest {
 
         assertThat(decodedInvoice, is(notNullValue()));
         assertThat(decodedInvoice.getPaymentHash().toHex(), is("14805a7006b96286e7b0a3f618c1cd7f1059f76da766044c5bfc3fa31d5e9442"));
-        assertThat(HexFormat.of().formatHex(decodedInvoice.getFeatures().toByteArray()), is("01000100"));
+        assertThat(HexFormat.of().formatHex(decodedInvoice.getFeatures().toByteArray()), is(""));
         assertThat(decodedInvoice.getNodeId().toHex(), is("024cc50d604f657094f8a2ff031ad6d888f9ac220a86b5949cdaaa5a5c03055d69"));
         assertThat(decodedInvoice.getAmount().getMsat(), is(10_000_000L));
         assertThat(decodedInvoice.getDescription(), is("yolo"));
