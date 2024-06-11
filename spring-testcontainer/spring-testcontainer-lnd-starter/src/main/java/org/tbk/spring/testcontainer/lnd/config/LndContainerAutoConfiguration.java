@@ -34,7 +34,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
 
-    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.17.0-beta";
+    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.18.0-beta";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -93,7 +93,6 @@ public class LndContainerAutoConfiguration {
      * @return a list fo commands for the container.
      */
     private List<String> buildCommandList() {
-
         List<String> requiredCommands = ImmutableList.<String>builder()
                 .add("--noseedbackup") // so no create/unlock wallet is needed ("lncli unlock")
                 //.add("--listen=9735")
@@ -116,7 +115,6 @@ public class LndContainerAutoConfiguration {
                 .build();
 
         List<String> bitcoinCommands = ImmutableList.<String>builder()
-                .add("--bitcoin.active")
                 .add("--bitcoin.regtest")
                 .add("--bitcoin.node=bitcoind")
                 .add("--bitcoin.defaultchanconfs=" + this.properties.getCommandValueByKey("bitcoin.defaultchanconfs").orElse("1"))
