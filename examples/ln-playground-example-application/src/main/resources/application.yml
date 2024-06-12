@@ -32,6 +32,7 @@ org.tbk.spring.testcontainer.cln:
     - '--bitcoin-rpcuser=myoneandonlyrpcuser'
     - '--bitcoin-rpcpassword=correcthorsebatterystaple123'
     - '--grpc-port=20935'
+    - '--disable-plugin=offers' # TODO: 'offers' plugin errors with v24.05 - disable temporarily (see https://github.com/ElementsProject/lightning/pull/7379)
 
 org.tbk.lightning.cln.grpc:
   enabled: true
