@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update sqlite from v3.45.1.0 to v3.45.3.0
 - upgrade: update jeromq from v0.5.4 to v0.6.0
 - upgrade: update cln-grpc-client-core from v23.8.1 to v24.5.0
+- upgrade: update bitcoin testcontainer from v26 to v27
 - upgrade: update cln testcontainer from v23.08 to v24.05
 - upgrade: update lnd testcontainer from v0.17.0-beta to v0.18.0-beta
 - upgrade: update testcontainers from v1.19.3 to v1.19.8
