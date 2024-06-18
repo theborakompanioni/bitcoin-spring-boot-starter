@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 - remove deprecated methods from `LnurlAuthWalletToken`
-- upgrade: update lightning-kmp from v1.5.15 to v1.6.2
+- upgrade: update lightning-kmp from v1.5.15 to v1.6.3
 
 ### Added
 - import lnurl-simple in spring-lnurl-auth-starter
