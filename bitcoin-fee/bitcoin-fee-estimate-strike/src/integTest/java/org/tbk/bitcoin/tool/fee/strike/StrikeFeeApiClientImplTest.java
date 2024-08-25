@@ -29,8 +29,9 @@ class StrikeFeeApiClientImplTest {
 
         Map<String, Long> estimates = response.getFeeByBlockTargetMap();
         assertThat(estimates, is(notNullValue()));
-        assertThat(estimates.size(), is(greaterThanOrEqualTo(3)));
 
+        // might only include a single estimate
+        assertThat(estimates.size(), is(greaterThanOrEqualTo(1)));
         assertThat(estimates.get("1"), is(greaterThanOrEqualTo(1_000L)));
 
         for (Long fee : estimates.values()) {
