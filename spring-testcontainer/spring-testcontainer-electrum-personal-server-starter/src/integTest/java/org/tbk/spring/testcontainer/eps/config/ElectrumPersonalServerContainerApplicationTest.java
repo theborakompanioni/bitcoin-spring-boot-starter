@@ -2,6 +2,7 @@ package org.tbk.spring.testcontainer.eps.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
+@Disabled("Flaky: Fails sometimes at starting bitcoind container ('Container is already is use')")
 class ElectrumPersonalServerContainerApplicationTest {
 
     @SpringBootApplication(proxyBeanMethods = false)
