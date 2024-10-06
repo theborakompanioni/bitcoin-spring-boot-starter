@@ -4,7 +4,7 @@ services:
   postgres:
     restart: always
     container_name: regtest_db
-    image: postgres:16.2-alpine3.18
+    image: postgres:17.0-alpine3.20
     volumes:
       - postgres-data:/postgresql_data
       - ./data/pg/init:/docker-entrypoint-initdb.d/
@@ -24,7 +24,7 @@ services:
 
   bitcoind:
     container_name: regtest_bitcoind
-    image: polarlightning/bitcoind:26.0
+    image: polarlightning/bitcoind:27.0
     restart: always
     volumes:
       - bitcoind-data:/home/bitcoin/.bitcoin/regtest
@@ -326,7 +326,7 @@ services:
 
   lnd6_farid:
     container_name: regtest_lnd6_farid
-    image: polarlightning/lnd:0.17.4-beta
+    image: polarlightning/lnd:0.18.2-beta
     restart: always
     depends_on:
       bitcoind:
