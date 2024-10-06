@@ -177,7 +177,10 @@
          </trusted-key>
          <trusted-key id="50a628ffaf58480736b1079fd1031d14464180e0" group="org.reactivestreams" name="reactive-streams" version="1.0.4"/>
          <trusted-key id="53c935821aa6a755bd337db53595395eb3d8e1ba" group="org.apache.logging.log4j"/>
-         <trusted-key id="55092314ad0547c59bdb7ae8e04e48e72c205463" group="fr.acinq.bitcoin" name="bitcoin-kmp-jvm" version="0.20.0"/>
+         <trusted-key id="55092314ad0547c59bdb7ae8e04e48e72c205463">
+            <trusting group="fr.acinq.bitcoin" name="bitcoin-kmp-jvm" version="0.20.0"/>
+            <trusting group="^fr[.]acinq($|([.].*))" regex="true"/>
+         </trusted-key>
          <trusted-key id="5719e50eac5a4b1dd390b72c2a742740e08e7f8d" group="org.antlr"/>
          <trusted-key id="57312c37b064ee0fdab0130490d5ce79e1de6a2c">
             <trusting group="com.querydsl" name="querydsl-bom" version="5.0.0"/>
