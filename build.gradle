@@ -358,8 +358,16 @@ configure(subprojects.findAll { project -> project.name.indexOf('-example-applic
     integrationTest.onlyIf { isIdeEnv || project.hasProperty('exampleTest') }
 }
 
+// disable test tasks in check phase for all 'bitcoin-fee-*' subprojects.
+// these subprojects tests are very expensive as they all query external APIs.
+// you can invoke them manually via `./gradlew check -PfeeProviderTest`
+configure(subprojects.findAll { project -> project.name.indexOf('bitcoin-fee-') == 0 }) {
+    test.onlyIf { isIdeEnv || project.hasProperty('feeProviderTest') }
+    integrationTest.onlyIf { isIdeEnv || project.hasProperty('feeProviderTest') }
+}
+
 configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
-        (project.name.startsWith('bitcoin-fee'))
+        (project.name.startsWith('bitcoin-fee-'))
 }) {
     apply from: "${project.rootDir}/proto.gradle"
 }
