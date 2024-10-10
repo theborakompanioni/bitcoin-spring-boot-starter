@@ -109,6 +109,8 @@ services:
       - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -157,6 +159,7 @@ services:
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
       - '--allow-deprecated-apis=false'
+      - '--disable-dns'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -182,8 +185,9 @@ services:
   cln2_bob:
     container_name: regtest_cln2_bob
     #image: polarlightning/clightning:24.08.1
-    # An LND instance will connect this node and does not like version >23.08 (last checked: 2024-10-10)
-    image: polarlightning/clightning:23.08
+    # An LND instance will connect to this node and does not like version >v23.11.2
+    # Always fails with "peer ${pubkey} is not online" (last checked: 2024-10-10)
+    image: polarlightning/clightning:23.11.2
     restart: always
     depends_on:
       bitcoind:
@@ -207,12 +211,13 @@ services:
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
       - '--allow-deprecated-apis=false'
+      - '--disable-dns'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
       - '--dev-allow-localhost' # Announce and allow announcements for localhost address
-      #- '--developer'
+      - '--developer'
       #- '--disable-plugin=offers' # TODO: 'offers' plugin errors with v24.05 - disable temporarily (see https://github.com/ElementsProject/lightning/pull/7379)
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
@@ -256,6 +261,7 @@ services:
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
       - '--allow-deprecated-apis=false'
+      - '--disable-dns'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -304,6 +310,7 @@ services:
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
       - '--allow-deprecated-apis=false'
+      - '--disable-dns'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -352,6 +359,7 @@ services:
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
       - '--allow-deprecated-apis=false'
+      - '--disable-dns'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
