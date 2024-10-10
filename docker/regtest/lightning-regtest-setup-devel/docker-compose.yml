@@ -156,6 +156,7 @@ services:
       - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -205,6 +206,7 @@ services:
       - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -253,6 +255,7 @@ services:
       - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -300,6 +303,7 @@ services:
       - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
@@ -347,6 +351,7 @@ services:
       - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
       - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
       # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
       - '--dev-fast-reconnect'
