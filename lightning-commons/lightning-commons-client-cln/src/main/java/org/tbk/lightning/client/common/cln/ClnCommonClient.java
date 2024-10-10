@@ -10,6 +10,7 @@ import org.tbk.lightning.client.common.core.proto.CommonPayResponse.PaymentStatu
 import org.tbk.lightning.cln.grpc.client.*;
 import reactor.core.publisher.Mono;
 
+import java.util.BitSet;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
@@ -144,7 +145,11 @@ public class ClnCommonClient implements LightningCommonClient {
                     .setPushMsat(Amount.newBuilder()
                             .setMsat(request.hasPushMsat() ? request.getPushMsat() : 0)
                             .build())
-                    .setAnnounce(!request.hasAnnounce() || request.getAnnounce());
+                    .setAnnounce(!request.hasAnnounce() || request.getAnnounce())
+                    // TODO: remove after fundchannel grpc response issue has been fixed and merged.
+                    //   Issue: https://github.com/ElementsProject/lightning/issues/7627
+                    //   Docs: https://docs.corelightning.org/reference/lightning-fundchannel#description
+                    .addChannelType(12).addChannelType(46);
 
             if (request.hasSatPerVbyte()) {
                 builder.setFeerate(Feerate.newBuilder()
