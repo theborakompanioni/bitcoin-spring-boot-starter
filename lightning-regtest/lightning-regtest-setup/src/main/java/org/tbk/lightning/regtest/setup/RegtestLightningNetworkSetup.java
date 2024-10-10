@@ -129,22 +129,25 @@ public class RegtestLightningNetworkSetup {
             String targetNodeName = nodeInfos.nodeAlias(entry.getT2());
 
             log.debug("Will now connect {} with {}…", originNodeName, targetNodeName);
-            try {
-                CommonConnectResponse ignoredOnPurpose = connectPeers(entry.getT1(), entry.getT2());
-                log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
-            } catch (Exception e) {
-                // LND error if peer is already connected: `UNKNOWN: already connected to peer: ${pubkey}@${ip}:${port}`
-                boolean isAlreadyConnected = e.getMessage().contains("already connected to peer");
-                if (!isAlreadyConnected) {
-                    throw e;
-                }
-            }
+            connectPeers(entry.getT1(), entry.getT2());
+            log.debug("{} is connected to peer {}", originNodeName, targetNodeName);
         }
 
         log.debug("Successfully finished connecting peers.");
     }
+    private void connectPeers(NodeInfo origin, NodeInfo dest) {
+        try {
+            CommonConnectResponse ignoredOnPurpose = tryConnectPeers(origin, dest);
+        } catch (Exception e) {
+            // LND error if peer is already connected: `UNKNOWN: already connected to peer: ${pubkey}@${ip}:${port}`
+            boolean isAlreadyConnected = e.getMessage().contains("already connected to peer");
+            if (!isAlreadyConnected) {
+                throw e;
+            }
+        }
+    }
 
-    private CommonConnectResponse connectPeers(NodeInfo origin, NodeInfo dest) {
+    private CommonConnectResponse tryConnectPeers(NodeInfo origin, NodeInfo dest) {
         return origin.getClient().connect(CommonConnectRequest.newBuilder()
                         .setIdentityPubkey(nodeInfos.nodeIdBytes(dest))
                         .setHost(dest.getHostname())
@@ -247,11 +250,15 @@ public class RegtestLightningNetworkSetup {
 
         for (Map.Entry<NodeInfo, Satoshi> entry : nodesThatNeedFunding.entrySet()) {
             // control at least as many utxos as the amount of channels to be opened
-            int minUtxos = Math.toIntExact(missingChannels.stream()
+            // plus one more to close anchor channels (CLN calls this "min-emergency-msat")
+            int minUtxos = 1 + Math.toIntExact(missingChannels.stream()
                     .filter(it -> entry.getKey().equals(it.getOrigin()))
                     .count());
-            Satoshi feeBuffer = new Satoshi(21_000);
-            Satoshi fundingAmount = entry.getValue().plus(feeBuffer);
+            Satoshi feeBuffer = new Satoshi(210_000);
+            // Amount of funds to keep in the wallet to close anchor channels (which don't carry their own transaction fees).
+            // For CLN, this defaults to 25000sat (last checked on 2024-10-10, see https://docs.corelightning.org/reference/lightningd-config#lightning-channel-and-htlc-options)
+            Satoshi minEmergencyFunds = new Satoshi(25_000);
+            Satoshi fundingAmount = entry.getValue().plus(feeBuffer).plus(minEmergencyFunds);
             fundOnchainWallet(entry.getKey(), fundingAmount, minUtxos);
         }
 
@@ -304,7 +311,47 @@ public class RegtestLightningNetworkSetup {
         return channelOrEmpty.isEmpty();
     }
 
-    private void createChannel(ChannelDefinition definition) {
+    private CommonOpenChannelResponse createChannel(ChannelDefinition definition) {
+        return createChannelWithRetryOnErrors(definition, false);
+    }
+
+    private CommonOpenChannelResponse createChannelWithRetryOnErrors(ChannelDefinition definition) {
+        return createChannelWithRetryOnErrors(definition, true);
+    }
+
+    private CommonOpenChannelResponse createChannelWithRetryOnErrors(ChannelDefinition definition, boolean retryOnPeerOfflineError) {
+        try {
+            CommonOpenChannelResponse openChannelResponse = tryCreateChannel(definition);
+
+            String channelOutpoint = "%s:%d".formatted(hex(openChannelResponse.getTxid()), openChannelResponse.getOutputIndex());
+            log.debug("Created channel with capacity {}: {} (pushed {})", definition.getCapacity(), channelOutpoint, definition.getPushAmount());
+
+            return openChannelResponse;
+        } catch (Exception e) {
+            ByteString destinationNodeId = nodeInfos.nodeIdBytes(definition.getDestination());
+            // LND error if peer is offline: `UNKNOWN: peer ${pubkey} is not online`
+            String peerNotOnlineErrorMessage = "peer %s is not online".formatted(hex(destinationNodeId));
+            boolean isPeerOfflineError = e.getMessage().contains(peerNotOnlineErrorMessage);
+            if (retryOnPeerOfflineError && isPeerOfflineError) {
+                log.warn("Channel creation from '{}' to '{}' failed - reconnecting peers and retry!",
+                        nodeInfos.nodeAlias(definition.getOrigin()),
+                        nodeInfos.nodeAlias(definition.getDestination())
+                );
+                connectPeers(definition.getOrigin(), definition.getDestination());
+                connectPeers(definition.getDestination(), definition.getOrigin());
+                return createChannelWithRetryOnErrors(definition, false);
+            } else {
+                String errorMessage = "Error while opening channel from '%s' to '%s'".formatted(
+                        nodeInfos.nodeAlias(definition.getOrigin()),
+                        nodeInfos.nodeAlias(definition.getDestination())
+                );
+                log.error(errorMessage, e);
+                throw e;
+            }
+        }
+    }
+
+    private CommonOpenChannelResponse tryCreateChannel(ChannelDefinition definition) {
         Satoshi onchainFunds = fetchOnchainFunds(definition.getOrigin().getClient());
         log.debug("{} controls on-chain funds amounting to {}", nodeInfos.nodeAlias(definition.getOrigin()), onchainFunds);
 
@@ -323,6 +370,8 @@ public class RegtestLightningNetworkSetup {
 
         String channelOutpoint = "%s:%d".formatted(hex(openChannelResponse.getTxid()), openChannelResponse.getOutputIndex());
         log.debug("Created channel with capacity {}: {} (pushed {})", definition.getCapacity(), channelOutpoint, definition.getPushAmount());
+
+        return openChannelResponse;
     }
 
     private Satoshi fetchOnchainFunds(LightningCommonClient node) {

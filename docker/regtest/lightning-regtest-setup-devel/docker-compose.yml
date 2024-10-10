@@ -74,7 +74,7 @@ services:
 
   cln0_app:
     container_name: regtest_cln0_app
-    image: polarlightning/clightning:23.08
+    image: polarlightning/clightning:24.08.1
     restart: always
     depends_on:
       bitcoind:
@@ -105,9 +105,16 @@ services:
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln0_app/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -126,7 +133,7 @@ services:
 
   cln1_alice:
     container_name: regtest_cln1_alice
-    image: polarlightning/clightning:23.08
+    image: polarlightning/clightning:24.08.1
     restart: always
     depends_on:
       bitcoind:
@@ -145,9 +152,16 @@ services:
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln1_alice/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -166,6 +180,8 @@ services:
 
   cln2_bob:
     container_name: regtest_cln2_bob
+    #image: polarlightning/clightning:24.08.1
+    # An LND instance will connect this node and does not like version >23.08 (last checked: 2024-10-10)
     image: polarlightning/clightning:23.08
     restart: always
     depends_on:
@@ -185,9 +201,17 @@ services:
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
+      - '--log-file=-'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
       - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      #- '--developer'
+      #- '--disable-plugin=offers' # TODO: 'offers' plugin errors with v24.05 - disable temporarily (see https://github.com/ElementsProject/lightning/pull/7379)
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln2_bob/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -206,7 +230,7 @@ services:
 
   cln3_charlie:
     container_name: regtest_cln3_charlie
-    image: polarlightning/clightning:23.08
+    image: polarlightning/clightning:24.08.1
     restart: always
     depends_on:
       bitcoind:
@@ -225,9 +249,16 @@ services:
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln3_charlie/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -246,7 +277,7 @@ services:
 
   cln4_dave:
     container_name: regtest_cln4_dave
-    image: polarlightning/clightning:23.08
+    image: polarlightning/clightning:24.08.1
     restart: always
     depends_on:
       bitcoind:
@@ -265,9 +296,16 @@ services:
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln4_dave/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
@@ -286,7 +324,7 @@ services:
 
   cln5_erin:
     container_name: regtest_cln5_erin
-    image: polarlightning/clightning:23.08
+    image: polarlightning/clightning:24.08.1
     restart: always
     depends_on:
       bitcoind:
@@ -305,9 +343,16 @@ services:
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
       - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
       - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
       - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
     volumes:
       # mount all certs/keys individually (to avoid creating files on the host system by the container)
       - ./data/cln5_erin/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
