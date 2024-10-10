@@ -46,8 +46,7 @@ class ClnContainerAutoConfigurationTest {
                 "org.tbk.spring.testcontainer.cln.enabled=true",
                 "org.tbk.spring.testcontainer.cln.commands="
                         + "--bitcoin-rpcuser=myrpcuser, "
-                        + "--bitcoin-rpcpassword=correcthorsebatterystaple, "
-                        + "--disable-plugin=offers" // TODO: 'offers' plugin errors with v24.05 - disable temporarily (see https://github.com/ElementsProject/lightning/pull/7379)
+                        + "--bitcoin-rpcpassword=correcthorsebatterystaple"
         ).run(context -> {
             assertThat(context.containsBean("clnContainer"), is(true));
             assertThat(context.getBean(ClnContainer.class), is(notNullValue()));
