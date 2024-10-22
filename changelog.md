@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fee: new module bitcoin-fee-estimate-strike
 
 ### Changed
-- upgrade: update spring-boot from v3.2.1 to v3.3.0
+- upgrade: update spring-boot from v3.2.1 to v3.3.4
 - upgrade: update secp256k1-kmp from v0.13.0 to v0.15.0
 - upgrade: update bitcoin-kmp from v0.16.0 to v0.20.0
 - upgrade: update jmolecules from v2023.1.1 to v2023.1.6
