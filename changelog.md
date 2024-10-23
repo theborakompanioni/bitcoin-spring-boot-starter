@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- upgrade: update lightning-kmp from v1.8.0 to v1.8.4
+
 ## [0.14.0] - 2024-10-22
 
 ### Breaking
