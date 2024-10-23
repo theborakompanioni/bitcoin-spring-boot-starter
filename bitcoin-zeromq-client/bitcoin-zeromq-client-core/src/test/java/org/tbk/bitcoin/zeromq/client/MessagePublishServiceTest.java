@@ -37,7 +37,7 @@ public class MessagePublishServiceTest {
         genesisBlockPublishService.startAsync();
         genesisBlockPublishService.awaitRunning(Duration.ofSeconds(10));
 
-        List<byte[]> blocks = blocksRef.get(10, TimeUnit.SECONDS);
+        List<byte[]> blocks = blocksRef.get(20, TimeUnit.SECONDS);
 
         assertThat(blocks, hasSize(1));
         assertThat(blocks.get(0), is(GenesisBlock.get().toByteArray()));

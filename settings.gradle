@@ -20,6 +20,16 @@ include 'bitcoin-zeromq-client:bitcoin-zeromq-client-autoconfigure'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-starter'
 include 'bitcoin-zeromq-client:bitcoin-zeromq-client-example-application'
 
+include 'lightning-regtest:lightning-regtest-core'
+include 'lightning-regtest:lightning-regtest-setup'
+include 'lightning-regtest:lightning-regtest-setup-devel'
+include 'lightning-regtest:lightning-regtest-starter'
+include 'lightning-regtest:lightning-regtest-example-application'
+
+include 'lightning-commons:lightning-commons-client-core'
+include 'lightning-commons:lightning-commons-client-cln'
+include 'lightning-commons:lightning-commons-client-lnd'
+
 include 'lnd-grpc-client:lnd-grpc-client-core'
 include 'lnd-grpc-client:lnd-grpc-client-autoconfigure'
 include 'lnd-grpc-client:lnd-grpc-client-starter'
