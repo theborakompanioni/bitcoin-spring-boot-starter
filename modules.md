@@ -89,19 +89,7 @@ org.tbk.lightning.lnd.grpc:
 
 
 ### bitcoin-fee
-A generalized and extensible interface of multiple Bitcoin Fee Recommendation APIs.
-The following providers are available out of the box:
-- [x] Bitcoin Core JSON-RPC Api (`estimatestmartfee`)
-- [x] bitcoiner.live API
-- [x] Bitgo API
-- [x] Bitcore API
-- [x] Blockchain.info API (deprecated - will be removed as it is not compatible with "block target" recommendations)
-- [x] Blockchair API
-- [x] BlockCypher API
-- [x] Blockstream.info API
-- [x] BTC.com API
-- [x] earn.com API
-- [x] mempool.space API
+Moved to a distinct repo: https://github.com/theborakompanioni/bitcoin-fee
 
 
 ### spring-xchange

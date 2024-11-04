@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update testcontainers from v1.19.8 to v1.20.4
 - upgrade: update cln-grpc-client from v24.8.1 to v24.11.1
 
+### Removed
+- module: externalize 'bitcoin-fee' modules
+
 ## [0.14.0] - 2024-10-22
 
 ### Breaking
