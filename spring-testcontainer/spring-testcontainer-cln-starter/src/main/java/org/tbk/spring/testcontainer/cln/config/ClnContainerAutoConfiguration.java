@@ -47,6 +47,8 @@ public class ClnContainerAutoConfiguration {
                 .add("--bitcoin-rpcport=" + bitcoindContainer.getMappedPort(18443))
                 .add("--network=" + this.properties.getNetwork())
                 .add("--addr=[::]:" + this.properties.getPort())
+                .add("--grpc-host=" + this.properties.getCommandValueByKey("grpc-host")
+                        .orElse("0.0.0.0"))
                 .addAll(this.properties.getGrpcPort().stream()
                         .map(it -> "--grpc-port=" + it)
                         .toList())
@@ -71,7 +73,6 @@ public class ClnContainerAutoConfiguration {
                 .withStrategy(Wait.forLogMessage(".*Server started with public key.*", 1))
                 .withStartupTimeout(ClnContainerProperties.DEFAULT_STARTUP_TIMEOUT);
 
-
         DockerImageName dockerImageName = this.properties.getImage()
                 .orElseThrow(() -> new RuntimeException("Container image must not be empty"));
 
@@ -95,7 +96,6 @@ public class ClnContainerAutoConfiguration {
      * @return a list fo commands for the container.
      */
     private List<String> buildCommandList() {
-
         List<String> requiredCommands = ImmutableList.<String>builder()
                 .add("--disable-dns")
                 .build();
