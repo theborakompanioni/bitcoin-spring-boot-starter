@@ -135,7 +135,7 @@ services:
 
   cln1_alice:
     container_name: regtest_cln1_alice
-    image: polarlightning/clightning:24.08.1
+    image: polarlightning/clightning:24.11.1
     restart: always
     depends_on:
       bitcoind:
@@ -151,6 +151,7 @@ services:
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=alice'
       - '--bitcoin-rpcpassword=alice'
+      - '--grpc-host=0.0.0.0'
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
@@ -237,7 +238,7 @@ services:
 
   cln3_charlie:
     container_name: regtest_cln3_charlie
-    image: polarlightning/clightning:24.08.1
+    image: polarlightning/clightning:24.11.1
     restart: always
     depends_on:
       bitcoind:
@@ -253,6 +254,7 @@ services:
       - '--bitcoin-rpcport=18443'
       - '--bitcoin-rpcuser=charlie'
       - '--bitcoin-rpcpassword=charlie'
+      - '--grpc-host=0.0.0.0'
       - '--grpc-port=19935'
       - '--network=regtest'
       - '--log-level=debug'
