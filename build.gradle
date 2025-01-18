@@ -32,7 +32,7 @@ plugins {
     id 'idea'
     id 'nebula.release' version '19.0.10'
     id 'nebula.lint' version '20.5.5'
-    id 'com.netflix.nebula.project' version '10.1.5'
+    id 'com.netflix.nebula.project' version '11.0.0'
     id 'com.github.spotbugs' version '5.2.1' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
