@@ -12,11 +12,11 @@ dependencies {
 
 def IS_CI_ENV = (System.getenv("CI") ?: "false") == "true"
 
-task resetDockerComposeSetupIfNecessary(type: Exec) {
+tasks.register('resetDockerComposeSetupIfNecessary', Exec) {
     setEnabled(!IS_CI_ENV)
     outputs.upToDateWhen { false }
     workingDir "${projectDir}"
-    commandLine 'docker-compose', '-f', "$rootDir/docker/regtest/lightning-regtest-setup-devel/docker-compose.yml", 'down', '--volumes'
+    commandLine 'docker', 'compose', '--file', "$rootDir/docker/regtest/lightning-regtest-setup-devel/docker-compose.yml", 'down', '--volumes'
 }
 
 integrationTest {
