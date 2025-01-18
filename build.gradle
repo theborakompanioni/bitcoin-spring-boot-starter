@@ -33,6 +33,7 @@ plugins {
     id 'nebula.release' version '19.0.10'
     id 'nebula.lint' version '20.5.5'
     id 'com.netflix.nebula.project' version '11.0.0'
+    id 'com.netflix.nebula.facet' version '11.0.0'
     id 'com.github.spotbugs' version '5.2.1' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
@@ -50,7 +51,7 @@ contacts {
 def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
 def isIdeEnv = System.getProperty('idea.active')
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         // check for updates in modules every build
         cacheChangingModulesFor 0, 'seconds'
@@ -103,6 +104,7 @@ subprojects {
     apply plugin: 'com.github.spotbugs'
     apply plugin: 'com.netflix.nebula.project'
     apply plugin: 'com.netflix.nebula.info'
+    apply plugin: 'com.netflix.nebula.facet'
     apply plugin: 'com.netflix.nebula.integtest-standalone'
     apply plugin: 'io.franzbecker.gradle-lombok'
     apply plugin: 'io.spring.dependency-management'
@@ -167,7 +169,7 @@ subprojects {
         from sourceSets.main.java
     }
 
-    task testJar(type: Jar) {
+    tasks.register('testJar', Jar) {
         archiveClassifier.set('test')
         from sourceSets.test.output
     }
@@ -213,6 +215,25 @@ subprojects {
         }
     }
 
+    facets {
+        e2eTest {
+            parentSourceSet = 'test'
+            includeInCheckLifecycle = false
+        }
+        exampleTest {
+            parentSourceSet = 'test'
+            includeInCheckLifecycle = false
+        }
+        testcontainerTest {
+            parentSourceSet = 'test'
+            includeInCheckLifecycle = false
+        }
+        lightningNetworkTest {
+            parentSourceSet = 'test'
+            includeInCheckLifecycle = false
+        }
+    }
+
     test {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
 
@@ -246,7 +267,7 @@ subprojects {
         sha256 = null // skip verifyLombok task - will be done by gradle dependency verification
     }
 
-    tasks.withType(Test) {
+    tasks.withType(Test).configureEach {
         testLogging {
             // set options for log level LIFECYCLE
             events TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED
@@ -266,9 +287,10 @@ subprojects {
         }
     }
 
-    task dependencyTree(type: DependencyReportTask) {}
+    tasks.register('dependencyTree', DependencyReportTask) {}
 
-    task delombok(type: DelombokTask, dependsOn: compileJava) {
+    tasks.register('delombok', DelombokTask) {
+        dependsOn compileJava
         onlyIf { project.hasProperty('javadocEnabled') }
         def srcDirs = sourceSets.main.java.srcDirs.findAll { it.exists() }
 
@@ -300,7 +322,7 @@ subprojects {
         excludeFilter = rootProject.file('./spotbugs-exclude.xml')
         reportsDir = rootProject.layout.buildDirectory.dir("./reports/spotbugs/$project.name").get().asFile
     }
-    tasks.withType(SpotBugsTask) {
+    tasks.withType(SpotBugsTask).configureEach {
         onlyIf { gradle.taskGraph.hasTask('build') }
         reports {
             html.required = true
@@ -315,7 +337,7 @@ subprojects {
         ignoreFailures = false
         reportsDir = rootProject.layout.buildDirectory.dir("./reports/checkstyle/$project.name").get().asFile
     }
-    tasks.withType(Checkstyle) {
+    tasks.withType(Checkstyle).configureEach {
         onlyIf { gradle.taskGraph.hasTask('build') }
         reports {
             xml.required = false
@@ -323,7 +345,7 @@ subprojects {
         }
     }
 
-    tasks.withType(AbstractArchiveTask) {
+    tasks.withType(AbstractArchiveTask).configureEach {
         // activate reproducible archives
         // see https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
         preserveFileTimestamps = false

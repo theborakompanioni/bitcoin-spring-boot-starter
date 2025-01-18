@@ -16,6 +16,7 @@ com.google.gradle:osdetector-gradle-plugin:1.7.3=classpath
 com.google.protobuf:protobuf-gradle-plugin:0.9.4=classpath
 com.jcraft:jzlib:1.1.2=classpath
 com.lmax:disruptor:3.4.4=classpath
+com.netflix.nebula.facet:com.netflix.nebula.facet.gradle.plugin:11.0.0=classpath
 com.netflix.nebula.project:com.netflix.nebula.project.gradle.plugin:11.0.0=classpath
 com.netflix.nebula:gradle-contacts-plugin:7.0.1=classpath
 com.netflix.nebula:gradle-dependency-lock-plugin:15.1.0=classpath
