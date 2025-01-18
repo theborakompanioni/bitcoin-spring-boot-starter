@@ -1,8 +1,7 @@
-version: "3"
 
 services:
   postgres:
-    restart: always
+    restart: unless-stopped
     container_name: regtest_db
     image: postgres:17.0-alpine3.20
     volumes:
@@ -17,7 +16,7 @@ services:
     ports:
       - "5889:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "--dbname=regtest_cln0_app" ]
+      test: [ "CMD-SHELL", "pg_isready --username=$$POSTGRES_USER", "--dbname=regtest_cln0_app" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,7 +24,7 @@ services:
   bitcoind:
     container_name: regtest_bitcoind
     image: polarlightning/bitcoind:27.0
-    restart: always
+    restart: unless-stopped
     volumes:
       - bitcoind-data:/home/bitcoin/.bitcoin/regtest
     command:
@@ -75,7 +74,7 @@ services:
   cln0_app:
     container_name: regtest_cln0_app
     image: polarlightning/clightning:24.08.1
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
@@ -136,7 +135,7 @@ services:
   cln1_alice:
     container_name: regtest_cln1_alice
     image: polarlightning/clightning:24.11.1
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
@@ -189,7 +188,7 @@ services:
     # An LND instance will connect to this node and does not like version >v23.11.2
     # Always fails with "peer ${pubkey} is not online" (last checked: 2024-10-10)
     image: polarlightning/clightning:23.11.2
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
@@ -239,7 +238,7 @@ services:
   cln3_charlie:
     container_name: regtest_cln3_charlie
     image: polarlightning/clightning:24.11.1
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
@@ -289,7 +288,7 @@ services:
   cln4_dave:
     container_name: regtest_cln4_dave
     image: polarlightning/clightning:24.08.1
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
@@ -338,7 +337,7 @@ services:
   cln5_erin:
     container_name: regtest_cln5_erin
     image: polarlightning/clightning:24.08.1
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
@@ -387,7 +386,7 @@ services:
   lnd6_farid:
     container_name: regtest_lnd6_farid
     image: polarlightning/lnd:0.18.2-beta
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind:
         condition: service_healthy
