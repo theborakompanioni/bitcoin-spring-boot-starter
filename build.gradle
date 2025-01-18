@@ -31,7 +31,7 @@ buildscript {
 plugins {
     id 'idea'
     id 'nebula.release' version '17.2.2'
-    id 'nebula.lint' version '18.1.0'
+    id 'nebula.lint' version '20.5.5'
     id 'com.netflix.nebula.project' version '10.1.5'
     id 'com.github.spotbugs' version '5.2.1' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
