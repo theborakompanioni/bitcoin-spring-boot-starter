@@ -8,6 +8,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    developmentOnly project(':bitcoin-regtest:bitcoin-regtest-starter')
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    testAndDevelopmentOnly project(':bitcoin-regtest:bitcoin-regtest-starter')
+    testAndDevelopmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 }

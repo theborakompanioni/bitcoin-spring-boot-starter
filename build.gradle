@@ -177,7 +177,7 @@ subprojects {
     pluginManager.withPlugin('org.springframework.boot') {
 
         dependencies {
-            developmentOnly 'org.springframework.boot:spring-boot-devtools'
+            testAndDevelopmentOnly 'org.springframework.boot:spring-boot-devtools'
         }
 
         jar {
@@ -228,10 +228,6 @@ subprojects {
             parentSourceSet = 'test'
             includeInCheckLifecycle = false
         }
-        lightningNetworkTest {
-            parentSourceSet = 'test'
-            includeInCheckLifecycle = false
-        }
     }
 
     test {
@@ -242,7 +238,7 @@ subprojects {
         useJUnitPlatform()
     }
 
-    integrationTest {
+    configure([integrationTest, e2eTest, exampleTest, testcontainerTest]) {
         environment "TESTCONTAINERS_RYUK_DISABLED", testcontainersRyukDisabled
 
         useJUnitPlatform()

@@ -134,9 +134,9 @@ Optional: A node should publish `rawtx` and `rawblock` messages via zmq for some
 Tests in example application modules or modules that start a lot of docker containers 
 (modules named "*-example-application" or "spring-testcontainer-*") are excluded from the
 default test phase and must be manually enabled if you want to run them.
-To run all tests pass arguments `-PexampleTest` and `-PtestcontainerTest`:
+To run all tests also run `e2eTest`, `exampleTest` and `testcontainerTest`:
 ```shell script
-./gradlew test integrationTest -PtestcontainerTest -PexampleTest
+./gradlew test integrationTest e2eTest exampleTest testcontainerTest
 ```
 Be aware this might take several minutes to complete (>= 10 minutes).
 
