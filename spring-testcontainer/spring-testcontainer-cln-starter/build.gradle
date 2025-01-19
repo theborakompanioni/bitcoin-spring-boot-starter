@@ -22,6 +22,6 @@ dependencies {
 
     testImplementation "io.projectreactor:reactor-core"
 
-    integTestImplementation project(':cln-grpc-client:cln-grpc-client-starter')
-    integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+    testcontainerTestImplementation project(':cln-grpc-client:cln-grpc-client-starter')
+    testcontainerTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 }
