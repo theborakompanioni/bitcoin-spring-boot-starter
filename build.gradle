@@ -363,21 +363,6 @@ subprojects {
     }
 }
 
-// disable test tasks in check phase for all 'spring-testcontainer-*' subprojects.
-// these subprojects tests are very expensive as they all start a lot of docker containers.
-// you can invoke them manually via `./gradlew check -PtestcontainerTest`
-configure(subprojects.findAll { project -> project.name.indexOf('spring-testcontainer-') == 0 }) {
-    test.onlyIf { isIdeEnv || project.hasProperty('testcontainerTest') }
-    integrationTest.onlyIf { isIdeEnv || project.hasProperty('testcontainerTest') }
-}
-
-// disable test tasks in check phase for all '*-example-application' subprojects.
-// you can invoke them manually via `./gradlew check -PexampleTest`
-configure(subprojects.findAll { project -> project.name.indexOf('-example-application') > 0 }) {
-    test.onlyIf { isIdeEnv || project.hasProperty('exampleTest') }
-    integrationTest.onlyIf { isIdeEnv || project.hasProperty('exampleTest') }
-}
-
 // enable publishing for all subproject except for "example applications"
 configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
         !project.pluginManager.hasPlugin('org.springframework.boot') &&
