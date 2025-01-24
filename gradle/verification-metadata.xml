@@ -325,7 +325,10 @@
          </trusted-key>
          <trusted-key id="BCA1F17506AF088F3A964A9C0459A2B383ED8C11" group="org.eclipse.angus"/>
          <trusted-key id="BCFAFCDCFBA4061F1F6027C6CC85D9CC1857229B" group="org.seleniumhq.selenium" name="selenium-bom" version="4.19.1"/>
-         <trusted-key id="BDB5FA4FE719D787FB3D3197F6D4A1D411E9D1AE" group="com.google.guava"/>
+         <trusted-key id="BDB5FA4FE719D787FB3D3197F6D4A1D411E9D1AE">
+            <trusting group="com.google.guava"/>
+            <trusting group="com.google.j2objc" name="j2objc-annotations" version="3.0.0"/>
+         </trusted-key>
          <trusted-key id="BE685132AFD2740D9095F9040CC0B712FEE75827" group="org.assertj"/>
          <trusted-key id="BE6B997EB563F4898C3C406B8DB9FA0B0718BBF9" group="javax.cache" name="cache-api" version="1.1.1"/>
          <trusted-key id="C1CBA75EC9BD0BAF8061935459E05CE618187ED4">

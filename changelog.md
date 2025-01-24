@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update lightning-kmp from v1.8.0 to v1.8.4
 - upgrade: update testcontainers from v1.19.8 to v1.20.4
 - upgrade: update cln-grpc-client from v24.8.1 to v24.11.1
+- upgrade: update spring-tor from v0.8.0 to v0.9.0
 
 ### Removed
 - module: externalize 'bitcoin-fee' modules
