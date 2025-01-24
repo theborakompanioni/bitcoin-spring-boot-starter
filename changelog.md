@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update testcontainers from v1.19.8 to v1.20.4
 - upgrade: update cln-grpc-client from v24.8.1 to v24.11.1
 - upgrade: update spring-tor from v0.8.0 to v0.9.0
+- upgrade: update sqlite from v3.47.2.0 to v3.48.0.0
+- upgrade: update hibernate-community-dialects from v6.6.1.Final to v6.6.5.Final
 
 ### Removed
 - module: externalize 'bitcoin-fee' modules
