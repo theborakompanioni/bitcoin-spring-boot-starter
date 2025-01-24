@@ -46,30 +46,30 @@ test:
 
 # run integration tests
 [group("development")]
-integrationTest:
+test-integration:
     @./gradlew integrationTest --rerun-tasks --no-parallel
 
 # run end-to-end tests
 [group("development")]
-e2eTest:
+test-e2e:
     @./gradlew e2eTest --rerun-tasks --no-parallel
 
 # run testcontainer tests
 [group("development")]
-testcontainerTest:
+test-testcontainer:
     @./gradlew testcontainerTest --rerun-tasks --no-parallel
 
 # run example tests
 [group("development")]
-exampleTest:
+test-example:
     @./gradlew exampleTest --rerun-tasks --no-parallel
 
 # run all tests
 [group("development")]
-allTest:
+test-all:
     @./gradlew test integrationTest testcontainerTest exampleTest --rerun-tasks --no-parallel
 
-# write metadata for dependency verification
+# update metadata for dependency verification
 [group("development")]
-write-verification:
+update-verification:
    @./gradlew dependencies --write-verification-metadata pgp,sha256 --export-keys --write-locks
