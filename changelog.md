@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update spring-tor from v0.8.0 to v0.9.0
 - upgrade: update sqlite from v3.47.2.0 to v3.48.0.0
 - upgrade: update hibernate-community-dialects from v6.6.1.Final to v6.6.5.Final
+- upgrade: update lnd testcontainer from v0.18.2-beta to v0.18.4-beta
 
 ### Removed
 - module: externalize 'bitcoin-fee' modules
