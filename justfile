@@ -67,7 +67,7 @@ test-example:
 # run all tests
 [group("development")]
 test-all:
-    @./gradlew test integrationTest testcontainerTest exampleTest --rerun-tasks --no-parallel
+    @./gradlew test integrationTest e2eTest testcontainerTest exampleTest --rerun-tasks --no-parallel
 
 # update metadata for dependency verification
 [group("development")]
