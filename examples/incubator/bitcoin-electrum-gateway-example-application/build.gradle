@@ -9,7 +9,7 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
     implementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter')
 
-    implementation "io.projectreactor:reactor-core"
+    implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

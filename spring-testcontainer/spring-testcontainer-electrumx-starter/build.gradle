@@ -10,7 +10,7 @@ dependencies {
     // currently a hard dependency on the bitcoind testcontainer package - try to make it an optional dependency!
     implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
 
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation 'org.springframework.boot:spring-boot-starter'
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'

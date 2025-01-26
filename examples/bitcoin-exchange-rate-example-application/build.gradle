@@ -8,7 +8,7 @@ dependencies {
     implementation project(':xchange-jsr354:xchange-jsr354-starter')
     implementation project(':spring-xchange:spring-xchange-starter')
 
-    implementation "io.projectreactor:reactor-core"
+    implementation 'io.projectreactor:reactor-core'
     implementation "org.javamoney:moneta:${monetaVersion}"
 
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'

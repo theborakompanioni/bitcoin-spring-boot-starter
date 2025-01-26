@@ -8,6 +8,6 @@ dependencies {
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
     api "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
 
-    testImplementation "io.micrometer:micrometer-core"
+    testImplementation 'io.micrometer:micrometer-core'
     testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-test')
 }

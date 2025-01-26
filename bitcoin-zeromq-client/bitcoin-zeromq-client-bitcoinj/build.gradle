@@ -8,6 +8,6 @@ dependencies {
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
     api "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
 
-    testImplementation "io.micrometer:micrometer-core"
+    testImplementation 'io.micrometer:micrometer-core'
     testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-test')
 }

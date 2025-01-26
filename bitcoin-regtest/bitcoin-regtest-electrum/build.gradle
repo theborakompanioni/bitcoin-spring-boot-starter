@@ -5,7 +5,7 @@ plugins {
 description = 'bitcoin regtest electrum package'
 
 dependencies {
-    api "io.projectreactor:reactor-core"
+    api 'io.projectreactor:reactor-core'
 
     api project(':bitcoin-regtest:bitcoin-regtest-core')
     api project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoinj')

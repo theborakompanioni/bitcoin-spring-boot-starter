@@ -5,7 +5,7 @@ plugins {
 description = 'bitcoin regtest core package'
 
 dependencies {
-    api "io.projectreactor:reactor-core"
+    api 'io.projectreactor:reactor-core'
 
     api project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')

@@ -14,7 +14,7 @@ dependencies {
     compileOnly project(':lnd-grpc-client:lnd-grpc-client-core')
     compileOnly project(':lnd-grpc-client:lnd-grpc-client-autoconfigure')
 
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation 'org.springframework.boot:spring-boot-starter'
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
@@ -22,5 +22,5 @@ dependencies {
 
     testImplementation project(':lnd-grpc-client:lnd-grpc-client-starter')
 
-    testImplementation "io.projectreactor:reactor-core"
+    testImplementation 'io.projectreactor:reactor-core'
 }

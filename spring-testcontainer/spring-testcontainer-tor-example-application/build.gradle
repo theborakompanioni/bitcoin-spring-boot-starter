@@ -5,7 +5,7 @@ description = 'tor testcontainer example application package'
 dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-tor-starter')
 
-    implementation "io.projectreactor:reactor-core"
+    implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

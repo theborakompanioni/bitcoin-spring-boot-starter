@@ -8,7 +8,7 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-cln-starter')
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
-    implementation "io.projectreactor:reactor-core"
+    implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

@@ -8,7 +8,7 @@ dependencies {
     compileOnly project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-core')
     compileOnly project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-bitcoinj')
 
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
 
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
