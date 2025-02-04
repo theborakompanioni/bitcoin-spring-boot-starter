@@ -3,7 +3,7 @@ ext {
     monetaVersion = '1.4.2'
     xChangeVersion = '5.1.0'
     bitcoinjVersion = '0.16.2'
-    lightningjVersion = '0.17.0-Beta'
+    lightningjVersion = '0.17.4-Beta'
     clnGrpcClientVersion = '24.11.1'
     consensusJVersion = '0.6.5'
     guavaVersion = '33.0.0-jre'
@@ -11,8 +11,8 @@ ext {
     testcontainersVersion = '1.20.4'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
-    grpcVersion = '1.56.0' // must be compatible with lightningj
-    protobufVersion = '3.22.3'
+    grpcVersion = '1.61.0' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
+    protobufVersion = '3.22.5'
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2023.1.6'
     bytebuddyPluginVersion = '1.15.3' // keep in sync with `jmoleculesBomVersion`
