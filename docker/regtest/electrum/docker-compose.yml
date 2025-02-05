@@ -85,3 +85,7 @@ services:
       - "7000"
     ports:
       - "7000:7000"
+    healthcheck:
+      test: [ "CMD", "electrum", "daemon", "status", "--regtest" ]
+      interval: 5s
+      retries: 10
