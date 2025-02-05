@@ -11,15 +11,14 @@ services:
       -server=1
       -whitelist=0.0.0.0/0
       -txindex=1
-      -debug=mempool
+      -debug=0
       -dns=0
       -dnsseed=0
       -networkactive=0
       -uacomment=tbkdevbitcoindregtest
       -printpriority=1
       -logtimemicros=1
-      -rpcuser=regtest-rpc-user
-      -rpcpassword=regtest-rpc-pass
+      -rpcauth=regtest:169f6ba28badca1d912ac0defebc8ceb$$2550c68dfde8ca3b4892415fa8779b6ea656a44e7af1642332afa06c1979e014
       -rpcbind=0.0.0.0
       -rpcallowip=0.0.0.0/0
       -zmqpubrawblock=tcp://0.0.0.0:28332
@@ -38,6 +37,10 @@ services:
       - "28333:28333"
       - "28334:28334"
       - "28335:28335"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "bitcoin-cli", "-chain=regtest", "-getinfo" ]
+      interval: 5s
+      retries: 10
 
 volumes:
   bitcoind-data:
