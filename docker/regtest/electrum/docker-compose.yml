@@ -39,7 +39,6 @@ services:
       test: [ "CMD", "/entrypoint.sh", "bitcoin-cli", "-chain=regtest", "-getinfo" ]
       interval: 5s
       retries: 10
-
   electrumx_regtest:
     container_name: electrumx_regtest
     image: lukechilds/electrumx:v1.16.0
@@ -63,13 +62,18 @@ services:
       COST_SOFT_LIMIT: 10000 # default=1000
       COST_HARD_LIMIT: 100000 # default=10000
       INITIAL_CONCURRENT: 100 # default=10
+    healthcheck:
+      test: [ "CMD", "electrumx_rpc", "getinfo" ]
+      interval: 5s
+      retries: 10
 
   electrumd_regtest:
     container_name: electrumd_regtest
     image: osminogin/electrum-daemon:3.3.8
     restart: always
     depends_on:
-      - electrumx_regtest
+      electrumx_regtest:
+        condition: service_healthy
     volumes:
       - ./data/electrum/regtest/wallets/:/home/electrum/.electrum/regtest/wallets/:ro
       - ./data/electrum/regtest/config:/home/electrum/.electrum/regtest/config:z
