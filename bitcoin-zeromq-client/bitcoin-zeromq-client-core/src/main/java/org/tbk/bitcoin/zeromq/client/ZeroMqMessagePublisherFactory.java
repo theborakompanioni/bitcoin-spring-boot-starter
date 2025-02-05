@@ -73,5 +73,4 @@ public class ZeroMqMessagePublisherFactory implements MessagePublisherFactory<by
             }
         });
     }
-
 }

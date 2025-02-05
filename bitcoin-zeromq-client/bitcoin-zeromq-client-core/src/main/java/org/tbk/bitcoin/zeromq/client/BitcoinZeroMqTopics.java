@@ -47,5 +47,4 @@ public final class BitcoinZeroMqTopics {
     private BitcoinZeroMqTopics() {
         throw new UnsupportedOperationException();
     }
-
 }
