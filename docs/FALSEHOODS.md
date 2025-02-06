@@ -203,6 +203,38 @@ here is a list of mistaken perspectives on Bitcoin.
 
 1. **But if I use a wallet providing a dedicated "sweep paperwallet" function and spend only parts of the funds, the remaining funds will always end up at the exactly same address printed on the paper wallet.**
 
+1. **Two different xpub strings will derive different Bitcoin addresses**
+
+   [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) specifies a (base58-based) serialization format for extended public and private keys
+   which can be used to derive Bitcoin addresses or private keys from it. These key strings usually start with the prefix `xpub` or `xprv`. Common use cases
+   are to use the extended public key ("xpub") on a shop system to derive new receive addresses per order without having the private key available on the server,
+   or a Bitcoin broker might receive an xpub from its customer as part of a dollar-cost-averaging saving plan to send Bitcoin for each order to a new unused address.
+
+   To enable this the xpub contains a key which is then used in the BIP32 algorithm to deterministically derive new subkeys from it.
+   But the serialized format also contains some metadata like `depth` (how "deep" this key is located within the BIP32 hierarchy) and `parent fingerprint`
+   (a fingerprint identifying the parent xpub, just to enable wallets to correlate keys within the hierarchy) and some other metadata.
+
+   But especially these 2 fields can easily be changed or wiped (for example a user doesn't want to reveal that this xpub is part of a larger tree) but the raw 
+   key material still will be same and thus generate the same addresses.
+
+   _Example_:
+
+   A random xpub with a depth value of `2` and a parent fingerprint of `0x5c1bd648`:
+   ```
+   xpub6ASuArnXKPbfEwhqN6e3mwBcDTgzisQN1wXN9BJcM47sSikHjJf3UFHKkNAWbWMiGj7Wf5uMash7SyYq527Hqck2AxYysAA7xmALppuCkwQ
+   ```
+   
+   Now the same key with just set these 2 fields to `0x0`:
+   ```
+   xpub661MyMwAqRbcHWnXMP3g53rv1b6WkhCQMX4WuGL6XLGxp3obJ6EoRvZ7gZbPKQRi7U2mCkUwMQWhbTU4hkpyaFR1Kw5c5s7ZZLLtV9FSy28
+   ```
+   
+   The serialized base58 representation now looks totally different, but if you use these 2 xpubs they will derive the same Bitcoin 
+   addresses (you can test this on online [BIP32 calculator tools](https://bitaps.com/bip32)): 
+
+      - `1BiCdXSDHyeXSzmx2paVPFVTrmyx7BeCGD`
+      - `132EVXhbnaeF2U9ZkakX6FJWqLzmPazQA7`
+      - and so on …
 
 ### Keys
 1. **Each private key corresponds to exactly one address.**
