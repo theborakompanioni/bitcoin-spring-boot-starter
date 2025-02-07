@@ -3,7 +3,7 @@ services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
     image: polarlightning/bitcoind:27.0
-    restart: always
+    restart: unless-stopped
     command:
       -regtest=1
       -server=1
@@ -43,7 +43,7 @@ services:
   electrumx_regtest:
     container_name: electrumx_regtest
     image: lukechilds/electrumx:v1.16.0
-    restart: always
+    restart: unless-stopped
     depends_on:
       bitcoind_regtest:
         condition: service_healthy
@@ -71,7 +71,7 @@ services:
   electrumd_regtest:
     build: ./data/electrum/.
     container_name: electrumd_regtest
-    restart: always
+    restart: unless-stopped
     depends_on:
       electrumx_regtest:
         condition: service_healthy
