@@ -12,9 +12,4 @@ public class DaemonCloseWalletRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")
     String walletPath;
-
-    @JsonProperty("subcommand")
-    public String getSubcommand() {
-        return "close_wallet";
-    }
 }

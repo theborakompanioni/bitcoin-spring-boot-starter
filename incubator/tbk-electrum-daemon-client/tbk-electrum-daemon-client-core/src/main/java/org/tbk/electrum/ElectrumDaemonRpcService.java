@@ -143,13 +143,36 @@ public interface ElectrumDaemonRpcService {
      * Represented in {@link History} but you must parse it yourself.
      *
      * @return a string containing the HistoryResponse json
+     * @deprecated use {@link #getOnchainHistory} instead
      */
+    @Deprecated
     @JsonRpcMethod("history")
     String history();
 
+    /**
+     * Electrum actually returns a json embedded in a string -_-
+     * Represented in {@link History} but you must parse it yourself.
+     *
+     * @return a string containing the HistoryResponse json
+     * @deprecated use {@link #getOnchainHistory} instead
+     */
+    @Deprecated
     @JsonRpcMethod("history")
     String history(@JsonRpcParam("show_addresses") boolean showAddresses);
 
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainHistory();
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainHistory(@JsonRpcParam("show_addresses") boolean showAddresses);
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainHistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+                                   @JsonRpcParam("from_height") long fromHeight);
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainHistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+                                   @JsonRpcParam("from_height") long fromHeight,
+                                   @JsonRpcParam("to_height") long toHeight);
 
     /**
      * Returns the balance of address. This is a walletless server query. Results are not checked by SPV.
@@ -195,13 +218,20 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("deserialize")
     DeserializeResponse deserialize(@JsonRpcParam("tx") String tx);
 
-    @JsonRpcMethod("daemon")
+    /**
+     * @deprecated Use {@link #getinfo} instead.
+     */
+    @Deprecated
+    @JsonRpcMethod("getinfo")
     DaemonStatusResponse status(@JsonRpcParam("config_options") DaemonStatusRequest request);
 
-    @JsonRpcMethod("daemon")
+    @JsonRpcMethod("getinfo")
+    DaemonStatusResponse getinfo();
+
+    @JsonRpcMethod("load_wallet")
     Boolean loadwallet(@JsonRpcParam("config_options") DaemonLoadWalletRequest request);
 
-    @JsonRpcMethod("daemon")
+    @JsonRpcMethod("close_wallet")
     Boolean closewallet(@JsonRpcParam("config_options") DaemonCloseWalletRequest request);
 
     @JsonRpcMethod("getconfig")
@@ -237,7 +267,8 @@ public interface ElectrumDaemonRpcService {
             @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
             @JsonRpcOptional @JsonRpcParam("nocheck") Boolean nocheck, // untested atm
             @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
-            @JsonRpcOptional @JsonRpcParam("rbf") Object rbf, // untested atm
+            @JsonRpcOptional @JsonRpcParam("addtransaction") Object addtransaction, // untested atm
+            @JsonRpcOptional @JsonRpcParam("rbf") Boolean rbf,
             @JsonRpcOptional @JsonRpcParam("password") String password,
             @JsonRpcOptional @JsonRpcParam("locktime") Long locktime // untested atm
     );

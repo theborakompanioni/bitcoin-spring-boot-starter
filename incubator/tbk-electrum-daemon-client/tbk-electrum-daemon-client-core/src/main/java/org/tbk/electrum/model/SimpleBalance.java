@@ -15,6 +15,7 @@ public class SimpleBalance implements Balance {
             .confirmed(SimpleTxoValue.zero())
             .unconfirmed(SimpleTxoValue.zero())
             .unmatured(SimpleTxoValue.zero())
+            .lightning(SimpleTxoValue.zero())
             .build();
 
     public static SimpleBalance zero() {
@@ -29,6 +30,9 @@ public class SimpleBalance implements Balance {
 
     @Nullable
     TxoValue unmatured;
+
+    @Nullable
+    TxoValue lightning;
 
     @Override
     public TxoValue getTotal() {

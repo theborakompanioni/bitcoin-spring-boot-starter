@@ -157,8 +157,9 @@ class ElectrumGatewayExampleApplicationTest {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet("electrum/wallets/regtest/default_wallet")
-                    .addEnvVar("ELECTRUM_USER", "electrum")
-                    .addEnvVar("ELECTRUM_PASSWORD", TEST_ELECTRUM_PASSWORD1)
+                    .addEnvVar("ELECTRUM_NETWORK", "regtest")
+                    .addEnvVar("ELECTRUM_RPCUSER", "electrum")
+                    .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_PASSWORD1)
                     .build();
 
             return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
@@ -170,8 +171,9 @@ class ElectrumGatewayExampleApplicationTest {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet("electrum/wallets/regtest/second_wallet")
-                    .addEnvVar("ELECTRUM_USER", "electrum")
-                    .addEnvVar("ELECTRUM_PASSWORD", TEST_ELECTRUM_PASSWORD2)
+                    .addEnvVar("ELECTRUM_NETWORK", "regtest")
+                    .addEnvVar("ELECTRUM_RPCUSER", "electrum")
+                    .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_PASSWORD2)
                     .build();
 
             return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);

@@ -198,7 +198,7 @@ Before you start, please read the [contributing guidelines](contributing.md).
 - lightning-kmp (GitHub): https://github.com/ACINQ/lightning-kmp
 - ElectrumX Server (GitHub): https://github.com/spesmilo/electrumx ([Docker](https://hub.docker.com/r/lukechilds/electrumx))
 - Electrum Personal Server (GitHub): https://github.com/chris-belcher/electrum-personal-server ([Docker](https://hub.docker.com/r/btcpayserver/eps))
-- Electrum Client (GitHub): https://github.com/spesmilo/electrum ([Docker](https://hub.docker.com/r/osminogin/electrum-daemon))
+- Electrum Client (GitHub): https://github.com/spesmilo/electrum ([Docker](https://github.com/theborakompanioni/docker-electrum-daemon/pkgs/container/electrum-daemon))
 - ConsensusJ (GitHub): https://github.com/ConsensusJ/consensusj
 - JeroMq (GitHub): https://github.com/zeromq/jeromq
 - jMolecules (GitHub): https://github.com/xmolecules/jmolecules

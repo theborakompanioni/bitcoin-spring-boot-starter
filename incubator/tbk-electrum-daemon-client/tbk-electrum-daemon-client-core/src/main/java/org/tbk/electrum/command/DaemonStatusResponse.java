@@ -15,6 +15,9 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DaemonStatusResponse {
 
+    @JsonProperty("network")
+    String network;
+
     @JsonProperty("path")
     String path;
 
@@ -44,6 +47,9 @@ public class DaemonStatusResponse {
 
     @JsonProperty("fee_per_kb")
     int feePerKb;
+
+    @JsonProperty("default_wallet")
+    String defaultWallet;
 
     /**
      * Path to currently loaded wallet.

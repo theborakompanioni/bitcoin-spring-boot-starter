@@ -9,9 +9,11 @@ public enum ConfigKey {
     dynamic_fees,
     fee_level,
     fee_per_kb,
+    @Deprecated
     use_rbf,
     batch_rbf,
     log_to_file,
+    @Deprecated
     coin_chooser_output_rounding,
     rpcuser,
     rpcpassword,

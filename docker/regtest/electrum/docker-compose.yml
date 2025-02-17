@@ -76,14 +76,14 @@ services:
       electrumx_regtest:
         condition: service_healthy
     environment:
-      - ELECTRUM_USER=rpc-user
-      - ELECTRUM_PASSWORD=rpc-pwd
+      - ELECTRUM_RPCUSER=rpc-user
+      - ELECTRUM_RPCPASSWORD=rpc-pwd
       - ELECTRUM_NETWORK=regtest
     expose:
       - "7000"
     ports:
       - "7000:7000"
     healthcheck:
-      test: [ "CMD", "electrum", "daemon", "status", "--regtest" ]
+      test: [ "CMD", "electrum", "--regtest", "getinfo" ]
       interval: 3s
       retries: 20

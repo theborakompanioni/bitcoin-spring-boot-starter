@@ -28,9 +28,9 @@ org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   default-wallet: electrum/wallets/regtest/default_wallet
   environment:
-    ELECTRUM_NETWORK: regtest
-    ELECTRUM_USER: electrum
-    ELECTRUM_PASSWORD: correct_horse_battery_staple_20201224
+    ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
+    ELECTRUM_RPCUSER: electrum
+    ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20201224
 
 org.tbk.spring.testcontainer.electrumx:
   enabled: true
@@ -39,7 +39,7 @@ org.tbk.spring.testcontainer.electrumx:
   rpcuser: this-is-my-rpc-user99
   rpcpass: correct_horse_battery_staple_99
   environment:
-    NET: regtest
+    NET: ${org.tbk.bitcoin.jsonrpc.network}
     COIN: BitcoinSegwit
     PEER_DISCOVERY: self
     PEER_ANNOUNCE: ''
@@ -94,7 +94,7 @@ org.tbk.bitcoin.jsonrpc:
   rpcpassword: correct_horse_battery_staple_99
 
 org.tbk.bitcoin.zeromq:
-  network: regtest
+  network: ${org.tbk.bitcoin.jsonrpc.network}
   zmqpubrawblock: tcp://localhost:28332
   zmqpubrawtx: tcp://localhost:28333
 
