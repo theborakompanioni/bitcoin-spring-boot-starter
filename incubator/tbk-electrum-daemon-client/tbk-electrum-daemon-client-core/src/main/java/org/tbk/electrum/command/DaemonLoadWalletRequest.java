@@ -16,9 +16,4 @@ public class DaemonLoadWalletRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("password")
     String password;
-
-    @JsonProperty("subcommand")
-    public String getSubcommand() {
-        return "load_wallet";
-    }
 }

@@ -2,8 +2,8 @@ org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   environment:
     ELECTRUM_NETWORK: regtest
-    ELECTRUM_USER: electrum
-    ELECTRUM_PASSWORD: correct_horse_battery_staple_20210508
+    ELECTRUM_RPCUSER: electrum
+    ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20210508
 
 org.tbk.spring.testcontainer.electrumx:
   enabled: true

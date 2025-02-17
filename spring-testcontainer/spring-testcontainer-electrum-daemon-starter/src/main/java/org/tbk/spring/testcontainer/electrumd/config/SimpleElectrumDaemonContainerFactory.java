@@ -33,13 +33,11 @@ public final class SimpleElectrumDaemonContainerFactory {
     @Value
     @Builder
     public static class ElectrumDaemonContainerConfig {
-        static final String ELECTRUM_HOME_ENV_NAME = "ELECTRUM_HOME";
         static final String ELECTRUM_NETWORK_ENV_NAME = "ELECTRUM_NETWORK";
 
         private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
-                .put("ELECTRUM_USER", "electrum")
-                .put(ELECTRUM_HOME_ENV_NAME, "/home/electrum")
-                .put("ELECTRUM_PASSWORD", "test")
+                .put("ELECTRUM_RPCUSER", "electrum")
+                .put("ELECTRUM_RPCPASSWORD", "test")
                 .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
                 .build();
 
@@ -65,17 +63,13 @@ public final class SimpleElectrumDaemonContainerFactory {
             return environmentBuilder.build();
         }
 
-        public String getElectrumHomeDir() {
-            return environment.getOrDefault(ELECTRUM_HOME_ENV_NAME, defaultEnvironment.get(ELECTRUM_HOME_ENV_NAME));
-        }
-
         public String getNetwork() {
             return environment.getOrDefault(ELECTRUM_NETWORK_ENV_NAME, defaultEnvironment.get(ELECTRUM_NETWORK_ENV_NAME));
         }
     }
 
-    // currently only the image from "osminogin" is supported
-    private static final String DOCKER_IMAGE_NAME = "osminogin/electrum-daemon:3.3.8";
+    // currently only the image from "theborakompanioni" is supported
+    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.5.8";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -138,7 +132,7 @@ public final class SimpleElectrumDaemonContainerFactory {
                 .map(MountableFile::forClasspathResource);
 
         if (mountableWalletOrEmpty.isPresent()) {
-            String home = config.getElectrumHomeDir();
+            String home = "/home/electrum";
 
             // There are different wallet directories per network:
             // - mainnet: /home/electrum/.electrum/wallets,
@@ -163,7 +157,6 @@ public final class SimpleElectrumDaemonContainerFactory {
     }
 
     private void restartDaemonWithCustomizedSettings(ElectrumDaemonContainerConfig config, ElectrumDaemonContainer<?> electrumDaemonContainer, Supplier<Optional<String>> serverUrlSupplier) {
-
         daemonStop(electrumDaemonContainer);
 
         setupDefaultConfigValuesHack(electrumDaemonContainer);
@@ -205,7 +198,7 @@ public final class SimpleElectrumDaemonContainerFactory {
     }
 
     private void daemonStart(ElectrumDaemonContainer<?> electrumDaemonContainer) {
-        daemonExec(electrumDaemonContainer, "start");
+        daemonExec(electrumDaemonContainer, "daemon");
     }
 
     private void daemonStop(ElectrumDaemonContainer<?> electrumDaemonContainer) {
@@ -229,9 +222,13 @@ public final class SimpleElectrumDaemonContainerFactory {
             Optional<String> networkFlag = networkFlag(electrumDaemonContainer);
 
             if (networkFlag.isEmpty()) {
-                return electrumDaemonContainer.execInContainer("electrum", "daemon", command);
+                return electrumDaemonContainer.execInContainer("electrum", command);
             } else {
-                return electrumDaemonContainer.execInContainer("electrum", networkFlag.get(), "daemon", command);
+                if ("daemon".equals(command)) {
+                    return electrumDaemonContainer.execInContainer("electrum", networkFlag.get(), command, "-d");
+                } else {
+                    return electrumDaemonContainer.execInContainer("electrum", networkFlag.get(), command);
+                }
             }
         } catch (InterruptedException | IOException e) {
             String errorMessage = String.format("Error while executing `electrum daemon %s`", command);
@@ -244,9 +241,9 @@ public final class SimpleElectrumDaemonContainerFactory {
             Optional<String> networkFlag = networkFlag(electrumDaemonContainer);
 
             if (networkFlag.isEmpty()) {
-                electrumDaemonContainer.execInContainer("electrum", "setconfig", key, value);
+                electrumDaemonContainer.execInContainer("electrum", "--offline", "setconfig", key, value);
             } else {
-                electrumDaemonContainer.execInContainer("electrum", networkFlag.get(), "setconfig", key, value);
+                electrumDaemonContainer.execInContainer("electrum", "--offline", networkFlag.get(), "setconfig", key, value);
             }
         } catch (InterruptedException | IOException e) {
             String errorMessage = String.format("Error while executing `electrum setconfig %s %s`", key, value);

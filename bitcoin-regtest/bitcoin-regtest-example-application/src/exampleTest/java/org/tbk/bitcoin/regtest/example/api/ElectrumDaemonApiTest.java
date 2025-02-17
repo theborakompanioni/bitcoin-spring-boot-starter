@@ -41,8 +41,9 @@ class ElectrumDaemonApiTest {
                 .andExpect(jsonPath("$.connected", is(true)))
                 .andExpect(jsonPath("$.auto_connect", is(true)))
                 .andExpect(jsonPath("$.version", is(notNullValue())))
-                .andExpect(jsonPath("$.wallets", is(notNullValue())))
+                //.andExpect(jsonPath("$.wallets", is(notNullValue())))
                 .andExpect(jsonPath("$.fee_per_kb", is(greaterThanOrEqualTo(0))))
+                .andExpect(jsonPath("$.default_wallet", is(anyOf(nullValue(), notNullValue()))))
                 .andExpect(jsonPath("$.current_wallet", is(anyOf(nullValue(), notNullValue()))));
     }
 }

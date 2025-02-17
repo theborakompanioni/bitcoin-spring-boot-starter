@@ -52,7 +52,7 @@ class ElectrumDaemonContainerAutoConfigurationTest {
                 "org.tbk.spring.testcontainer.electrumx.rpcport=18443",
                 // ----------------------------------------------
                 "org.tbk.spring.testcontainer.electrum-daemon.enabled=true",
-                "org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_PASSWORD=test"
+                "org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCPASSWORD=test"
         ).run(context -> {
             assertThat(context.containsBean("electrumDaemonContainer"), is(true));
             assertThat(context.getBean(ElectrumDaemonContainer.class), is(notNullValue()));

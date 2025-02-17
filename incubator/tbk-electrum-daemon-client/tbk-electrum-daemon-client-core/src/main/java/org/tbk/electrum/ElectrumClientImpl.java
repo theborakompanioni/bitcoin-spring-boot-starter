@@ -1,7 +1,7 @@
 package org.tbk.electrum;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcOptional;
+import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcParam;
 import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.SneakyThrows;
@@ -25,9 +25,6 @@ public class ElectrumClientImpl implements ElectrumClient {
     private static List<String> splitMnemonicSeed(String seed) {
         return ImmutableList.copyOf(seed.split(" "));
     }
-
-    private static final ObjectMapper objectMapper = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final ElectrumDaemonRpcService delegate;
 
@@ -118,7 +115,7 @@ public class ElectrumClientImpl implements ElectrumClient {
         boolean rawTxHasNotChanged = rawTx.getHex().equals(signtransaction.getHex());
         if (rawTxHasNotChanged) {
             throw new IllegalStateException("Transaction has not been signed by electrum - "
-                    + "maybe you have loaded a watchonly wallet?");
+                                            + "maybe you have loaded a watchonly wallet?");
         }
 
         return SimpleRawTx.builder()
@@ -239,18 +236,16 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     @SneakyThrows
     public History getHistory() {
-        // nobody knows why, but this call actually returns json embedded in a string.. wtf electrum? ¯\_(ツ)_/¯
-        String historyJsonString = delegate.history(true);
-        HistoryResponse history = objectMapper.readValue(historyJsonString, HistoryResponse.class);
+        HistoryResponse history = delegate.onchainHistory(true);
 
         HistoryResponse.Summary summary = history.getSummary();
         List<HistoryResponse.Transaction> transactions = history.getTransactions();
 
         SimpleHistory.SimpleSummary historySummary = SimpleHistory.SimpleSummary.builder()
-                .startBalance(BtcTxoValues.fromBtcStringOrZero(summary.getStartBalance()))
-                .endBalance(BtcTxoValues.fromBtcStringOrZero(summary.getEndBalance()))
-                .incoming(BtcTxoValues.fromBtcStringOrZero(summary.getIncoming()))
-                .outgoing(BtcTxoValues.fromBtcStringOrZero(summary.getOutgoing()))
+                .startBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getBegin()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
+                .endBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getEnd()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
+                .incoming(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getIncoming).orElse(null)))
+                .outgoing(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getOutgoing).orElse(null)))
                 .build();
 
         return SimpleHistory.builder()
@@ -349,7 +344,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public DaemonStatusResponse daemonStatus() {
-        return delegate.status(DaemonStatusRequest.create());
+        return delegate.getinfo();
     }
 
     @Override
@@ -369,7 +364,7 @@ public class ElectrumClientImpl implements ElectrumClient {
         boolean seedIsAbsent = getseed == null || getseed.isEmpty();
         if (seedIsAbsent) {
             throw new IllegalStateException("Seed has not been returned by electrum - "
-                    + "maybe you have loaded a watchonly wallet?");
+                                            + "maybe you have loaded a watchonly wallet?");
         }
 
         return splitMnemonicSeed(getseed);
@@ -423,6 +418,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                 options.getChangeAddress(),
                 options.getNoCheck(),
                 options.getUnsigned(),
+                options.getAddTransaction(),
                 options.getReplaceByFee(),
                 walletPassphrase,
                 options.getLocktime());
@@ -456,7 +452,9 @@ public class ElectrumClientImpl implements ElectrumClient {
         @Nullable
         Boolean unsigned;
         @Nullable
-        Object replaceByFee; // untested atm
+        Object addTransaction; // untested atm
+        @Nullable
+        Boolean replaceByFee; // untested atm
         @Nullable
         Long locktime; // untested atm
     }
