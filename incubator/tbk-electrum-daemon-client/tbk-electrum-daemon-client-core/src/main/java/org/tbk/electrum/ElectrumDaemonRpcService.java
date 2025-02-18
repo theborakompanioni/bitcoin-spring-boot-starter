@@ -85,6 +85,11 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("getseed")
     String getseed(@JsonRpcOptional @JsonRpcParam("password") String password);
 
+    /**
+     * return wallet synchronization status
+     *
+     * @return wallet synchronization status
+     */
     @JsonRpcMethod("is_synchronized")
     Boolean issynchronized();
 
