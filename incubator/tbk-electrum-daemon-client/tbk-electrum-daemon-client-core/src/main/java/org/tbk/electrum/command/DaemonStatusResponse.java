@@ -42,9 +42,6 @@ public class DaemonStatusResponse {
     @JsonProperty("version")
     String version;
 
-    @JsonProperty("wallets")
-    Map<String, Boolean> wallets;
-
     @JsonProperty("fee_per_kb")
     int feePerKb;
 

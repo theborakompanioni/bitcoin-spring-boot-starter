@@ -5,6 +5,7 @@ import lombok.Value;
 import org.tbk.electrum.command.DaemonCloseWalletRequest;
 import org.tbk.electrum.command.DaemonLoadWalletRequest;
 import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
@@ -22,6 +23,8 @@ public interface ElectrumClient {
     List<String> createMnemonicSeed();
 
     Boolean isWalletSynchronized();
+
+    List<ListWalletEntry> listWallets();
 
     Balance getBalance();
 
