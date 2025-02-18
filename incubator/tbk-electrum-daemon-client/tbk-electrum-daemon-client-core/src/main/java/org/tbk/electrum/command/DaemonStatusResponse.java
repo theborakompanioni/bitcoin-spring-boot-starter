@@ -47,14 +47,4 @@ public class DaemonStatusResponse {
 
     @JsonProperty("default_wallet")
     String defaultWallet;
-
-    /**
-     * Path to currently loaded wallet.
-     */
-    @JsonProperty("current_wallet")
-    String currentWallet;
-
-    public Optional<String> getCurrentWallet() {
-        return Optional.ofNullable(currentWallet);
-    }
 }
