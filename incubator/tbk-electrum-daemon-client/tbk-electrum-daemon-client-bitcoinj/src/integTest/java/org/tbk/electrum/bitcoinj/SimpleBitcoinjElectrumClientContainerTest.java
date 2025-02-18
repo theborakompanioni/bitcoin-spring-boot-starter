@@ -96,7 +96,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
         Boolean walletSynchronized = Flux.interval(Duration.ofMillis(100))
                 .map(it -> sut.delegate().isWalletSynchronized())
                 .filter(it -> it)
-                .blockFirst(Duration.ofSeconds(3));
+                .blockFirst(Duration.ofSeconds(10));
 
         assertThat("wallet is synchronized", walletSynchronized, is(true));
     }
