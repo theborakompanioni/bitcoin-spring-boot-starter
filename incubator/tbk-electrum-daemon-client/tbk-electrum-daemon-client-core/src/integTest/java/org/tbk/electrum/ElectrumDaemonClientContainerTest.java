@@ -76,20 +76,18 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testGetInfo() {
-        GetInfoResponse daemonStatusResponse = sut.getInfo();
+        GetInfoResponse infoResponse = sut.getInfo();
 
-        assertThat(daemonStatusResponse, is(notNullValue()));
-
-        assertThat(daemonStatusResponse.getNetwork(), is("regtest"));
-        assertThat(daemonStatusResponse.getPath(), is(not(emptyOrNullString())));
-        assertThat(daemonStatusResponse.getServer(), is(not(emptyOrNullString())));
-        assertThat(daemonStatusResponse.getBlockchainHeight(), is(greaterThanOrEqualTo(-1)));
-        assertThat(daemonStatusResponse.getServerHeight(), is(greaterThanOrEqualTo(-1)));
-        assertThat(daemonStatusResponse.getSpvNodes(), is(greaterThanOrEqualTo(0)));
-        assertThat(daemonStatusResponse.isConnected(), is(true));
-        assertThat(daemonStatusResponse.isAutoConnect(), is(true));
-        assertThat(daemonStatusResponse.getVersion(), is(not(emptyOrNullString())));
-        assertThat(daemonStatusResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
+        assertThat(infoResponse.getNetwork(), is("regtest"));
+        assertThat(infoResponse.getPath(), is(not(emptyOrNullString())));
+        assertThat(infoResponse.getServer(), is(not(emptyOrNullString())));
+        assertThat(infoResponse.getBlockchainHeight(), is(greaterThanOrEqualTo(-1)));
+        assertThat(infoResponse.getServerHeight(), is(greaterThanOrEqualTo(-1)));
+        assertThat(infoResponse.getSpvNodes(), is(greaterThanOrEqualTo(0)));
+        assertThat(infoResponse.isConnected(), is(true));
+        assertThat(infoResponse.isAutoConnect(), is(true));
+        assertThat(infoResponse.getVersion(), is(not(emptyOrNullString())));
+        assertThat(infoResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
     }
 
     @Test
