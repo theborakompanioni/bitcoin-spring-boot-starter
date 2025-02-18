@@ -42,7 +42,6 @@ public final class ElectrumdStatusLogging {
             log.info("Electrum Daemon ({}) Status", daemonStatusResponse.getVersion());
             log.info("Connected: {}", daemonStatusResponse.isConnected());
             log.info("Blockheight: {}/{}", daemonStatusResponse.getBlockchainHeight(), daemonStatusResponse.getServerHeight());
-            log.info("Current wallet: {}", daemonStatusResponse.getCurrentWallet().orElse("<none>"));
             log.info("Wallet synchronized: {}", walletSynchronized);
             if (Boolean.TRUE.equals(walletSynchronized)) {
                 History history = electrumClient.getHistory();
