@@ -142,8 +142,8 @@ class ElectrumGatewayExampleApplicationTest {
     @AutoConfigureAfter(ElectrumxContainerAutoConfiguration.class)
     @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay for this test
     public static class TestConfig {
-        private static final String TEST_ELECTRUM_PASSWORD1 = "correct_horse_battery_staple_20210516-0";
-        private static final String TEST_ELECTRUM_PASSWORD2 = "correct_horse_battery_staple_20210516-1";
+        private static final String TEST_ELECTRUM_RPCPASSWORD1 = "correct_horse_battery_staple_20210516-0";
+        private static final String TEST_ELECTRUM_RPCPASSWORD2 = "correct_horse_battery_staple_20210516-1";
 
         @Bean
         SimpleElectrumDaemonContainerFactory electrumDaemonContainerFactory() {
@@ -159,7 +159,7 @@ class ElectrumGatewayExampleApplicationTest {
                     .defaultWallet("electrum/wallets/regtest/default_wallet")
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
-                    .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_PASSWORD1)
+                    .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD1)
                     .build();
 
             return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
@@ -173,7 +173,7 @@ class ElectrumGatewayExampleApplicationTest {
                     .defaultWallet("electrum/wallets/regtest/second_wallet")
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
-                    .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_PASSWORD2)
+                    .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD2)
                     .build();
 
             return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
@@ -192,7 +192,7 @@ class ElectrumGatewayExampleApplicationTest {
                     .host("http://" + electrumDaemonContainer.getHost())
                     .port(electrumDaemonContainer.getMappedPort(7000))
                     .username("electrum")
-                    .password(TEST_ELECTRUM_PASSWORD1)
+                    .password(TEST_ELECTRUM_RPCPASSWORD1)
                     .build();
 
             return electrumClientFactory.create(config.getUri(), config.getUsername(), config.getPassword());
@@ -205,7 +205,7 @@ class ElectrumGatewayExampleApplicationTest {
                     .host("http://" + electrumDaemonContainer.getHost())
                     .port(electrumDaemonContainer.getMappedPort(7000))
                     .username("electrum")
-                    .password(TEST_ELECTRUM_PASSWORD2)
+                    .password(TEST_ELECTRUM_RPCPASSWORD2)
                     .build();
 
             return electrumClientFactory.create(config.getUri(), config.getUsername(), config.getPassword());
