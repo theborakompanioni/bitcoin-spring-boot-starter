@@ -12,6 +12,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.Version;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
@@ -20,7 +21,6 @@ import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -83,16 +83,20 @@ class ElectrumDaemonClientContainerTest {
         assertThat(daemonStatusResponse.isConnected(), is(true));
         assertThat(daemonStatusResponse.isAutoConnect(), is(true));
         assertThat(daemonStatusResponse.getVersion(), is(not(emptyOrNullString())));
-
-        Map<String, Boolean> wallets = daemonStatusResponse.getWallets();
-        assertThat(wallets.keySet(), hasSize(1));
-
-        Map.Entry<String, Boolean> walletSyncState = wallets.entrySet().stream()
-                .findFirst().orElseThrow();
-
-        assertThat("wallet is known", walletSyncState.getKey(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
-        assertThat("wallet is loaded", walletSyncState.getValue(), is(true));
     }
+
+    @Test
+    void testListWallets() {
+        List<ListWalletEntry> wallets = sut.listWallets();
+        assertThat(wallets, hasSize(1));
+
+        ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
+
+        assertThat("wallet is known", listWalletEntry.getPath(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
+        assertThat("wallet is synchronized", listWalletEntry.getSynced(), is(true));
+        assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(false));
+    }
+
 
     @Test
     void testWalletSynchronized() {

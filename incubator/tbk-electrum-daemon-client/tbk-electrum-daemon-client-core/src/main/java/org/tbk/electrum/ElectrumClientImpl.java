@@ -1,7 +1,5 @@
 package org.tbk.electrum;
 
-import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcOptional;
-import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcParam;
 import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.SneakyThrows;
@@ -155,6 +153,15 @@ public class ElectrumClientImpl implements ElectrumClient {
                 .build();
     }
 
+    /**
+     * List wallets open in daemon
+     * @return
+     */
+    @Override
+    public List<ListWalletEntry> listWallets() {
+        return delegate.listwallets();
+    }
+
     @Override
     public List<String> listAddresses() {
         return delegate.listaddresses();
@@ -236,7 +243,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     @SneakyThrows
     public History getHistory() {
-        HistoryResponse history = delegate.onchainHistory(true);
+        HistoryResponse history = delegate.onchainhistory(true);
 
         HistoryResponse.Summary summary = history.getSummary();
         List<HistoryResponse.Transaction> transactions = history.getTransactions();

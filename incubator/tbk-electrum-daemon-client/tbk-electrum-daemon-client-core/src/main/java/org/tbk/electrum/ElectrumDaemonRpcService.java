@@ -143,7 +143,7 @@ public interface ElectrumDaemonRpcService {
      * Represented in {@link History} but you must parse it yourself.
      *
      * @return a string containing the HistoryResponse json
-     * @deprecated use {@link #getOnchainHistory} instead
+     * @deprecated use {@link #onchainhistory} instead
      */
     @Deprecated
     @JsonRpcMethod("history")
@@ -154,25 +154,29 @@ public interface ElectrumDaemonRpcService {
      * Represented in {@link History} but you must parse it yourself.
      *
      * @return a string containing the HistoryResponse json
-     * @deprecated use {@link #getOnchainHistory} instead
+     * @deprecated use {@link #onchainhistory} instead
      */
     @Deprecated
     @JsonRpcMethod("history")
     String history(@JsonRpcParam("show_addresses") boolean showAddresses);
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainHistory();
+    HistoryResponse onchainhistory();
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainHistory(@JsonRpcParam("show_addresses") boolean showAddresses);
+    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainHistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
                                    @JsonRpcParam("from_height") long fromHeight);
+
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainHistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
                                    @JsonRpcParam("from_height") long fromHeight,
                                    @JsonRpcParam("to_height") long toHeight);
+
+    @JsonRpcMethod("list_wallets")
+    List<ListWalletEntry> listwallets();
 
     /**
      * Returns the balance of address. This is a walletless server query. Results are not checked by SPV.
