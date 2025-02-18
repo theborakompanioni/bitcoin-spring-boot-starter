@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update hibernate-community-dialects from v6.6.1.Final to v6.6.5.Final
 - upgrade: update lnd testcontainer from v0.18.2-beta to v0.18.4-beta
 - upgrade: update lightningj from v0.17.0-Beta to v0.17.4-Beta
+- upgrade: update simple-json-rpc-client from v1.2 to v1.3
 
 ### Removed
 - module: externalize 'bitcoin-fee' modules
