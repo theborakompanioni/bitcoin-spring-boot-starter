@@ -90,7 +90,7 @@ class ElectrumDaemonContainerAutoConfigurationTest {
 
             ObjectError error = errors.get(0);
             assertThat(error.getObjectName(), is("org.tbk.spring.testcontainer.electrum-daemon"));
-            assertThat(error.getCode(), is("ELECTRUM_PASSWORD.invalid"));
+            assertThat(error.getCode(), is("ELECTRUM_RPCPASSWORD.invalid"));
         });
     }
 }

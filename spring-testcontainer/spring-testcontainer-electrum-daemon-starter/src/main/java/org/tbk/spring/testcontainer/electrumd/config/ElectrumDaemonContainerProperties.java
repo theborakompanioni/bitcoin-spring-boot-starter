@@ -22,12 +22,12 @@ import static java.util.Objects.requireNonNull;
         ignoreUnknownFields = false
 )
 public class ElectrumDaemonContainerProperties extends AbstractContainerProperties implements Validator {
-    static final String ELECTRUM_USER_ENV_NAME = "ELECTRUM_RPCUSER";
-    static final String ELECTRUM_PASSWORD_ENV_NAME = "ELECTRUM_RPCPASSWORD";
+    static final String ELECTRUM_RPCUSER_ENV_NAME = "ELECTRUM_RPCUSER";
+    static final String ELECTRUM_RPCPASSWORD_ENV_NAME = "ELECTRUM_RPCPASSWORD";
     static final String ELECTRUM_NETWORK_ENV_NAME = "ELECTRUM_NETWORK";
 
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
-            .put(ELECTRUM_USER_ENV_NAME, "electrum")
+            .put(ELECTRUM_RPCUSER_ENV_NAME, "electrum")
             .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
             .build();
 
@@ -75,7 +75,7 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
 
         errors.pushNestedPath("environment");
         Map<String, String> environment = properties.getEnvironmentWithDefaults();
-        Set<String> envKeys = Set.of(ELECTRUM_USER_ENV_NAME, ELECTRUM_PASSWORD_ENV_NAME, ELECTRUM_NETWORK_ENV_NAME);
+        Set<String> envKeys = Set.of(ELECTRUM_RPCUSER_ENV_NAME, ELECTRUM_RPCPASSWORD_ENV_NAME, ELECTRUM_NETWORK_ENV_NAME);
         envKeys.forEach(field -> {
             String value = environment.get(field);
             if (value == null || value.isBlank()) {
