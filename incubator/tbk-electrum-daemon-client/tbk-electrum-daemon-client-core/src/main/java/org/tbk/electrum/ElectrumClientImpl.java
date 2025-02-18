@@ -10,9 +10,7 @@ import org.tbk.electrum.model.*;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -108,18 +106,22 @@ public class ElectrumClientImpl implements ElectrumClient {
      */
     @Override
     public RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase) {
-        RawTransactionResponse signtransaction = delegate.signtransaction(rawTx.getHex(), walletPassphrase);
+        String signtransaction = delegate.signtransaction(rawTx.getHex(), walletPassphrase);
 
-        boolean rawTxHasNotChanged = rawTx.getHex().equals(signtransaction.getHex());
+        byte[] raw = parseTransactionResponse(signtransaction);
+
+        String hex = HexFormat.of().formatHex(raw);
+
+        boolean rawTxHasNotChanged = rawTx.getHex().equals(hex);
         if (rawTxHasNotChanged) {
             throw new IllegalStateException("Transaction has not been signed by electrum - "
                                             + "maybe you have loaded a watchonly wallet?");
         }
 
         return SimpleRawTx.builder()
-                .hex(signtransaction.getHex())
-                .finalized(signtransaction.isFinalized())
-                .complete(signtransaction.isComplete())
+                .hex(hex)
+                .finalized(true)
+                .complete(true)
                 .build();
     }
 
@@ -155,6 +157,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     /**
      * List wallets open in daemon
+     *
      * @return
      */
     @Override
@@ -301,11 +304,14 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public RawTx getRawTransaction(String txHash) {
-        RawTransactionResponse response = delegate.gettransaction(txHash);
+        String gettransaction = delegate.gettransaction(txHash);
+
+        byte[] raw = parseTransactionResponse(gettransaction);
+
         return SimpleRawTx.builder()
-                .hex(response.getHex())
-                .finalized(response.isFinalized())
-                .complete(response.isComplete())
+                .hex(HexFormat.of().formatHex(raw))
+                .finalized(true)
+                .complete(true)
                 .build();
     }
 
@@ -416,29 +422,43 @@ public class ElectrumClientImpl implements ElectrumClient {
                 .map(BigDecimal::toPlainString)
                 .orElse(null);
 
-        RawTransactionResponse payto = delegate.payto(destinationAddress,
-                amountAsBtcString,
-                feeAsBtcStringOrNull,
-                options.getFeeRate(),
-                options.getFromAddress(),
-                options.getFromCoins(),
-                options.getChangeAddress(),
-                options.getNoCheck(),
-                options.getUnsigned(),
-                options.getAddTransaction(),
-                options.getReplaceByFee(),
-                walletPassphrase,
-                options.getLocktime());
+        try {
+            String payto = delegate.payto(destinationAddress,
+                    amountAsBtcString,
+                    feeAsBtcStringOrNull,
+                    options.getFeeRate(),
+                    options.getFromAddress(),
+                    options.getFromCoins(),
+                    options.getChangeAddress(),
+                    options.getNoCheck(),
+                    options.getUnsigned(),
+                    options.getAddTransaction(),
+                    options.getReplaceByFee(),
+                    walletPassphrase,
+                    options.getLocktime());
 
-        if (payto.getError().isPresent()) {
-            throw new IllegalStateException(payto.getError().get());
+            // payto can be base64 or hex
+            // hex: for finalized tx?
+            // base64: for unsigned tx?
+
+            byte[] raw = parseTransactionResponse(payto);
+
+            return SimpleRawTx.builder()
+                    .hex(HexFormat.of().formatHex(raw))
+                    .finalized(Boolean.TRUE.equals(options.getUnsigned()))
+                    .complete(Boolean.TRUE.equals(options.getUnsigned()))
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not deserialize request");
         }
+    }
 
-        return SimpleRawTx.builder()
-                .hex(payto.getHex())
-                .finalized(payto.isFinalized())
-                .complete(payto.isComplete())
-                .build();
+    private static byte[] parseTransactionResponse(String payto) {
+        try {
+            return HexFormat.of().parseHex(payto);
+        } catch (Exception e) {
+            return Base64.getDecoder().decode(payto);
+        }
     }
 
     @Value

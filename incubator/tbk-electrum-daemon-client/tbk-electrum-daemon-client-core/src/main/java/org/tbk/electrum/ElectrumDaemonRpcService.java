@@ -23,7 +23,7 @@ import java.util.List;
  *
  * <p>Not every parameter is currently implemented.
  *
- * <p>Following methods are still missing to be feature complete:
+ * <p>Following methods are still missing to be feature-complete:
  * [ ] "addrequest",
  * [ ] "addtransaction",
  * [ ] "clearrequests",
@@ -222,7 +222,7 @@ public interface ElectrumDaemonRpcService {
     List<AddressUnspentResponse.Utxo> getaddressunspent(@JsonRpcParam("address") String address);
 
     @JsonRpcMethod("gettransaction")
-    RawTransactionResponse gettransaction(@JsonRpcParam("txid") String txId);
+    String gettransaction(@JsonRpcParam("txid") String txId);
 
     @JsonRpcMethod("deserialize")
     DeserializeResponse deserialize(@JsonRpcParam("tx") String tx);
@@ -259,14 +259,14 @@ public interface ElectrumDaemonRpcService {
 
 
     @JsonRpcMethod("payto")
-    RawTransactionResponse payto(@JsonRpcParam("destination") String destination,
+    String payto(@JsonRpcParam("destination") String destination,
                                  @JsonRpcParam("amount") String amount,
                                  @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
                                  @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
                                  @JsonRpcParam("password") String password);
 
     @JsonRpcMethod("payto")
-    RawTransactionResponse payto(
+    String payto(
             @JsonRpcParam("destination") String destination,
             @JsonRpcParam("amount") String amount,
             @JsonRpcOptional @JsonRpcParam("fee") String fee,
@@ -299,7 +299,7 @@ public interface ElectrumDaemonRpcService {
      * @return a signed transaction
      */
     @JsonRpcMethod("signtransaction")
-    RawTransactionResponse signtransaction(@JsonRpcParam("tx") String tx,
+    String signtransaction(@JsonRpcParam("tx") String tx,
                                            @JsonRpcOptional @JsonRpcParam("password") String password);
 
     /**

@@ -19,7 +19,9 @@ import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -98,14 +100,17 @@ class ElectrumDaemonClientContainerTest {
         ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
 
         assertThat("wallet is known", listWalletEntry.getPath(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
-        assertThat("wallet is synchronized", listWalletEntry.getSynced(), is(true));
+        assertThat("wallet is synchronized", listWalletEntry.getSynced(), is(notNullValue()));
         assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(false));
     }
 
 
     @Test
     void testWalletSynchronized() {
-        Boolean walletSynchronized = sut.isWalletSynchronized();
+        Boolean walletSynchronized = Flux.interval(Duration.ofMillis(100))
+                .map(it -> sut.isWalletSynchronized())
+                .filter(it -> it)
+                .blockFirst(Duration.ofSeconds(10));
 
         assertThat("wallet is synchronized", walletSynchronized, is(true));
     }

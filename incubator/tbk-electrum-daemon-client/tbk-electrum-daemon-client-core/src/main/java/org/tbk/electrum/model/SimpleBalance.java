@@ -52,12 +52,19 @@ public class SimpleBalance implements Balance {
                 .orElseGet(SimpleTxoValue::zero);
     }
 
+    @Override
+    public TxoValue getLightning() {
+        return Optional.ofNullable(lightning)
+                .orElseGet(SimpleTxoValue::zero);
+    }
+
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("total", getTotal().getValue())
                 .add("spendable", getSpendable().getValue())
                 .add("confirmed", confirmed.getValue())
                 .add("unconfirmed", unconfirmed.getValue())
+                .add("unmatured", getUnmatured().getValue())
                 .add("unmatured", getUnmatured().getValue())
                 .toString();
     }
