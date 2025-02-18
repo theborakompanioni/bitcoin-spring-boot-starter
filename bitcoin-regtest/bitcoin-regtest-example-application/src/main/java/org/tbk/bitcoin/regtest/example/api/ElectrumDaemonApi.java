@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 
 @RestController
 @RequestMapping("/api/v1/electrum")
@@ -18,7 +18,7 @@ public class ElectrumDaemonApi {
     private final ElectrumClient electrumClient;
 
     @GetMapping(path = "/status")
-    public ResponseEntity<DaemonStatusResponse> status() {
-        return ResponseEntity.ok(electrumClient.daemonStatus());
+    public ResponseEntity<GetInfoResponse> status() {
+        return ResponseEntity.ok(electrumClient.getInfo());
     }
 }

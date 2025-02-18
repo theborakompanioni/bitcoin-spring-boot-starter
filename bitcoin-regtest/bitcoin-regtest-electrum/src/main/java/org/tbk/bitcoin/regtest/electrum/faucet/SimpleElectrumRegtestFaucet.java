@@ -54,11 +54,11 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
         // the amount of the current block rewards so we workaround by waiting for an update and then
         // checking if we have enough funds available
         Mono<Integer> awaitBlockchainHeightIncrease = Mono.fromCallable(() -> {
-            int currentBlockchainHeight = this.electrumClient.delegate().daemonStatus().getBlockchainHeight();
+            int currentBlockchainHeight = this.electrumClient.delegate().getInfo().getBlockchainHeight();
 
             return Flux.interval(Duration.ofMillis(100))
                     .doOnNext(it -> log.trace("Waiting for wallet to receive new blocks.. ({} attempt)", it))
-                    .map(it -> this.electrumClient.delegate().daemonStatus().getBlockchainHeight())
+                    .map(it -> this.electrumClient.delegate().getInfo().getBlockchainHeight())
                     .filter(newBlockchainHeight -> newBlockchainHeight > currentBlockchainHeight)
                     .blockFirst(Duration.ofSeconds(30));
         });

@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.Version;
@@ -75,8 +75,8 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    void testDaemonStatus() {
-        DaemonStatusResponse daemonStatusResponse = sut.daemonStatus();
+    void testGetInfo() {
+        GetInfoResponse daemonStatusResponse = sut.getInfo();
 
         assertThat(daemonStatusResponse, is(notNullValue()));
 

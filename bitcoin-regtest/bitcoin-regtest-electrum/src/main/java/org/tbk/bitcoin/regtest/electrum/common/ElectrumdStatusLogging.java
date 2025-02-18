@@ -5,7 +5,7 @@ import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.History;
 import org.tbk.electrum.model.TxoValue;
@@ -35,7 +35,7 @@ public final class ElectrumdStatusLogging {
 
     public static void logStatus(ElectrumClient electrumClient) {
         try {
-            DaemonStatusResponse daemonStatusResponse = electrumClient.daemonStatus();
+            GetInfoResponse daemonStatusResponse = electrumClient.getInfo();
             Boolean walletSynchronized = electrumClient.isWalletSynchronized();
 
             log.info("============================");
