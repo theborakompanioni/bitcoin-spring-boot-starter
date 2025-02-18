@@ -59,7 +59,7 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
         List<String> addresses = client.listAddresses();
         log.info("start watching addresses: {}", addresses);
 
-        while (!this.client.daemonStatus().isConnected()) {
+        while (!this.client.getInfo().isConnected()) {
             log.info("waiting till daemon is connected");
             Thread.sleep(100L);
         }

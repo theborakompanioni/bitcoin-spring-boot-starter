@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.ElectrumClientFactory;
 import org.tbk.electrum.ElectrumClientFactoryImpl;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.config.ElectrumDaemonJsonrpcConfig;
 import org.tbk.electrum.config.ElectrumDaemonJsonrpcConfigBuilder;
 import org.tbk.electrum.model.Balance;
@@ -91,7 +91,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         assertThat("primary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 
-        DaemonStatusResponse daemonStatusResponse = primaryElectrumClient.daemonStatus();
+        GetInfoResponse daemonStatusResponse = primaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
         assertThat(primaryElectrumClient.isWalletSynchronized(), is(true));
     }
@@ -105,7 +105,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         assertThat("secondary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 
-        DaemonStatusResponse daemonStatusResponse = secondaryElectrumClient.daemonStatus();
+        GetInfoResponse daemonStatusResponse = secondaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
         assertThat(secondaryElectrumClient.isWalletSynchronized(), is(true));
     }

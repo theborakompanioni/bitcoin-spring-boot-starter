@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 import org.tbk.electrum.command.DaemonCloseWalletRequest;
 import org.tbk.electrum.command.DaemonLoadWalletRequest;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.*;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ElectrumClient {
 
     default boolean isDaemonConnected() {
-        return this.daemonStatus().isConnected();
+        return this.getInfo().isConnected();
     }
 
     Version daemonVersion();
@@ -56,7 +56,7 @@ public interface ElectrumClient {
 
     Tx getDeserializedTransaction(RawTx rawTx);
 
-    DaemonStatusResponse daemonStatus();
+    GetInfoResponse getInfo();
 
     Boolean loadWallet(DaemonLoadWalletRequest request);
 

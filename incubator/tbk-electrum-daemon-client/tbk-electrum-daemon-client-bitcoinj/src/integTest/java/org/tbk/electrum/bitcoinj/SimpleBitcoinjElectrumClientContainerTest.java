@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.model.Version;
 import reactor.core.publisher.Flux;
 
@@ -54,8 +54,8 @@ class SimpleBitcoinjElectrumClientContainerTest {
     }
 
     @Test
-    void testDaemonStatus() {
-        DaemonStatusResponse daemonStatusResponse = sut.delegate().daemonStatus();
+    void testGetInfo() {
+        GetInfoResponse daemonStatusResponse = sut.delegate().getInfo();
 
         assertThat(daemonStatusResponse, is(notNullValue()));
 
@@ -74,8 +74,8 @@ class SimpleBitcoinjElectrumClientContainerTest {
         if (walletSyncState.getValue() == Boolean.FALSE) {
             // might need some time to be loaded
             Boolean walletIsLoaded = Flux.interval(Duration.ofMillis(100))
-                    .map(it -> sut.delegate().daemonStatus())
-                    .map(DaemonStatusResponse::getWallets)
+                    .map(it -> sut.delegate().getInfo())
+                    .map(GetInfoResponse::getWallets)
                     .map(it -> it.entrySet().stream().findFirst().orElseThrow())
                     .map(Map.Entry::getValue)
                     .filter(it -> it)

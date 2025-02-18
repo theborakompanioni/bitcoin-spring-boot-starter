@@ -350,7 +350,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public DaemonStatusResponse daemonStatus() {
+    public GetInfoResponse getInfo() {
         return delegate.getinfo();
     }
 

@@ -227,10 +227,10 @@ public interface ElectrumDaemonRpcService {
      */
     @Deprecated
     @JsonRpcMethod("getinfo")
-    DaemonStatusResponse status(@JsonRpcParam("config_options") DaemonStatusRequest request);
+    GetInfoResponse status(@JsonRpcParam("config_options") DaemonStatusRequest request);
 
     @JsonRpcMethod("getinfo")
-    DaemonStatusResponse getinfo();
+    GetInfoResponse getinfo();
 
     @JsonRpcMethod("load_wallet")
     Boolean loadwallet(@JsonRpcParam("config_options") DaemonLoadWalletRequest request);

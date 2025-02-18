@@ -116,7 +116,7 @@ class SimpleElectrumRegtestFaucetTest {
         sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1000))
                 .block(Duration.ofSeconds(60));
 
-        int blockchainHeightBefore = electrumClient.delegate().daemonStatus().getBlockchainHeight();
+        int blockchainHeightBefore = electrumClient.delegate().getInfo().getBlockchainHeight();
         assertThat("blocks have already been mined", blockchainHeightBefore, is(greaterThan(0)));
 
         Address destinationAddress = electrumClient.createNewAddress();
@@ -134,7 +134,7 @@ class SimpleElectrumRegtestFaucetTest {
         BitcoinjBalance balanceOnDestinationAddress2After = this.electrumClient.getAddressBalance(destinationAddress);
         assertThat(balanceOnDestinationAddress2After.getTotal(), is(Coin.SATOSHI.multiply(1000).multiply(3)));
 
-        int blockchainHeightAfter = electrumClient.delegate().daemonStatus().getBlockchainHeight();
+        int blockchainHeightAfter = electrumClient.delegate().getInfo().getBlockchainHeight();
         assertThat("no additional blocks have been mined to fund the faucet", blockchainHeightAfter, is(blockchainHeightBefore));
     }
 }

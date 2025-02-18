@@ -6,14 +6,11 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.Map;
-import java.util.Optional;
-
 @Value
 @Builder
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DaemonStatusResponse {
+public class GetInfoResponse {
 
     @JsonProperty("network")
     String network;
