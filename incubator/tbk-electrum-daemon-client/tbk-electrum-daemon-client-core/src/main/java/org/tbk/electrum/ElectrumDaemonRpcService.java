@@ -1,7 +1,5 @@
 package org.tbk.electrum;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.arteam.simplejsonrpc.client.JsonRpcId;
 import com.github.arteam.simplejsonrpc.client.JsonRpcParams;
 import com.github.arteam.simplejsonrpc.client.ParamsType;
@@ -267,13 +265,6 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("deserialize")
     DeserializeResponse deserialize(@JsonRpcParam("tx") String tx);
 
-    /**
-     * @deprecated Use {@link #getinfo} instead.
-     */
-    @Deprecated
-    @JsonRpcMethod("getinfo")
-    GetInfoResponse status(@JsonRpcParam("config_options") DaemonStatusRequest request);
-
     @JsonRpcMethod("getinfo")
     GetInfoResponse getinfo();
 
@@ -282,9 +273,10 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Load the wallet in memory
-     * @param wallet_path wallet path
-     * @param password Password
-     * @param unlock Unlock the wallet (store the password in memory)
+     *
+     * @param wallet_path  wallet path
+     * @param password     Password
+     * @param unlock       Unlock the wallet (store the password in memory)
      * @param forgetconfig Forget config on exit
      */
     @JsonRpcMethod("load_wallet")
@@ -301,7 +293,8 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Close wallet
-     * @param wallet_path wallet path
+     *
+     * @param wallet_path  wallet path
      * @param forgetconfig Forget config on exit
      */
     @JsonRpcMethod("close_wallet")
