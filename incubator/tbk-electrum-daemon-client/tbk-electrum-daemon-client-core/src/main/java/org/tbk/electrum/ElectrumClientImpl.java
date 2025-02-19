@@ -161,7 +161,7 @@ public class ElectrumClientImpl implements ElectrumClient {
      * @return
      */
     @Override
-    public List<ListWalletEntry> listWallets() {
+    public List<ListWalletEntry> listOpenWallets() {
         return delegate.listwallets();
     }
 
@@ -361,8 +361,13 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Boolean loadWallet(DaemonLoadWalletRequest request) {
-        return delegate.loadwallet(request);
+    public boolean loadWallet(DaemonLoadWalletParams params) {
+        delegate.loadwallet(params.getWalletPath(),
+                params.getPassword(),
+                params.getUnlock(),
+                params.getForgetconfig()
+        );
+        return true;
     }
 
     @Override

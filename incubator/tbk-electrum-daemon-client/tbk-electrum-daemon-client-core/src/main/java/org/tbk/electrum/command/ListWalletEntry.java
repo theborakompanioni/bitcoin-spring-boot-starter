@@ -7,6 +7,8 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
+ * <pre>
+ * ~ $ electrum --regtest list_wallets
  * [
  *     {
  *         "path": "/home/electrum/.electrum/regtest/wallets/default_wallet",
@@ -14,6 +16,7 @@ import lombok.extern.jackson.Jacksonized;
  *         "unlocked": false
  *     }
  * ]
+ * </pre>
  */
 @Value
 @Builder

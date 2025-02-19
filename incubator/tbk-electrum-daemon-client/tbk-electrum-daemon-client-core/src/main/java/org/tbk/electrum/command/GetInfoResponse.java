@@ -6,6 +6,26 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * getinfo: <a href="https://github.com/spesmilo/electrum/blob/4.5.8/electrum/commands.py#L217">electrum/commands.py#L217</a>
+ *
+ * <pre>
+ * ~ $ electrum --regtest getinfo
+ * {
+ *     "auto_connect": true,
+ *     "blockchain_height": -1,
+ *     "connected": false,
+ *     "default_wallet": "/home/electrum/.electrum/regtest/wallets/default_wallet",
+ *     "fee_per_kb": 150000,
+ *     "network": "regtest",
+ *     "path": "/home/electrum/.electrum/regtest",
+ *     "server": "host.testcontainers.internal",
+ *     "server_height": 0,
+ *     "spv_nodes": 0,
+ *     "version": "4.5.8"
+ * }
+ * </pre>
+ */
 @Value
 @Builder
 @Jacksonized
