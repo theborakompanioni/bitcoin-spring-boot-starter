@@ -1,16 +1,16 @@
 package org.tbk.electrum;
 
+import com.github.arteam.simplejsonrpc.client.exception.JsonRpcException;
+import com.github.arteam.simplejsonrpc.core.domain.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.electrum.command.DaemonLoadWalletParams;
 import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.Balance;
@@ -93,8 +93,22 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testMakeSeed() {
+        List<String> result = sut.createMnemonicSeed();
+
+        assertThat(result, hasSize(12));
+    }
+
+    @Test
+    void testGetSeed() {
+        List<String> result = sut.getMnemonicSeed(null);
+
+        assertThat(String.join(" ", result), is("truth fever mom transfer steak immense lake jacket glide bring fancy electric"));
+    }
+
+    @Test
     void testListWallets() {
-        List<ListWalletEntry> wallets = sut.listWallets();
+        List<ListWalletEntry> wallets = sut.listOpenWallets();
         assertThat(wallets, hasSize(1));
 
         ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
@@ -104,6 +118,25 @@ class ElectrumDaemonClientContainerTest {
         assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(false));
     }
 
+    @Test
+    void testLoadWallet() {
+        boolean result = sut.loadWallet(DaemonLoadWalletParams.builder().build());
+
+        assertThat(result, is(true));
+    }
+
+    @Test
+    void testLoadWalletError() {
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.loadWallet(DaemonLoadWalletParams.builder()
+                    .walletPath("/not/existing/wallet")
+                    .build());
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getCode(), is(2));
+        assertThat(error.getMessage(), is("internal error while executing RPC"));
+    }
 
     @Test
     void testWalletSynchronized() {

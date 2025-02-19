@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class DaemonLoadWalletRequest {
+public class DaemonLoadWalletParams {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")
@@ -16,4 +16,12 @@ public class DaemonLoadWalletRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("password")
     String password;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("unlock")
+    Boolean unlock;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("forgetconfig")
+    Boolean forgetconfig;
 }

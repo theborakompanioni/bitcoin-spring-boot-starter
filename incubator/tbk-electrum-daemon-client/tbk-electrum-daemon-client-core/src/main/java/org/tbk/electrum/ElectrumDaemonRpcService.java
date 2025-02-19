@@ -62,6 +62,14 @@ import java.util.List;
 public interface ElectrumDaemonRpcService {
 
     /**
+     * Stop daemon
+     *
+     * @return "Daemon stopped" string
+     */
+    @JsonRpcMethod("stop")
+    String stop();
+
+    /**
      * Returns the version of Electrum that is currently running.
      *
      * @return the version of Electrum that is currently running
@@ -76,6 +84,26 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("make_seed")
     String makeseed();
+
+    /**
+     * Generates a new seed. Does not change the current seed.
+     *
+     * @param seed_type The type of seed to create, e.g. 'standard' or 'segwit'
+     * @return a new seed
+     */
+    @JsonRpcMethod("make_seed")
+    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seed_type);
+
+    /**
+     * Generates a new seed. Does not change the current seed.
+     *
+     * @param seed_type The type of seed to create, e.g. 'standard' or 'segwit'
+     * @param language  Default language for wordlist
+     * @return a new seed
+     */
+    @JsonRpcMethod("make_seed")
+    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seed_type,
+                    @JsonRpcOptional @JsonRpcParam("language") String language);
 
     /**
      * Return the wallet’s mnemonic seed.
@@ -180,6 +208,16 @@ public interface ElectrumDaemonRpcService {
                                    @JsonRpcParam("from_height") long fromHeight,
                                    @JsonRpcParam("to_height") long toHeight);
 
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
+                                   @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
+                                   @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight);
+
+    /**
+     * List wallets open in daemon
+     *
+     * @return open wallets in daemon
+     */
     @JsonRpcMethod("list_wallets")
     List<ListWalletEntry> listwallets();
 
@@ -238,7 +276,20 @@ public interface ElectrumDaemonRpcService {
     GetInfoResponse getinfo();
 
     @JsonRpcMethod("load_wallet")
-    Boolean loadwallet(@JsonRpcParam("config_options") DaemonLoadWalletRequest request);
+    Boolean loadwallet();
+
+    /**
+     * Load the wallet in memory
+     * @param wallet_path wallet path
+     * @param password Password
+     * @param unlock Unlock the wallet (store the password in memory)
+     * @param forgetconfig Forget config on exit
+     */
+    @JsonRpcMethod("load_wallet")
+    void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                    @JsonRpcOptional @JsonRpcParam("password") String password,
+                    @JsonRpcOptional @JsonRpcParam("unlock") Boolean unlock,
+                    @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     @JsonRpcMethod("close_wallet")
     Boolean closewallet(@JsonRpcParam("config_options") DaemonCloseWalletRequest request);
@@ -260,10 +311,10 @@ public interface ElectrumDaemonRpcService {
 
     @JsonRpcMethod("payto")
     String payto(@JsonRpcParam("destination") String destination,
-                                 @JsonRpcParam("amount") String amount,
-                                 @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
-                                 @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
-                                 @JsonRpcParam("password") String password);
+                 @JsonRpcParam("amount") String amount,
+                 @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
+                 @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
+                 @JsonRpcParam("password") String password);
 
     @JsonRpcMethod("payto")
     String payto(
@@ -300,7 +351,7 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("signtransaction")
     String signtransaction(@JsonRpcParam("tx") String tx,
-                                           @JsonRpcOptional @JsonRpcParam("password") String password);
+                           @JsonRpcOptional @JsonRpcParam("password") String password);
 
     /**
      * Watch an address. Everytime the address changes, a http POST is sent to the URL.
