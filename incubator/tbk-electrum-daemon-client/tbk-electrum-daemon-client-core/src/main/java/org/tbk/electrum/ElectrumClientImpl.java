@@ -361,7 +361,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public boolean loadWallet(DaemonLoadWalletParams params) {
+    public boolean loadWallet(LoadWalletParams params) {
         delegate.loadwallet(params.getWalletPath(),
                 params.getPassword(),
                 params.getUnlock(),
@@ -371,8 +371,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Boolean closeWallet(DaemonCloseWalletRequest request) {
-        return delegate.closewallet(request);
+    public Boolean closeWallet(CloseWalletParams params) {
+        return delegate.closewallet(params.getWalletPath(), params.getForgetconfig());
     }
 
     @Override
