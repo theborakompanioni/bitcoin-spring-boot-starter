@@ -2,8 +2,8 @@ package org.tbk.electrum;
 
 import lombok.Builder;
 import lombok.Value;
-import org.tbk.electrum.command.DaemonCloseWalletRequest;
-import org.tbk.electrum.command.DaemonLoadWalletParams;
+import org.tbk.electrum.command.CloseWalletParams;
+import org.tbk.electrum.command.LoadWalletParams;
 import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.*;
@@ -58,9 +58,9 @@ public interface ElectrumClient {
 
     GetInfoResponse getInfo();
 
-    boolean loadWallet(DaemonLoadWalletParams request);
+    boolean loadWallet(LoadWalletParams request);
 
-    Boolean closeWallet(DaemonCloseWalletRequest request);
+    Boolean closeWallet(CloseWalletParams request);
 
     List<String> getMnemonicSeed(String walletPassphrase);
 

@@ -1,5 +1,7 @@
 package org.tbk.electrum;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.arteam.simplejsonrpc.client.JsonRpcId;
 import com.github.arteam.simplejsonrpc.client.JsonRpcParams;
 import com.github.arteam.simplejsonrpc.client.ParamsType;
@@ -291,8 +293,21 @@ public interface ElectrumDaemonRpcService {
                     @JsonRpcOptional @JsonRpcParam("unlock") Boolean unlock,
                     @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
+    /**
+     * Close wallet
+     */
     @JsonRpcMethod("close_wallet")
-    Boolean closewallet(@JsonRpcParam("config_options") DaemonCloseWalletRequest request);
+    Boolean closewallet();
+
+    /**
+     * Close wallet
+     * @param wallet_path wallet path
+     * @param forgetconfig Forget config on exit
+     */
+    @JsonRpcMethod("close_wallet")
+    Boolean closewallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                        @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
+
 
     @JsonRpcMethod("getconfig")
     @Nullable

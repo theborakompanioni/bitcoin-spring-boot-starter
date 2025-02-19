@@ -10,7 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.command.DaemonLoadWalletParams;
+import org.tbk.electrum.command.CloseWalletParams;
+import org.tbk.electrum.command.LoadWalletParams;
 import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.Balance;
@@ -54,6 +55,16 @@ class ElectrumDaemonClientContainerTest {
 
     @Autowired(required = false)
     private ElectrumClient sut;
+
+    @BeforeEach
+    void tryLoadWallet() {
+        try {
+            log.trace("Load wallet before test case");
+            sut.loadWallet(LoadWalletParams.builder().build());
+        } catch (Exception e) {
+            log.warn("Could not load wallet");
+        }
+    }
 
     @Test
     @Order(1)
@@ -120,7 +131,7 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testLoadWallet() {
-        boolean result = sut.loadWallet(DaemonLoadWalletParams.builder().build());
+        boolean result = sut.loadWallet(LoadWalletParams.builder().build());
 
         assertThat(result, is(true));
     }
@@ -128,7 +139,27 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testLoadWalletError() {
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
-            sut.loadWallet(DaemonLoadWalletParams.builder()
+            sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath("/not/existing/wallet")
+                    .build());
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getCode(), is(2));
+        assertThat(error.getMessage(), is("internal error while executing RPC"));
+    }
+
+    @Test
+    void testCloseWallet() {
+        boolean result = sut.closeWallet(CloseWalletParams.builder().build());
+
+        assertThat(result, is(true));
+    }
+
+    @Test
+    void testCloseWalletError() {
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.closeWallet(CloseWalletParams.builder()
                     .walletPath("/not/existing/wallet")
                     .build());
         });
@@ -186,6 +217,19 @@ class ElectrumDaemonClientContainerTest {
         assertThat(balance.getConfirmed(), is(notNullValue()));
         assertThat(balance.getSpendable(), is(notNullValue()));
         assertThat(balance.getUnmatured(), is(notNullValue()));
+    }
+
+    @Test
+    void testGetBalanceError() {
+        sut.closeWallet(CloseWalletParams.builder().build());
+
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.getBalance();
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getCode(), is(1));
+        assertThat(error.getMessage(), is("wallet not loaded"));
     }
 
     @Test
