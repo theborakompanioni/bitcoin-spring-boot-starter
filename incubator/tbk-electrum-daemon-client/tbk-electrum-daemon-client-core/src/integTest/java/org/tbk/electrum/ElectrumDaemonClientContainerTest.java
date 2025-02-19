@@ -10,10 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.command.CloseWalletParams;
-import org.tbk.electrum.command.LoadWalletParams;
-import org.tbk.electrum.command.GetInfoResponse;
-import org.tbk.electrum.command.ListWalletEntry;
+import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.Version;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
@@ -158,15 +155,11 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testCloseWalletError() {
-        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
-            sut.closeWallet(CloseWalletParams.builder()
-                    .walletPath("/not/existing/wallet")
-                    .build());
-        });
+        Boolean success = sut.closeWallet(CloseWalletParams.builder()
+                .walletPath("/not/existing/wallet")
+                .build());
 
-        ErrorMessage error = e.getErrorMessage();
-        assertThat(error.getCode(), is(2));
-        assertThat(error.getMessage(), is("internal error while executing RPC"));
+        assertThat(success, is(false));
     }
 
     @Test
@@ -177,6 +170,19 @@ class ElectrumDaemonClientContainerTest {
                 .blockFirst(Duration.ofSeconds(10));
 
         assertThat("wallet is synchronized", walletSynchronized, is(true));
+    }
+
+    @Test
+    void testWalletSynchronizedError() {
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.isWalletSynchronized(IsSynchronizedParams.builder()
+                    .walletPath("/not/existing/wallet")
+                    .build());
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getCode(), is(2));
+        assertThat(error.getMessage(), is("internal error while executing RPC"));
     }
 
     @Test
