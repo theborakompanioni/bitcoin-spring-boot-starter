@@ -141,6 +141,11 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
+    public Boolean isWalletSynchronized(IsSynchronizedParams params) {
+        return delegate.issynchronized(params.getWalletPath(), params.getForgetconfig());
+    }
+
+    @Override
     public Balance getBalance() {
         BalanceResponse balance = delegate.getbalance();
 

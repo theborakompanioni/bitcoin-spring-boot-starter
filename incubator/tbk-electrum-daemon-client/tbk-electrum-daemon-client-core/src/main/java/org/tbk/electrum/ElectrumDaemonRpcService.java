@@ -121,6 +121,17 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("is_synchronized")
     Boolean issynchronized();
 
+    /**
+     * return wallet synchronization status
+     *
+     * @param wallet_path  wallet path
+     * @param forgetconfig Forget config on exit
+     * @return wallet synchronization status
+     */
+    @JsonRpcMethod("is_synchronized")
+    Boolean issynchronized(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                           @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
+
     @JsonRpcMethod("getbalance")
     BalanceResponse getbalance();
 

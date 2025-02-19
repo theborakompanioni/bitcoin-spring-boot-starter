@@ -2,10 +2,7 @@ package org.tbk.electrum;
 
 import lombok.Builder;
 import lombok.Value;
-import org.tbk.electrum.command.CloseWalletParams;
-import org.tbk.electrum.command.LoadWalletParams;
-import org.tbk.electrum.command.GetInfoResponse;
-import org.tbk.electrum.command.ListWalletEntry;
+import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
@@ -23,6 +20,8 @@ public interface ElectrumClient {
     List<String> createMnemonicSeed();
 
     Boolean isWalletSynchronized();
+
+    Boolean isWalletSynchronized(IsSynchronizedParams params);
 
     List<ListWalletEntry> listOpenWallets();
 
