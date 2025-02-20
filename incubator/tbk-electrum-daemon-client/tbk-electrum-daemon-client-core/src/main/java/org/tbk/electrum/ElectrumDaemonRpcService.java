@@ -88,7 +88,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Generates a new seed. Does not change the current seed.
      *
-     * @param seed_type The type of seed to create, e.g. 'standard' or 'segwit'
+     * @param seed_type the type of seed to create, e.g. 'standard' or 'segwit'
      * @return a new seed
      */
     @JsonRpcMethod("make_seed")
@@ -97,8 +97,8 @@ public interface ElectrumDaemonRpcService {
     /**
      * Generates a new seed. Does not change the current seed.
      *
-     * @param seed_type The type of seed to create, e.g. 'standard' or 'segwit'
-     * @param language  Default language for wordlist
+     * @param seed_type the type of seed to create, e.g. 'standard' or 'segwit'
+     * @param language  default language for wordlist
      * @return a new seed
      */
     @JsonRpcMethod("make_seed")
@@ -108,9 +108,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Return the wallet’s mnemonic seed.
      *
-     * @param password Password
+     * @param password     wallet password
      * @param wallet_path  wallet path
-     * @param forgetconfig Forget config on exit
+     * @param forgetconfig forget config on exit
      * @return the wallet's mnemonic seed
      */
     @JsonRpcMethod("getseed")
@@ -130,7 +130,7 @@ public interface ElectrumDaemonRpcService {
      * return wallet synchronization status
      *
      * @param wallet_path  wallet path
-     * @param forgetconfig Forget config on exit
+     * @param forgetconfig forget config on exit
      * @return wallet synchronization status
      */
     @JsonRpcMethod("is_synchronized")
@@ -144,7 +144,7 @@ public interface ElectrumDaemonRpcService {
      * Return the balance of your wallet.
      *
      * @param wallet_path  wallet path
-     * @param forgetconfig Forget config on exit
+     * @param forgetconfig forget config on exit
      * @return wallet balance
      */
     @JsonRpcMethod("getbalance")
@@ -152,13 +152,17 @@ public interface ElectrumDaemonRpcService {
                                @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
-     * Returns true if the address belongs to the wallet, or false otherwise.
+     * Check if address is in wallet.
      *
-     * @param address the wallet address
+     * @param address      the wallet address
+     * @param wallet_path  wallet path
+     * @param forgetconfig forget config on exit
      * @return true if the address belongs to the wallet, or false otherwise
      */
     @JsonRpcMethod("ismine")
-    Boolean ismine(@JsonRpcParam("address") String address);
+    Boolean ismine(@JsonRpcParam("address") String address,
+                   @JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                   @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
      * Returns a list of addresses controlled by the wallet.
@@ -302,9 +306,9 @@ public interface ElectrumDaemonRpcService {
      * Load the wallet in memory
      *
      * @param wallet_path  wallet path
-     * @param password     Password
-     * @param unlock       Unlock the wallet (store the password in memory)
-     * @param forgetconfig Forget config on exit
+     * @param password     wallet password
+     * @param unlock       unlock the wallet (store the password in memory)
+     * @param forgetconfig forget config on exit
      */
     @JsonRpcMethod("load_wallet")
     void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
@@ -322,7 +326,7 @@ public interface ElectrumDaemonRpcService {
      * Close wallet
      *
      * @param wallet_path  wallet path
-     * @param forgetconfig Forget config on exit
+     * @param forgetconfig forget config on exit
      */
     @JsonRpcMethod("close_wallet")
     Boolean closewallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
