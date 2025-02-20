@@ -136,6 +136,17 @@ public interface ElectrumDaemonRpcService {
     BalanceResponse getbalance();
 
     /**
+     * Return the balance of your wallet.
+     *
+     * @param wallet_path  wallet path
+     * @param forgetconfig Forget config on exit
+     * @return wallet balance
+     */
+    @JsonRpcMethod("getbalance")
+    BalanceResponse getbalance(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                               @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
+
+    /**
      * Returns true if the address belongs to the wallet, or false otherwise.
      *
      * @param address the wallet address
