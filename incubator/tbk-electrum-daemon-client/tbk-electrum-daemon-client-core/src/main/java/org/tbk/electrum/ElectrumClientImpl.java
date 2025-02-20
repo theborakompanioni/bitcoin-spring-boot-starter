@@ -195,8 +195,10 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Boolean isOwnerOfAddress(String address) {
-        return delegate.ismine(address);
+    public Boolean isOwnerOfAddress(IsMineParams params) {
+        return delegate.ismine(params.getAddress(),
+                params.getWalletPath(),
+                params.getForgetconfig());
     }
 
     @Override

@@ -39,7 +39,13 @@ public interface ElectrumClient {
 
     List<String> listAddressesUnfunded();
 
-    Boolean isOwnerOfAddress(String address);
+    default Boolean isOwnerOfAddress(String address) {
+        return isOwnerOfAddress(IsMineParams.builder()
+                .address(address)
+                .build());
+    }
+
+    Boolean isOwnerOfAddress(IsMineParams params);
 
     Optional<String> getUnusedAddress();
 
