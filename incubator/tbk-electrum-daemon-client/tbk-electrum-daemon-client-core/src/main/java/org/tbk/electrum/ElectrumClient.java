@@ -27,6 +27,8 @@ public interface ElectrumClient {
 
     Balance getBalance();
 
+    Balance getBalance(GetBalanceParams params);
+
     List<String> listAddresses();
 
     List<String> listAddresses(ListAddressOptions options);

@@ -142,8 +142,8 @@ class ElectrumDaemonClientContainerTest {
         });
 
         ErrorMessage error = e.getErrorMessage();
-        assertThat(error.getCode(), is(2));
         assertThat(error.getMessage(), is("internal error while executing RPC"));
+        assertThat(error.getCode(), is(2));
     }
 
     @Test
@@ -181,8 +181,8 @@ class ElectrumDaemonClientContainerTest {
         });
 
         ErrorMessage error = e.getErrorMessage();
-        assertThat(error.getCode(), is(2));
         assertThat(error.getMessage(), is("internal error while executing RPC"));
+        assertThat(error.getCode(), is(2));
     }
 
     @Test
@@ -227,6 +227,19 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testGetBalanceError() {
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.getBalance(GetBalanceParams.builder()
+                    .walletPath("/not/existing/wallet")
+                    .build());
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getMessage(), is("internal error while executing RPC"));
+        assertThat(error.getCode(), is(2));
+    }
+
+    @Test
+    void testGetBalanceErrorWalletNotLoaded() {
         sut.closeWallet(CloseWalletParams.builder().build());
 
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
@@ -234,8 +247,8 @@ class ElectrumDaemonClientContainerTest {
         });
 
         ErrorMessage error = e.getErrorMessage();
-        assertThat(error.getCode(), is(1));
         assertThat(error.getMessage(), is("wallet not loaded"));
+        assertThat(error.getCode(), is(1));
     }
 
     @Test

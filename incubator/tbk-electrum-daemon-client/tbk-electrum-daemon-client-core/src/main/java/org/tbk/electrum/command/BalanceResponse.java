@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Value
@@ -17,11 +18,17 @@ public class BalanceResponse {
     @JsonProperty("confirmed")
     String confirmed;
 
+    @Nullable
     @JsonProperty("unconfirmed")
     String unconfirmed;
 
+    @Nullable
     @JsonProperty("unmatured")
     String unmatured;
+
+    @Nullable
+    @JsonProperty("lightning")
+    String lightning;
 
     public Optional<String> getUnconfirmed() {
         return Optional.ofNullable(unconfirmed);
@@ -29,5 +36,8 @@ public class BalanceResponse {
 
     public Optional<String> getUnmatured() {
         return Optional.ofNullable(unmatured);
+    }
+    public Optional<String> getLightning() {
+        return Optional.ofNullable(lightning);
     }
 }

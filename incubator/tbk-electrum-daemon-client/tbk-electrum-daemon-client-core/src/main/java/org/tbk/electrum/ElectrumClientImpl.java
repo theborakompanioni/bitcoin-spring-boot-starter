@@ -147,17 +147,15 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Balance getBalance() {
-        BalanceResponse balance = delegate.getbalance();
+        return SimpleBalance.from(delegate.getbalance());
+    }
 
-        return SimpleBalance.builder()
-                .confirmed(BtcTxoValues.fromBtcString(balance.getConfirmed()))
-                .unconfirmed(balance.getUnconfirmed()
-                        .map(BtcTxoValues::fromBtcString)
-                        .orElseGet(SimpleTxoValue::zero))
-                .unmatured(balance.getUnmatured()
-                        .map(BtcTxoValues::fromBtcString)
-                        .orElseGet(SimpleTxoValue::zero))
-                .build();
+    @Override
+    public Balance getBalance(GetBalanceParams params) {
+        return SimpleBalance.from(delegate.getbalance(
+                params.getWalletPath(),
+                params.getForgetconfig()
+        ));
     }
 
     /**
