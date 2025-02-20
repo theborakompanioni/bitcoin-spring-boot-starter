@@ -109,7 +109,7 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testGetSeed() {
-        List<String> result = sut.getMnemonicSeed(null);
+        List<String> result = sut.getMnemonicSeed(GetSeedParams.builder().build());
 
         assertThat(String.join(" ", result), is("truth fever mom transfer steak immense lake jacket glide bring fancy electric"));
     }

@@ -1,6 +1,5 @@
 package org.tbk.electrum;
 
-import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -19,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 public class ElectrumClientImpl implements ElectrumClient {
 
     private static List<String> splitMnemonicSeed(String seed) {
-        return ImmutableList.copyOf(seed.split(" "));
+        return Arrays.asList(seed.split(" "));
     }
 
     private final ElectrumDaemonRpcService delegate;
@@ -132,7 +131,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public List<String> createMnemonicSeed() {
-        return ImmutableList.copyOf(delegate.makeseed().split(" "));
+        return Arrays.asList(delegate.makeseed().split(" "));
     }
 
     @Override
@@ -379,8 +378,10 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public List<String> getMnemonicSeed(String walletPassphrase) {
-        String getseed = delegate.getseed(walletPassphrase);
+    public List<String> getMnemonicSeed(GetSeedParams params) {
+        String getseed = delegate.getseed(params.getPassword(),
+                params.getWalletPath(),
+                params.getForgetconfig());
 
         boolean seedIsAbsent = getseed == null || getseed.isEmpty();
         if (seedIsAbsent) {

@@ -108,10 +108,15 @@ public interface ElectrumDaemonRpcService {
     /**
      * Return the wallet’s mnemonic seed.
      *
+     * @param password Password
+     * @param wallet_path  wallet path
+     * @param forgetconfig Forget config on exit
      * @return the wallet's mnemonic seed
      */
     @JsonRpcMethod("getseed")
-    String getseed(@JsonRpcOptional @JsonRpcParam("password") String password);
+    String getseed(@JsonRpcOptional @JsonRpcParam("password") String password,
+                   @JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                   @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
      * return wallet synchronization status

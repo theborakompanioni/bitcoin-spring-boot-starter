@@ -19,6 +19,8 @@ public interface ElectrumClient {
 
     List<String> createMnemonicSeed();
 
+    List<String> getMnemonicSeed(GetSeedParams params);
+
     Boolean isWalletSynchronized();
 
     Boolean isWalletSynchronized(IsSynchronizedParams params);
@@ -62,8 +64,6 @@ public interface ElectrumClient {
     boolean loadWallet(LoadWalletParams request);
 
     Boolean closeWallet(CloseWalletParams request);
-
-    List<String> getMnemonicSeed(String walletPassphrase);
 
     Optional<Object> daemonGetConfig(ConfigKey key);
 
