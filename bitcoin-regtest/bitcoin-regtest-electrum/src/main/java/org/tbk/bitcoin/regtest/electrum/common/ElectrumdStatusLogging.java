@@ -35,13 +35,13 @@ public final class ElectrumdStatusLogging {
 
     public static void logStatus(ElectrumClient electrumClient) {
         try {
-            GetInfoResponse daemonStatusResponse = electrumClient.getInfo();
+            GetInfoResponse info = electrumClient.getInfo();
             Boolean walletSynchronized = electrumClient.isWalletSynchronized();
 
             log.info("============================");
-            log.info("Electrum Daemon ({}) Status", daemonStatusResponse.getVersion());
-            log.info("Connected: {}", daemonStatusResponse.isConnected());
-            log.info("Blockheight: {}/{}", daemonStatusResponse.getBlockchainHeight(), daemonStatusResponse.getServerHeight());
+            log.info("Electrum Daemon ({}) Status", info.getVersion());
+            log.info("Connected: {}", info.isConnected());
+            log.info("Blockheight: {}/{}", info.getBlockchainHeight(), info.getServerHeight());
             log.info("Wallet synchronized: {}", walletSynchronized);
             if (Boolean.TRUE.equals(walletSynchronized)) {
                 History history = electrumClient.getHistory();

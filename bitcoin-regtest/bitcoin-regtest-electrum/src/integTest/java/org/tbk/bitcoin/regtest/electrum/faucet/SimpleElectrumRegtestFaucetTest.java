@@ -88,6 +88,26 @@ class SimpleElectrumRegtestFaucetTest {
     }
 
     @Test
+    void itShouldValidateMinAmount() {
+        IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1000).minus(Coin.SATOSHI))
+                    .block(Duration.ofSeconds(3));
+        });
+
+        assertThat(e.getMessage(), is("Cannot request less than 0.00001 BTC from this faucet - got 0.00000999 BTC"));
+    }
+
+    @Test
+    void itShouldValidateMaxAmount() {
+        IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.COIN.multiply(100).plus(Coin.SATOSHI))
+                    .block(Duration.ofSeconds(3));
+        });
+
+        assertThat(e.getMessage(), is("Cannot request more than 100.00 BTC from this faucet - got 100.00000001 BTC"));
+    }
+
+    @Test
     @Order(1001)
     void itShouldSendRequestedBitcoinToAddress() {
         Stopwatch sw = Stopwatch.createStarted();
@@ -108,7 +128,7 @@ class SimpleElectrumRegtestFaucetTest {
 
     @Test
     @Order(1002)
-    void itShouldSendRequestedBitcoinToMultipleAddressesWithoutNeedingNewCoinbaseRewardsInbetween() {
+    void itShouldSendRequestedBitcoinToMultipleAddressesWithoutNeedingNewCoinbaseRewardsInBetween() {
         Stopwatch sw = Stopwatch.createStarted();
 
         // if this test is called in isolation, this request will trigger the faucet to mine some blocks
