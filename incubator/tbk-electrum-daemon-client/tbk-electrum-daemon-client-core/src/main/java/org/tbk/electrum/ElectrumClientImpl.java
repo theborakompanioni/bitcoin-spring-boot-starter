@@ -28,11 +28,6 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Version daemonVersion() {
-        return SimpleVersion.from(delegate.version());
-    }
-
-    @Override
     public Optional<Object> daemonGetConfig(ConfigKey key) {
         return Optional.ofNullable(delegate.getconfig(key.name()));
     }
@@ -425,6 +420,16 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public List<String> getPublicKeys(String address) {
         return this.delegate.getpubkeys(address);
+    }
+
+    @Override
+    public Version daemonVersion() {
+        return SimpleVersion.from(delegate.version());
+    }
+
+    @Override
+    public Map<String, String> daemonVersionInfo() {
+        return delegate.versioninfo();
     }
 
     private RawTx createTransactionInternal(String amountAsBtcString,

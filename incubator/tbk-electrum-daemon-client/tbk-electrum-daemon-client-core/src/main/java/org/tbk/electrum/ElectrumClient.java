@@ -7,6 +7,7 @@ import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ElectrumClient {
@@ -14,8 +15,6 @@ public interface ElectrumClient {
     default boolean isDaemonConnected() {
         return this.getInfo().isConnected();
     }
-
-    Version daemonVersion();
 
     List<String> createMnemonicSeed();
 
@@ -114,6 +113,10 @@ public interface ElectrumClient {
     String signMessage(String address, String message, @Nullable String walletPassphrase);
 
     Boolean verifyMessage(String address, String signature, String message);
+
+    Version daemonVersion();
+
+    Map<String, String> daemonVersionInfo();
 
     @Value
     @Builder

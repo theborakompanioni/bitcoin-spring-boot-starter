@@ -21,6 +21,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -76,13 +77,6 @@ class ElectrumDaemonClientContainerTest {
 
         Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(electrumDaemonContainer).block();
         assertThat("container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
-    }
-
-    @Test
-    void testDaemonVersion() {
-        Version version = sut.daemonVersion();
-
-        assertThat(version.getVersion(), is(not(emptyOrNullString())));
     }
 
     @Test
@@ -289,5 +283,18 @@ class ElectrumDaemonClientContainerTest {
         assertThat(decryptedMessage, is(message));
     }
 
+    @Test
+    void testDaemonVersion() {
+        Version version = sut.daemonVersion();
+
+        assertThat(version.getVersion(), is(not(emptyOrNullString())));
+    }
+
+    @Test
+    void testDaemonVersionInfo() {
+        Map<String, String> versionInfo = sut.daemonVersionInfo();
+
+        assertThat(versionInfo, is(notNullValue()));
+    }
 }
 

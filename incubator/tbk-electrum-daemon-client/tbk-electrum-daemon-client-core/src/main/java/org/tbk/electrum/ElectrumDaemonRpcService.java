@@ -13,6 +13,7 @@ import org.tbk.electrum.model.History;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a raw electrum rpc interfaces.
@@ -22,39 +23,109 @@ import java.util.List;
  * <p>This interface is tested with electrum v3.3.8.
  *
  * <p>Not every parameter is currently implemented.
- *
- * <p>Following methods are still missing to be feature-complete:
- * [ ] "addrequest",
- * [ ] "addtransaction",
- * [ ] "clearrequests",
- * [ ] "commands",
- * [ ] "create",
- * [ ] "createmultisig",
- * [ ] "freeze",
- * [ ] "getalias",
- * [ ] "getfeerate",
- * [ ] "getmasterprivate",
- * [ ] "getmerkle",
- * [ ] "getmpk",
- * [ ] "getprivatekeys",
- * [ ] "getrequest",
- * [ ] "getservers",
- * [ ] "help",
- * [ ] "importprivkey",
- * [ ] "listcontacts",
- * [ ] "listrequests",
- * [ ] "listunspent",
- * [ ] "password",
- * [ ] "paytomany",
- * [ ] "restore",
- * [ ] "rmrequest",
- * [ ] "searchcontacts",
- * [ ] "serialize",
- * [ ] "setlabel",
- * [ ] "signrequest",
- * [ ] "sweep",
- * [ ] "unfreeze",
- * [ ] "validateaddress",
+ * <p>`electrum --regtest help`:
+ * [
+ * "add_peer",
+ * "add_request",
+ * "addtransaction",
+ * "broadcast",
+ * "bumpfee",
+ * "changegaplimit",
+ * "clear_invoices",
+ * "clear_ln_blacklist",
+ * "clear_requests",
+ * "close_channel",
+ * "close_wallet",
+ * "commands",
+ * "convert_currency",
+ * "convert_xkey",
+ * "create",
+ * "createmultisig",
+ * "createnewaddress",
+ * "decode_invoice",
+ * "decrypt",
+ * "delete_invoice",
+ * "delete_request",
+ * "deserialize",
+ * "dumpprivkeys",
+ * "enable_htlc_settle",
+ * "encrypt",
+ * "export_channel_backup",
+ * "freeze",
+ * "freeze_utxo",
+ * "get",
+ * "get_channel_ctx",
+ * "get_invoice",
+ * "get_request",
+ * "get_tx_status",
+ * "get_watchtower_ctn",
+ * "getaddressbalance",
+ * "getaddresshistory",
+ * "getaddressunspent",
+ * "getalias",
+ * "getbalance",
+ * "getconfig",
+ * "getfeerate",
+ * "getinfo",
+ * "getmasterprivate",
+ * "getmerkle",
+ * "getminacceptablegap",
+ * "getmpk",
+ * "getprivatekeyforpath",
+ * "getprivatekeys",
+ * "getpubkeys",
+ * "getseed",
+ * "getservers",
+ * "gettransaction",
+ * "getunusedaddress",
+ * "help",
+ * "import_channel_backup",
+ * "importprivkey",
+ * "is_synchronized",
+ * "ismine",
+ * "lightning_history",
+ * "list_channels",
+ * "list_invoices",
+ * "list_peers",
+ * "list_requests",
+ * "list_wallets",
+ * "listaddresses",
+ * "listcontacts",
+ * "listunspent",
+ * "lnpay",
+ * "load_wallet",
+ * "make_seed",
+ * "nodeid",
+ * "normal_swap",
+ * "notify",
+ * "onchain_history",
+ * "open_channel",
+ * "password",
+ * "payto",
+ * "paytomany",
+ * "rebalance_channels",
+ * "removelocaltx",
+ * "request_force_close",
+ * "reset_liquidity_hints",
+ * "restore",
+ * "reverse_swap",
+ * "searchcontacts",
+ * "serialize",
+ * "setconfig",
+ * "setfeerate",
+ * "setlabel",
+ * "signmessage",
+ * "signtransaction",
+ * "signtransaction_with_privkey",
+ * "stop",
+ * "sweep",
+ * "unfreeze",
+ * "unfreeze_utxo",
+ * "validateaddress",
+ * "verifymessage",
+ * "version",
+ * "version_info"
+ * ]
  */
 @JsonRpcService
 @JsonRpcId(AtomicLongIdGenerator.class)
@@ -68,14 +139,6 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("stop")
     String stop();
-
-    /**
-     * Returns the version of Electrum that is currently running.
-     *
-     * @return the version of Electrum that is currently running
-     */
-    @JsonRpcMethod("version")
-    String version();
 
     /**
      * Generates a new seed. Does not change the current seed.
@@ -465,4 +528,42 @@ public interface ElectrumDaemonRpcService {
     Boolean verifymessage(@JsonRpcParam("address") String address,
                           @JsonRpcParam("signature") String signature,
                           @JsonRpcParam("message") String message);
+
+    /**
+     * Returns the version of Electrum that is currently running.
+     *
+     * @return the version of Electrum that is currently running
+     */
+    @JsonRpcMethod("version")
+    String version();
+
+    /**
+     * Return information about dependencies, such as their version and path.
+     * <p>
+     * Example:
+     * <code>
+     * {
+     * "aiohttp.version": "3.11.12",
+     * "aiorpcx.version": "0.23.1",
+     * "certifi.version": "2025.01.31",
+     * "cryptodome.version": null,
+     * "cryptography.path": "/usr/local/lib/python3.9/site-packages/cryptography",
+     * "cryptography.version": "44.0.1",
+     * "dnspython.version": "2.7.0",
+     * "electrum.path": "/usr/local/lib/python3.9/site-packages/electrum",
+     * "electrum.version": "4.5.8",
+     * "hidapi.version": null,
+     * "libsecp256k1.path": "libsecp256k1.so.2",
+     * "libusb.version": null,
+     * "libzbar.path": null,
+     * "pyaes.version": null,
+     * "python.path": "/usr/local/bin/python3.9",
+     * "python.version": "3.9.21 (main, Feb 14 2025, 19:14:18) \n[GCC 14.2.0]"
+     * }
+     * </code>
+     *
+     * @return information about dependencies
+     */
+    @JsonRpcMethod("version_info")
+    Map<String, String> versioninfo();
 }
