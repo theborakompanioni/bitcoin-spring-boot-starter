@@ -72,8 +72,12 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
                 log.trace("         {} incoming", friendlyBtcString(summary.getOutgoing()));
             }
 
-            RawTx unsignedTransaction = client.delegate().createUnsignedTransaction(SimpleTxoValue.of(amount.getValue()),
-                    address.toString(), changeAddress.toString(), SimpleTxoValue.of(txFee.getValue()));
+            RawTx unsignedTransaction = client.delegate().createUnsignedTransaction(
+                    SimpleTxoValue.of(amount.getValue()),
+                    address.toString(),
+                    changeAddress.toString(),
+                    SimpleTxoValue.of(txFee.getValue())
+            );
 
             RawTx rawTx = client.delegate().signTransaction(unsignedTransaction, null);
 

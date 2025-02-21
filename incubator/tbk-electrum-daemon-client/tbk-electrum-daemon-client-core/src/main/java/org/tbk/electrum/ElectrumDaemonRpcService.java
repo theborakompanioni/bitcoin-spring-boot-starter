@@ -411,10 +411,12 @@ public interface ElectrumDaemonRpcService {
             @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
             @JsonRpcOptional @JsonRpcParam("nocheck") Boolean nocheck, // untested atm
             @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
-            @JsonRpcOptional @JsonRpcParam("addtransaction") Object addtransaction, // untested atm
             @JsonRpcOptional @JsonRpcParam("rbf") Boolean rbf,
+            @JsonRpcOptional @JsonRpcParam("locktime") Long locktime, // untested atm
+            @JsonRpcOptional @JsonRpcParam("addtransaction") Object addtransaction, // untested atm
             @JsonRpcOptional @JsonRpcParam("password") String password,
-            @JsonRpcOptional @JsonRpcParam("locktime") Long locktime // untested atm
+            @JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+            @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig
     );
 
     /**

@@ -78,6 +78,8 @@ public interface ElectrumClient {
 
     void daemonSetConfig(ConfigKey key, String value);
 
+    RawTx createTransaction(PaytoParams params);
+
     RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress);
 
     RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress, TxoValue fee);

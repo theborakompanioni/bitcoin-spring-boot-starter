@@ -90,7 +90,7 @@ class SimpleElectrumRegtestFaucetTest {
     @Test
     void itShouldValidateMinAmount() {
         IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1000).minus(Coin.SATOSHI))
+            sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1_000).minus(Coin.SATOSHI))
                     .block(Duration.ofSeconds(3));
         });
 
@@ -133,7 +133,7 @@ class SimpleElectrumRegtestFaucetTest {
 
         // if this test is called in isolation, this request will trigger the faucet to mine some blocks
         // if other test methods run before the faucet will already be in control of enough funds
-        sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1000))
+        sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1_000))
                 .block(Duration.ofSeconds(60));
 
         int blockchainHeightBefore = electrumClient.delegate().getInfo().getBlockchainHeight();
@@ -144,7 +144,7 @@ class SimpleElectrumRegtestFaucetTest {
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress);
         assertThat(balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
 
-        sut.requestBitcoin(() -> destinationAddress, Coin.SATOSHI.multiply(1000))
+        sut.requestBitcoin(() -> destinationAddress, Coin.SATOSHI.multiply(1_000))
                 .repeat(2)
                 .collectList()
                 .block(Duration.ofSeconds(90));
@@ -152,7 +152,7 @@ class SimpleElectrumRegtestFaucetTest {
         log.debug("Finished after {}", sw.stop());
 
         BitcoinjBalance balanceOnDestinationAddress2After = this.electrumClient.getAddressBalance(destinationAddress);
-        assertThat(balanceOnDestinationAddress2After.getTotal(), is(Coin.SATOSHI.multiply(1000).multiply(3)));
+        assertThat(balanceOnDestinationAddress2After.getTotal(), is(Coin.SATOSHI.multiply(1_000).multiply(3)));
 
         int blockchainHeightAfter = electrumClient.delegate().getInfo().getBlockchainHeight();
         assertThat("no additional blocks have been mined to fund the faucet", blockchainHeightAfter, is(blockchainHeightBefore));
