@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-public interface History {
+public interface OnchainHistory {
     Summary getSummary();
 
     List<Transaction> getTransactions();
