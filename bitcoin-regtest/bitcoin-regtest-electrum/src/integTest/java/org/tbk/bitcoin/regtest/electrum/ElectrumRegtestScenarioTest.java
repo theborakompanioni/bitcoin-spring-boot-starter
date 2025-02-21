@@ -109,23 +109,23 @@ class ElectrumRegtestScenarioTest {
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.FIFTY_COINS, address1))
                 .flatMap(balanceOnAddress -> electrumRegtestActions.awaitSpendableBalance(Coin.FIFTY_COINS))
                 // FIRST PAYMENT 1000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(1000L)))
-                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(1000L), address2))
-                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1000L), address2))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(1_000L)))
+                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(1_000L), address2))
+                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1_000L), address2))
                 // SECOND PAYMENT 2000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(2000L)))
-                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(2000L), address2))
-                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(3000L), address2))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(2_000L)))
+                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(2_000L), address2))
+                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(3_000L), address2))
                 // THIRD PAYMENT 3000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(4000L)))
-                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(4000L), address2))
-                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(7000L), address2))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(4_000L)))
+                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(4_000L), address2))
+                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(7_000L), address2))
                 .blockFirst(Duration.ofSeconds(90));
 
         log.debug("Finished after {}", sw.stop());
 
         Coin balanceOnAddress2After = this.electrumClient.getAddressBalance(address2).getTotal();
-        assertThat(balanceOnAddress2After, is(Coin.valueOf(1000 + 2000 + 4000)));
+        assertThat(balanceOnAddress2After, is(Coin.valueOf(1_000 + 2_000 + 4_000)));
         assertThat(amountSentFromAddress1ToAddress2, is(balanceOnAddress2After));
     }
 }

@@ -1,13 +1,10 @@
 package org.tbk.electrum;
 
-import lombok.Builder;
 import lombok.SneakyThrows;
-import lombok.Value;
 import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,50 +35,83 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
+    public RawTx createTransaction(PaytoParams params) {
+        try {
+            String payto = delegate.payto(
+                    params.getDestination(),
+                    params.getAmount(),
+                    params.getFee(),
+                    params.getFeeRate(),
+                    params.getFromAddress(),
+                    params.getFromCoins(),
+                    params.getChangeAddress(),
+                    params.getNoCheck(),
+                    params.getUnsigned(),
+                    params.getReplaceByFee(),
+                    params.getLocktime(),
+                    params.getAddTransaction(),
+                    params.getPassword(),
+                    params.getWalletPath(),
+                    params.getForgetconfig()
+            );
+
+            // payto can be base64 or hex
+            // hex: for finalized tx?
+            // base64: for unsigned tx?
+            byte[] raw = fromHexOrBase64(payto);
+
+            return SimpleRawTx.builder()
+                    .hex(HexFormat.of().formatHex(raw))
+                    .finalized(Boolean.TRUE.equals(params.getUnsigned()))
+                    .complete(Boolean.TRUE.equals(params.getUnsigned()))
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not deserialize request");
+        }
+    }
+
+    @Override
     public RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress) {
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        return this.createTransactionInternal("!", destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .unsigned(true)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount("!")
+                .unsigned(true)
+                .build());
     }
 
     @Override
     public RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress, TxoValue fee) {
         checkArgument(fee != null, "`fee` must not be null");
 
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        return this.createTransactionInternal("!", destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .unsigned(true)
-                        .fee(fee)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount("!")
+                .unsigned(true)
+                .fee(BtcTxoValues.toBtc(fee).toPlainString())
+                .build());
     }
 
     @Override
     public RawTx createUnsignedTransaction(TxoValue value, String destinationAddress, String changeAddress) {
-        String amountAsBtcString = BtcTxoValues.toBtc(value).toPlainString();
-
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        return this.createTransactionInternal(amountAsBtcString, destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .changeAddress(changeAddress)
-                        .unsigned(true)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount(BtcTxoValues.toBtc(value).toPlainString())
+                .unsigned(true)
+                .changeAddress(changeAddress)
+                .build());
     }
 
     @Override
     public RawTx createUnsignedTransaction(TxoValue value, String destinationAddress, String changeAddress, TxoValue fee) {
         checkArgument(fee != null, "`fee` must not be null");
 
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        String amountAsBtcString = BtcTxoValues.toBtc(value).toPlainString();
-        return this.createTransactionInternal(amountAsBtcString, destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .unsigned(true)
-                        .changeAddress(changeAddress)
-                        .fee(fee)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount(BtcTxoValues.toBtc(value).toPlainString())
+                .unsigned(true)
+                .changeAddress(changeAddress)
+                .fee(BtcTxoValues.toBtc(fee).toPlainString())
+                .build());
     }
 
     /**
@@ -106,7 +136,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                 params.getIknowwhatimdoing()
         );
 
-        byte[] raw = parseTransactionResponse(signtransaction);
+        byte[] raw = fromHexOrBase64(signtransaction);
 
         String hex = HexFormat.of().formatHex(raw);
         boolean rawTxHasNotChanged = params.getTx().equals(hex);
@@ -311,7 +341,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     public RawTx getRawTransaction(String txHash) {
         String gettransaction = delegate.gettransaction(txHash);
 
-        byte[] raw = parseTransactionResponse(gettransaction);
+        byte[] raw = fromHexOrBase64(gettransaction);
 
         return SimpleRawTx.builder()
                 .hex(HexFormat.of().formatHex(raw))
@@ -435,76 +465,11 @@ public class ElectrumClientImpl implements ElectrumClient {
         return delegate.versioninfo();
     }
 
-    private RawTx createTransactionInternal(String amountAsBtcString,
-                                            String destinationAddress,
-                                            @Nullable String walletPassphrase,
-                                            ExperimentalCreateTxOptions options) {
-        String feeAsBtcStringOrNull = Optional.ofNullable(options.getFee())
-                .map(BtcTxoValues::toBtc)
-                .map(BigDecimal::toPlainString)
-                .orElse(null);
-
+    private static byte[] fromHexOrBase64(String value) {
         try {
-            String payto = delegate.payto(destinationAddress,
-                    amountAsBtcString,
-                    feeAsBtcStringOrNull,
-                    options.getFeeRate(),
-                    options.getFromAddress(),
-                    options.getFromCoins(),
-                    options.getChangeAddress(),
-                    options.getNoCheck(),
-                    options.getUnsigned(),
-                    options.getAddTransaction(),
-                    options.getReplaceByFee(),
-                    walletPassphrase,
-                    options.getLocktime());
-
-            // payto can be base64 or hex
-            // hex: for finalized tx?
-            // base64: for unsigned tx?
-
-            byte[] raw = parseTransactionResponse(payto);
-
-            return SimpleRawTx.builder()
-                    .hex(HexFormat.of().formatHex(raw))
-                    .finalized(Boolean.TRUE.equals(options.getUnsigned()))
-                    .complete(Boolean.TRUE.equals(options.getUnsigned()))
-                    .build();
+            return HexFormat.of().parseHex(value);
         } catch (Exception e) {
-            throw new IllegalStateException("Could not deserialize request");
+            return Base64.getDecoder().decode(value);
         }
-    }
-
-    private static byte[] parseTransactionResponse(String payto) {
-        try {
-            return HexFormat.of().parseHex(payto);
-        } catch (Exception e) {
-            return Base64.getDecoder().decode(payto);
-        }
-    }
-
-    @Value
-    @Builder
-    private static class ExperimentalCreateTxOptions {
-        @Nullable
-        TxoValue fee;
-        @Nullable
-        Object feeRate; // untested atm
-        @Nullable
-        String fromAddress; // untested atm
-        @Nullable
-        Object fromCoins; // untested atm
-        @Nullable
-        String changeAddress;
-        @Nullable
-        Boolean noCheck; // untested atm
-        @Nullable
-        Boolean unsigned;
-        @Nullable
-        Object addTransaction; // untested atm
-        @Nullable
-        Boolean replaceByFee; // untested atm
-        @Nullable
-        Long locktime; // untested atm
     }
 }
