@@ -21,6 +21,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -194,6 +195,14 @@ class ElectrumDaemonClientContainerTest {
         String addressNotControlledByWallet = "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j";
         Boolean ownerOfAddress2 = sut.isOwnerOfAddress(addressNotControlledByWallet);
         assertThat("address is not controlled by wallet", ownerOfAddress2, is(false));
+    }
+
+    @Test
+    void testGetUnusedAddress() {
+        Optional<String> unusedAddressOrEmpty = this.sut.getUnusedAddress();
+        String unusedAddress = unusedAddressOrEmpty.orElseThrow();
+
+        assertThat(unusedAddress, startsWith("bcrt1"));
     }
 
     @Test
