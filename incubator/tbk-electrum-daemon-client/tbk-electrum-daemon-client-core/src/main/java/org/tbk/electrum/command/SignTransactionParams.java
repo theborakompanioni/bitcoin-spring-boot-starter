@@ -24,7 +24,7 @@ public class SignTransactionParams {
     String password;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("wallet_path")
+    @JsonProperty("wallet")
     String walletPath;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
