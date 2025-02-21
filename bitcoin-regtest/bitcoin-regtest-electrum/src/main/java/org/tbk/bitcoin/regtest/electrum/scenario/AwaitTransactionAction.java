@@ -80,7 +80,7 @@ public final class AwaitTransactionAction implements RegtestAction<History.Trans
                     .doOnNext(it -> log.trace("Waiting for tx {} to be processed by electrum.. ({} attempt)", this.txHash, it))
                     .flatMapIterable(it -> this.client.getHistory().getTransactions())
                     .filter(it -> this.txHash.toString().equalsIgnoreCase(it.getTxHash()))
-                    .filter(it -> this.confirmations <= it.getConfirmations())
+                    .filter(it -> it.getConfirmations() >= this.confirmations)
                     .blockFirst(this.timeout);
 
             requireNonNull(broadcastedTx, "electrum could not processes transaction in time");

@@ -51,7 +51,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
 
         // this "workaround" waits for electrum to finish processing block updates
         // we cannot use something like "awaitSpendableBalance" to wait here because we do not know
-        // the amount of the current block rewards so we workaround by waiting for an update and then
+        // the amount of the current block rewards so we work around by waiting for an update and then
         // checking if we have enough funds available
         Mono<Integer> awaitBlockchainHeightIncrease = Mono.fromCallable(() -> {
             int currentBlockchainHeight = this.electrumClient.delegate().getInfo().getBlockchainHeight();
