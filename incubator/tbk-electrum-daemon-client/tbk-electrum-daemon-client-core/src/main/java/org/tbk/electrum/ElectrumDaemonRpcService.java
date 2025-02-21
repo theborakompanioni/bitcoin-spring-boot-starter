@@ -186,13 +186,19 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Returns the first unused address of the wallet, or none if all addresses are used.
-     * An address is considered to be used if it has received a transaction, or if it is used in a payment request.
+     * An address is considered to be used if it has received a transaction,
+     * or if it is used in a payment request.
      *
      * @return the first unused address of the wallet, or none if all addresses are used.
      */
     @JsonRpcMethod("getunusedaddress")
     @Nullable
     String getunusedaddress();
+
+    @JsonRpcMethod("getunusedaddress")
+    @Nullable
+    String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                            @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
      * Creates a new receiving address.

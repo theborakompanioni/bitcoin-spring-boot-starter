@@ -202,8 +202,11 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Optional<String> getUnusedAddress() {
-        return Optional.ofNullable(delegate.getunusedaddress());
+    public Optional<String> getUnusedAddress(GetUnusedAddressParams params) {
+        return Optional.ofNullable(delegate.getunusedaddress(
+                params.getWalletPath(),
+                params.getForgetconfig()
+        ));
     }
 
     @Override

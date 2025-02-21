@@ -47,7 +47,11 @@ public interface ElectrumClient {
 
     Boolean isOwnerOfAddress(IsMineParams params);
 
-    Optional<String> getUnusedAddress();
+    default Optional<String> getUnusedAddress() {
+        return getUnusedAddress(GetUnusedAddressParams.builder().build());
+    }
+
+    Optional<String> getUnusedAddress(GetUnusedAddressParams params);
 
     String createNewAddress();
 
