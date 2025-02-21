@@ -7,7 +7,7 @@ import org.bitcoinj.core.Sha256Hash;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.OnchainHistory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public final class AwaitTransactionAction implements RegtestAction<History.Transaction> {
+public final class AwaitTransactionAction implements RegtestAction<OnchainHistory.Transaction> {
     private static final Duration defaultTimeout = Duration.ofSeconds(30);
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final int DEFAULT_CONFIRMATIONS = 0;
@@ -61,11 +61,11 @@ public final class AwaitTransactionAction implements RegtestAction<History.Trans
     }
 
     @Override
-    public void subscribe(Subscriber<? super History.Transaction> s) {
+    public void subscribe(Subscriber<? super OnchainHistory.Transaction> s) {
         create().subscribe(s);
     }
 
-    private Mono<History.Transaction> create() {
+    private Mono<OnchainHistory.Transaction> create() {
         return Mono.fromCallable(() -> {
             Stopwatch sw = Stopwatch.createStarted();
 
@@ -76,9 +76,9 @@ public final class AwaitTransactionAction implements RegtestAction<History.Trans
              */
             log.debug("Poll electrum every {} till tx {} is processed for {}", this.checkInterval, this.txHash, this.timeout);
 
-            History.Transaction broadcastedTx = Flux.interval(this.checkInterval)
+            OnchainHistory.Transaction broadcastedTx = Flux.interval(this.checkInterval)
                     .doOnNext(it -> log.trace("Waiting for tx {} to be processed by electrum.. ({} attempt)", this.txHash, it))
-                    .flatMapIterable(it -> this.client.getHistory().getTransactions())
+                    .flatMapIterable(it -> this.client.getOnchainHistory().getTransactions())
                     .filter(it -> this.txHash.toString().equalsIgnoreCase(it.getTxHash()))
                     .filter(it -> it.getConfirmations() >= this.confirmations)
                     .blockFirst(this.timeout);

@@ -6,7 +6,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Coin;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.OnchainHistory;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.TxoValue;
 
@@ -57,9 +57,9 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
     }
 
     private Boolean callInner() {
-        History history = client.getHistory();
+        OnchainHistory history = client.getOnchainHistory();
 
-        History.Summary summary = history.getSummary();
+        OnchainHistory.Summary summary = history.getSummary();
 
         log.debug("{}", summary);
 

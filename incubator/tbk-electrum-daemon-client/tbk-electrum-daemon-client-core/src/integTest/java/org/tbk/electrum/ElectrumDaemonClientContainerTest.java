@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.Balance;
+import org.tbk.electrum.model.OnchainHistory;
 import org.tbk.electrum.model.Version;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
@@ -158,6 +159,15 @@ class ElectrumDaemonClientContainerTest {
                 .build());
 
         assertThat(success, is(false));
+    }
+
+    @Test
+    void testHistory() {
+        OnchainHistory history = sut.getOnchainHistory();
+
+        assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
+        assertThat(history.getSummary().getStartBalance().isZero(), is(true));
+        assertThat(history.getSummary().getOutgoing().isZero(), is(true));
     }
 
     @Test

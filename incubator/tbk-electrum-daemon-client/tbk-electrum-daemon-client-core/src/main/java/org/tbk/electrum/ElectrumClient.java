@@ -60,7 +60,7 @@ public interface ElectrumClient {
 
     List<TxHashAndBlockHeight> getAddressHistory(String address);
 
-    History getHistory();
+    OnchainHistory getOnchainHistory();
 
     RawTx getRawTransaction(String txHash);
 

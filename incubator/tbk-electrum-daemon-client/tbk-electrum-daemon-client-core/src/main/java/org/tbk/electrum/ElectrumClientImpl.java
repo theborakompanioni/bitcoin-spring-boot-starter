@@ -250,35 +250,35 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     @SneakyThrows
-    public History getHistory() {
+    public OnchainHistory getOnchainHistory() {
         HistoryResponse history = delegate.onchainhistory(true);
 
         HistoryResponse.Summary summary = history.getSummary();
         List<HistoryResponse.Transaction> transactions = history.getTransactions();
 
-        SimpleHistory.SimpleSummary historySummary = SimpleHistory.SimpleSummary.builder()
+        SimpleOnchainHistory.SimpleSummary historySummary = SimpleOnchainHistory.SimpleSummary.builder()
                 .startBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getBegin()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
                 .endBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getEnd()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
                 .incoming(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getIncoming).orElse(null)))
                 .outgoing(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getOutgoing).orElse(null)))
                 .build();
 
-        return SimpleHistory.builder()
+        return SimpleOnchainHistory.builder()
                 .summary(historySummary)
                 .transactions(transactions.stream()
                         .map(it -> {
-                            List<SimpleHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
+                            List<SimpleOnchainHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
                                     .map(inputs -> inputs.stream()
-                                            .map(input -> SimpleHistory.SimpleHistoryTxInput.builder()
+                                            .map(input -> SimpleOnchainHistory.SimpleHistoryTxInput.builder()
                                                     .txHash(input.getPrevoutHash())
                                                     .outputIndex(input.getPrevoutN())
                                                     .build())
                                             .toList())
                                     .orElseGet(Collections::emptyList);
 
-                            List<SimpleHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
+                            List<SimpleOnchainHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
                                     .map(outputs -> outputs.stream()
-                                            .map(output -> SimpleHistory.SimpleHistoryTxOutput.builder()
+                                            .map(output -> SimpleOnchainHistory.SimpleHistoryTxOutput.builder()
                                                     .value(BtcTxoValues.fromBtcString(output.getValue()))
                                                     .address(output.getAddress())
                                                     .build())
@@ -289,7 +289,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                     .map(Instant::ofEpochSecond)
                                     .orElse(null);
 
-                            return SimpleHistory.SimpleTransaction.builder()
+                            return SimpleOnchainHistory.SimpleTransaction.builder()
                                     .balance(BtcTxoValues.fromBtcString(it.getBalance()))
                                     .txHash(it.getTxId())
                                     .value(BtcTxoValues.fromBtcString(it.getValue()))

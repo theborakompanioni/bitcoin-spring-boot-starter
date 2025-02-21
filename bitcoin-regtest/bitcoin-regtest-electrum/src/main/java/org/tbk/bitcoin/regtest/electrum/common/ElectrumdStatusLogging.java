@@ -7,7 +7,7 @@ import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.command.GetInfoResponse;
 import org.tbk.electrum.model.Balance;
-import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.OnchainHistory;
 import org.tbk.electrum.model.TxoValue;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -44,7 +44,7 @@ public final class ElectrumdStatusLogging {
             log.info("Blockheight: {}/{}", info.getBlockchainHeight(), info.getServerHeight());
             log.info("Wallet synchronized: {}", walletSynchronized);
             if (Boolean.TRUE.equals(walletSynchronized)) {
-                History history = electrumClient.getHistory();
+                OnchainHistory history = electrumClient.getOnchainHistory();
 
                 log.info("Transactions: {}", history.getTransactions().size());
 

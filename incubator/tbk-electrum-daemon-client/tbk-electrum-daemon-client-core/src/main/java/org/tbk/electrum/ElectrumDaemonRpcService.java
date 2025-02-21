@@ -9,7 +9,6 @@ import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcOptional;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcParam;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcService;
 import org.tbk.electrum.command.*;
-import org.tbk.electrum.model.History;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -122,9 +121,9 @@ import java.util.Map;
  * "unfreeze",
  * "unfreeze_utxo",
  * "validateaddress",
- *  [x] "verifymessage",
- *  [x] "version",
- *  [x] "version_info"
+ * [x] "verifymessage",
+ * [x] "version",
+ * [x] "version_info"
  * ]
  */
 @JsonRpcService
@@ -256,34 +255,16 @@ public interface ElectrumDaemonRpcService {
                             @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
-     * Creates a new receiving address.
+     * Create a new receiving address, beyond the gap limit of the wallet.
      *
      * @return a new receiving address
      */
     @JsonRpcMethod("createnewaddress")
     String createnewaddress();
 
-    /**
-     * Electrum actually returns a json embedded in a string -_-
-     * Represented in {@link History} but you must parse it yourself.
-     *
-     * @return a string containing the HistoryResponse json
-     * @deprecated use {@link #onchainhistory} instead
-     */
-    @Deprecated
-    @JsonRpcMethod("history")
-    String history();
-
-    /**
-     * Electrum actually returns a json embedded in a string -_-
-     * Represented in {@link History} but you must parse it yourself.
-     *
-     * @return a string containing the HistoryResponse json
-     * @deprecated use {@link #onchainhistory} instead
-     */
-    @Deprecated
-    @JsonRpcMethod("history")
-    String history(@JsonRpcParam("show_addresses") boolean showAddresses);
+    @JsonRpcMethod("createnewaddress")
+    String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                            @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     @JsonRpcMethod("onchain_history")
     HistoryResponse onchainhistory();
@@ -302,8 +283,11 @@ public interface ElectrumDaemonRpcService {
 
     @JsonRpcMethod("onchain_history")
     HistoryResponse onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
+                                   @JsonRpcOptional @JsonRpcParam("year") Long year,
                                    @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
-                                   @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight);
+                                   @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight,
+                                   @JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                                   @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
      * List wallets open in daemon
@@ -490,10 +474,10 @@ public interface ElectrumDaemonRpcService {
      * <p>
      * Password is optional (if you have an unencrypted wallet - which is highly discouraged).
      *
-     * @param tx       a raw transaction (hexadecimal)
-     * @param password the wallet passphrase (null if unencrypted).
-     * @param wallet_path  wallet path
-     * @param forgetconfig forget config on exit
+     * @param tx               a raw transaction (hexadecimal)
+     * @param password         the wallet passphrase (null if unencrypted).
+     * @param wallet_path      wallet path
+     * @param forgetconfig     forget config on exit
      * @param iknowwhatimdoing acknowledge that I understand the full implications of what I am about to do
      * @return a signed transaction
      */

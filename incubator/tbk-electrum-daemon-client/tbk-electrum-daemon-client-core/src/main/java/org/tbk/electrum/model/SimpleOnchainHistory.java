@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Value
 @Builder
-public class SimpleHistory implements History {
+public class SimpleOnchainHistory implements OnchainHistory {
 
     @NonNull
     Summary summary;
@@ -93,7 +93,7 @@ public class SimpleHistory implements History {
 
     @Value
     @Builder
-    public static class SimpleHistoryTxInput implements History.HistoryTxInput {
+    public static class SimpleHistoryTxInput implements OnchainHistory.HistoryTxInput {
         @NonNull
         String txHash;
 
@@ -102,7 +102,7 @@ public class SimpleHistory implements History {
 
     @Value
     @Builder
-    public static class SimpleHistoryTxOutput implements History.HistoryTxOutput {
+    public static class SimpleHistoryTxOutput implements OnchainHistory.HistoryTxOutput {
 
         @NonNull
         TxoValue value;

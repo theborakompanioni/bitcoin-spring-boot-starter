@@ -8,7 +8,7 @@ import org.tbk.bitcoin.regtest.common.AddressSupplier;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
-import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.OnchainHistory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -84,7 +84,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 })
                 .collectList()
                 .flatMap(receivedAmount -> Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(destinationAddress.get(), amount, txFee)))
-                .map(History.Transaction::getTxHash)
+                .map(OnchainHistory.Transaction::getTxHash)
                 .map(Sha256Hash::wrap);
     }
 
