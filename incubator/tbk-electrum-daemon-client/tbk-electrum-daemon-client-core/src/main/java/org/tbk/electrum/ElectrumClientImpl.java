@@ -93,20 +93,23 @@ public class ElectrumClientImpl implements ElectrumClient {
      * but silently returns the unsigned transaction again.
      * WTF electrum!
      *
-     * @param rawTx            an unsigned transaction
-     * @param walletPassphrase the wallet password or null if wallet is not encrypted
      * @return a signed transaction
      * @throws IllegalStateException if electrum did not change the transaction
      */
     @Override
-    public RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase) {
-        String signtransaction = delegate.signtransaction(rawTx.getHex(), walletPassphrase);
+    public RawTx signTransaction(SignTransactionParams params) {
+        String signtransaction = delegate.signtransaction(
+                params.getTx(),
+                params.getPassword(),
+                params.getWalletPath(),
+                params.getForgetconfig(),
+                params.getIknowwhatimdoing()
+        );
 
         byte[] raw = parseTransactionResponse(signtransaction);
 
         String hex = HexFormat.of().formatHex(raw);
-
-        boolean rawTxHasNotChanged = rawTx.getHex().equals(hex);
+        boolean rawTxHasNotChanged = params.getTx().equals(hex);
         if (rawTxHasNotChanged) {
             throw new IllegalStateException("Transaction has not been signed by electrum - "
                                             + "maybe you have loaded a watchonly wallet?");

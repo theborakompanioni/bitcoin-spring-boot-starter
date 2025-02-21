@@ -98,7 +98,14 @@ public interface ElectrumClient {
      * @param walletPassphrase the wallet password or null if wallet is not encrypted
      * @return a signed transaction
      */
-    RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase);
+    default RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase) {
+        return signTransaction(SignTransactionParams.of(rawTx)
+                .password(walletPassphrase)
+                .build()
+        );
+    }
+
+    RawTx signTransaction(SignTransactionParams params);
 
     String broadcast(RawTx rawTx);
 
