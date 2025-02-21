@@ -35,6 +35,9 @@ class ElectrumDaemonClientContainerTest {
 
     private static final String firstAddress = "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz";
 
+    // an address not controlled by wallet (taken from "second_wallet")
+    private static final String addressNotControlledByWallet = "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j";
+
     @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumDaemonContainerTestApplication {
 
@@ -185,8 +188,6 @@ class ElectrumDaemonClientContainerTest {
         Boolean ownerOfAddress = sut.isOwnerOfAddress(firstAddress);
         assertThat("address is controlled by wallet", ownerOfAddress, is(true));
 
-        // an address not controlled by wallet (taken from "second_wallet")
-        String addressNotControlledByWallet = "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j";
         Boolean ownerOfAddress2 = sut.isOwnerOfAddress(addressNotControlledByWallet);
         assertThat("address is not controlled by wallet", ownerOfAddress2, is(false));
     }
@@ -264,8 +265,25 @@ class ElectrumDaemonClientContainerTest {
         Boolean valid = sut.verifyMessage(address, signedMessage, randomMessage);
         assertThat(valid, is(true));
 
-        Boolean valid2 = sut.verifyMessage(address, signedMessage, randomMessage + "1");
+        Boolean valid2 = sut.verifyMessage(address, signedMessage, "21" + randomMessage);
         assertThat(valid2, is(false));
+
+        Boolean valid3 = sut.verifyMessage(sut.createNewAddress(), signedMessage, randomMessage);
+        assertThat(valid3, is(false));
+
+        Boolean valid4 = sut.verifyMessage(addressNotControlledByWallet, signedMessage, randomMessage);
+        assertThat(valid4, is(false));
+    }
+
+    @Test
+    void testSignAndVerifyMessageWithWhitespaces() {
+        String address = sut.createNewAddress();
+        String message = "A message with whitespaces.";
+
+        String signedMessage = sut.signMessage(address, message, null);
+
+        Boolean valid = sut.verifyMessage(address, signedMessage, message);
+        assertThat(valid, is(true));
     }
 
     @Test

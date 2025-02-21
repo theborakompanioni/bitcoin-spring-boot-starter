@@ -117,28 +117,20 @@ import java.util.Map;
  * "signmessage",
  * "signtransaction",
  * "signtransaction_with_privkey",
- * "stop",
+ * [x] "stop",
  * "sweep",
  * "unfreeze",
  * "unfreeze_utxo",
  * "validateaddress",
- * "verifymessage",
- * "version",
- * "version_info"
+ *  [x] "verifymessage",
+ *  [x] "version",
+ *  [x] "version_info"
  * ]
  */
 @JsonRpcService
 @JsonRpcId(AtomicLongIdGenerator.class)
 @JsonRpcParams(ParamsType.MAP)
 public interface ElectrumDaemonRpcService {
-
-    /**
-     * Stop daemon
-     *
-     * @return "Daemon stopped" string
-     */
-    @JsonRpcMethod("stop")
-    String stop();
 
     /**
      * Generates a new seed. Does not change the current seed.
@@ -451,17 +443,6 @@ public interface ElectrumDaemonRpcService {
     String broadcast(@JsonRpcParam("tx") String tx);
 
     /**
-     * password is optional (if you have an unencrypted wallet - which is highly discouraged).
-     *
-     * @param tx       a raw transaction (hexadecimal)
-     * @param password the wallet passphrase (null if unencrypted).
-     * @return a signed transaction
-     */
-    @JsonRpcMethod("signtransaction")
-    String signtransaction(@JsonRpcParam("tx") String tx,
-                           @JsonRpcOptional @JsonRpcParam("password") String password);
-
-    /**
      * Watch an address. Everytime the address changes, a http POST is sent to the URL.
      *
      * @param address the address being watched
@@ -469,7 +450,8 @@ public interface ElectrumDaemonRpcService {
      * @return will always return true or errors (in v3.3.8)
      */
     @JsonRpcMethod("notify")
-    Boolean notify(@JsonRpcParam("address") String address, @JsonRpcParam("URL") String url);
+    Boolean notify(@JsonRpcParam("address") String address,
+                   @JsonRpcParam("URL") String url);
 
     /**
      * Encrypt a message with a public key. Use quotes if the message contains whitespaces.
@@ -504,6 +486,34 @@ public interface ElectrumDaemonRpcService {
     List<String> getpubkeys(@JsonRpcParam("address") String address);
 
     /**
+     * Sign a transaction. The wallet keys will be used to sign the transaction.
+     * <p>
+     * Password is optional (if you have an unencrypted wallet - which is highly discouraged).
+     *
+     * @param tx       a raw transaction (hexadecimal)
+     * @param password the wallet passphrase (null if unencrypted).
+     * @param wallet_path  wallet path
+     * @param forgetconfig forget config on exit
+     * @param iknowwhatimdoing acknowledge that I understand the full implications of what I am about to do
+     * @return a signed transaction
+     */
+    @JsonRpcMethod("signtransaction")
+    String signtransaction(@JsonRpcParam("tx") String tx,
+                           @JsonRpcOptional @JsonRpcParam("password") String password,
+                           @JsonRpcOptional @JsonRpcParam("wallet_path") String wallet_path,
+                           @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig,
+                           @JsonRpcOptional @JsonRpcParam("iknowwhatimdoing") Boolean iknowwhatimdoing);
+
+
+    /**
+     * Stop daemon
+     *
+     * @return "Daemon stopped" string
+     */
+    @JsonRpcMethod("stop")
+    String stop();
+
+    /**
      * Sign a message with a key. Use quotes if your message contains whitespaces
      *
      * @param address  the wallet address
@@ -521,7 +531,7 @@ public interface ElectrumDaemonRpcService {
      *
      * @param address   the wallet address
      * @param signature signature in base64
-     * @param message   the message
+     * @param message   Clear text message. Use quotes if it contains spaces.
      * @return true if the signature is valid
      */
     @JsonRpcMethod("verifymessage")
