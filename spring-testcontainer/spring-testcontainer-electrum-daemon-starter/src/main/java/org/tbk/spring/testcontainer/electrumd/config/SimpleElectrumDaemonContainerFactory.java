@@ -36,8 +36,6 @@ public final class SimpleElectrumDaemonContainerFactory {
         static final String ELECTRUM_NETWORK_ENV_NAME = "ELECTRUM_NETWORK";
 
         private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
-                .put("ELECTRUM_RPCUSER", "electrum")
-                .put("ELECTRUM_RPCPASSWORD", "test")
                 .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
                 .build();
 
