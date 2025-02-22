@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * <p>This interface is tested with electrum v3.3.8.
  *
- * <p>Not every parameter is currently implemented.
+ * <p>Not every method is currently implemented.
  * <p>`electrum --regtest help`:
  * [
  * "add_peer",
@@ -34,11 +34,11 @@ import java.util.Map;
  * "clear_ln_blacklist",
  * "clear_requests",
  * "close_channel",
- * "close_wallet",
+ * [x] "close_wallet",
  * "commands",
  * "convert_currency",
  * "convert_xkey",
- * "create",
+ * [x] "create",
  * "createmultisig",
  * "createnewaddress",
  * "decode_invoice",
@@ -188,7 +188,7 @@ public interface ElectrumDaemonRpcService {
      * @return wallet synchronization status
      */
     @JsonRpcMethod("is_synchronized")
-    Boolean issynchronized(@JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+    Boolean issynchronized(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                            @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     @JsonRpcMethod("getbalance")
@@ -202,7 +202,7 @@ public interface ElectrumDaemonRpcService {
      * @return wallet balance
      */
     @JsonRpcMethod("getbalance")
-    BalanceResponse getbalance(@JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+    BalanceResponse getbalance(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                                @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
@@ -215,7 +215,7 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("ismine")
     Boolean ismine(@JsonRpcParam("address") String address,
-                   @JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                    @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
@@ -241,22 +241,21 @@ public interface ElectrumDaemonRpcService {
     /**
      * Create a new wallet.
      *
-     * @param passphrase     Seed extension
-     * @param encrypt_file   Whether the file on disk should be encrypted with the provided password
-     * @param seed_type      The type of seed to create, e.g. 'standard' or 'segwit'
-     * @param password
-     * @param walletPathPath wallet path
-     * @param forgetconfig   Forget config on exit
-     * @return
+     * @param passphrase         Seed extension
+     * @param encryptionPassword Whether the file on disk should be encrypted with the provided password
+     * @param seedType           The type of seed to create, e.g. 'standard' or 'segwit'
+     * @param password           wallet password
+     * @param walletPath         wallet path
+     * @param forgetconfig       Forget config on exit
+     * @return a new wallet or error in case it exists
      */
     @JsonRpcMethod("create")
-    @Nullable
-    String create(@JsonRpcOptional @JsonRpcParam("passphrase") String passphrase,
-                  @JsonRpcOptional @JsonRpcParam("encrypt_file") String encrypt_file,
-                  @JsonRpcOptional @JsonRpcParam("encrypt_file") String seed_type,
-                  @JsonRpcOptional @JsonRpcParam("password") String password,
-                  @JsonRpcOptional @JsonRpcParam("wallet") String walletPathPath,
-                  @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
+    CreateResponse create(@JsonRpcOptional @JsonRpcParam("passphrase") String passphrase,
+                          @JsonRpcOptional @JsonRpcParam("encrypt_file") String encryptionPassword,
+                          @JsonRpcOptional @JsonRpcParam("seed_type") String seedType,
+                          @JsonRpcOptional @JsonRpcParam("password") String password,
+                          @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
+                          @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
      * Returns the first unused address of the wallet, or none if all addresses are used.
@@ -271,7 +270,7 @@ public interface ElectrumDaemonRpcService {
 
     @JsonRpcMethod("getunusedaddress")
     @Nullable
-    String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+    String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                             @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
@@ -283,7 +282,7 @@ public interface ElectrumDaemonRpcService {
     String createnewaddress();
 
     @JsonRpcMethod("createnewaddress")
-    String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+    String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                             @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     @JsonRpcMethod("onchain_history")
@@ -306,7 +305,7 @@ public interface ElectrumDaemonRpcService {
                                    @JsonRpcOptional @JsonRpcParam("year") Long year,
                                    @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
                                    @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight,
-                                   @JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+                                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                                    @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
     /**
@@ -376,7 +375,7 @@ public interface ElectrumDaemonRpcService {
      * @param forgetconfig forget config on exit
      */
     @JsonRpcMethod("load_wallet")
-    void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+    void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                     @JsonRpcOptional @JsonRpcParam("password") String password,
                     @JsonRpcOptional @JsonRpcParam("unlock") Boolean unlock,
                     @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
@@ -394,7 +393,7 @@ public interface ElectrumDaemonRpcService {
      * @param forgetconfig forget config on exit
      */
     @JsonRpcMethod("close_wallet")
-    Boolean closewallet(@JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+    Boolean closewallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                         @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig);
 
 
@@ -435,7 +434,7 @@ public interface ElectrumDaemonRpcService {
             @JsonRpcOptional @JsonRpcParam("locktime") Long locktime, // untested atm
             @JsonRpcOptional @JsonRpcParam("addtransaction") Object addtransaction, // untested atm
             @JsonRpcOptional @JsonRpcParam("password") String password,
-            @JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+            @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
             @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig
     );
 
@@ -506,7 +505,7 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("signtransaction")
     String signtransaction(@JsonRpcParam("tx") String tx,
                            @JsonRpcOptional @JsonRpcParam("password") String password,
-                           @JsonRpcOptional @JsonRpcParam("wallet") String walletPath,
+                           @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
                            @JsonRpcOptional @JsonRpcParam("forgetconfig") Boolean forgetconfig,
                            @JsonRpcOptional @JsonRpcParam("iknowwhatimdoing") Boolean iknowwhatimdoing);
 

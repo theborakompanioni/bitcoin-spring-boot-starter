@@ -14,6 +14,7 @@ import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.OnchainHistory;
 import org.tbk.electrum.model.Version;
+import org.tbk.electrum.model.Wallet;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
@@ -107,6 +108,106 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testCreateWalletSuccess() {
+        Wallet wallet = sut.createWallet(CreateParams.builder()
+                .walletPath("new_wallet")
+                .build());
+
+        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet"));
+        assertThat(wallet.getSeed().getWords(), hasSize(12));
+    }
+
+    @Test
+    void testCreateWalletAndGetSeedSuccess() {
+        Wallet wallet = sut.createWallet(CreateParams.builder()
+                .walletPath("new_wallet_and_get_seed")
+                .build());
+
+        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet_and_get_seed"));
+        assertThat(wallet.getSeed().getWords(), hasSize(12));
+
+        boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                .walletPath(wallet.getFilePath())
+                .build());
+        assertThat(loaded, is(true));
+
+        List<String> result = sut.getMnemonicSeed(GetSeedParams.builder()
+                .walletPath(wallet.getFilePath())
+                .build());
+        assertThat(String.join("", wallet.getSeed().getWords()), is(String.join("", result)));
+
+        Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                .walletPath(wallet.getFilePath())
+                .build());
+        assertThat(closed, is(true));
+    }
+
+    @Test
+    void testCreateAndLoadEncryptedWalletSuccess() {
+        Wallet wallet = sut.createWallet(CreateParams.builder()
+                .walletPath("new_wallet_encrypted")
+                .encryptFile("yes")
+                .password("correcthorsebatterystaple")
+                .build());
+
+        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet_encrypted"));
+        assertThat(wallet.getSeed().getWords(), hasSize(12));
+
+        boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                .walletPath(wallet.getFilePath())
+                .password("correcthorsebatterystaple")
+                .build());
+        assertThat(loaded, is(true));
+
+        Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                .walletPath(wallet.getFilePath())
+                .build());
+        assertThat(closed, is(true));
+    }
+
+    @Test
+    void testCreateAndLoadEncryptedWalletError() {
+        Wallet wallet = sut.createWallet(CreateParams.builder()
+                .walletPath("new_wallet_encrypted_and_load")
+                .encryptFile("yes")
+                .password("correcthorsebatterystaple")
+                .build());
+
+        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet_encrypted_and_load"));
+
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath(wallet.getFilePath())
+                    .password("wrong_password")
+                    .build());
+        });
+
+        // error might be provided more dev friendly in upcoming releases, so this test case fail with future versions
+        // but better this than nothing to check against
+        assertThat(e.getErrorMessage().getMessage(), is("internal error while executing RPC"));
+        assertThat(e.getErrorMessage().getData().get("exception").asText(), is("InvalidPassword()"));
+    }
+
+    @Test
+    void testCreateWalletError() {
+        Wallet ignoreOnPurpose = sut.createWallet(CreateParams.builder()
+                .walletPath("new_wallet_error")
+                .build());
+
+        assertThat(ignoreOnPurpose.getFilePath(), is("/home/electrum/new_wallet_error"));
+
+        // try creating the wallet again should throw an error
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.createWallet(CreateParams.builder()
+                    .walletPath("new_wallet_error")
+                    .build());
+        });
+
+        assertThat(e.getErrorMessage().getMessage(), is("Remove the existing wallet first!"));
+        assertThat(e.getErrorMessage().getCode(), is(1));
+    }
+
+    @Test
     void testGetSeed() {
         List<String> result = sut.getMnemonicSeed(GetSeedParams.builder().build());
 
@@ -116,7 +217,7 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testListWallets() {
         List<ListWalletEntry> wallets = sut.listOpenWallets();
-        assertThat(wallets, hasSize(1));
+        assertThat(wallets, hasSize(greaterThanOrEqualTo(1)));
 
         ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
 

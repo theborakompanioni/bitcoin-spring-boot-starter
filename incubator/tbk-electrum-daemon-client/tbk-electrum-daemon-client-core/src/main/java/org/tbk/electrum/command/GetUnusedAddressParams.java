@@ -10,7 +10,7 @@ import lombok.Value;
 @Builder
 public class GetUnusedAddressParams {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("wallet")
+    @JsonProperty("wallet_path")
     String walletPath;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

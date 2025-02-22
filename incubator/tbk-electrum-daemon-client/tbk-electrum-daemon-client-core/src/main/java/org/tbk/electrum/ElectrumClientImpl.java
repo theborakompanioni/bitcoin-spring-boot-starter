@@ -163,6 +163,35 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
+    public Wallet createWallet(CreateParams params) {
+        if (params.getEncryptFile() != null &&
+            params.getPassword() == null) {
+            throw new IllegalArgumentException("'password' must not be empty if encryption is enabled");
+        }
+
+        CreateResponse createResponse = delegate.create(
+                params.getPassphrase(),
+                params.getEncryptFile(),
+                params.getSeedType(),
+                params.getPassword(),
+                params.getWalletPath(),
+                params.getForgetconfig()
+        );
+
+        return new Wallet() {
+            @Override
+            public Seed getSeed() {
+                return () -> Arrays.asList(createResponse.getSeed().split(" "));
+            }
+
+            @Override
+            public String getFilePath() {
+                return createResponse.getPath();
+            }
+        };
+    }
+
+    @Override
     public Boolean isWalletSynchronized() {
         return delegate.issynchronized();
     }

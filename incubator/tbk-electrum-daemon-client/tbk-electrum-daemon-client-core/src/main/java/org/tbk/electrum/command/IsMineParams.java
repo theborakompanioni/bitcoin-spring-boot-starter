@@ -14,7 +14,7 @@ public class IsMineParams {
     String address;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("wallet")
+    @JsonProperty("wallet_path")
     String walletPath;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
