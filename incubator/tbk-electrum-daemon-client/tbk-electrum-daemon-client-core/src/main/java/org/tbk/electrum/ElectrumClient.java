@@ -18,6 +18,8 @@ public interface ElectrumClient {
 
     List<String> createMnemonicSeed();
 
+    Wallet createWallet(CreateParams params);
+
     List<String> getMnemonicSeed(GetSeedParams params);
 
     Boolean isWalletSynchronized();
