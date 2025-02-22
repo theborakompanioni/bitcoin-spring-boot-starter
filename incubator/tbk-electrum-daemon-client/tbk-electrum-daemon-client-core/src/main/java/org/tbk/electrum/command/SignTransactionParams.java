@@ -28,10 +28,6 @@ public class SignTransactionParams {
     String walletPath;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("forgetconfig")
-    Boolean forgetconfig;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("iknowwhatimdoing")
     Boolean iknowwhatimdoing;
 }

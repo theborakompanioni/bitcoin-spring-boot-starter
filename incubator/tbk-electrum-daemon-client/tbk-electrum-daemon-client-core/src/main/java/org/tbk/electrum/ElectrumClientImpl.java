@@ -51,8 +51,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                     params.getLocktime(),
                     params.getAddTransaction(),
                     params.getPassword(),
-                    params.getWalletPath(),
-                    params.getForgetconfig()
+                    params.getWalletPath()
             );
 
             // payto can be base64 or hex
@@ -131,9 +130,7 @@ public class ElectrumClientImpl implements ElectrumClient {
         String signtransaction = delegate.signtransaction(
                 params.getTx(),
                 params.getPassword(),
-                params.getWalletPath(),
-                params.getForgetconfig(),
-                params.getIknowwhatimdoing()
+                params.getWalletPath()
         );
 
         byte[] raw = fromHexOrBase64(signtransaction);
@@ -174,8 +171,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                 params.getEncryptFile(),
                 params.getSeedType(),
                 params.getPassword(),
-                params.getWalletPath(),
-                params.getForgetconfig()
+                params.getWalletPath()
         );
 
         return new Wallet() {
@@ -198,7 +194,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Boolean isWalletSynchronized(IsSynchronizedParams params) {
-        return delegate.issynchronized(params.getWalletPath(), params.getForgetconfig());
+        return delegate.issynchronized(params.getWalletPath());
     }
 
     @Override
@@ -208,10 +204,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Balance getBalance(GetBalanceParams params) {
-        return SimpleBalance.from(delegate.getbalance(
-                params.getWalletPath(),
-                params.getForgetconfig()
-        ));
+        return SimpleBalance.from(delegate.getbalance(params.getWalletPath()));
     }
 
     /**
@@ -253,17 +246,12 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Boolean isOwnerOfAddress(IsMineParams params) {
-        return delegate.ismine(params.getAddress(),
-                params.getWalletPath(),
-                params.getForgetconfig());
+        return delegate.ismine(params.getAddress(), params.getWalletPath());
     }
 
     @Override
     public Optional<String> getUnusedAddress(GetUnusedAddressParams params) {
-        return Optional.ofNullable(delegate.getunusedaddress(
-                params.getWalletPath(),
-                params.getForgetconfig()
-        ));
+        return Optional.ofNullable(delegate.getunusedaddress(params.getWalletPath()));
     }
 
     @Override
@@ -428,22 +416,19 @@ public class ElectrumClientImpl implements ElectrumClient {
     public boolean loadWallet(LoadWalletParams params) {
         delegate.loadwallet(params.getWalletPath(),
                 params.getPassword(),
-                params.getUnlock(),
-                params.getForgetconfig()
+                params.getUnlock()
         );
         return true;
     }
 
     @Override
     public Boolean closeWallet(CloseWalletParams params) {
-        return delegate.closewallet(params.getWalletPath(), params.getForgetconfig());
+        return delegate.closewallet(params.getWalletPath());
     }
 
     @Override
     public List<String> getMnemonicSeed(GetSeedParams params) {
-        String getseed = delegate.getseed(params.getPassword(),
-                params.getWalletPath(),
-                params.getForgetconfig());
+        String getseed = delegate.getseed(params.getPassword(), params.getWalletPath());
 
         boolean seedIsAbsent = getseed == null || getseed.isEmpty();
         if (seedIsAbsent) {
