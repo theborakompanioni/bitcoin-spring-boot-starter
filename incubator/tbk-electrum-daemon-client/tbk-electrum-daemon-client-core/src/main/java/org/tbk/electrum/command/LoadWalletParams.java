@@ -20,8 +20,4 @@ public class LoadWalletParams {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("unlock")
     Boolean unlock;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("forgetconfig")
-    Boolean forgetconfig;
 }

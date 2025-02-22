@@ -15,8 +15,4 @@ public class GetSeedParams {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")
     String walletPath;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("forgetconfig")
-    Boolean forgetconfig;
 }

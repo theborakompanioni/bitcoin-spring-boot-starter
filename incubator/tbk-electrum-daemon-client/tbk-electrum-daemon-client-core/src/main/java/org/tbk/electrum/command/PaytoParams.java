@@ -65,8 +65,4 @@ public class PaytoParams {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("password")
     String password;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("forgetconfig")
-    Boolean forgetconfig;
 }

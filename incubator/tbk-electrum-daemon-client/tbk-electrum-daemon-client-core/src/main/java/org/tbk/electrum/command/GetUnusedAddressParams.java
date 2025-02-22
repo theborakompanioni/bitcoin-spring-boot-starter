@@ -3,7 +3,6 @@ package org.tbk.electrum.command;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
 
 @Value
@@ -12,8 +11,4 @@ public class GetUnusedAddressParams {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")
     String walletPath;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("forgetconfig")
-    Boolean forgetconfig;
 }

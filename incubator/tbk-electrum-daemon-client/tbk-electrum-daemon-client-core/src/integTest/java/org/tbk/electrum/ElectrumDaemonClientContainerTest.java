@@ -63,10 +63,10 @@ class ElectrumDaemonClientContainerTest {
     @BeforeEach
     void tryLoadWallet() {
         try {
-            log.trace("Load wallet before test case");
+            log.trace("Load default wallet before test case");
             sut.loadWallet(LoadWalletParams.builder().build());
         } catch (Exception e) {
-            log.warn("Could not load wallet");
+            log.warn("Could not load default wallet");
         }
     }
 
