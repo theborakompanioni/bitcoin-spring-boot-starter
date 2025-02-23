@@ -146,7 +146,7 @@ class ElectrumDaemonClientContainerTest {
     void testCreateAndLoadEncryptedWalletSuccess() {
         Wallet wallet = sut.createWallet(CreateParams.builder()
                 .walletPath("new_wallet_encrypted")
-                .encryptFile("yes")
+                .encryptFile(true)
                 .password("correcthorsebatterystaple")
                 .build());
 
@@ -169,7 +169,7 @@ class ElectrumDaemonClientContainerTest {
     void testCreateAndLoadEncryptedWalletError() {
         Wallet wallet = sut.createWallet(CreateParams.builder()
                 .walletPath("new_wallet_encrypted_and_load")
-                .encryptFile("yes")
+                .encryptFile(true)
                 .password("correcthorsebatterystaple")
                 .build());
 
