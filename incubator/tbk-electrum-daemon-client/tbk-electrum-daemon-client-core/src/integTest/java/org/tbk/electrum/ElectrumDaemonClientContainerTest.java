@@ -408,7 +408,10 @@ class ElectrumDaemonClientContainerTest {
 
         assertThat(encryptedMessage, is(not(emptyOrNullString())));
 
-        String decryptedMessage = this.sut.decryptMessage(firstPublicKey, encryptedMessage, null);
+        String decryptedMessage = this.sut.decryptMessage(DecryptParams.builder()
+                .publicKey(firstPublicKey)
+                .encryptedMessage(encryptedMessage)
+                .build());
         assertThat(decryptedMessage, is(message));
     }
 

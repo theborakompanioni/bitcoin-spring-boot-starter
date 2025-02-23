@@ -255,8 +255,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public String createNewAddress() {
-        return delegate.createnewaddress();
+    public String createNewAddress(CreateNewAddressParams params) {
+        return delegate.createnewaddress(params.getWalletPath());
     }
 
     @Override
@@ -450,8 +450,11 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public String decryptMessage(String publicKeyHex, String encryptedMessage, @Nullable String walletPassphrase) {
-        return this.delegate.decrypt(publicKeyHex, encryptedMessage, walletPassphrase);
+    public String decryptMessage(DecryptParams params) {
+        return this.delegate.decrypt(params.getPublicKey(),
+                params.getEncryptedMessage(),
+                params.getPassword(),
+                params.getWalletPath());
     }
 
     @Override
