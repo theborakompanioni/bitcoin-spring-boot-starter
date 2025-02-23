@@ -54,7 +54,11 @@ public interface ElectrumClient {
 
     Optional<String> getUnusedAddress(GetUnusedAddressParams params);
 
-    String createNewAddress();
+    default String createNewAddress() {
+        return createNewAddress(CreateNewAddressParams.builder().build());
+    }
+
+    String createNewAddress(CreateNewAddressParams params);
 
     Balance getAddressBalance(String address);
 
@@ -119,7 +123,7 @@ public interface ElectrumClient {
 
     String encryptMessage(String publicKeyHex, String plaintext);
 
-    String decryptMessage(String publicKeyHex, String encryptedMessage, @Nullable String walletPassphrase);
+    String decryptMessage(DecryptParams params);
 
     String signMessage(String address, String message, @Nullable String walletPassphrase);
 
