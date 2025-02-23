@@ -15,7 +15,7 @@ public class CreateParams {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("encrypt_file")
-    String encryptFile;
+    Boolean encryptFile;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("seed_type")

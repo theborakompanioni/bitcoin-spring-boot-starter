@@ -243,7 +243,7 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("create")
     CreateResponse create(@JsonRpcOptional @JsonRpcParam("passphrase") String passphrase,
-                          @JsonRpcOptional @JsonRpcParam("encrypt_file") String encryptionPassword,
+                          @JsonRpcOptional @JsonRpcParam("encrypt_file") Boolean encryptionPassword,
                           @JsonRpcOptional @JsonRpcParam("seed_type") String seedType,
                           @JsonRpcOptional @JsonRpcParam("password") String password,
                           @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
