@@ -3,7 +3,7 @@ services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
     image: polarlightning/bitcoind:27.0
-    restart: unless-stopped
+    restart: no
     volumes:
       - bitcoind-data:/home/bitcoin/.bitcoin/regtest
     command:
