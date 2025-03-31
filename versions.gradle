@@ -18,9 +18,9 @@ ext {
     bytebuddyPluginVersion = '1.15.3' // keep in sync with `jmoleculesBomVersion`
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.3'
-    acinqSecp256k1KmpVersion = '0.15.0'
-    acinqBitcoinKmpVersion = '0.20.0' // keep in sync with `acinqSecp256k1KmpVersion`
-    acinqLightningKmpVersion = '1.8.4' // keep in sync with `acinqBitcoinKmpVersion`
+    acinqSecp256k1KmpVersion = '0.17.1'
+    acinqBitcoinKmpVersion = '0.22.1' // keep in sync with `acinqSecp256k1KmpVersion`
+    acinqLightningKmpVersion = '1.9.0' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.48.0.0'
     hibernateCommunityDialectsVersion = '6.6.5.Final'
     lombokVersion = '1.18.30'

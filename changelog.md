@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Breaking
 - upgrade: update java from v17 to v21
+- upgrade: update lightning-kmp from v1.8.4 to v1.9.0
+- upgrade: update bitcoin-kmp from v0.20.0 to v0.22.1
+- upgrade: update secp256k1-kmp from v0.15.0 to v0.17.1
 
 ## [0.15.0] - 2024-04-01
 
