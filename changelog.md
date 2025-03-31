@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Breaking
+- upgrade: update java from v17 to v21
+
 ## [0.15.0] - 2024-04-01
 
 ### Changed
