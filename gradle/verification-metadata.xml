@@ -85,11 +85,13 @@
          <trusted-key id="124DAC8350968EC2A8260584EE8ECBBBC188FD5D" group="org.ajoberstar.grgit" name="grgit-core" version="4.1.1"/>
          <trusted-key id="1357B30309DF9589A97DA56562DD826536D24571" group="org.springdoc"/>
          <trusted-key id="144219B604DDE6A2383FA0EE9C6404EBCE3E4464" group="com.github.zafarkhaja" name="java-semver" version="0.9.0"/>
+         <trusted-key id="1452F35849B50750F6A3BBB4B54011358B352F85" group="org.hibernate.orm" name="hibernate-community-dialects" version="6.6.5.Final"/>
          <trusted-key id="147B691A19097624902F4EA9689CBE64F4BC997F" group="org.mockito"/>
          <trusted-key id="19BEAB2D799C020F17C69126B16698A4ADF4D638">
             <trusting group="org.checkerframework" name="checker-compat-qual" version="2.5.5"/>
             <trusting group="org.checkerframework" name="checker-qual"/>
          </trusted-key>
+         <trusted-key id="1A55F091AD28C07F831FA44D7905DE25C78AD456" group="com.google.protobuf"/>
          <trusted-key id="1AA8CF92D409A73393D0B736BFF2EE42C8282E76">
             <trusting group="org.apache.activemq" name="activemq-bom" version="6.1.3"/>
             <trusting group="org.apache.activemq" name="activemq-bom" version="6.1.4"/>
