@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2024-04-01
+
 ### Changed
 - upgrade: update lightning-kmp from v1.8.0 to v1.8.4
 - upgrade: update testcontainers from v1.19.8 to v1.20.4
@@ -306,7 +308,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.14.0...HEAD
+[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.15.0...HEAD
+[0.15.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.11.0...0.12.0
