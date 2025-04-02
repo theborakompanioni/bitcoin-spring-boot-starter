@@ -1,0 +1,32 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo (test)
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo-test'
+spring.http.log-request-details: true
+
+logging.level.org.tbk: DEBUG
+
+spring.docker.compose:
+  enabled: true
+  file: ./../../docker/regtest/lightning-regtest-setup-devel/docker-compose.yml
+  stop.command: DOWN # STOP is default, DOWN stops and removes containers and networks
+  skip.in-tests: false
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: regtest
+  rpcpassword: regtest
+
+org.tbk.bitcoin.zeromq:
+  network: regtest
+  zmqpubrawblock: tcp://127.0.0.1:28332
+  zmqpubrawtx: tcp://127.0.0.1:28333
+  zmqpubhashblock: tcp://127.0.0.1:28334
+  zmqpubhashtx: tcp://127.0.0.1:28335
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  mining:
+    enabled: false # disable miner as no services will run in test profile

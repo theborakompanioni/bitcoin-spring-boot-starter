@@ -102,6 +102,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - autoconfig property prefix of bitcoin jsonrpc cache changed from "jsonrpc.cache" to "jsonrpc-cache"
 - bitcoin-regtest-starter does not import testcontainer dependencies for bitcoin, electrumx and electrum-daemon automatically anymore
 
+### Added
+- module: initial version of modules `lightning-commons-client-*`
+
 ### Changed
 - improved default specs for bitcoin jsonrpc client caches
 - upgrade: update spring-boot from v3.1.0 to v3.1.4

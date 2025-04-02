@@ -1,0 +1,205 @@
+syntax = "proto3";
+
+package lncommonclient;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "org.tbk.lightning.client.common.core.proto";
+option java_outer_classname = "LnCommonClientProtos";
+option java_multiple_files = true;
+
+message CommonInfoRequest {
+}
+
+message CommonInfoResponse {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  optional string alias = 2 [json_name = "alias"];
+  bytes color = 3 [json_name = "color"];
+  uint32 num_peers = 4 [json_name = "num_peers"];
+  uint32 num_pending_channels = 5 [json_name = "num_pending_channels"];
+  uint32 num_active_channels = 6 [json_name = "num_active_channels"];
+  uint32 num_inactive_channels = 7 [json_name = "num_inactive_channels"];
+  string version = 8 [json_name = "version"];
+  // A list of active chains the node is connected to
+  repeated Chain chain = 9 [json_name = "chains"];
+  uint32 blockheight = 10 [json_name = "blockheight"];
+  // a warning if either bitcoin or lightning node is not yet synced to chain; can be empty.
+  string warning_block_sync = 11  [json_name = "warning_block_sync"];
+}
+
+message Chain {
+  // The blockchain the node is on (i.e. bitcoin)
+  string chain = 1 [json_name = "chain"];
+
+  // The network the node is on (e.g. regtest, testnet, mainnet, etc.)
+  string network = 2 [json_name = "network"];
+}
+
+message CommonConnectRequest {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  optional string host = 2 [json_name = "host"];
+  optional uint32 port = 3 [json_name = "port"];
+}
+
+message CommonConnectResponse {
+}
+
+
+message CommonNewAddressRequest {
+}
+
+message CommonNewAddressResponse {
+  string address = 1 [json_name = "address"];
+}
+
+
+message CommonCreateInvoiceRequest {
+  optional uint64 amountMsat = 1 [json_name = "amount_msat"];
+  optional string description = 2 [json_name = "description"];
+  string label = 3 [json_name = "label"];
+  optional uint64 expiry = 4 [json_name = "expiry"];
+}
+
+message CommonCreateInvoiceResponse {
+  string paymentRequest = 1 [json_name = "payment_request"];
+  bytes paymentHash = 2 [json_name = "payment_hash"];
+}
+
+
+message CommonListPeersRequest {
+}
+
+message CommonListPeersResponse {
+  repeated Peer peers = 1 [json_name = "peers"];
+}
+
+message Peer {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  repeated string networkAddresses = 2 [json_name = "network_addresses"];
+}
+
+
+message CommonOpenChannelRequest {
+  bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+  uint64 amountMsat = 2 [json_name = "amount_msat"];
+  optional uint32 satPerVbyte = 3 [json_name = "sat_per_vbyte"];
+  optional uint64 pushMsat = 4 [json_name = "push_msat"];
+  optional uint32 targetConf = 5 [json_name = "target_conf"];
+  optional bool announce = 6 [json_name = "announce"];
+  optional uint32 minUtxoDepth = 7 [json_name = "min_utxo_depth"];
+  optional string closeToAddress = 8 [json_name = "close_to_address"];
+}
+
+message CommonOpenChannelResponse {
+  bytes txid = 1 [json_name = "txid"];
+  uint32 outputIndex = 2 [json_name = "output_index"];
+}
+
+
+message CommonListUnspentRequest {
+}
+
+message CommonListUnspentResponse {
+  repeated UnspentOutput unspentOutputs = 1 [json_name = "unspent_outputs"];
+}
+
+message UnspentOutput {
+  bytes txid = 1 [json_name = "txid"];
+  uint32 outputIndex = 2 [json_name = "output_index"];
+  uint64 amountMsat = 3 [json_name = "amount_msat"];
+  bytes scriptPubkey = 4 [json_name = "script_pubkey"];
+}
+
+
+message CommonListPeerChannelsRequest {
+}
+
+message CommonListPeerChannelsResponse {
+    repeated PeerChannel peerChannels = 1 [json_name = "peer_channels"];
+}
+
+message PeerChannel {
+  bytes remoteIdentityPubkey = 1 [json_name = "remote_identity_pubkey"];
+  uint64 capacityMsat = 2 [json_name = "capacity_msat"];
+  bool announced = 3 [json_name = "announced"];
+  bool active = 4 [json_name = "active"];
+  bool initiator = 5 [json_name = "initiator"];
+  optional uint64 localBalanceMsat = 6 [json_name = "local_balance_msat"];
+  optional uint64 remoteBalanceMsat = 7 [json_name = "remote_balance_msat"];
+  optional uint64 estimatedSpendableMsat = 8 [json_name = "estimated_spendable_msat"];
+  optional uint64 estimatedReceivableMsat = 9 [json_name = "estimated_receivable_msat"];
+}
+
+
+message CommonPayRequest {
+  string paymentRequest = 1 [json_name = "payment_request"];
+  optional uint64 amountMsat = 2 [json_name = "amount_msat"];
+  optional int32 timeoutSeconds = 3 [json_name = "timeout_seconds"];
+  optional int64 maxFeeMsat = 4 [json_name = "max_fee_msat"];
+}
+
+message CommonPayResponse {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+  PaymentStatus status = 2 [json_name = "status"];
+  uint64 amountMsat = 3 [json_name = "amount_msat"];
+  optional bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+
+  enum PaymentStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    COMPLETE = 2;
+    FAILED = 3;
+  }
+}
+
+
+message CommonLookupInvoiceRequest {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+}
+
+message CommonLookupInvoiceResponse {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+  InvoiceStatus status = 2 [json_name = "status"];
+  uint64 amountMsat = 3 [json_name = "amount_msat"];
+  bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+
+  enum InvoiceStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    COMPLETE = 2;
+    CANCELLED = 3;
+  }
+}
+
+
+message CommonLookupPaymentRequest {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+}
+
+message CommonLookupPaymentResponse {
+  bytes paymentHash = 1 [json_name = "payment_hash"];
+  CommonPayResponse.PaymentStatus status = 2 [json_name = "status"];
+  optional uint64 amountMsat = 3 [json_name = "amount_msat"];
+  optional bytes paymentPreimage = 4 [json_name = "payment_preimage"];
+}
+
+
+message CommonQueryRouteRequest {
+  bytes remoteIdentityPubkey = 1 [json_name = "remote_identity_pubkey"];
+  uint64 amountMsat = 2 [json_name = "amount_msat"];
+}
+
+message CommonQueryRouteResponse {
+  repeated Route routes = 1 [json_name = "routes"];
+
+  message Route {
+    repeated Hop hops = 1 [json_name = "hops"];
+  }
+
+  message Hop {
+    bytes identityPubkey = 1 [json_name = "identity_pubkey"];
+    // uint64 shortChannelId = 2 [json_name = "short_channel_id"];
+    uint64 amountMsat = 2 [json_name = "amount_msat"];
+  }
+}
