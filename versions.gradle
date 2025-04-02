@@ -15,20 +15,20 @@ ext {
     protobufVersion = '3.22.5'
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2023.1.6'
-    bytebuddyPluginVersion = '1.15.3' // keep in sync with `jmoleculesBomVersion`
+    bytebuddyPluginVersion = '1.17.3' // keep in sync with `jmoleculesBomVersion`
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.3'
     acinqSecp256k1KmpVersion = '0.17.1'
     acinqBitcoinKmpVersion = '0.22.1' // keep in sync with `acinqSecp256k1KmpVersion`
     acinqLightningKmpVersion = '1.9.0' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.48.0.0'
-    hibernateCommunityDialectsVersion = '6.6.5.Final'
+    hibernateCommunityDialectsVersion = '6.6.11.Final'
     lombokVersion = '1.18.30'
     springdocOpenApiVersion = '2.3.0'
     checkstyleVersion = '10.3.4'
     findsecbugsPluginVersion = '1.13.0'
     torSpringBootStarterVersion = '0.9.0'
-    springBootGradlePluginVersion = '3.3.4'
+    springBootGradlePluginVersion = '3.4.4'
     protobufGradleVersion = '0.9.4'
 }
 

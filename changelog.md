@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update bitcoin-kmp from v0.20.0 to v0.22.1
 - upgrade: update secp256k1-kmp from v0.15.0 to v0.17.1
 
+### Changed
+- upgrade: update spring-boot from v3.3.4 to v3.4.4
+- upgrade: update hibernate-community-dialects from v6.6.5.Final to v6.6.11.Final
+- upgrade: update bytebuddy from v1.15.3 to v1.17.3
+
 ## [0.15.0] - 2024-04-01
 
 ### Changed
