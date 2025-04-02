@@ -7,7 +7,7 @@ description = 'lightning regtest core package'
 dependencies {
     api "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"
     api "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
-    api "fr.acinq.lightning:lightning-kmp-jvm:${acinqLightningKmpVersion}"
+    api "fr.acinq.lightning:lightning-kmp-core-jvm:${acinqLightningKmpVersion}"
 
     api project(':lightning-commons:lightning-commons-client-core')
 }
