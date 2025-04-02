@@ -2,28 +2,35 @@ package org.tbk.electrum;
 
 import lombok.Builder;
 import lombok.Value;
-import org.tbk.electrum.command.DaemonCloseWalletRequest;
-import org.tbk.electrum.command.DaemonLoadWalletRequest;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ElectrumClient {
 
     default boolean isDaemonConnected() {
-        return this.daemonStatus().isConnected();
+        return this.getInfo().isConnected();
     }
-
-    Version daemonVersion();
 
     List<String> createMnemonicSeed();
 
+    Wallet createWallet(CreateParams params);
+
+    List<String> getMnemonicSeed(GetSeedParams params);
+
     Boolean isWalletSynchronized();
 
+    Boolean isWalletSynchronized(IsSynchronizedParams params);
+
+    List<ListWalletEntry> listOpenWallets();
+
     Balance getBalance();
+
+    Balance getBalance(GetBalanceParams params);
 
     List<String> listAddresses();
 
@@ -33,11 +40,25 @@ public interface ElectrumClient {
 
     List<String> listAddressesUnfunded();
 
-    Boolean isOwnerOfAddress(String address);
+    default Boolean isOwnerOfAddress(String address) {
+        return isOwnerOfAddress(IsMineParams.builder()
+                .address(address)
+                .build());
+    }
 
-    Optional<String> getUnusedAddress();
+    Boolean isOwnerOfAddress(IsMineParams params);
 
-    String createNewAddress();
+    default Optional<String> getUnusedAddress() {
+        return getUnusedAddress(GetUnusedAddressParams.builder().build());
+    }
+
+    Optional<String> getUnusedAddress(GetUnusedAddressParams params);
+
+    default String createNewAddress() {
+        return createNewAddress(CreateNewAddressParams.builder().build());
+    }
+
+    String createNewAddress(CreateNewAddressParams params);
 
     Balance getAddressBalance(String address);
 
@@ -45,7 +66,7 @@ public interface ElectrumClient {
 
     List<TxHashAndBlockHeight> getAddressHistory(String address);
 
-    History getHistory();
+    OnchainHistory getOnchainHistory();
 
     RawTx getRawTransaction(String txHash);
 
@@ -53,17 +74,17 @@ public interface ElectrumClient {
 
     Tx getDeserializedTransaction(RawTx rawTx);
 
-    DaemonStatusResponse daemonStatus();
+    GetInfoResponse getInfo();
 
-    Boolean loadWallet(DaemonLoadWalletRequest request);
+    boolean loadWallet(LoadWalletParams request);
 
-    Boolean closeWallet(DaemonCloseWalletRequest request);
-
-    List<String> getMnemonicSeed(String walletPassphrase);
+    Boolean closeWallet(CloseWalletParams request);
 
     Optional<Object> daemonGetConfig(ConfigKey key);
 
     void daemonSetConfig(ConfigKey key, String value);
+
+    RawTx createTransaction(PaytoParams params);
 
     RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress);
 
@@ -85,7 +106,14 @@ public interface ElectrumClient {
      * @param walletPassphrase the wallet password or null if wallet is not encrypted
      * @return a signed transaction
      */
-    RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase);
+    default RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase) {
+        return signTransaction(SignTransactionParams.of(rawTx)
+                .password(walletPassphrase)
+                .build()
+        );
+    }
+
+    RawTx signTransaction(SignTransactionParams params);
 
     String broadcast(RawTx rawTx);
 
@@ -95,11 +123,15 @@ public interface ElectrumClient {
 
     String encryptMessage(String publicKeyHex, String plaintext);
 
-    String decryptMessage(String publicKeyHex, String encryptedMessage, @Nullable String walletPassphrase);
+    String decryptMessage(DecryptParams params);
 
     String signMessage(String address, String message, @Nullable String walletPassphrase);
 
     Boolean verifyMessage(String address, String signature, String message);
+
+    Version daemonVersion();
+
+    Map<String, String> daemonVersionInfo();
 
     @Value
     @Builder

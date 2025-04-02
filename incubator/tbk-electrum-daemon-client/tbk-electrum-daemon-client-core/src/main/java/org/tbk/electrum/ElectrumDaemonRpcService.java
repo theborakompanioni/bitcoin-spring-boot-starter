@@ -9,10 +9,10 @@ import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcOptional;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcParam;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcService;
 import org.tbk.electrum.command.*;
-import org.tbk.electrum.model.History;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a raw electrum rpc interfaces.
@@ -21,40 +21,110 @@ import java.util.List;
  *
  * <p>This interface is tested with electrum v3.3.8.
  *
- * <p>Not every parameter is currently implemented.
- *
- * <p>Following methods are still missing to be feature complete:
- * [ ] "addrequest",
- * [ ] "addtransaction",
- * [ ] "clearrequests",
- * [ ] "commands",
- * [ ] "create",
- * [ ] "createmultisig",
- * [ ] "freeze",
- * [ ] "getalias",
- * [ ] "getfeerate",
- * [ ] "getmasterprivate",
- * [ ] "getmerkle",
- * [ ] "getmpk",
- * [ ] "getprivatekeys",
- * [ ] "getrequest",
- * [ ] "getservers",
- * [ ] "help",
- * [ ] "importprivkey",
- * [ ] "listcontacts",
- * [ ] "listrequests",
- * [ ] "listunspent",
- * [ ] "password",
- * [ ] "paytomany",
- * [ ] "restore",
- * [ ] "rmrequest",
- * [ ] "searchcontacts",
- * [ ] "serialize",
- * [ ] "setlabel",
- * [ ] "signrequest",
- * [ ] "sweep",
- * [ ] "unfreeze",
- * [ ] "validateaddress",
+ * <p>Not every method is currently implemented.
+ * <p>`electrum --regtest help`:
+ * [
+ * "add_peer",
+ * "add_request",
+ * "addtransaction",
+ * [x] "broadcast",
+ * "bumpfee",
+ * "changegaplimit",
+ * "clear_invoices",
+ * "clear_ln_blacklist",
+ * "clear_requests",
+ * "close_channel",
+ * [x] "close_wallet",
+ * "commands",
+ * "convert_currency",
+ * "convert_xkey",
+ * [x] "create",
+ * "createmultisig",
+ * [x] "createnewaddress",
+ * "decode_invoice",
+ * [x] "decrypt",
+ * "delete_invoice",
+ * "delete_request",
+ * [x] "deserialize",
+ * "dumpprivkeys",
+ * "enable_htlc_settle",
+ * [x] "encrypt",
+ * "export_channel_backup",
+ * "freeze",
+ * "freeze_utxo",
+ * "get",
+ * "get_channel_ctx",
+ * "get_invoice",
+ * "get_request",
+ * "get_tx_status",
+ * "get_watchtower_ctn",
+ * [x] "getaddressbalance",
+ * [x] "getaddresshistory",
+ * [x] "getaddressunspent",
+ * "getalias",
+ * [ ] "getbalance",
+ * [ ] "getconfig",
+ * "getfeerate",
+ * [x] "getinfo",
+ * "getmasterprivate",
+ * "getmerkle",
+ * "getminacceptablegap",
+ * "getmpk",
+ * "getprivatekeyforpath",
+ * "getprivatekeys",
+ * "getpubkeys",
+ * [ ] "getseed",
+ * "getservers",
+ * [ ] "gettransaction",
+ * [ ] "getunusedaddress",
+ * "help",
+ * "import_channel_backup",
+ * "importprivkey",
+ * [ ] "is_synchronized",
+ * [ ] "ismine",
+ * "lightning_history",
+ * "list_channels",
+ * "list_invoices",
+ * "list_peers",
+ * "list_requests",
+ * "list_wallets",
+ * [ ] "listaddresses",
+ * "listcontacts",
+ * "listunspent",
+ * "lnpay",
+ * [ ] "load_wallet",
+ * [ ] "make_seed",
+ * "nodeid",
+ * "normal_swap",
+ * [ ] "notify",
+ * [x] "onchain_history",
+ * "open_channel",
+ * "password",
+ * [x] "payto",
+ * "paytomany",
+ * "rebalance_channels",
+ * "removelocaltx",
+ * "request_force_close",
+ * "reset_liquidity_hints",
+ * "restore",
+ * "reverse_swap",
+ * "searchcontacts",
+ * "serialize",
+ * [ ] "setconfig",
+ * "setfeerate",
+ * "setlabel",
+ * [ ] "signmessage",
+ * [ ] "signtransaction",
+ * "signtransaction_with_privkey",
+ * [x] "stop",
+ * "sweep",
+ * "unfreeze",
+ * "unfreeze_utxo",
+ * "validateaddress",
+ * [x] "verifymessage",
+ * [x] "version",
+ * [x] "version_info"
+ * ]
  */
 @JsonRpcService
 @JsonRpcId(AtomicLongIdGenerator.class)
@@ -62,94 +132,66 @@ import java.util.List;
 public interface ElectrumDaemonRpcService {
 
     /**
-     * Returns the version of Electrum that is currently running.
+     * Broadcast a transaction to the network.
      *
-     * @return the version of Electrum that is currently running
+     * @param tx a raw transaction (hexadecimal)
+     * @return tx hash
      */
-    @JsonRpcMethod("version")
-    String version();
+    @JsonRpcMethod("broadcast")
+    String broadcast(@JsonRpcParam("tx") String tx);
 
     /**
-     * Generates a new seed. Does not change the current seed.
+     * Close wallet
      *
-     * @return a new seed
+     * @param walletPath wallet path
      */
-    @JsonRpcMethod("make_seed")
-    String makeseed();
+    @JsonRpcMethod("close_wallet")
+    Boolean closewallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
-     * Return the wallet’s mnemonic seed.
+     * Create a new wallet.
      *
-     * @return the wallet's mnemonic seed
+     * @param passphrase         Seed extension
+     * @param encryptionPassword Whether the file on disk should be encrypted with the provided password
+     * @param seedType           The type of seed to create, e.g. 'standard' or 'segwit'
+     * @param password           wallet password
+     * @param walletPath         wallet path
+     * @return a new wallet or error in case it exists
      */
-    @JsonRpcMethod("getseed")
-    String getseed(@JsonRpcOptional @JsonRpcParam("password") String password);
-
-    @JsonRpcMethod("is_synchronized")
-    Boolean issynchronized();
-
-    @JsonRpcMethod("getbalance")
-    BalanceResponse getbalance();
+    @JsonRpcMethod("create")
+    CreateResponse create(@JsonRpcOptional @JsonRpcParam("passphrase") String passphrase,
+                          @JsonRpcOptional @JsonRpcParam("encrypt_file") Boolean encryptionPassword,
+                          @JsonRpcOptional @JsonRpcParam("seed_type") String seedType,
+                          @JsonRpcOptional @JsonRpcParam("password") String password,
+                          @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
-     * Returns true if the address belongs to the wallet, or false otherwise.
+     * Decrypt a message encrypted with a public key.
      *
-     * @param address the wallet address
-     * @return true if the address belongs to the wallet, or false otherwise
+     * @param pubkey     the public key
+     * @param encrypted  the encrypted message
+     * @param password   the wallet password
+     * @param walletPath wallet path
+     * @return a decrypted message
      */
-    @JsonRpcMethod("ismine")
-    Boolean ismine(@JsonRpcParam("address") String address);
+    @JsonRpcMethod("decrypt")
+    String decrypt(@JsonRpcParam("pubkey") String pubkey,
+                   @JsonRpcParam("encrypted") String encrypted,
+                   @JsonRpcOptional @JsonRpcParam("password") String password,
+                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    @JsonRpcMethod("deserialize")
+    DeserializeResponse deserialize(@JsonRpcParam("tx") String tx);
 
     /**
-     * Returns a list of addresses controlled by the wallet.
+     * Encrypt a message with a public key. Use quotes if the message contains whitespaces.
      *
-     * @return a list of addresses controlled by the wallet
+     * @param pubkey  the public key
+     * @param message the plaintext message
+     * @return an encrypted message
      */
-    @JsonRpcMethod("listaddresses")
-    List<String> listaddresses();
-
-    @JsonRpcMethod("listaddresses")
-    List<String> listaddresses(@JsonRpcParam("funded") boolean funded);
-
-    @JsonRpcMethod("listaddresses")
-    List<String> listaddresses(@JsonRpcOptional @JsonRpcParam("receiving") Boolean receiving,
-                               @JsonRpcOptional @JsonRpcParam("change") Boolean change,
-                               @JsonRpcOptional @JsonRpcParam("labels") Boolean labels,
-                               @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
-                               @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
-                               @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
-                               @JsonRpcOptional @JsonRpcParam("balance") Boolean balance);
-
-    /**
-     * Returns the first unused address of the wallet, or none if all addresses are used.
-     * An address is considered to be used if it has received a transaction, or if it is used in a payment request.
-     *
-     * @return the first unused address of the wallet, or none if all addresses are used.
-     */
-    @JsonRpcMethod("getunusedaddress")
-    @Nullable
-    String getunusedaddress();
-
-    /**
-     * Creates a new receiving address.
-     *
-     * @return a new receiving address
-     */
-    @JsonRpcMethod("createnewaddress")
-    String createnewaddress();
-
-    /**
-     * Electrum actually returns a json embedded in a string -_-
-     * Represented in {@link History} but you must parse it yourself.
-     *
-     * @return a string containing the HistoryResponse json
-     */
-    @JsonRpcMethod("history")
-    String history();
-
-    @JsonRpcMethod("history")
-    String history(@JsonRpcParam("show_addresses") boolean showAddresses);
-
+    @JsonRpcMethod("encrypt")
+    String encrypt(@JsonRpcParam("pubkey") String pubkey, @JsonRpcParam("message") String message);
 
     /**
      * Returns the balance of address. This is a walletless server query. Results are not checked by SPV.
@@ -190,19 +232,178 @@ public interface ElectrumDaemonRpcService {
     List<AddressUnspentResponse.Utxo> getaddressunspent(@JsonRpcParam("address") String address);
 
     @JsonRpcMethod("gettransaction")
-    RawTransactionResponse gettransaction(@JsonRpcParam("txid") String txId);
+    String gettransaction(@JsonRpcParam("txid") String txId);
 
-    @JsonRpcMethod("deserialize")
-    DeserializeResponse deserialize(@JsonRpcParam("tx") String tx);
+    @JsonRpcMethod("getinfo")
+    GetInfoResponse getinfo();
 
-    @JsonRpcMethod("daemon")
-    DaemonStatusResponse status(@JsonRpcParam("config_options") DaemonStatusRequest request);
+    /**
+     * Generates a new seed. Does not change the current seed.
+     *
+     * @return a new seed
+     */
+    @JsonRpcMethod("make_seed")
+    String makeseed();
 
-    @JsonRpcMethod("daemon")
-    Boolean loadwallet(@JsonRpcParam("config_options") DaemonLoadWalletRequest request);
+    /**
+     * Generates a new seed. Does not change the current seed.
+     *
+     * @param seed_type the type of seed to create, e.g. 'standard' or 'segwit'
+     * @return a new seed
+     */
+    @JsonRpcMethod("make_seed")
+    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seed_type);
 
-    @JsonRpcMethod("daemon")
-    Boolean closewallet(@JsonRpcParam("config_options") DaemonCloseWalletRequest request);
+    /**
+     * Generates a new seed. Does not change the current seed.
+     *
+     * @param seed_type the type of seed to create, e.g. 'standard' or 'segwit'
+     * @param language  default language for wordlist
+     * @return a new seed
+     */
+    @JsonRpcMethod("make_seed")
+    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seed_type,
+                    @JsonRpcOptional @JsonRpcParam("language") String language);
+
+    /**
+     * Return the wallet’s mnemonic seed.
+     *
+     * @param password   wallet password
+     * @param walletPath wallet path
+     * @return the wallet's mnemonic seed
+     */
+    @JsonRpcMethod("getseed")
+    String getseed(@JsonRpcOptional @JsonRpcParam("password") String password,
+                   // sanity comment: yes, it is called "wallet" and not "wallet_path" here!
+                   @JsonRpcOptional @JsonRpcParam("wallet") String walletPath);
+
+    /**
+     * return wallet synchronization status
+     *
+     * @return wallet synchronization status
+     */
+    @JsonRpcMethod("is_synchronized")
+    Boolean issynchronized();
+
+    /**
+     * return wallet synchronization status
+     *
+     * @param walletPath wallet path
+     * @return wallet synchronization status
+     */
+    @JsonRpcMethod("is_synchronized")
+    Boolean issynchronized(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    @JsonRpcMethod("getbalance")
+    BalanceResponse getbalance();
+
+    /**
+     * Return the balance of your wallet.
+     *
+     * @param walletPath wallet path
+     * @return wallet balance
+     */
+    @JsonRpcMethod("getbalance")
+    BalanceResponse getbalance(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
+     * Check if address is in wallet.
+     *
+     * @param address    the wallet address
+     * @param walletPath wallet path
+     * @return true if the address belongs to the wallet, or false otherwise
+     */
+    @JsonRpcMethod("ismine")
+    Boolean ismine(@JsonRpcParam("address") String address,
+                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
+     * Returns a list of addresses controlled by the wallet.
+     *
+     * @return a list of addresses controlled by the wallet
+     */
+    @JsonRpcMethod("listaddresses")
+    List<String> listaddresses();
+
+    @JsonRpcMethod("listaddresses")
+    List<String> listaddresses(@JsonRpcParam("funded") boolean funded);
+
+    @JsonRpcMethod("listaddresses")
+    List<String> listaddresses(@JsonRpcOptional @JsonRpcParam("receiving") Boolean receiving,
+                               @JsonRpcOptional @JsonRpcParam("change") Boolean change,
+                               @JsonRpcOptional @JsonRpcParam("labels") Boolean labels,
+                               @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
+                               @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
+                               @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
+                               @JsonRpcOptional @JsonRpcParam("balance") Boolean balance);
+
+    /**
+     * Returns the first unused address of the wallet, or none if all addresses are used.
+     * An address is considered to be used if it has received a transaction,
+     * or if it is used in a payment request.
+     *
+     * @return the first unused address of the wallet, or none if all addresses are used.
+     */
+    @JsonRpcMethod("getunusedaddress")
+    @Nullable
+    String getunusedaddress();
+
+    @JsonRpcMethod("getunusedaddress")
+    @Nullable
+    String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
+     * Create a new receiving address, beyond the gap limit of the wallet.
+     *
+     * @return a new receiving address
+     */
+    @JsonRpcMethod("createnewaddress")
+    String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainhistory();
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+                                   @JsonRpcParam("from_height") long fromHeight);
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+                                   @JsonRpcParam("from_height") long fromHeight,
+                                   @JsonRpcParam("to_height") long toHeight);
+
+    @JsonRpcMethod("onchain_history")
+    HistoryResponse onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
+                                   @JsonRpcOptional @JsonRpcParam("year") Long year,
+                                   @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
+                                   @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight,
+                                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
+     * List wallets open in daemon
+     *
+     * @return open wallets in daemon
+     */
+    @JsonRpcMethod("list_wallets")
+    List<ListWalletEntry> listwallets();
+
+    @JsonRpcMethod("load_wallet")
+    Boolean loadwallet();
+
+    /**
+     * Load the wallet in memory
+     *
+     * @param walletPath wallet path
+     * @param password   wallet password
+     * @param unlock     unlock the wallet (store the password in memory)
+     */
+    @JsonRpcMethod("load_wallet")
+    void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
+                    @JsonRpcOptional @JsonRpcParam("password") String password,
+                    @JsonRpcOptional @JsonRpcParam("unlock") Boolean unlock);
 
     @JsonRpcMethod("getconfig")
     @Nullable
@@ -220,14 +421,14 @@ public interface ElectrumDaemonRpcService {
 
 
     @JsonRpcMethod("payto")
-    RawTransactionResponse payto(@JsonRpcParam("destination") String destination,
-                                 @JsonRpcParam("amount") String amount,
-                                 @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
-                                 @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
-                                 @JsonRpcParam("password") String password);
+    String payto(@JsonRpcParam("destination") String destination,
+                 @JsonRpcParam("amount") String amount,
+                 @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
+                 @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
+                 @JsonRpcParam("password") String password);
 
     @JsonRpcMethod("payto")
-    RawTransactionResponse payto(
+    String payto(
             @JsonRpcParam("destination") String destination,
             @JsonRpcParam("amount") String amount,
             @JsonRpcOptional @JsonRpcParam("fee") String fee,
@@ -237,30 +438,12 @@ public interface ElectrumDaemonRpcService {
             @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
             @JsonRpcOptional @JsonRpcParam("nocheck") Boolean nocheck, // untested atm
             @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
-            @JsonRpcOptional @JsonRpcParam("rbf") Object rbf, // untested atm
+            @JsonRpcOptional @JsonRpcParam("rbf") Boolean rbf,
+            @JsonRpcOptional @JsonRpcParam("locktime") Long locktime, // untested atm
+            @JsonRpcOptional @JsonRpcParam("addtransaction") Object addtransaction, // untested atm
             @JsonRpcOptional @JsonRpcParam("password") String password,
-            @JsonRpcOptional @JsonRpcParam("locktime") Long locktime // untested atm
+            @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath
     );
-
-    /**
-     * Broadcast a transaction to the network.
-     *
-     * @param tx a raw transaction (hexadecimal)
-     * @return tx hash
-     */
-    @JsonRpcMethod("broadcast")
-    String broadcast(@JsonRpcParam("tx") String tx);
-
-    /**
-     * password is optional (if you have an unencrypted wallet - which is highly discouraged).
-     *
-     * @param tx       a raw transaction (hexadecimal)
-     * @param password the wallet passphrase (null if unencrypted).
-     * @return a signed transaction
-     */
-    @JsonRpcMethod("signtransaction")
-    RawTransactionResponse signtransaction(@JsonRpcParam("tx") String tx,
-                                           @JsonRpcOptional @JsonRpcParam("password") String password);
 
     /**
      * Watch an address. Everytime the address changes, a http POST is sent to the URL.
@@ -270,30 +453,8 @@ public interface ElectrumDaemonRpcService {
      * @return will always return true or errors (in v3.3.8)
      */
     @JsonRpcMethod("notify")
-    Boolean notify(@JsonRpcParam("address") String address, @JsonRpcParam("URL") String url);
-
-    /**
-     * Encrypt a message with a public key. Use quotes if the message contains whitespaces.
-     *
-     * @param pubkey  the pubkey
-     * @param message the plaintext message
-     * @return an encrypted message
-     */
-    @JsonRpcMethod("encrypt")
-    String encrypt(@JsonRpcParam("pubkey") String pubkey, @JsonRpcParam("message") String message);
-
-    /**
-     * Decrypt a message encrypted with a public key.
-     *
-     * @param pubkey    the pubkey
-     * @param encrypted the encrypted message
-     * @param password  the wallet password
-     * @return a decrypted message
-     */
-    @JsonRpcMethod("decrypt")
-    String decrypt(@JsonRpcParam("pubkey") String pubkey,
-                   @JsonRpcParam("encrypted") String encrypted,
-                   @JsonRpcOptional @JsonRpcParam("password") String password);
+    Boolean notify(@JsonRpcParam("address") String address,
+                   @JsonRpcParam("URL") String url);
 
     /**
      * Return the public keys for a wallet address.
@@ -303,6 +464,29 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("getpubkeys")
     List<String> getpubkeys(@JsonRpcParam("address") String address);
+
+    /**
+     * Sign a transaction. The wallet keys will be used to sign the transaction.
+     * <p>
+     * Password is optional (if you have an unencrypted wallet - which is highly discouraged).
+     *
+     * @param tx         a raw transaction (hexadecimal)
+     * @param password   the wallet passphrase (null if unencrypted).
+     * @param walletPath wallet path
+     * @return a signed transaction
+     */
+    @JsonRpcMethod("signtransaction")
+    String signtransaction(@JsonRpcParam("tx") String tx,
+                           @JsonRpcOptional @JsonRpcParam("password") String password,
+                           @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
+     * Stop daemon
+     *
+     * @return "Daemon stopped" string
+     */
+    @JsonRpcMethod("stop")
+    String stop();
 
     /**
      * Sign a message with a key. Use quotes if your message contains whitespaces
@@ -322,11 +506,49 @@ public interface ElectrumDaemonRpcService {
      *
      * @param address   the wallet address
      * @param signature signature in base64
-     * @param message   the message
+     * @param message   Clear text message. Use quotes if it contains spaces.
      * @return true if the signature is valid
      */
     @JsonRpcMethod("verifymessage")
     Boolean verifymessage(@JsonRpcParam("address") String address,
                           @JsonRpcParam("signature") String signature,
                           @JsonRpcParam("message") String message);
+
+    /**
+     * Returns the version of Electrum that is currently running.
+     *
+     * @return the version of Electrum that is currently running
+     */
+    @JsonRpcMethod("version")
+    String version();
+
+    /**
+     * Return information about dependencies, such as their version and path.
+     * <p>
+     * Example:
+     * <code>
+     * {
+     * "aiohttp.version": "3.11.12",
+     * "aiorpcx.version": "0.23.1",
+     * "certifi.version": "2025.01.31",
+     * "cryptodome.version": null,
+     * "cryptography.path": "/usr/local/lib/python3.9/site-packages/cryptography",
+     * "cryptography.version": "44.0.1",
+     * "dnspython.version": "2.7.0",
+     * "electrum.path": "/usr/local/lib/python3.9/site-packages/electrum",
+     * "electrum.version": "4.5.8",
+     * "hidapi.version": null,
+     * "libsecp256k1.path": "libsecp256k1.so.2",
+     * "libusb.version": null,
+     * "libzbar.path": null,
+     * "pyaes.version": null,
+     * "python.path": "/usr/local/bin/python3.9",
+     * "python.version": "3.9.21 (main, Feb 14 2025, 19:14:18) \n[GCC 14.2.0]"
+     * }
+     * </code>
+     *
+     * @return information about dependencies
+     */
+    @JsonRpcMethod("version_info")
+    Map<String, String> versioninfo();
 }

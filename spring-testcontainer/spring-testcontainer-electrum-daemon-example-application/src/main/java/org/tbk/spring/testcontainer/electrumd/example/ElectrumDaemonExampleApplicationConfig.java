@@ -7,14 +7,13 @@ import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
-import org.lightningj.lnd.wrapper.message.GetInfoResponse;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.GetInfoResponse;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
@@ -34,7 +33,7 @@ class ElectrumDaemonExampleApplicationConfig {
 
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
                 try {
-                    DaemonStatusResponse daemonStatus = electrumClient.daemonStatus();
+                    GetInfoResponse daemonStatus = electrumClient.getInfo();
                     log.info("[electrum] blockchain height: {} (server height: {})", daemonStatus.getBlockchainHeight(), daemonStatus.getServerHeight());
                 } catch (Exception e) {
                     log.error("", e);
@@ -74,7 +73,7 @@ class ElectrumDaemonExampleApplicationConfig {
 
             Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
                 try {
-                    GetInfoResponse info = lndApi.getInfo();
+                    org.lightningj.lnd.wrapper.message.GetInfoResponse info = lndApi.getInfo();
                     log.info("[lnd] block hash (height: {}): {}", info.getBlockHeight(), info.getBlockHash());
                 } catch (StatusException | ValidationException e) {
                     log.error("", e);

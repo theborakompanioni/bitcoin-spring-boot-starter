@@ -1,20 +1,12 @@
 package org.tbk.electrum;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
-import lombok.Builder;
 import lombok.SneakyThrows;
-import lombok.Value;
 import org.tbk.electrum.command.*;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -23,21 +15,13 @@ import static java.util.Objects.requireNonNull;
 public class ElectrumClientImpl implements ElectrumClient {
 
     private static List<String> splitMnemonicSeed(String seed) {
-        return ImmutableList.copyOf(seed.split(" "));
+        return Arrays.asList(seed.split(" "));
     }
-
-    private static final ObjectMapper objectMapper = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final ElectrumDaemonRpcService delegate;
 
     public ElectrumClientImpl(ElectrumDaemonRpcService delegate) {
         this.delegate = requireNonNull(delegate);
-    }
-
-    @Override
-    public Version daemonVersion() {
-        return SimpleVersion.from(delegate.version());
     }
 
     @Override
@@ -51,50 +35,82 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
+    public RawTx createTransaction(PaytoParams params) {
+        try {
+            String payto = delegate.payto(
+                    params.getDestination(),
+                    params.getAmount(),
+                    params.getFee(),
+                    params.getFeeRate(),
+                    params.getFromAddress(),
+                    params.getFromCoins(),
+                    params.getChangeAddress(),
+                    params.getNoCheck(),
+                    params.getUnsigned(),
+                    params.getReplaceByFee(),
+                    params.getLocktime(),
+                    params.getAddTransaction(),
+                    params.getPassword(),
+                    params.getWalletPath()
+            );
+
+            // payto can be base64 or hex
+            // hex: for finalized tx?
+            // base64: for unsigned tx?
+            byte[] raw = fromHexOrBase64(payto);
+
+            return SimpleRawTx.builder()
+                    .hex(HexFormat.of().formatHex(raw))
+                    .finalized(Boolean.TRUE.equals(params.getUnsigned()))
+                    .complete(Boolean.TRUE.equals(params.getUnsigned()))
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not deserialize request");
+        }
+    }
+
+    @Override
     public RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress) {
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        return this.createTransactionInternal("!", destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .unsigned(true)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount("!")
+                .unsigned(true)
+                .build());
     }
 
     @Override
     public RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress, TxoValue fee) {
         checkArgument(fee != null, "`fee` must not be null");
 
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        return this.createTransactionInternal("!", destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .unsigned(true)
-                        .fee(fee)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount("!")
+                .unsigned(true)
+                .fee(BtcTxoValues.toBtc(fee).toPlainString())
+                .build());
     }
 
     @Override
     public RawTx createUnsignedTransaction(TxoValue value, String destinationAddress, String changeAddress) {
-        String amountAsBtcString = BtcTxoValues.toBtc(value).toPlainString();
-
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        return this.createTransactionInternal(amountAsBtcString, destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .changeAddress(changeAddress)
-                        .unsigned(true)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount(BtcTxoValues.toBtc(value).toPlainString())
+                .unsigned(true)
+                .changeAddress(changeAddress)
+                .build());
     }
 
     @Override
     public RawTx createUnsignedTransaction(TxoValue value, String destinationAddress, String changeAddress, TxoValue fee) {
         checkArgument(fee != null, "`fee` must not be null");
 
-        String password = "ANY"; // password can be anything but null when tx is not signed
-        String amountAsBtcString = BtcTxoValues.toBtc(value).toPlainString();
-        return this.createTransactionInternal(amountAsBtcString, destinationAddress, password,
-                ExperimentalCreateTxOptions.builder()
-                        .unsigned(true)
-                        .changeAddress(changeAddress)
-                        .fee(fee)
-                        .build());
+        return this.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .amount(BtcTxoValues.toBtc(value).toPlainString())
+                .unsigned(true)
+                .changeAddress(changeAddress)
+                .fee(BtcTxoValues.toBtc(fee).toPlainString())
+                .build());
     }
 
     /**
@@ -106,25 +122,30 @@ public class ElectrumClientImpl implements ElectrumClient {
      * but silently returns the unsigned transaction again.
      * WTF electrum!
      *
-     * @param rawTx            an unsigned transaction
-     * @param walletPassphrase the wallet password or null if wallet is not encrypted
      * @return a signed transaction
      * @throws IllegalStateException if electrum did not change the transaction
      */
     @Override
-    public RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase) {
-        RawTransactionResponse signtransaction = delegate.signtransaction(rawTx.getHex(), walletPassphrase);
+    public RawTx signTransaction(SignTransactionParams params) {
+        String signtransaction = delegate.signtransaction(
+                params.getTx(),
+                params.getPassword(),
+                params.getWalletPath()
+        );
 
-        boolean rawTxHasNotChanged = rawTx.getHex().equals(signtransaction.getHex());
+        byte[] raw = fromHexOrBase64(signtransaction);
+
+        String hex = HexFormat.of().formatHex(raw);
+        boolean rawTxHasNotChanged = params.getTx().equals(hex);
         if (rawTxHasNotChanged) {
             throw new IllegalStateException("Transaction has not been signed by electrum - "
-                    + "maybe you have loaded a watchonly wallet?");
+                                            + "maybe you have loaded a watchonly wallet?");
         }
 
         return SimpleRawTx.builder()
-                .hex(signtransaction.getHex())
-                .finalized(signtransaction.isFinalized())
-                .complete(signtransaction.isComplete())
+                .hex(hex)
+                .finalized(true)
+                .complete(true)
                 .build();
     }
 
@@ -135,7 +156,35 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public List<String> createMnemonicSeed() {
-        return ImmutableList.copyOf(delegate.makeseed().split(" "));
+        return Arrays.asList(delegate.makeseed().split(" "));
+    }
+
+    @Override
+    public Wallet createWallet(CreateParams params) {
+        if (params.getEncryptFile() != null &&
+            params.getPassword() == null) {
+            throw new IllegalArgumentException("'password' must not be empty if encryption is enabled");
+        }
+
+        CreateResponse createResponse = delegate.create(
+                params.getPassphrase(),
+                params.getEncryptFile(),
+                params.getSeedType(),
+                params.getPassword(),
+                params.getWalletPath()
+        );
+
+        return new Wallet() {
+            @Override
+            public Seed getSeed() {
+                return () -> Arrays.asList(createResponse.getSeed().split(" "));
+            }
+
+            @Override
+            public String getFilePath() {
+                return createResponse.getPath();
+            }
+        };
     }
 
     @Override
@@ -144,18 +193,28 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Balance getBalance() {
-        BalanceResponse balance = delegate.getbalance();
+    public Boolean isWalletSynchronized(IsSynchronizedParams params) {
+        return delegate.issynchronized(params.getWalletPath());
+    }
 
-        return SimpleBalance.builder()
-                .confirmed(BtcTxoValues.fromBtcString(balance.getConfirmed()))
-                .unconfirmed(balance.getUnconfirmed()
-                        .map(BtcTxoValues::fromBtcString)
-                        .orElseGet(SimpleTxoValue::zero))
-                .unmatured(balance.getUnmatured()
-                        .map(BtcTxoValues::fromBtcString)
-                        .orElseGet(SimpleTxoValue::zero))
-                .build();
+    @Override
+    public Balance getBalance() {
+        return SimpleBalance.from(delegate.getbalance());
+    }
+
+    @Override
+    public Balance getBalance(GetBalanceParams params) {
+        return SimpleBalance.from(delegate.getbalance(params.getWalletPath()));
+    }
+
+    /**
+     * List wallets open in daemon
+     *
+     * @return
+     */
+    @Override
+    public List<ListWalletEntry> listOpenWallets() {
+        return delegate.listwallets();
     }
 
     @Override
@@ -186,18 +245,18 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Boolean isOwnerOfAddress(String address) {
-        return delegate.ismine(address);
+    public Boolean isOwnerOfAddress(IsMineParams params) {
+        return delegate.ismine(params.getAddress(), params.getWalletPath());
     }
 
     @Override
-    public Optional<String> getUnusedAddress() {
-        return Optional.ofNullable(delegate.getunusedaddress());
+    public Optional<String> getUnusedAddress(GetUnusedAddressParams params) {
+        return Optional.ofNullable(delegate.getunusedaddress(params.getWalletPath()));
     }
 
     @Override
-    public String createNewAddress() {
-        return delegate.createnewaddress();
+    public String createNewAddress(CreateNewAddressParams params) {
+        return delegate.createnewaddress(params.getWalletPath());
     }
 
     @Override
@@ -238,37 +297,35 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     @SneakyThrows
-    public History getHistory() {
-        // nobody knows why, but this call actually returns json embedded in a string.. wtf electrum? ¯\_(ツ)_/¯
-        String historyJsonString = delegate.history(true);
-        HistoryResponse history = objectMapper.readValue(historyJsonString, HistoryResponse.class);
+    public OnchainHistory getOnchainHistory() {
+        HistoryResponse history = delegate.onchainhistory(true);
 
         HistoryResponse.Summary summary = history.getSummary();
         List<HistoryResponse.Transaction> transactions = history.getTransactions();
 
-        SimpleHistory.SimpleSummary historySummary = SimpleHistory.SimpleSummary.builder()
-                .startBalance(BtcTxoValues.fromBtcStringOrZero(summary.getStartBalance()))
-                .endBalance(BtcTxoValues.fromBtcStringOrZero(summary.getEndBalance()))
-                .incoming(BtcTxoValues.fromBtcStringOrZero(summary.getIncoming()))
-                .outgoing(BtcTxoValues.fromBtcStringOrZero(summary.getOutgoing()))
+        SimpleOnchainHistory.SimpleSummary historySummary = SimpleOnchainHistory.SimpleSummary.builder()
+                .startBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getBegin()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
+                .endBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getEnd()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
+                .incoming(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getIncoming).orElse(null)))
+                .outgoing(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getOutgoing).orElse(null)))
                 .build();
 
-        return SimpleHistory.builder()
+        return SimpleOnchainHistory.builder()
                 .summary(historySummary)
                 .transactions(transactions.stream()
                         .map(it -> {
-                            List<SimpleHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
+                            List<SimpleOnchainHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
                                     .map(inputs -> inputs.stream()
-                                            .map(input -> SimpleHistory.SimpleHistoryTxInput.builder()
+                                            .map(input -> SimpleOnchainHistory.SimpleHistoryTxInput.builder()
                                                     .txHash(input.getPrevoutHash())
                                                     .outputIndex(input.getPrevoutN())
                                                     .build())
                                             .toList())
                                     .orElseGet(Collections::emptyList);
 
-                            List<SimpleHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
+                            List<SimpleOnchainHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
                                     .map(outputs -> outputs.stream()
-                                            .map(output -> SimpleHistory.SimpleHistoryTxOutput.builder()
+                                            .map(output -> SimpleOnchainHistory.SimpleHistoryTxOutput.builder()
                                                     .value(BtcTxoValues.fromBtcString(output.getValue()))
                                                     .address(output.getAddress())
                                                     .build())
@@ -279,7 +336,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                                     .map(Instant::ofEpochSecond)
                                     .orElse(null);
 
-                            return SimpleHistory.SimpleTransaction.builder()
+                            return SimpleOnchainHistory.SimpleTransaction.builder()
                                     .balance(BtcTxoValues.fromBtcString(it.getBalance()))
                                     .txHash(it.getTxId())
                                     .value(BtcTxoValues.fromBtcString(it.getValue()))
@@ -299,11 +356,14 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public RawTx getRawTransaction(String txHash) {
-        RawTransactionResponse response = delegate.gettransaction(txHash);
+        String gettransaction = delegate.gettransaction(txHash);
+
+        byte[] raw = fromHexOrBase64(gettransaction);
+
         return SimpleRawTx.builder()
-                .hex(response.getHex())
-                .finalized(response.isFinalized())
-                .complete(response.isComplete())
+                .hex(HexFormat.of().formatHex(raw))
+                .finalized(true)
+                .complete(true)
                 .build();
     }
 
@@ -348,28 +408,32 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public DaemonStatusResponse daemonStatus() {
-        return delegate.status(DaemonStatusRequest.create());
+    public GetInfoResponse getInfo() {
+        return delegate.getinfo();
     }
 
     @Override
-    public Boolean loadWallet(DaemonLoadWalletRequest request) {
-        return delegate.loadwallet(request);
+    public boolean loadWallet(LoadWalletParams params) {
+        delegate.loadwallet(params.getWalletPath(),
+                params.getPassword(),
+                params.getUnlock()
+        );
+        return true;
     }
 
     @Override
-    public Boolean closeWallet(DaemonCloseWalletRequest request) {
-        return delegate.closewallet(request);
+    public Boolean closeWallet(CloseWalletParams params) {
+        return delegate.closewallet(params.getWalletPath());
     }
 
     @Override
-    public List<String> getMnemonicSeed(String walletPassphrase) {
-        String getseed = delegate.getseed(walletPassphrase);
+    public List<String> getMnemonicSeed(GetSeedParams params) {
+        String getseed = delegate.getseed(params.getPassword(), params.getWalletPath());
 
         boolean seedIsAbsent = getseed == null || getseed.isEmpty();
         if (seedIsAbsent) {
             throw new IllegalStateException("Seed has not been returned by electrum - "
-                    + "maybe you have loaded a watchonly wallet?");
+                                            + "maybe you have loaded a watchonly wallet?");
         }
 
         return splitMnemonicSeed(getseed);
@@ -386,8 +450,11 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public String decryptMessage(String publicKeyHex, String encryptedMessage, @Nullable String walletPassphrase) {
-        return this.delegate.decrypt(publicKeyHex, encryptedMessage, walletPassphrase);
+    public String decryptMessage(DecryptParams params) {
+        return this.delegate.decrypt(params.getPublicKey(),
+                params.getEncryptedMessage(),
+                params.getPassword(),
+                params.getWalletPath());
     }
 
     @Override
@@ -405,59 +472,21 @@ public class ElectrumClientImpl implements ElectrumClient {
         return this.delegate.getpubkeys(address);
     }
 
-    private RawTx createTransactionInternal(String amountAsBtcString,
-                                            String destinationAddress,
-                                            @Nullable String walletPassphrase,
-                                            ExperimentalCreateTxOptions options) {
-        String feeAsBtcStringOrNull = Optional.ofNullable(options.getFee())
-                .map(BtcTxoValues::toBtc)
-                .map(BigDecimal::toPlainString)
-                .orElse(null);
-
-        RawTransactionResponse payto = delegate.payto(destinationAddress,
-                amountAsBtcString,
-                feeAsBtcStringOrNull,
-                options.getFeeRate(),
-                options.getFromAddress(),
-                options.getFromCoins(),
-                options.getChangeAddress(),
-                options.getNoCheck(),
-                options.getUnsigned(),
-                options.getReplaceByFee(),
-                walletPassphrase,
-                options.getLocktime());
-
-        if (payto.getError().isPresent()) {
-            throw new IllegalStateException(payto.getError().get());
-        }
-
-        return SimpleRawTx.builder()
-                .hex(payto.getHex())
-                .finalized(payto.isFinalized())
-                .complete(payto.isComplete())
-                .build();
+    @Override
+    public Version daemonVersion() {
+        return SimpleVersion.from(delegate.version());
     }
 
-    @Value
-    @Builder
-    private static class ExperimentalCreateTxOptions {
-        @Nullable
-        TxoValue fee;
-        @Nullable
-        Object feeRate; // untested atm
-        @Nullable
-        String fromAddress; // untested atm
-        @Nullable
-        Object fromCoins; // untested atm
-        @Nullable
-        String changeAddress;
-        @Nullable
-        Boolean noCheck; // untested atm
-        @Nullable
-        Boolean unsigned;
-        @Nullable
-        Object replaceByFee; // untested atm
-        @Nullable
-        Long locktime; // untested atm
+    @Override
+    public Map<String, String> daemonVersionInfo() {
+        return delegate.versioninfo();
+    }
+
+    private static byte[] fromHexOrBase64(String value) {
+        try {
+            return HexFormat.of().parseHex(value);
+        } catch (Exception e) {
+            return Base64.getDecoder().decode(value);
+        }
     }
 }

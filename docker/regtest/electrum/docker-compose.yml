@@ -3,7 +3,7 @@ services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
     image: polarlightning/bitcoind:27.0
-    restart: unless-stopped
+    restart: no
     command:
       -regtest=1
       -server=1
@@ -43,7 +43,7 @@ services:
   electrumx_regtest:
     container_name: electrumx_regtest
     image: lukechilds/electrumx:v1.16.0
-    restart: unless-stopped
+    restart: no
     depends_on:
       bitcoind_regtest:
         condition: service_healthy
@@ -71,19 +71,19 @@ services:
   electrumd_regtest:
     build: ./data/electrum/.
     container_name: electrumd_regtest
-    restart: unless-stopped
+    restart: no
     depends_on:
       electrumx_regtest:
         condition: service_healthy
     environment:
-      - ELECTRUM_USER=rpc-user
-      - ELECTRUM_PASSWORD=rpc-pwd
+      - ELECTRUM_RPCUSER=rpc-user
+      - ELECTRUM_RPCPASSWORD=rpc-pwd
       - ELECTRUM_NETWORK=regtest
     expose:
       - "7000"
     ports:
       - "7000:7000"
     healthcheck:
-      test: [ "CMD", "electrum", "daemon", "status", "--regtest" ]
+      test: [ "CMD", "electrum", "--regtest", "getinfo" ]
       interval: 3s
       retries: 20

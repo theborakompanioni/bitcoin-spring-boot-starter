@@ -44,7 +44,7 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
     @Override
     protected void startUp() throws InterruptedException {
         this.client.daemonSetConfig(ConfigKey.confirmed_only, Boolean.FALSE.toString());
-        this.client.daemonSetConfig(ConfigKey.use_rbf, Boolean.FALSE.toString());
+        this.client.daemonSetConfig(ConfigKey.batch_rbf, Boolean.FALSE.toString());
         this.client.daemonSetConfig(ConfigKey.fee_per_kb, String.valueOf(120 * 1_024));
         this.client.daemonSetConfig(ConfigKey.dynamic_fees, Boolean.FALSE.toString());
         this.client.daemonSetConfig(ConfigKey.check_updates, Boolean.FALSE.toString());
@@ -53,14 +53,13 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
         this.client.daemonSetConfig(ConfigKey.log_to_file, Boolean.FALSE.toString());
 
         printConfig(ConfigKey.confirmed_only);
-        printConfig(ConfigKey.use_rbf);
         printConfig(ConfigKey.check_updates);
         printConfig(ConfigKey.fee_per_kb);
 
         List<String> addresses = client.listAddresses();
         log.info("start watching addresses: {}", addresses);
 
-        while (!this.client.daemonStatus().isConnected()) {
+        while (!this.client.getInfo().isConnected()) {
             log.info("waiting till daemon is connected");
             Thread.sleep(100L);
         }

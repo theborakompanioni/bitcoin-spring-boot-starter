@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.DaemonLoadWalletRequest;
+import org.tbk.electrum.command.LoadWalletParams;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
@@ -56,7 +56,7 @@ class BitcoinRegtestExampleApplicationConfig {
             boolean daemonConnected = electrumClient.isDaemonConnected();
             log.info("electrum daemon connected: {}", daemonConnected);
 
-            Boolean loadWalletResult = electrumClient.loadWallet(DaemonLoadWalletRequest.builder()
+            Boolean loadWalletResult = electrumClient.loadWallet(LoadWalletParams.builder()
                     .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
                     .build());
             log.info("electrum load wallet result: {}", loadWalletResult);

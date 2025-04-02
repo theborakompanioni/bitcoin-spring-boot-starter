@@ -6,7 +6,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
-import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.OnchainHistory;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -55,7 +55,7 @@ public final class ElectrumRegtestActions {
      * @param amount  the amount sent to address
      * @return the action itself
      */
-    public RegtestAction<History.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount) {
+    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount) {
         return s -> Mono.from(sendPayment(address, amount))
                 .flatMap(txId -> Mono.from(awaitTransaction(txId, 0)))
                 .subscribe(s);
@@ -70,7 +70,7 @@ public final class ElectrumRegtestActions {
      * @param txFee   the transaction fee
      * @return the action itself
      */
-    public RegtestAction<History.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount, Coin txFee) {
+    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount, Coin txFee) {
         return s -> Mono.from(sendPayment(address, amount, txFee))
                 .flatMap(txId -> Mono.from(awaitTransaction(txId, 0)))
                 .subscribe(s);

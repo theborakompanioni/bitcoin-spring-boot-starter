@@ -28,9 +28,9 @@ org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   default-wallet: electrum/wallets/regtest/default_wallet
   environment:
-    ELECTRUM_NETWORK: regtest
-    ELECTRUM_USER: electrum
-    ELECTRUM_PASSWORD: correct_horse_battery_staple_20210508
+    ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
+    ELECTRUM_RPCUSER: electrum
+    ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20210508
 
 org.tbk.bitcoin.electrum-daemon.jsonrpc:
   enabled: true

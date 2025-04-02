@@ -20,160 +20,61 @@ import java.util.List;
  * }
  *
  * <p>Example response with data from electrum:
- *
  * <p>{
- * "summary": {
- * "end_balance": "0.",
- * "end_date": null,
- * "from_height": null,
- * "incoming": "0.01532938",
- * "outgoing": "0.01532938",
- * "start_balance": "0.",
- * "start_date": null,
- * "to_height": null
- * },
- * "transactions": [
- * {
- * "balance": "0.0013",
- * "confirmations": 296588,
- * "date": "2014-11-09 10:23",
- * "height": 329232,
- * "incoming": true,
- * "inputs": [
- * {
- * "prevout_hash": "f23a23c48cffe1776d6bc1bca80d8e2e87b8085dfffc055c660fa21ec1d50c6d",
- * "prevout_n": 1
- * }
- * ],
- * "label": "",
- * "outputs": [
- * {
- * "address": "1K47dfy7224ay3icqt4feqwPDujn7kf9W2",
- * "value": "0.38225868"
- * },
- * {
- * "address": "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA",
- * "value": "0.0013"
- * }
- * ],
- * "timestamp": 1415528603,
- * "txid": "ddf793869ba325d06882b78a8c599ef8d512d01d716a8fdd30e51a9e268d6820",
- * "txpos_in_block": 588,
- * "value": "0.0013"
- * },
- * {
- * "balance": "0.0026",
- * "confirmations": 296579,
- * "date": "2014-11-09 11:31",
- * "height": 329241,
- * "incoming": true,
- * "inputs": [
- * {
- * "prevout_hash": "cfe97a5ffc2ef4e7fe7973f3446a9dd460c763fd6d9adcebaee9af6940f727ce",
- * "prevout_n": 1
- * }
- * ],
- * "label": "",
- * "outputs": [
- * {
- * "address": "1Ak8PffB2meyfYnbXZR9EGfLfFZVpzJvQP",
- * "value": "0.0013"
- * },
- * {
- * "address": "1DTxdeWvLfzgAkCNRNVkPRrfECxUvqsK5F",
- * "value": "0.0058"
- * }
- * ],
- * "timestamp": 1415532699,
- * "txid": "d6f136091b72cb4fcacce00c76cf6244c184f5654e4c554926bc2de072fc5def",
- * "txpos_in_block": 152,
- * "value": "0.0013"
- * },
- * {
- * "balance": "0.0039",
- * "confirmations": 296425,
- * "date": "2014-11-10 10:24",
- * "height": 329395,
- * "incoming": true,
- * "inputs": [
- * {
- * "prevout_hash": "853542e895e160bd57d8bc483314d60000555d53a1937f8df158588d90cab58c",
- * "prevout_n": 1
- * }
- * ],
- * "label": "",
- * "outputs": [
- * {
- * "address": "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA",
- * "value": "0.0013"
- * },
- * {
- * "address": "1DTxdeWvLfzgAkCNRNVkPRrfECxUvqsK5F",
- * "value": "0.00306095"
- * }
- * ],
- * "timestamp": 1415615095,
- * "txid": "2d37562f17d3976aee8a64e67125b0d6350bb10394c4d443d34b4c30b4c10b28",
- * "txpos_in_block": 121,
- * "value": "0.0013"
- * },
- * {
- * "balance": "0.0052",
- * "confirmations": 296408,
- * "date": "2014-11-10 13:10",
- * "height": 329412,
- * "incoming": true,
- * "inputs": [
- * {
- * "prevout_hash": "c72b480e56db6390668f4848b3314abec36aa2c479715810da80405119e94faf",
- * "prevout_n": 0
- * }
- * ],
- * "label": "",
- * "outputs": [
- * {
- * "address": "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA",
- * "value": "0.0013"
- * },
- * {
- * "address": "1DTxdeWvLfzgAkCNRNVkPRrfECxUvqsK5F",
- * "value": "0.00278"
- * }
- * ],
- * "timestamp": 1415625013,
- * "txid": "78aacf484f74e9880fb6158d8f4da2759ce1ee17513196dde0d584cc7fbbebb3",
- * "txpos_in_block": 88,
- * "value": "0.0013"
- * },
- * {
- * "balance": "0.00419",
- * "confirmations": 295252,
- * "date": "2014-11-18 12:03",
- * "height": 330568,
- * "incoming": false,
- * "inputs": [
- * {
- * "prevout_hash": "ddf793869ba325d06882b78a8c599ef8d512d01d716a8fdd30e51a9e268d6820",
- * "prevout_n": 1
- * }
- * ],
- * "label": "",
- * "outputs": [
- * {
- * "address": "1AhN6rPdrMuKBGFDKR1k9A8SCLYaNgXhty",
- * "value": "0.001"
- * },
- * {
- * "address": "1J3J6EvPrv8q6AC3VCjWV45Uf3nssNMRtH",
- * "value": "0.00029"
- * }
- * ],
- * "timestamp": 1416312229,
- * "txid": "7ef8f3d70d4c152285ba68e804e7c91545dacc42c2f11d14ab697ca9bec757b5",
- * "txpos_in_block": 505,
- * "value": "-0.00101"
- * },
- * ]
+ *     "summary": {
+ *         "begin": {
+ *             "BTC_balance": "0.",
+ *             "block_height": 0,
+ *             "date": "2025-02-17 16:52"
+ *         },
+ *         "end": {
+ *             "BTC_balance": "7700.",
+ *             "block_height": 159,
+ *             "date": "2025-02-17 16:57"
+ *         },
+ *         "flow": {
+ *             "BTC_incoming": "7700.",
+ *             "BTC_outgoing": "0."
+ *         }
+ *     },
+ *     "transactions": [
+ *         {
+ *             "bc_balance": "50.",
+ *             "bc_value": "50.",
+ *             "confirmations": 159,
+ *             "date": "2025-02-17 16:52",
+ *             "fee": null,
+ *             "fee_sat": null,
+ *             "height": 1,
+ *             "incoming": true,
+ *             "inputs": [
+ *                 {
+ *                     "coinbase": false,
+ *                     "nsequence": 4294967295,
+ *                     "prevout_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+ *                     "prevout_n": 4294967295,
+ *                     "scriptSig": "5100",
+ *                     "witness": "01200000000000000000000000000000000000000000000000000000000000000000"
+ *                 }
+ *             ],
+ *             "label": "",
+ *             "monotonic_timestamp": 1739811157,
+ *             "outputs": [
+ *                 {
+ *                     "address": "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz",
+ *                     "value": "50."
+ *                 },
+ *                 {
+ *                     "address": "SCRIPT 6a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9",
+ *                     "value": "0."
+ *                 }
+ *             ],
+ *             "timestamp": 1739811157,
+ *             "txid": "5d62a473c9643969d9da210e2779eec31128110ffd9199f277d8c9af5d29fa94",
+ *             "txpos_in_block": 0
+ *         },
+ *         [...]
+ *     ]
  * }
  */
 @Value
@@ -194,59 +95,61 @@ public class HistoryResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Summary {
 
-        @Nullable
-        @JsonProperty("start_balance")
-        String startBalance;
+        @Value
+        @Builder
+        @Jacksonized
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class SummaryTime {
+            @JsonProperty("BTC_balance")
+            String balance;
+
+            @Nullable
+            @JsonProperty("block_height")
+            Long blockHeight;
+
+            @Nullable
+            @JsonProperty("date")
+            String date;
+        }
+
+        @Value
+        @Builder
+        @Jacksonized
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class SummaryFlow {
+            @JsonProperty("BTC_incoming")
+            String incoming;
+
+            @JsonProperty("BTC_outgoing")
+            String outgoing;
+        }
 
         @Nullable
-        @JsonProperty("end_balance")
-        String endBalance;
+        @JsonProperty("begin")
+        SummaryTime begin;
 
         @Nullable
-        @JsonProperty("incoming")
-        String incoming;
+        @JsonProperty("end")
+        SummaryTime end;
 
         @Nullable
-        @JsonProperty("outgoing")
-        String outgoing;
-
-        @Nullable
-        @JsonProperty("start_date")
-        // TODO: probably "String"? only ever got "null" from electrum
-        Object startDate;
-
-        @Nullable
-        @JsonProperty("end_date")
-        // TODO: probably "String"? only ever got "null" from electrum
-        Object endDate;
-
-        @Nullable
-        @JsonProperty("from_height")
-        // TODO: probably "long"? only ever got "null" from electrum
-        Object fromHeight;
-
-        @Nullable
-        @JsonProperty("to_height")
-        // TODO: probably "long"? only ever got "null" from electrum
-        Object toHeight;
+        @JsonProperty("flow")
+        SummaryFlow flow;
     }
-
     @Value
     @Builder
     @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Transaction {
 
-        @JsonProperty("balance")
+        @JsonProperty("bc_balance")
         String balance;
+
+        @JsonProperty("bc_value")
+        String value;
 
         @JsonProperty("confirmations")
         long confirmations;
-
-        // timestamp e.g. 1415528603
-        @Nullable
-        @JsonProperty("timestamp")
-        Long timestamp;
 
         // pattern e.g. 2014-11-09 10:23
         @Nullable
@@ -260,8 +163,26 @@ public class HistoryResponse {
         @JsonProperty("incoming")
         boolean incoming;
 
+        @Nullable
+        @JsonProperty("inputs")
+        List<Input> inputs;
+
         @JsonProperty("label")
         String label;
+
+        // timestamp e.g. 1415528603
+        @Nullable
+        @JsonProperty("monotonic_timestamp")
+        Long monotonicTimestamp;
+
+        @Nullable
+        @JsonProperty("outputs")
+        List<Output> outputs;
+
+        // timestamp e.g. 1415528603
+        @Nullable
+        @JsonProperty("timestamp")
+        Long timestamp;
 
         @JsonProperty("txid")
         String txId;
@@ -269,27 +190,31 @@ public class HistoryResponse {
         @JsonProperty("txpos_in_block")
         Integer txPosInBlock;
 
-        @JsonProperty("value")
-        String value;
-
-        @Nullable
-        @JsonProperty("inputs")
-        List<Input> inputs;
-
-        @Nullable
-        @JsonProperty("outputs")
-        List<Output> outputs;
-
         @Value
         @Builder
         @Jacksonized
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Input {
+            @JsonProperty("coinbase")
+            boolean coinbase;
+
+            @Nullable
+            @JsonProperty("nsequence")
+            Long nsequence;
+
             @JsonProperty("prevout_hash")
             String prevoutHash;
 
             @JsonProperty("prevout_n")
             long prevoutN;
+
+            @Nullable
+            @JsonProperty("scriptSig")
+            String scriptSig;
+
+            @Nullable
+            @JsonProperty("witness")
+            String witness;
         }
 
         @Value

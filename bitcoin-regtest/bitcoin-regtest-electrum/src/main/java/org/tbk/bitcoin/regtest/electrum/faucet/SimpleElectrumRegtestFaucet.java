@@ -8,7 +8,7 @@ import org.tbk.bitcoin.regtest.common.AddressSupplier;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
-import org.tbk.electrum.model.History;
+import org.tbk.electrum.model.OnchainHistory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -51,14 +51,14 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
 
         // this "workaround" waits for electrum to finish processing block updates
         // we cannot use something like "awaitSpendableBalance" to wait here because we do not know
-        // the amount of the current block rewards so we workaround by waiting for an update and then
+        // the amount of the current block rewards so we work around by waiting for an update and then
         // checking if we have enough funds available
         Mono<Integer> awaitBlockchainHeightIncrease = Mono.fromCallable(() -> {
-            int currentBlockchainHeight = this.electrumClient.delegate().daemonStatus().getBlockchainHeight();
+            int currentBlockchainHeight = this.electrumClient.delegate().getInfo().getBlockchainHeight();
 
             return Flux.interval(Duration.ofMillis(100))
                     .doOnNext(it -> log.trace("Waiting for wallet to receive new blocks.. ({} attempt)", it))
-                    .map(it -> this.electrumClient.delegate().daemonStatus().getBlockchainHeight())
+                    .map(it -> this.electrumClient.delegate().getInfo().getBlockchainHeight())
                     .filter(newBlockchainHeight -> newBlockchainHeight > currentBlockchainHeight)
                     .blockFirst(Duration.ofSeconds(30));
         });
@@ -84,7 +84,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 })
                 .collectList()
                 .flatMap(receivedAmount -> Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(destinationAddress.get(), amount, txFee)))
-                .map(History.Transaction::getTxHash)
+                .map(OnchainHistory.Transaction::getTxHash)
                 .map(Sha256Hash::wrap);
     }
 

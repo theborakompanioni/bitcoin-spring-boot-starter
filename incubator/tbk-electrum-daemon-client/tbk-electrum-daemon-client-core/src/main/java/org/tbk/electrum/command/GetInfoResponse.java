@@ -6,14 +6,34 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.Map;
-import java.util.Optional;
-
+/**
+ * getinfo: <a href="https://github.com/spesmilo/electrum/blob/4.5.8/electrum/commands.py#L217">electrum/commands.py#L217</a>
+ *
+ * <pre>
+ * ~ $ electrum --regtest getinfo
+ * {
+ *     "auto_connect": true,
+ *     "blockchain_height": -1,
+ *     "connected": false,
+ *     "default_wallet": "/home/electrum/.electrum/regtest/wallets/default_wallet",
+ *     "fee_per_kb": 150000,
+ *     "network": "regtest",
+ *     "path": "/home/electrum/.electrum/regtest",
+ *     "server": "host.testcontainers.internal",
+ *     "server_height": 0,
+ *     "spv_nodes": 0,
+ *     "version": "4.5.8"
+ * }
+ * </pre>
+ */
 @Value
 @Builder
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DaemonStatusResponse {
+public class GetInfoResponse {
+
+    @JsonProperty("network")
+    String network;
 
     @JsonProperty("path")
     String path;
@@ -39,19 +59,9 @@ public class DaemonStatusResponse {
     @JsonProperty("version")
     String version;
 
-    @JsonProperty("wallets")
-    Map<String, Boolean> wallets;
-
     @JsonProperty("fee_per_kb")
     int feePerKb;
 
-    /**
-     * Path to currently loaded wallet.
-     */
-    @JsonProperty("current_wallet")
-    String currentWallet;
-
-    public Optional<String> getCurrentWallet() {
-        return Optional.ofNullable(currentWallet);
-    }
+    @JsonProperty("default_wallet")
+    String defaultWallet;
 }

@@ -14,13 +14,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
-import org.tbk.electrum.command.DaemonStatusResponse;
+import org.tbk.electrum.command.LoadWalletParams;
+import org.tbk.electrum.command.GetInfoResponse;
+import org.tbk.electrum.command.ListWalletEntry;
 import org.tbk.electrum.model.Version;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -54,35 +55,39 @@ class SimpleBitcoinjElectrumClientContainerTest {
     }
 
     @Test
-    void testDaemonStatus() {
-        DaemonStatusResponse daemonStatusResponse = sut.delegate().daemonStatus();
+    void testGetInfo() {
+        GetInfoResponse infoResponse = sut.delegate().getInfo();
 
-        assertThat(daemonStatusResponse, is(notNullValue()));
+        assertThat(infoResponse.getNetwork(), is("regtest"));
+        assertThat(infoResponse.getPath(), is(not(emptyOrNullString())));
+        assertThat(infoResponse.getServer(), is(not(emptyOrNullString())));
+        assertThat(infoResponse.getBlockchainHeight(), is(greaterThanOrEqualTo(-1)));
+        assertThat(infoResponse.getServerHeight(), is(greaterThanOrEqualTo(-1)));
+        assertThat(infoResponse.getSpvNodes(), is(greaterThanOrEqualTo(0)));
+        assertThat(infoResponse.isConnected(), is(true));
+        assertThat(infoResponse.isAutoConnect(), is(true));
+        assertThat(infoResponse.getVersion(), is(not(emptyOrNullString())));
+        assertThat(infoResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
+    }
 
-        assertThat(daemonStatusResponse.isConnected(), is(true));
-        assertThat(daemonStatusResponse.isAutoConnect(), is(true));
-        assertThat(daemonStatusResponse.getVersion(), is(not(emptyOrNullString())));
+    @Test
+    void testListOpenWallets() {
+        List<ListWalletEntry> wallets = sut.delegate().listOpenWallets();
 
-        Map<String, Boolean> wallets = daemonStatusResponse.getWallets();
-        assertThat(wallets.keySet(), hasSize(1));
+        if (wallets.isEmpty()) {
+            Boolean success = sut.delegate().loadWallet(LoadWalletParams.builder().build());
+            assertThat(success, is(true));
 
-        Map.Entry<String, Boolean> walletSyncState = wallets.entrySet().stream()
-                .findFirst().orElseThrow();
-
-        assertThat("wallet is known", walletSyncState.getKey(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
-
-        if (walletSyncState.getValue() == Boolean.FALSE) {
-            // might need some time to be loaded
-            Boolean walletIsLoaded = Flux.interval(Duration.ofMillis(100))
-                    .map(it -> sut.delegate().daemonStatus())
-                    .map(DaemonStatusResponse::getWallets)
-                    .map(it -> it.entrySet().stream().findFirst().orElseThrow())
-                    .map(Map.Entry::getValue)
-                    .filter(it -> it)
-                    .blockFirst(Duration.ofSeconds(3));
-
-            assertThat("wallet is loaded", walletIsLoaded, is(true));
+            wallets = sut.delegate().listOpenWallets();
         }
+        
+        ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
+
+        assertThat(listWalletEntry, is(notNullValue()));
+
+        assertThat("wallet is known", listWalletEntry.getPath(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
+        assertThat("wallet is synchronized", listWalletEntry.getSynced(), is(notNullValue()));
+        assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(false));
     }
 
     @Test
@@ -91,7 +96,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
         Boolean walletSynchronized = Flux.interval(Duration.ofMillis(100))
                 .map(it -> sut.delegate().isWalletSynchronized())
                 .filter(it -> it)
-                .blockFirst(Duration.ofSeconds(3));
+                .blockFirst(Duration.ofSeconds(10));
 
         assertThat("wallet is synchronized", walletSynchronized, is(true));
     }
