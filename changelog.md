@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2025-04-13
+
 ## Breaking
 - upgrade: update java from v17 to v21
 - upgrade: update lightning-kmp from v1.8.4 to v1.9.0
@@ -17,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update hibernate-community-dialects from v6.6.5.Final to v6.6.11.Final
 - upgrade: update bytebuddy from v1.15.3 to v1.17.3
 
-## [0.15.0] - 2024-04-01
+## [0.15.0] - 2025-04-01
 
 ### Changed
 - upgrade: update lightning-kmp from v1.8.0 to v1.8.4
@@ -319,7 +321,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.15.0...HEAD
+[Unreleased]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.16.0...HEAD
+[0.16.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/theborakompanioni/bitcoin-spring-boot-starter/compare/0.12.0...0.13.0
