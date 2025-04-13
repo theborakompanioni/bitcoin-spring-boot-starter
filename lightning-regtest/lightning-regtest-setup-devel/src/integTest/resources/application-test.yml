@@ -4,6 +4,7 @@ spring.docker.compose:
   enabled: true
   file: ./../../docker/regtest/lightning-regtest-setup-devel/docker-compose.yml
   stop.command: DOWN # STOP is default, DOWN clears all container data after shutdown
+  stop.arguments: --volumes
   skip.in-tests: false
 
 org.tbk.bitcoin.jsonrpc:
