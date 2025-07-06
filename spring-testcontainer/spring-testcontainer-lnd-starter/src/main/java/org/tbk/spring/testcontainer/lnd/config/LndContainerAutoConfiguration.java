@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +47,9 @@ public class LndContainerAutoConfiguration {
     }
 
     @Bean(name = "lndContainer", initMethod = "start", destroyMethod = "stop")
-    LndContainer<?> lndContainer(BitcoindContainer<?> bitcoindContainer) {
+    @ConditionalOnMissingBean(LndContainer.class)
+    LndContainer<?> lndContainer(BitcoindContainer<?> bitcoindContainer,
+                                 @Qualifier("lndContainerWaitStrategy") WaitStrategy waitStrategy) {
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
                 // TODO: expose ports specified via auto configuration properties
@@ -64,16 +68,6 @@ public class LndContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        // only wait for rpc ports - zeromq ports won't work (we can live with that for now)
-        WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
-                .ports(hardcodedStandardPorts)
-                .build();
-
-        WaitStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
-                .withStrategy(portWaitStrategy)
-                .withStrategy(Wait.forLogMessage(".*Opened wallet.*", 1))
-                .withStartupTimeout(LndContainerProperties.DEFAULT_STARTUP_TIMEOUT);
-
         String dockerContainerName = String.format("%s-%s", dockerImageName.getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)))
                 .replace("/", "-");
@@ -84,6 +78,28 @@ public class LndContainerAutoConfiguration {
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .waitingFor(waitStrategy);
+    }
+
+    @Bean("lndContainerWaitStrategy")
+    @ConditionalOnMissingBean(name = "lndContainerWaitStrategy")
+    WaitStrategy lndContainerWaitStrategy() {
+        List<Integer> hardcodedStandardPorts = ImmutableList.<Integer>builder()
+                .add(this.properties.getRpcport())
+                .add(this.properties.getRestport())
+                .build();
+
+        // only wait for rpc ports - zeromq ports won't work (we can live with that for now)
+        WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
+                .ports(hardcodedStandardPorts)
+                .build();
+
+        WaitStrategy waitAllStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
+                .withStrategy(portWaitStrategy)
+                .withStrategy(Wait.forLogMessage(".*Opened wallet.*", 1));
+
+        return properties.getStartupTimeout()
+                .map(waitAllStrategy::withStartupTimeout)
+                .orElse(waitAllStrategy);
     }
 
     /**

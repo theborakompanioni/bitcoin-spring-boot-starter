@@ -12,6 +12,7 @@ import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class LndContainerProperties extends AbstractContainerProperties implemen
     private static final int DEFAULT_RPC_PORT = 10009;
 
     // lnd has to wait for bitcoind to be ready. This can take very long (even on regtest), often >4min!
-    static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(5);
+    private static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(5);
 
     @Beta
     private static final List<String> reservedCommands = ImmutableList.<String>builder()
@@ -44,7 +45,7 @@ public class LndContainerProperties extends AbstractContainerProperties implemen
             .build();
 
     public LndContainerProperties() {
-        super(null, reservedCommands);
+        super(null, reservedCommands, Collections.emptyMap(), DEFAULT_STARTUP_TIMEOUT);
     }
 
     /**
