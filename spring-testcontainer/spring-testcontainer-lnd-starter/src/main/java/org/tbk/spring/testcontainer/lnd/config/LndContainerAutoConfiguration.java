@@ -36,7 +36,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
 @AutoConfigureAfter(BitcoindContainerAutoConfiguration.class)
 public class LndContainerAutoConfiguration {
 
-    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.18.4-beta";
+    private static final String DOCKER_IMAGE_NAME = "lightninglabs/lnd:v0.18.5-beta@sha256:2b560c9beb559c57ab2f2da1dfed80d286cf11a6dc6e4354cab84aafba79b6f6";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 

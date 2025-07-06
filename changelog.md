@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - upgrade: update tor testcontainer from v0.4.7.8 to v0.4.8.10
+- upgrade: update lnd testcontainer from v0.18.4-beta to v0.18.5-beta
 
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers
