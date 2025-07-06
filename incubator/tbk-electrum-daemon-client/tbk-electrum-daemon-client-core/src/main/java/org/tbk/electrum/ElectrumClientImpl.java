@@ -13,7 +13,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 public class ElectrumClientImpl implements ElectrumClient {
-    private static final String PSBT_BASE64_PREFIX = "cHNid";
+    final static byte[] PSBT_MAGIC_BYTES = {'p', 's', 'b', 't', (byte) 0xff};
+    private static final String PSBT_BASE64_PREFIX = Base64.getEncoder().encodeToString(PSBT_MAGIC_BYTES).replaceAll("=", "");
+
+    private static boolean looksLikePsbt(String value) {
+        return value.startsWith(PSBT_BASE64_PREFIX);
+    }
 
     private static List<String> splitMnemonicSeed(String seed) {
         return Arrays.asList(seed.split(" "));
@@ -59,11 +64,11 @@ public class ElectrumClientImpl implements ElectrumClient {
             // hex: for finalized tx?
             // base64: for unsigned tx?
             byte[] raw = fromHexOrBase64(payto);
+            boolean signed = !looksLikePsbt(payto);
 
             return SimpleRawTx.builder()
                     .hex(HexFormat.of().formatHex(raw))
-                    .finalized(Boolean.TRUE.equals(params.getUnsigned()))
-                    .complete(Boolean.TRUE.equals(params.getUnsigned()))
+                    .signed(signed)
                     .build();
         } catch (Exception e) {
             throw new IllegalStateException("Could not deserialize request");
@@ -145,8 +150,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
         return SimpleRawTx.builder()
                 .hex(hex)
-                .finalized(true)
-                .complete(true)
+                .signed(true)
                 .build();
     }
 
@@ -211,7 +215,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     /**
      * List wallets open in daemon
      *
-     * @return
+     * @return A list of open wallets
      */
     @Override
     public List<ListWalletEntry> listOpenWallets() {
@@ -363,8 +367,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
         return SimpleRawTx.builder()
                 .hex(HexFormat.of().formatHex(raw))
-                .finalized(true)
-                .complete(true)
+                .signed(looksLikePsbt(gettransaction))
                 .build();
     }
 
@@ -484,7 +487,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     private static byte[] fromHexOrBase64(String value) {
-        if (value.startsWith(PSBT_BASE64_PREFIX) || value.endsWith("=")) {
+        if (looksLikePsbt(value)) {
             return Base64.getDecoder().decode(value);
         }
         try {

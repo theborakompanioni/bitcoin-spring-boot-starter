@@ -60,7 +60,7 @@ public class SimpleBalance implements Balance {
 
     @Override
     public TxoValue getSpendable() {
-        return SimpleTxoValue.of(confirmed.getValue() + unconfirmed.getValue());
+        return SimpleTxoValue.of(confirmed.getValue() + getUnconfirmed().getValue());
     }
 
     @Override
@@ -86,8 +86,7 @@ public class SimpleBalance implements Balance {
                 .add("total", getTotal().getValue())
                 .add("spendable", getSpendable().getValue())
                 .add("confirmed", confirmed.getValue())
-                .add("unconfirmed", unconfirmed.getValue())
-                .add("unmatured", getUnmatured().getValue())
+                .add("unconfirmed", getUnconfirmed().getValue())
                 .add("unmatured", getUnmatured().getValue())
                 .toString();
     }

@@ -4,7 +4,5 @@ public interface RawTx {
 
     String getHex();
 
-    boolean isComplete();
-
-    boolean isFinalized();
+    boolean isUnsigned();
 }

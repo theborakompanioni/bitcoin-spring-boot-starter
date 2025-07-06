@@ -34,7 +34,7 @@ public interface OnchainHistory {
          * The wallet balance after the transaction takes effect.
          *
          * <p>This can also be negative!
-         * If a utxo is spent in the same block and electrum sees the outgoing before
+         * If a UTXO is spent in the same block and electrum sees the outgoing before
          * the incoming transaction first, then the returned `balance` of the wallet
          * might - for a very short time - be below zero!
          *
@@ -83,7 +83,7 @@ public interface OnchainHistory {
          * Once electrum ran for a certain amount of time, timestamp
          * seem to be available.
          *
-         * @return a timestamp when the transaction has been broadcasted
+         * @return a timestamp when the transaction has been broadcast
          */
         Optional<Instant> getTimestamp();
 

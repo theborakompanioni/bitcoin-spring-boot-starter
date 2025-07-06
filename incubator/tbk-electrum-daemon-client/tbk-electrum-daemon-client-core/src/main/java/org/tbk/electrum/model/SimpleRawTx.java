@@ -11,7 +11,10 @@ public class SimpleRawTx implements RawTx {
     @NonNull
     String hex;
 
-    boolean complete;
+    boolean signed;
 
-    boolean finalized;
+    @Override
+    public boolean isUnsigned() {
+        return !signed;
+    }
 }
