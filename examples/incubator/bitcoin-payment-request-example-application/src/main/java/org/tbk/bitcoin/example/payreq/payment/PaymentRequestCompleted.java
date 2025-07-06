@@ -14,7 +14,7 @@ public class PaymentRequestCompleted implements PaymentRequestStateChanged {
     /**
      * Creates a new {@link PaymentRequestCompleted}.
      *
-     * @param paymentRequestId the id of the {@link PaymentRequest} that just has been payed
+     * @param paymentRequestId the id of the {@link PaymentRequest} that just has been paid
      */
     public PaymentRequestCompleted(PaymentRequest.PaymentRequestId paymentRequestId) {
         this.paymentRequestId = paymentRequestId;

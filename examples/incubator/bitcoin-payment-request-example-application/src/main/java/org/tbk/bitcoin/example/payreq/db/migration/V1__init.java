@@ -18,7 +18,8 @@ public class V1__init extends BaseJavaMigration {
                     version integer,
                     created_at integer,
                     updated_at integer,
-                    status text
+                    status text,
+                    custom_comment text
                 ) STRICT;
                 """;
         String sql2 = """

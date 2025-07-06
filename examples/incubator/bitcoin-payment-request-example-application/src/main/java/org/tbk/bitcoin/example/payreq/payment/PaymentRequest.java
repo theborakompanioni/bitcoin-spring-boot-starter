@@ -94,7 +94,7 @@ public abstract class PaymentRequest
     }
 
     /**
-     * Marks the {@link PaymentRequest} as payed.
+     * Marks the {@link PaymentRequest} as paid.
      */
     public PaymentRequest markCompleted() {
         if (!isOpen()) {
@@ -124,7 +124,7 @@ public abstract class PaymentRequest
     }
 
     /**
-     * Marks the {@link PaymentRequest} as payed.
+     * Marks the {@link PaymentRequest} as cancelled.
      */
     public PaymentRequest markCancelled() {
         if (!isOpen()) {
@@ -143,7 +143,7 @@ public abstract class PaymentRequest
      */
     public enum Status {
         /**
-         * {@link PaymentRequest} placed, but not payed yet.
+         * {@link PaymentRequest} placed, but not paid yet.
          */
         PAYMENT_EXPECTED,
 

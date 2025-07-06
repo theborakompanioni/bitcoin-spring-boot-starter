@@ -27,8 +27,8 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentRequestService paymentRequestService;
 
     @Override
-    public Order createOrder(Collection<LineItem> lineItems) {
-        Order order = new Order(lineItems);
+    public Order createOrder(Collection<LineItem> lineItems, String comment) {
+        Order order = new Order(lineItems, comment);
         return orders.save(order);
     }
 

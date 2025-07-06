@@ -41,6 +41,9 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(name = "custom_comment")
+    private final String comment;
+
     @JsonIgnore
     @Version
     private Long version;
@@ -54,12 +57,17 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      *
      * @param lineItems must not be {@literal null}.
      */
-    Order(Collection<LineItem> lineItems) {
+    Order(Collection<LineItem> lineItems, String comment) {
         this.id = OrderId.create();
         this.status = Status.CREATED;
+        this.comment = comment;
         this.lineItems.addAll(lineItems);
 
         registerEvent(new OrderEvents.CreatedEvent(this.id));
+    }
+
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
     }
 
     /**
@@ -129,7 +137,7 @@ public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot
      */
     public boolean canReevaluate() {
         return this.status == Status.READY
-                || this.status == Status.IN_PROGRESS;
+               || this.status == Status.IN_PROGRESS;
     }
 
     /**

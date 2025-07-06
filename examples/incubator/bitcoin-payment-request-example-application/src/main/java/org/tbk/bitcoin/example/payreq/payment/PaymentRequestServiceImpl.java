@@ -13,12 +13,11 @@ import org.lightningj.lnd.proto.LightningApi;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
-import org.lightningj.lnd.wrapper.message.AddInvoiceResponse;
-import org.lightningj.lnd.wrapper.message.Invoice;
-import org.lightningj.lnd.wrapper.message.PaymentHash;
+import org.lightningj.lnd.wrapper.message.*;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.transaction.annotation.Transactional;
 import org.tbk.bitcoin.example.payreq.common.Network;
+import org.tbk.bitcoin.example.payreq.lnd.CachedLndInfos;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
 import javax.money.CurrencyUnit;
@@ -46,6 +45,9 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
     @NonNull
     private final PaymentRequests paymentRequests;
 
+    @NonNull
+    private final CachedLndInfos lndInfos;
+
     @Override
     public PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil, int minConfirmations) {
         boolean networkSupported = bitcoinClient.getNetParams().equals(network.toNetworkParameters());
@@ -67,16 +69,8 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 
     @Override
     public PaymentRequest createLightningPayment(Order order, Network network, Instant validUntil) {
-        try {
-            boolean networkSupported = lndApi.getInfo().getChains().stream()
-                    .filter(it -> "bitcoin".equals(it.getChain()))
-                    .anyMatch(it -> network.name().equals(it.getNetwork()));
-
-            if (!networkSupported) {
-                throw new IllegalArgumentException("Network not supported");
-            }
-        } catch (StatusException | ValidationException e) {
-            throw new RuntimeException("Error while creating invoice via lnd api", e);
+        if (!lndInfos.supportsNetwork(network)) {
+            throw new IllegalArgumentException("Network not supported");
         }
 
         Instant now = Instant.now();
@@ -88,7 +82,7 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
                     .setCreationDate(now.getEpochSecond())
                     .setExpiry(Duration.between(now, validUntil).toSeconds())
                     .setValue(satoshi.longValueExact())
-                    .setMemo("")
+                    .setMemo(order.getComment().orElse(""))
                     .build();
             Invoice request = new Invoice(invoice);
             response = lndApi.addInvoice(request);

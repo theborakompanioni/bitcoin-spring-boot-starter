@@ -4,5 +4,5 @@ import java.util.Collection;
 
 public interface OrderService {
 
-    Order createOrder(Collection<LineItem> lineItems);
+    Order createOrder(Collection<LineItem> lineItems, String comment);
 }

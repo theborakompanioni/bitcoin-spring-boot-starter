@@ -74,7 +74,7 @@ class DonationServiceImpl implements DonationService {
         String lineItemName = "Donation/" + donationAmount.toFriendlyString();
         LineItem lineItem = new LineItem(lineItemName, bitcoinMonetaryAmount);
 
-        Order order = orderService.createOrder(Collections.singletonList(lineItem));
+        Order order = orderService.createOrder(Collections.singletonList(lineItem), form.getComment().orElse(""));
 
         Instant now = Instant.now();
         Instant paymentRequestValidUntil = now.plus(5, ChronoUnit.MINUTES);
