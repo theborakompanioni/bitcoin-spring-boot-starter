@@ -74,10 +74,13 @@ public class TorContainerAutoConfiguration {
                 .addPort(hardcodedSocksPort)
                 .build();
 
-        return new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
+        WaitAllStrategy waitAllStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
                 .withStrategy(portWaitStrategy)
-                .withStrategy(Wait.forLogMessage(".*Bootstrapped 100%.*", 1))
-                .withStartupTimeout(TorContainerProperties.DEFAULT_STARTUP_TIMEOUT);
+                .withStrategy(Wait.forLogMessage(".*Bootstrapped 100%.*", 1));
+
+        return properties.getStartupTimeout()
+                .map(waitAllStrategy::withStartupTimeout)
+                .orElse(waitAllStrategy);
     }
 
     @Bean

@@ -3,6 +3,7 @@ package org.tbk.spring.testcontainer.core;
 import com.google.common.annotations.Beta;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -53,5 +54,7 @@ public interface ContainerProperties {
     }
 
     Optional<String> getCommandValueByKey(String key);
+
+    Optional<Duration> getStartupTimeout();
 }
 

@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +42,9 @@ public class ClnContainerAutoConfiguration {
     }
 
     @Bean(name = "clnContainer", initMethod = "start", destroyMethod = "stop")
-    ClnContainer<?> clnContainer(BitcoindContainer<?> bitcoindContainer) {
+    @ConditionalOnMissingBean(ClnContainer.class)
+    ClnContainer<?> clnContainer(BitcoindContainer<?> bitcoindContainer,
+                                 @Qualifier("clnContainerWaitStrategy") WaitStrategy waitStrategy) {
         List<String> commands = ImmutableList.<String>builder()
                 .addAll(buildCommandList())
                 .add("--bitcoin-rpcconnect=" + MoreTestcontainers.testcontainersInternalHost())
@@ -64,15 +68,6 @@ public class ClnContainerAutoConfiguration {
                 .addAll(this.properties.getExposedPorts())
                 .build();
 
-        WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
-                .ports(this.properties.getGrpcPort().stream().toList())
-                .build();
-
-        WaitStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
-                .withStrategy(portWaitStrategy)
-                .withStrategy(Wait.forLogMessage(".*Server started with public key.*", 1))
-                .withStartupTimeout(ClnContainerProperties.DEFAULT_STARTUP_TIMEOUT);
-
         DockerImageName dockerImageName = this.properties.getImage()
                 .orElseThrow(() -> new RuntimeException("Container image must not be empty"));
 
@@ -87,6 +82,22 @@ public class ClnContainerAutoConfiguration {
                 .withExposedPorts(exposedPorts.toArray(new Integer[]{}))
                 .withCommand(commands.toArray(new String[]{}))
                 .waitingFor(waitStrategy);
+    }
+
+    @Bean("clnContainerWaitStrategy")
+    @ConditionalOnMissingBean(name = "clnContainerWaitStrategy")
+    WaitStrategy clnContainerWaitStrategy() {
+        WaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
+                .ports(this.properties.getGrpcPort().stream().toList())
+                .build();
+
+        WaitStrategy waitAllStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
+                .withStrategy(portWaitStrategy)
+                .withStrategy(Wait.forLogMessage(".*Server started with public key.*", 1));
+
+        return properties.getStartupTimeout()
+                .map(waitAllStrategy::withStartupTimeout)
+                .orElse(waitAllStrategy);
     }
 
     /**

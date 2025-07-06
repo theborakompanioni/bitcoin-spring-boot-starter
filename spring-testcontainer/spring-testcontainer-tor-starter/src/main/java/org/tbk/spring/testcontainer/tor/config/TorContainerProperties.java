@@ -27,12 +27,12 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
             .put("TOR_EXTRA_ARGS", "")
             .build();
 
-    static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(5);
+    private static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(5);
 
     private Map<String, HiddenServiceDefinition> hiddenServices;
 
     public TorContainerProperties() {
-        super(null, Collections.emptyList(), defaultEnvironment);
+        super(null, Collections.emptyList(), defaultEnvironment, DEFAULT_STARTUP_TIMEOUT);
     }
 
     public Map<String, HiddenServiceDefinition> getHiddenServices() {

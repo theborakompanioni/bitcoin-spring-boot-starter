@@ -13,6 +13,7 @@ import org.testcontainers.shaded.com.google.common.base.CharMatcher;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,8 +48,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
         };
     }
 
-
-    static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(1);
+    private static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(1);
 
     @Beta
     private static final List<String> reservedCommands = ImmutableList.<String>builder()
@@ -57,7 +57,7 @@ public class ClnContainerProperties extends AbstractContainerProperties implemen
             .build();
 
     public ClnContainerProperties() {
-        super(defaultDockerImageName, reservedCommands);
+        super(defaultDockerImageName, reservedCommands, Collections.emptyMap(), DEFAULT_STARTUP_TIMEOUT);
     }
 
     private Integer port;

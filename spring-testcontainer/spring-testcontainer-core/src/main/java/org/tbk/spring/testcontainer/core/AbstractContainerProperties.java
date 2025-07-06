@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     private List<Integer> exposedPorts;
 
     private Map<String, String> environment;
+
+    private Duration startupTimeout;
 
     protected AbstractContainerProperties() {
         this(null, Collections.emptyList());
@@ -64,10 +67,19 @@ public abstract class AbstractContainerProperties implements ContainerProperties
         this(defaultImage, reservedCommands, Collections.emptyMap());
     }
 
-    protected AbstractContainerProperties(@Nullable DockerImageName defaultImage, List<String> reservedCommands, Map<String, String> defaultEnvironment) {
+    protected AbstractContainerProperties(@Nullable DockerImageName defaultImage,
+                                          List<String> reservedCommands,
+                                          Map<String, String> defaultEnvironment) {
+        this(defaultImage, reservedCommands, defaultEnvironment, null);
+    }
+    protected AbstractContainerProperties(@Nullable DockerImageName defaultImage,
+                                          List<String> reservedCommands,
+                                          Map<String, String> defaultEnvironment,
+                                          Duration defaultStartupTimeout) {
         this.defaultImage = defaultImage;
         this.reservedCommands = ImmutableList.copyOf(reservedCommands);
         this.defaultEnvironment = ImmutableMap.copyOf(defaultEnvironment);
+        this.startupTimeout = defaultStartupTimeout;
     }
 
     @Override
@@ -80,6 +92,11 @@ public abstract class AbstractContainerProperties implements ContainerProperties
         return Optional.ofNullable(image)
                 .map(DockerImageName::parse)
                 .or(this::getDefaultImage);
+    }
+
+    @Override
+    public final Optional<Duration> getStartupTimeout() {
+        return Optional.ofNullable(startupTimeout);
     }
 
     @Override
@@ -131,6 +148,10 @@ public abstract class AbstractContainerProperties implements ContainerProperties
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public void setStartupTimeout(Duration startupTimeout) {
+        this.startupTimeout = startupTimeout;
     }
 
     public void setCommands(List<String> commands) {
