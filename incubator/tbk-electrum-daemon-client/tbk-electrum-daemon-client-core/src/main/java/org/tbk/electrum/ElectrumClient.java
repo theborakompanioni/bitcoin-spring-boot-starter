@@ -133,6 +133,8 @@ public interface ElectrumClient {
 
     Map<String, String> daemonVersionInfo();
 
+    Boolean isValidAddress(String firstAddress);
+
     @Value
     @Builder
     class ListAddressOptions {

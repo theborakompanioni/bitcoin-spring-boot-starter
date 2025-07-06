@@ -486,6 +486,11 @@ public class ElectrumClientImpl implements ElectrumClient {
         return delegate.versioninfo();
     }
 
+    @Override
+    public Boolean isValidAddress(String address) {
+        return delegate.validateaddress(address);
+    }
+
     private static byte[] fromHexOrBase64(String value) {
         if (looksLikePsbt(value)) {
             return Base64.getDecoder().decode(value);

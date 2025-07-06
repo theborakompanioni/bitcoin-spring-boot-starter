@@ -428,5 +428,10 @@ class ElectrumDaemonClientContainerTest {
 
         assertThat(versionInfo, is(notNullValue()));
     }
+    @Test
+    void testValidateAddress() {
+        assertThat(sut.isValidAddress(firstAddress), is(true));
+        assertThat(sut.isValidAddress(addressNotControlledByWallet), is(true));
+        assertThat(sut.isValidAddress("invalid_address"), is(false));
+    }
 }
-

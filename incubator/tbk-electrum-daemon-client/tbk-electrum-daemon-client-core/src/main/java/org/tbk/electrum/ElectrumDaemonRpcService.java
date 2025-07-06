@@ -120,7 +120,7 @@ import java.util.Map;
  * "sweep",
  * "unfreeze",
  * "unfreeze_utxo",
- * "validateaddress",
+ * [x] "validateaddress",
  * [x] "verifymessage",
  * [x] "version",
  * [x] "version_info"
@@ -551,4 +551,12 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("version_info")
     Map<String, String> versioninfo();
+
+    /**
+     * Check that an address is valid.
+     *
+     * @return true if the address is valid
+     */
+    @JsonRpcMethod("validateaddress")
+    Boolean validateaddress(@JsonRpcParam("address") String address);
 }
