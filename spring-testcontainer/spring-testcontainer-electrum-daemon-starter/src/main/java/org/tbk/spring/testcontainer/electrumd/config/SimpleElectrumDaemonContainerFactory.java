@@ -67,7 +67,7 @@ public final class SimpleElectrumDaemonContainerFactory {
     }
 
     // currently only the image from "theborakompanioni" is supported
-    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.5.8";
+    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.5.8@sha256:072a9329f7f560a0a952c07bbfadd55766e06275231f51fddd5c1885120c56c5";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -125,7 +125,8 @@ public final class SimpleElectrumDaemonContainerFactory {
                 .replace("/", "-");
     }
 
-    private void copyWalletToContainerIfNecessary(ElectrumDaemonContainerConfig config, ElectrumDaemonContainer<?> container) {
+    private void copyWalletToContainerIfNecessary(ElectrumDaemonContainerConfig config,
+                                                  ElectrumDaemonContainer<?> container) {
         Optional<MountableFile> mountableWalletOrEmpty = config.getDefaultWallet()
                 .map(MountableFile::forClasspathResource);
 
@@ -154,7 +155,9 @@ public final class SimpleElectrumDaemonContainerFactory {
         }
     }
 
-    private void restartDaemonWithCustomizedSettings(ElectrumDaemonContainerConfig config, ElectrumDaemonContainer<?> container, Supplier<Optional<String>> serverUrlSupplier) {
+    private void restartDaemonWithCustomizedSettings(ElectrumDaemonContainerConfig config,
+                                                     ElectrumDaemonContainer<?> container,
+                                                     Supplier<Optional<String>> serverUrlSupplier) {
         daemonStop(container);
 
         setupDefaultConfigValuesHack(container);
@@ -167,6 +170,7 @@ public final class SimpleElectrumDaemonContainerFactory {
 
         // let the daemon some time to startup; 5000ms seems to be enough
         loadWalletIfNecessary(config, container, Duration.ofMillis(5_000));
+
     }
 
     /**
