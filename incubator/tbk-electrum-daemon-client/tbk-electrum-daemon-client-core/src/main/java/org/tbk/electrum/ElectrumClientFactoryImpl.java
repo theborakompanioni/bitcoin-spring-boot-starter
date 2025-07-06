@@ -2,7 +2,6 @@ package org.tbk.electrum;
 
 import com.github.arteam.simplejsonrpc.client.JsonRpcClient;
 import com.github.arteam.simplejsonrpc.client.Transport;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -16,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class ElectrumClientFactoryImpl implements ElectrumClientFactory {
 
@@ -37,7 +37,7 @@ public class ElectrumClientFactoryImpl implements ElectrumClientFactory {
     }
 
     private Transport transport(CloseableHttpClient httpClient, URI uri, String username, String password) {
-        Header authHeader = this.authHeader(username, password);
+        Header authHeader = basicAuthHeader(username, password);
 
         return request -> {
             HttpPost post = new HttpPost(uri);
@@ -50,10 +50,10 @@ public class ElectrumClientFactoryImpl implements ElectrumClientFactory {
         };
     }
 
-    private Header authHeader(String username, String password) {
-        String auth = String.format("%s:%s", username, password);
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
-        String authHeaderValue = "Basic " + new String(encodedAuth, StandardCharsets.UTF_8);
+    private static Header basicAuthHeader(String username, String password) {
+        String auth = "%s:%s".formatted(username, password);
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+        String authHeaderValue = "Basic %s".formatted(new String(encodedAuth, StandardCharsets.UTF_8));
 
         return new BasicHeader(HttpHeaders.AUTHORIZATION, authHeaderValue);
     }

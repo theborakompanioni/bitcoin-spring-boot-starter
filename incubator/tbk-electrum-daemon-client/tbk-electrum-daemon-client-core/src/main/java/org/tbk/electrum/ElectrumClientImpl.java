@@ -13,6 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 public class ElectrumClientImpl implements ElectrumClient {
+    private static final String PSBT_BASE64_PREFIX = "cHNid";
 
     private static List<String> splitMnemonicSeed(String seed) {
         return Arrays.asList(seed.split(" "));
@@ -483,6 +484,9 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     private static byte[] fromHexOrBase64(String value) {
+        if (value.startsWith(PSBT_BASE64_PREFIX) || value.endsWith("=")) {
+            return Base64.getDecoder().decode(value);
+        }
         try {
             return HexFormat.of().parseHex(value);
         } catch (Exception e) {
