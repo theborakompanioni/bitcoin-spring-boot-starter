@@ -9,6 +9,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class TorContainerProperties extends AbstractContainerProperties implemen
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
             .put("TOR_EXTRA_ARGS", "")
             .build();
+
+    static final Duration DEFAULT_STARTUP_TIMEOUT = Duration.ofMinutes(5);
 
     private Map<String, HiddenServiceDefinition> hiddenServices;
 

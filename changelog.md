@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- upgrade: update tor testcontainer from v0.4.7.8 to v0.4.8.10
+
 ## [0.16.0] - 2025-04-13
 
 ## Breaking

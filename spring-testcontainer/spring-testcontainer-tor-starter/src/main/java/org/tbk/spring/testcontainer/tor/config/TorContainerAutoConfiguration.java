@@ -18,6 +18,8 @@ import org.tbk.spring.testcontainer.tor.HiddenServiceHostnames;
 import org.tbk.spring.testcontainer.tor.TorContainer;
 import org.tbk.spring.testcontainer.tor.config.TorContainerProperties.HiddenServiceDefinition;
 import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -37,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 public class TorContainerAutoConfiguration {
 
     // currently only the image from "btcpayserver" is supported
-    private static final String DOCKER_IMAGE_NAME = "btcpayserver/tor:0.4.7.8";
+    private static final String DOCKER_IMAGE_NAME = "btcpayserver/tor:0.4.8.10@sha256:e9585b68dc6ba41bd3365e3b8bee40bbb2731f154188dfa58ee4e368dcc72729";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -68,9 +70,14 @@ public class TorContainerAutoConfiguration {
     @Bean("torContainerWaitStrategy")
     @ConditionalOnMissingBean(name = "torContainerWaitStrategy")
     WaitStrategy torContainerWaitStrategy() {
-        return CustomHostPortWaitStrategy.builder()
+        CustomHostPortWaitStrategy portWaitStrategy = CustomHostPortWaitStrategy.builder()
                 .addPort(hardcodedSocksPort)
                 .build();
+
+        return new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
+                .withStrategy(portWaitStrategy)
+                .withStrategy(Wait.forLogMessage(".*Bootstrapped 100%.*", 1))
+                .withStartupTimeout(TorContainerProperties.DEFAULT_STARTUP_TIMEOUT);
     }
 
     @Bean
