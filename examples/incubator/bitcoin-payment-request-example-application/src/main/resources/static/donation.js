@@ -19,8 +19,8 @@ const errorIndicatorElement = document.getElementById("error-indicator");
 const loadingIndicatorElement = document.getElementById("loading-indicator");
 loadingIndicatorElement.textContent = "loading...";
 
-let queryParams = new URLSearchParams(window.location.search);
-let donationId = queryParams.get("donation_id");
+const queryParams = new URLSearchParams(window.location.search);
+const donationId = queryParams.get("donation_id");
 
 httpGetAsync("/api/v1/donation/" + donationId, (donationJson) => {
     loadingIndicatorElement.textContent = "";

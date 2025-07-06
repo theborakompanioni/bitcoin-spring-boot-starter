@@ -34,6 +34,8 @@ dependencies {
 
     implementation "org.javamoney:moneta:${monetaVersion}"
 
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
+
     implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
 
     implementation 'io.projectreactor:reactor-core'

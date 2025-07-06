@@ -26,54 +26,53 @@ public class LndApi {
     private final SynchronousLndAPI lndApi;
 
     @GetMapping(value = "/info")
-    public ResponseEntity<JsonObject> getInfo() throws StatusException, ValidationException {
+    public ResponseEntity<String> getInfo() throws StatusException, ValidationException {
         GetInfoResponse info = lndApi.getInfo();
-        return ResponseEntity.ok(info.toJson().build());
+        return ResponseEntity.ok(info.toJsonAsString(true));
     }
 
     @GetMapping(value = "/network/info")
-    public ResponseEntity<JsonObject> getNetworkInfo() throws StatusException, ValidationException {
+    public ResponseEntity<String> getNetworkInfo() throws StatusException, ValidationException {
         NetworkInfo networkInfo = lndApi.getNetworkInfo();
-        return ResponseEntity.ok(networkInfo.toJson().build());
+        return ResponseEntity.ok(networkInfo.toJsonAsString(true));
     }
 
     @GetMapping(value = "/recovery/info")
-    public ResponseEntity<JsonObject> getRecoveryInfo() throws StatusException, ValidationException {
+    public ResponseEntity<String> getRecoveryInfo() throws StatusException, ValidationException {
         GetRecoveryInfoResponse recoveryInfo = lndApi.getRecoveryInfo();
-        return ResponseEntity.ok(recoveryInfo.toJson().build());
+        return ResponseEntity.ok(recoveryInfo.toJsonAsString(true));
     }
 
     @GetMapping(value = "/fee/report")
-    public ResponseEntity<JsonObject> feeReport() throws StatusException, ValidationException {
+    public ResponseEntity<String> feeReport() throws StatusException, ValidationException {
         FeeReportResponse feeReport = lndApi.feeReport();
-        return ResponseEntity.ok(feeReport.toJson().build());
+        return ResponseEntity.ok(feeReport.toJsonAsString(true));
     }
 
     @GetMapping(value = "/channel/balance")
-    public ResponseEntity<JsonObject> channelBalance() throws StatusException, ValidationException {
+    public ResponseEntity<String> channelBalance() throws StatusException, ValidationException {
         ChannelBalanceResponse channelBalance = lndApi.channelBalance();
-        return ResponseEntity.ok(channelBalance.toJson().build());
+        return ResponseEntity.ok(channelBalance.toJsonAsString(true));
     }
 
     @GetMapping(value = "/wallet/balance")
-    public ResponseEntity<JsonObject> walletBalance() throws StatusException, ValidationException {
+    public ResponseEntity<String> walletBalance() throws StatusException, ValidationException {
         WalletBalanceResponse walletBalance = lndApi.walletBalance(new WalletBalanceRequest());
-        return ResponseEntity.ok(walletBalance.toJson().build());
+        return ResponseEntity.ok(walletBalance.toJsonAsString(true));
     }
 
     @GetMapping(value = "/invoice/{hash}")
-    public ResponseEntity<JsonObject> lookupInvoice(String paymentHash) throws StatusException, ValidationException {
+    public ResponseEntity<String> lookupInvoice(String paymentHash) throws StatusException, ValidationException {
         PaymentHash request = new PaymentHash();
         request.setRHashStr(paymentHash);
 
         Invoice info = lndApi.lookupInvoice(request);
 
-        return ResponseEntity.ok(info.toJson().build());
+        return ResponseEntity.ok(info.toJsonAsString(true));
     }
 
     @PostMapping(value = "/invoice")
-    public ResponseEntity<JsonObject> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
-
+    public ResponseEntity<String> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
         String memo = Optional.ofNullable(body.get("memo"))
                 .map(Object::toString)
                 .orElse("");
@@ -90,6 +89,6 @@ public class LndApi {
                 .build();
 
         AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(invoice));
-        return ResponseEntity.ok(addInvoiceResponse.toJson().build());
+        return ResponseEntity.ok(addInvoiceResponse.toJsonAsString(true));
     }
 }
