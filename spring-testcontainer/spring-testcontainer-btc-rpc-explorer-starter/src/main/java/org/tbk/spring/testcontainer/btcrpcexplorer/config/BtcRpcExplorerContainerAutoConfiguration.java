@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 })
 public class BtcRpcExplorerContainerAutoConfiguration {
     // currently only the image from "getumbrel" is supported
-    private static final String DOCKER_IMAGE_NAME = "getumbrel/btc-rpc-explorer:v3.3.0";
+    private static final String DOCKER_IMAGE_NAME = "getumbrel/btc-rpc-explorer:v3.5.0@sha256:11b55b2efd7c6a27cd1c13474ad78e8f0b91fdac2e8a48141e40ed38c5efd186";
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
     private static final int DEFAULT_HTTP_PORT = 3002;

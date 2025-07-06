@@ -23,7 +23,7 @@ import java.util.Optional;
 public class ElectrumPersonalServerContainerProperties extends AbstractContainerProperties implements Validator {
 
     // currently only the image from "btcpayserver" is supported
-    private static final String DEFAULT_DOCKER_IMAGE_NAME = "btcpayserver/eps:0.2.2";
+    private static final String DEFAULT_DOCKER_IMAGE_NAME = "btcpayserver/eps:0.2.2@sha256:11e244f658d5f92377db9fd7d40f45450a2413d2ff5299d321e26bb77931aa38";
 
     private static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
