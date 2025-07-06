@@ -1,19 +1,27 @@
 package org.tbk.bitcoin.example.payreq.lnd.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
 import org.lightningj.lnd.proto.LightningApi;
+import org.lightningj.lnd.wrapper.Message;
 import org.lightningj.lnd.wrapper.StatusException;
 import org.lightningj.lnd.wrapper.SynchronousLndAPI;
 import org.lightningj.lnd.wrapper.ValidationException;
 import org.lightningj.lnd.wrapper.message.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.testcontainers.shaded.com.google.common.primitives.Longs;
 
-import javax.json.JsonObject;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -24,6 +32,9 @@ public class LndApi {
 
     @NonNull
     private final SynchronousLndAPI lndApi;
+
+    @NonNull
+    private final ObjectMapper objectMapper;
 
     @GetMapping(value = "/info")
     public ResponseEntity<String> getInfo() throws StatusException, ValidationException {
@@ -72,23 +83,53 @@ public class LndApi {
     }
 
     @PostMapping(value = "/invoice")
-    public ResponseEntity<String> addInvoice(@RequestBody Map<String, Object> body) throws StatusException, ValidationException {
-        String memo = Optional.ofNullable(body.get("memo"))
-                .map(Object::toString)
-                .orElse("");
-
-        long value = Optional.ofNullable(body.get("value"))
-                .map(Object::toString)
-                .map(it -> Longs.tryParse(it, 10))
-                .filter(it -> it > 0)
-                .orElseThrow(() -> new IllegalArgumentException("'value' must be a positive integer"));
-
+    public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@Validated @RequestBody CreateInvoiceRequestDto body) throws StatusException, ValidationException {
         LightningApi.Invoice invoice = LightningApi.Invoice.newBuilder()
-                .setValue(value)
-                .setMemo(memo)
+                .setValueMsat(body.getMsats())
+                .setMemo(body.getMemo().orElse(""))
                 .build();
 
         AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(invoice));
-        return ResponseEntity.ok(addInvoiceResponse.toJsonAsString(true));
+
+        return ResponseEntity.ok(CreateInvoiceResponseDto.builder()
+                .bolt11(addInvoiceResponse.getPaymentRequest())
+                .raw(toJson(addInvoiceResponse))
+                .build());
     }
+
+    @Value
+    @Builder(toBuilder = true)
+    @Jacksonized
+    public static class CreateInvoiceRequestDto {
+        @JsonProperty("memo")
+        String memo;
+
+        @Min(1)
+        @JsonProperty("msats")
+        long msats;
+
+        Optional<String> getMemo() {
+            return Optional.ofNullable(memo);
+        }
+    }
+
+    @Value
+    @Builder(toBuilder = true)
+    @Jacksonized
+    public static class CreateInvoiceResponseDto {
+        @NonNull
+        @Schema(example = "lnbcrt10p1pj...cpcpugtjt8", requiredMode = Schema.RequiredMode.REQUIRED)
+        String bolt11;
+
+        Object raw;
+    }
+
+    private JsonNode toJson(Message<?> message) {
+        try {
+            return objectMapper.readTree(message.toJsonAsString(false));
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }
