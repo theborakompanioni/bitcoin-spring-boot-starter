@@ -9,6 +9,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +27,7 @@ import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -113,6 +116,7 @@ class AdvancedBitcoinjElectrumClientContainerTest {
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1337), address2))
                 .blockFirst(Duration.ofSeconds(90));
 
+
         log.debug("Finished after {}", sw.stop());
 
         Coin balanceOnAddress2After = this.sut.getAddressBalance(address2).getTotal();
@@ -129,6 +133,9 @@ class AdvancedBitcoinjElectrumClientContainerTest {
 
         assertThat(firstUtxo.getTxHash(), is(firstSentTxHash.get()));
         assertThat(firstUtxo.getValue(), is(Coin.valueOf(1337)));
+
+        Flux.from(bitcoinRegtestActions.mineBlocks(21)).blockFirst(Duration.ofSeconds(90));
+        Flux.from(electrumRegtestActions.awaitTransaction(firstSentTxHash.get(), 21));
 
         Transaction transaction = this.sut.getTransaction(firstSentTxHash.get());
         TransactionOutput output = transaction.getOutput(firstUtxo.getTxPos());

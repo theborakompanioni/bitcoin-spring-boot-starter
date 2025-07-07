@@ -11,6 +11,7 @@ public enum ConfigKey {
     fee_per_kb,
     @Deprecated
     use_rbf,
+    @Deprecated
     batch_rbf,
     log_to_file,
     @Deprecated

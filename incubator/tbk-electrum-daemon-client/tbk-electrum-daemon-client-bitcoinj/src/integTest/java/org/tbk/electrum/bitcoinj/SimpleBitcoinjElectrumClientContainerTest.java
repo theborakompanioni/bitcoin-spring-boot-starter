@@ -65,7 +65,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
         assertThat(infoResponse.getServerHeight(), is(greaterThanOrEqualTo(-1)));
         assertThat(infoResponse.getSpvNodes(), is(greaterThanOrEqualTo(0)));
         assertThat(infoResponse.isConnected(), is(true));
-        assertThat(infoResponse.isAutoConnect(), is(true));
+        assertThat(infoResponse.isAutoConnect(), is(false)); // auto connect is disabled when connecting to single server
         assertThat(infoResponse.getVersion(), is(not(emptyOrNullString())));
         assertThat(infoResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
     }
@@ -87,7 +87,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
 
         assertThat("wallet is known", listWalletEntry.getPath(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
         assertThat("wallet is synchronized", listWalletEntry.getSynced(), is(notNullValue()));
-        assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(false));
+        assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(true));
     }
 
     @Test

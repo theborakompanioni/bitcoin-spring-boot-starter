@@ -123,7 +123,8 @@ import java.util.Map;
  * [x] "validateaddress",
  * [x] "verifymessage",
  * [x] "version",
- * [x] "version_info"
+ * [x] "version_info",
+ * [ ] "wait_for_sync"
  * ]
  */
 @JsonRpcService
@@ -352,6 +353,17 @@ public interface ElectrumDaemonRpcService {
     @Nullable
     String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
+    @JsonRpcMethod("onchain_capital_gains")
+    HistoryResponse.Summary onchaincapitalgains();
+
+    @JsonRpcMethod("onchain_capital_gains")
+    HistoryResponse.Summary onchaincapitalgains(@JsonRpcParam("year") long year);
+
+    @JsonRpcMethod("onchain_capital_gains")
+    HistoryResponse.Summary onchaincapitalgains(
+            @JsonRpcOptional @JsonRpcParam("year") Long year,
+            @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
     /**
      * Create a new receiving address, beyond the gap limit of the wallet.
      *
@@ -361,26 +373,20 @@ public interface ElectrumDaemonRpcService {
     String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainhistory();
+    List<HistoryResponse.Transaction> onchainhistory();
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
+    List<HistoryResponse.Transaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
-                                   @JsonRpcParam("from_height") long fromHeight);
+    List<HistoryResponse.Transaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+                                                     @JsonRpcParam("year") long year);
 
     @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
-                                   @JsonRpcParam("from_height") long fromHeight,
-                                   @JsonRpcParam("to_height") long toHeight);
-
-    @JsonRpcMethod("onchain_history")
-    HistoryResponse onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
-                                   @JsonRpcOptional @JsonRpcParam("year") Long year,
-                                   @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
-                                   @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight,
-                                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+    List<HistoryResponse.Transaction> onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
+                                                     @JsonRpcOptional @JsonRpcParam("year") Long year,
+                                                     @JsonRpcOptional @JsonRpcParam("show_fiat") Boolean showFiat,
+                                                     @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * List wallets open in daemon

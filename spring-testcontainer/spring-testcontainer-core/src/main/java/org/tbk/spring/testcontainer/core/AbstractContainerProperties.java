@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
@@ -72,6 +71,7 @@ public abstract class AbstractContainerProperties implements ContainerProperties
                                           Map<String, String> defaultEnvironment) {
         this(defaultImage, reservedCommands, defaultEnvironment, null);
     }
+
     protected AbstractContainerProperties(@Nullable DockerImageName defaultImage,
                                           List<String> reservedCommands,
                                           Map<String, String> defaultEnvironment,
@@ -130,16 +130,10 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     }
 
     public Map<String, String> getEnvironmentWithDefaults() {
-        Map<String, String> userGivenEnvVars = ImmutableMap.copyOf(firstNonNull(this.environment, Collections.emptyMap()));
-
-        Map<String, String> defaultEnvVars = this.getDefaultEnvironment().entrySet().stream()
-                .filter(it -> !userGivenEnvVars.containsKey(it.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
         return ImmutableMap.<String, String>builder()
-                .putAll(userGivenEnvVars)
-                .putAll(defaultEnvVars)
-                .build();
+                .putAll(this.getDefaultEnvironment())
+                .putAll(firstNonNull(this.environment, Collections.emptyMap()))
+                .buildKeepingLast();
     }
 
     public void setEnabled(boolean enabled) {

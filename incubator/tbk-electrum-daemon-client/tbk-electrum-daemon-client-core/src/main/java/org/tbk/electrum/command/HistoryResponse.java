@@ -8,74 +8,94 @@ import lombok.extern.jackson.Jacksonized;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Represents a history call which includes a short summary and transactions.
- *
- * <p>Can also have empty fields:
- * e.g.
- * {
- * "summary": {},
- * "transactions": []
- * }
+ * Represents a history call which includes onchain transactions.
  *
  * <p>Example response with data from electrum:
- * <p>{
- *     "summary": {
- *         "begin": {
- *             "BTC_balance": "0.",
- *             "block_height": 0,
- *             "date": "2025-02-17 16:52"
- *         },
- *         "end": {
- *             "BTC_balance": "7700.",
- *             "block_height": 159,
- *             "date": "2025-02-17 16:57"
- *         },
- *         "flow": {
- *             "BTC_incoming": "7700.",
- *             "BTC_outgoing": "0."
- *         }
+ * <p>~ $ electrum --regtest onchain_history --show_addresses
+ * [
+ *     {
+ *         "amount_sat": 5000000000,
+ *         "bc_balance": "50.",
+ *         "bc_value": "50.",
+ *         "confirmations": 127,
+ *         "date": "2025-07-06 13:29",
+ *         "fee_sat": null,
+ *         "group_id": null,
+ *         "height": 1,
+ *         "incoming": true,
+ *         "inputs": [
+ *             {
+ *                 "coinbase": false,
+ *                 "nsequence": 4294967295,
+ *                 "prevout_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+ *                 "prevout_n": 4294967295,
+ *                 "scriptSig": "5100",
+ *                 "witness": [
+ *                     "0000000000000000000000000000000000000000000000000000000000000000"
+ *                 ]
+ *             }
+ *         ],
+ *         "label": "",
+ *         "monotonic_timestamp": 1751837382,
+ *         "outputs": [
+ *             {
+ *                 "address": "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz",
+ *                 "value_sat": 5000000000
+ *             },
+ *             {
+ *                 "address": "SCRIPT 6a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9",
+ *                 "value_sat": 0
+ *             }
+ *         ],
+ *         "timestamp": 1751837382,
+ *         "txid": "5d62a473c9643969d9da210e2779eec31128110ffd9199f277d8c9af5d29fa94",
+ *         "txpos_in_block": 0,
+ *         "wanted_height": null
  *     },
- *     "transactions": [
- *         {
- *             "bc_balance": "50.",
- *             "bc_value": "50.",
- *             "confirmations": 159,
- *             "date": "2025-02-17 16:52",
- *             "fee": null,
- *             "fee_sat": null,
- *             "height": 1,
- *             "incoming": true,
- *             "inputs": [
- *                 {
- *                     "coinbase": false,
- *                     "nsequence": 4294967295,
- *                     "prevout_hash": "0000000000000000000000000000000000000000000000000000000000000000",
- *                     "prevout_n": 4294967295,
- *                     "scriptSig": "5100",
- *                     "witness": "01200000000000000000000000000000000000000000000000000000000000000000"
- *                 }
- *             ],
- *             "label": "",
- *             "monotonic_timestamp": 1739811157,
- *             "outputs": [
- *                 {
- *                     "address": "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz",
- *                     "value": "50."
- *                 },
- *                 {
- *                     "address": "SCRIPT 6a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9",
- *                     "value": "0."
- *                 }
- *             ],
- *             "timestamp": 1739811157,
- *             "txid": "5d62a473c9643969d9da210e2779eec31128110ffd9199f277d8c9af5d29fa94",
- *             "txpos_in_block": 0
- *         },
- *         [...]
- *     ]
- * }
+ *     {
+ *         "amount_sat": 5000000000,
+ *         "bc_balance": "100.",
+ *         "bc_value": "50.",
+ *         "confirmations": 126,
+ *         "date": "2025-07-06 13:29",
+ *         "fee_sat": null,
+ *         "group_id": null,
+ *         "height": 2,
+ *         "incoming": true,
+ *         "inputs": [
+ *             {
+ *                 "coinbase": false,
+ *                 "nsequence": 4294967295,
+ *                 "prevout_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+ *                 "prevout_n": 4294967295,
+ *                 "scriptSig": "5200",
+ *                 "witness": [
+ *                     "0000000000000000000000000000000000000000000000000000000000000000"
+ *                 ]
+ *             }
+ *         ],
+ *         "label": "",
+ *         "monotonic_timestamp": 1751837383,
+ *         "outputs": [
+ *             {
+ *                 "address": "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz",
+ *                 "value_sat": 5000000000
+ *             },
+ *             {
+ *                 "address": "SCRIPT 6a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9",
+ *                 "value_sat": 0
+ *             }
+ *         ],
+ *         "timestamp": 1751837383,
+ *         "txid": "3b7b4994f7977ef5f6cd8de11b9d8c07601da344d68e16b3e1dc2fdf25dfdc70",
+ *         "txpos_in_block": 0,
+ *         "wanted_height": null
+ *     },
+ *     [...]
+ * ]
  */
 @Value
 @Builder
@@ -89,6 +109,24 @@ public class HistoryResponse {
     @JsonProperty("transactions")
     List<Transaction> transactions;
 
+    /**
+     * {
+     *     "begin": {
+     *         "BTC_balance": "0.",
+     *         "block_height": 0,
+     *         "date": "2025-07-06 13:14"
+     *     },
+     *     "end": {
+     *         "BTC_balance": "6550.",
+     *         "block_height": 131,
+     *         "date": "2025-07-06 13:17"
+     *     },
+     *     "flow": {
+     *         "BTC_incoming": "6550.",
+     *         "BTC_outgoing": "0."
+     *     }
+     * }
+     */
     @Value
     @Builder
     @Jacksonized
@@ -135,13 +173,69 @@ public class HistoryResponse {
         @Nullable
         @JsonProperty("flow")
         SummaryFlow flow;
+
+        public Optional<SummaryTime> getBegin() {
+            return Optional.ofNullable(begin);
+        }
+
+        public Optional<SummaryTime> getEnd() {
+            return Optional.ofNullable(end);
+        }
+
+        public Optional<SummaryFlow> getFlow() {
+            return Optional.ofNullable(flow);
+        }
     }
+
+    /**
+     * {
+     *         "amount_sat": 5000000000,
+     *         "bc_balance": "50.",
+     *         "bc_value": "50.",
+     *         "confirmations": 127,
+     *         "date": "2025-07-06 13:29",
+     *         "fee_sat": null,
+     *         "group_id": null,
+     *         "height": 1,
+     *         "incoming": true,
+     *         "inputs": [
+     *             {
+     *                 "coinbase": false,
+     *                 "nsequence": 4294967295,
+     *                 "prevout_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+     *                 "prevout_n": 4294967295,
+     *                 "scriptSig": "5100",
+     *                 "witness": [
+     *                     "0000000000000000000000000000000000000000000000000000000000000000"
+     *                 ]
+     *             }
+     *         ],
+     *         "label": "",
+     *         "monotonic_timestamp": 1751837382,
+     *         "outputs": [
+     *             {
+     *                 "address": "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz",
+     *                 "value_sat": 5000000000
+     *             },
+     *             {
+     *                 "address": "SCRIPT 6a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9",
+     *                 "value_sat": 0
+     *             }
+     *         ],
+     *         "timestamp": 1751837382,
+     *         "txid": "5d62a473c9643969d9da210e2779eec31128110ffd9199f277d8c9af5d29fa94",
+     *         "txpos_in_block": 0,
+     *         "wanted_height": null
+     *     }
+     */
     @Value
     @Builder
     @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Transaction {
-
+        @JsonProperty("amount_sat")
+        Long amount_sat;
+        
         @JsonProperty("bc_balance")
         String balance;
 
@@ -190,6 +284,18 @@ public class HistoryResponse {
         @JsonProperty("txpos_in_block")
         Integer txPosInBlock;
 
+        /**
+         * {
+         *      "coinbase": false,
+         *      "nsequence": 4294967295,
+         *      "prevout_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+         *      "prevout_n": 4294967295,
+         *      "scriptSig": "5100",
+         *      "witness": [
+         *          "0000000000000000000000000000000000000000000000000000000000000000"
+         *      ]
+         *  }
+         */
         @Value
         @Builder
         @Jacksonized
@@ -214,9 +320,15 @@ public class HistoryResponse {
 
             @Nullable
             @JsonProperty("witness")
-            String witness;
+            List<String> witness;
         }
 
+        /**
+         *  {
+         *      "address": "bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz",
+         *      "value_sat": 5000000000
+         *  }
+         */
         @Value
         @Builder
         @Jacksonized
@@ -225,8 +337,8 @@ public class HistoryResponse {
             @JsonProperty("address")
             String address;
 
-            @JsonProperty("value")
-            String value;
+            @JsonProperty("value_sat")
+            Long valueSat;
         }
     }
 }

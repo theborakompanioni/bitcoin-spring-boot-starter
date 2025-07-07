@@ -17,7 +17,6 @@ import org.testcontainers.utility.MountableFile;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +36,10 @@ public final class SimpleElectrumDaemonContainerFactory {
     public static class ElectrumDaemonContainerConfig {
         private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
                 .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
+                .put("ELECTRUM_CONFIG_AUTO_CONNECT", "true")
+                .put("ELECTRUM_CONFIG_LOG_TO_FILE", "true")
+                .put("ELECTRUM_CONFIG_CHECK_UPDATES", "false")
+                .put("ELECTRUM_CONFIG_DONT_SHOW_TESTNET_WARNING", "true")
                 .build();
 
         @Singular("addEnvVar")
@@ -49,16 +52,10 @@ public final class SimpleElectrumDaemonContainerFactory {
         }
 
         public Map<String, String> getEnvironment() {
-            ImmutableMap.Builder<String, String> environmentBuilder = ImmutableMap.<String, String>builder()
-                    .putAll(environment);
-
-            defaultEnvironment.forEach((key, value) -> {
-                if (!environment.containsKey(key)) {
-                    environmentBuilder.put(key, value);
-                }
-            });
-
-            return environmentBuilder.build();
+            return ImmutableMap.<String, String>builder()
+                    .putAll(defaultEnvironment)
+                    .putAll(environment)
+                    .buildKeepingLast();
         }
 
         public String getNetwork() {
@@ -67,7 +64,7 @@ public final class SimpleElectrumDaemonContainerFactory {
     }
 
     // currently only the image from "theborakompanioni" is supported
-    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.5.8@sha256:072a9329f7f560a0a952c07bbfadd55766e06275231f51fddd5c1885120c56c5";
+    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.0b1@sha256:70fff910f624909edb97c7af4cfe1768b7fecd198356a178d8b346eee30bf7be";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
@@ -97,19 +94,30 @@ public final class SimpleElectrumDaemonContainerFactory {
 
     public ElectrumDaemonContainer<?> createStartedElectrumDaemonContainer(ElectrumDaemonContainerConfig config,
                                                                            Supplier<Optional<String>> serverUrlSupplier) {
-        Map<String, String> env = config.getEnvironment();
+        ImmutableMap.Builder<String, String> environmentBuilder = ImmutableMap.<String, String>builder()
+                .putAll(config.getEnvironment());
+
+        serverUrlSupplier.get().ifPresent(serverUrl -> {
+            environmentBuilder.put("ELECTRUM_CONFIG_SERVER", serverUrlSupplier.get().orElse("empty"));
+            environmentBuilder.put("ELECTRUM_CONFIG_ONESERVER", "true");
+            // electrum says:
+            // > `both "oneserver" and "auto_connect" options enabled, disabling "auto_connect" and resetting "server"`
+            // and will disable our server if we do not disable auto_connect
+            environmentBuilder.put("ELECTRUM_CONFIG_AUTO_CONNECT", "false");
+        });
 
         ElectrumDaemonContainer<?> electrumDaemonContainer = new ElectrumDaemonContainer<>(dockerImageName)
                 .withCreateContainerCmdModifier(cmdModifier())
                 .withExposedPorts(hardcodedStandardPorts.toArray(new Integer[]{}))
-                .withEnv(env)
+                .withEnv(environmentBuilder.buildKeepingLast())
                 .waitingFor(containerWaitStrategy);
 
         copyWalletToContainerIfNecessary(config, electrumDaemonContainer);
 
         electrumDaemonContainer.start();
 
-        restartDaemonWithCustomizedSettings(config, electrumDaemonContainer, serverUrlSupplier);
+        // let the daemon some time to startup; 5000ms seems to be enough
+        loadWalletIfNecessary(config, electrumDaemonContainer, Duration.ofMillis(5_000));
 
         return electrumDaemonContainer;
     }
@@ -155,56 +163,11 @@ public final class SimpleElectrumDaemonContainerFactory {
         }
     }
 
-    private void restartDaemonWithCustomizedSettings(ElectrumDaemonContainerConfig config,
-                                                     ElectrumDaemonContainer<?> container,
-                                                     Supplier<Optional<String>> serverUrlSupplier) {
-        daemonStop(container);
-
-        setupDefaultConfigValuesHack(container);
-
-        serverUrlSupplier.get().ifPresent(serverUrl -> {
-            setupConnectingToServerHack(container, serverUrl);
-        });
-
-        daemonStart(container);
-
-        // let the daemon some time to startup; 5000ms seems to be enough
-        loadWalletIfNecessary(config, container, Duration.ofMillis(5_000));
-
-    }
-
-    /**
-     * Currently a ugly hack: osminogins docker image is currently not able
-     * to specify the arguments during startup. A workaround is to start the container as it is
-     * and then apply all necessary config options. When the daemon restarts it will pick up
-     * the proper settings.
-     * TODO: try to make the docker setup more customizable e.g. like lnzap/docker-lnd does.
-     */
-    private void setupConnectingToServerHack(ElectrumDaemonContainer<?> container, String serverUrl) {
-        updateElectrumConfigHack(container, "server", serverUrl);
-        updateElectrumConfigHack(container, "oneserver", "true");
-    }
-
-    private void setupDefaultConfigValuesHack(ElectrumDaemonContainer<?> container) {
-        updateElectrumConfigHack(container, "auto_connect", "true");
-        updateElectrumConfigHack(container, "log_to_file", "true");
-        updateElectrumConfigHack(container, "check_updates", "false");
-        updateElectrumConfigHack(container, "dont_show_testnet_warning", "true");
-    }
-
     private Optional<String> networkFlag(ElectrumDaemonContainer<?> container) {
         return Optional.of(container.getEnvMap())
                 .map(it -> it.get(ELECTRUM_NETWORK_ENV_NAME))
                 .filter(it -> !"mainnet".equals(it))
                 .map(it -> "--" + it);
-    }
-
-    private void daemonStart(ElectrumDaemonContainer<?> electrumDaemonContainer) {
-        daemonExec(electrumDaemonContainer, "daemon", "-d");
-    }
-
-    private void daemonStop(ElectrumDaemonContainer<?> electrumDaemonContainer) {
-        daemonExec(electrumDaemonContainer, "stop");
     }
 
     private void loadWalletIfNecessary(ElectrumDaemonContainerConfig config, ElectrumDaemonContainer<?> container, Duration timeout) {
@@ -217,10 +180,6 @@ public final class SimpleElectrumDaemonContainerFactory {
                 throw new RuntimeException("Error while adapting electrum-daemon: restart with auto-loading wallet failed", e);
             }
         }
-    }
-
-    private Container.ExecResult updateElectrumConfigHack(ElectrumDaemonContainer<?> container, String key, String value) {
-        return daemonExec(container,  "--offline", "setconfig", key, value);
     }
 
     private Container.ExecResult daemonExec(ElectrumDaemonContainer<?> container, String... commands) {

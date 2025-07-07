@@ -44,7 +44,6 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
     @Override
     protected void startUp() throws InterruptedException {
         this.client.daemonSetConfig(ConfigKey.confirmed_only, Boolean.FALSE.toString());
-        this.client.daemonSetConfig(ConfigKey.batch_rbf, Boolean.FALSE.toString());
         this.client.daemonSetConfig(ConfigKey.fee_per_kb, String.valueOf(120 * 1_024));
         this.client.daemonSetConfig(ConfigKey.dynamic_fees, Boolean.FALSE.toString());
         this.client.daemonSetConfig(ConfigKey.check_updates, Boolean.FALSE.toString());

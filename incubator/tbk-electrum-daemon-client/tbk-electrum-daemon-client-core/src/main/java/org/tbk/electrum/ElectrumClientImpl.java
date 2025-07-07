@@ -303,59 +303,59 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     @SneakyThrows
     public OnchainHistory getOnchainHistory() {
-        HistoryResponse history = delegate.onchainhistory(true);
+        List<HistoryResponse.Transaction> onchainhistory = delegate.onchainhistory(true);
+        HistoryResponse.Summary summary = delegate.onchaincapitalgains();
 
-        HistoryResponse.Summary summary = history.getSummary();
-        List<HistoryResponse.Transaction> transactions = history.getTransactions();
+        List<SimpleOnchainHistory.SimpleTransaction> transactions = onchainhistory.stream()
+                .map(it -> {
+                    List<SimpleOnchainHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
+                            .map(inputs -> inputs.stream()
+                                    .map(input -> SimpleOnchainHistory.SimpleHistoryTxInput.builder()
+                                            .txHash(input.getPrevoutHash())
+                                            .outputIndex(input.getPrevoutN())
+                                            .build())
+                                    .toList())
+                            .orElseGet(Collections::emptyList);
+
+                    List<SimpleOnchainHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
+                            .map(outputs -> outputs.stream()
+                                    .map(output -> SimpleOnchainHistory.SimpleHistoryTxOutput.builder()
+                                            .value(SimpleTxoValue.of(output.getValueSat()))
+                                            .address(output.getAddress())
+                                            .build())
+                                    .toList())
+                            .orElseGet(Collections::emptyList);
+
+                    Instant timestampOrNull = Optional.ofNullable(it.getTimestamp())
+                            .map(Instant::ofEpochSecond)
+                            .orElse(null);
+
+                    return SimpleOnchainHistory.SimpleTransaction.builder()
+                            .balance(BtcTxoValues.fromBtcString(it.getBalance()))
+                            .txHash(it.getTxId())
+                            .value(BtcTxoValues.fromBtcString(it.getValue()))
+                            .incoming(it.isIncoming())
+                            .confirmations(it.getConfirmations())
+                            .timestamp(timestampOrNull)
+                            .height(it.getHeight())
+                            .label(it.getLabel())
+                            .txPosInBlock(it.getTxPosInBlock())
+                            .inputs(inputsOrEmpty)
+                            .outputs(outputsOrEmpty)
+                            .build();
+                })
+                .toList();
 
         SimpleOnchainHistory.SimpleSummary historySummary = SimpleOnchainHistory.SimpleSummary.builder()
-                .startBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getBegin()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
-                .endBalance(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getEnd()).map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
-                .incoming(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getIncoming).orElse(null)))
-                .outgoing(BtcTxoValues.fromBtcStringOrZero(Optional.ofNullable(summary.getFlow()).map(HistoryResponse.Summary.SummaryFlow::getOutgoing).orElse(null)))
+                .startBalance(BtcTxoValues.fromBtcStringOrZero(summary.getBegin().map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
+                .endBalance(BtcTxoValues.fromBtcStringOrZero(summary.getEnd().map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
+                .incoming(BtcTxoValues.fromBtcStringOrZero(summary.getFlow().map(HistoryResponse.Summary.SummaryFlow::getIncoming).orElse(null)))
+                .outgoing(BtcTxoValues.fromBtcStringOrZero(summary.getFlow().map(HistoryResponse.Summary.SummaryFlow::getOutgoing).orElse(null)))
                 .build();
 
         return SimpleOnchainHistory.builder()
                 .summary(historySummary)
-                .transactions(transactions.stream()
-                        .map(it -> {
-                            List<SimpleOnchainHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
-                                    .map(inputs -> inputs.stream()
-                                            .map(input -> SimpleOnchainHistory.SimpleHistoryTxInput.builder()
-                                                    .txHash(input.getPrevoutHash())
-                                                    .outputIndex(input.getPrevoutN())
-                                                    .build())
-                                            .toList())
-                                    .orElseGet(Collections::emptyList);
-
-                            List<SimpleOnchainHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
-                                    .map(outputs -> outputs.stream()
-                                            .map(output -> SimpleOnchainHistory.SimpleHistoryTxOutput.builder()
-                                                    .value(BtcTxoValues.fromBtcString(output.getValue()))
-                                                    .address(output.getAddress())
-                                                    .build())
-                                            .toList())
-                                    .orElseGet(Collections::emptyList);
-
-                            Instant timestampOrNull = Optional.ofNullable(it.getTimestamp())
-                                    .map(Instant::ofEpochSecond)
-                                    .orElse(null);
-
-                            return SimpleOnchainHistory.SimpleTransaction.builder()
-                                    .balance(BtcTxoValues.fromBtcString(it.getBalance()))
-                                    .txHash(it.getTxId())
-                                    .value(BtcTxoValues.fromBtcString(it.getValue()))
-                                    .incoming(it.isIncoming())
-                                    .confirmations(it.getConfirmations())
-                                    .timestamp(timestampOrNull)
-                                    .height(it.getHeight())
-                                    .label(it.getLabel())
-                                    .txPosInBlock(it.getTxPosInBlock())
-                                    .inputs(inputsOrEmpty)
-                                    .outputs(outputsOrEmpty)
-                                    .build();
-                        })
-                        .toList())
+                .transactions(transactions)
                 .build();
     }
 
