@@ -5,19 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OnchainHistory {
-    Summary getSummary();
 
     List<Transaction> getTransactions();
-
-    interface Summary {
-        TxoValue getStartBalance();
-
-        TxoValue getEndBalance();
-
-        TxoValue getIncoming();
-
-        TxoValue getOutgoing();
-    }
 
     interface Transaction {
         String getTxHash();

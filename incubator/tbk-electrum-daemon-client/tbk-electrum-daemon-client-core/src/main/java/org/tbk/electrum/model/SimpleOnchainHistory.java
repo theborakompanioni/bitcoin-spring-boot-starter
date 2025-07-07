@@ -13,28 +13,8 @@ import java.util.Optional;
 @Value
 @Builder
 public class SimpleOnchainHistory implements OnchainHistory {
-
-    @NonNull
-    Summary summary;
-
     @Singular("addTransaction")
     List<Transaction> transactions;
-
-    @Value
-    @Builder
-    public static class SimpleSummary implements Summary {
-        @NonNull
-        TxoValue startBalance;
-
-        @NonNull
-        TxoValue endBalance;
-
-        @NonNull
-        TxoValue incoming;
-
-        @NonNull
-        TxoValue outgoing;
-    }
 
     @Value
     @Builder

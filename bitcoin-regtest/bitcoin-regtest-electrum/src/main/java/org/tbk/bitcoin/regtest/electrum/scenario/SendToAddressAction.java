@@ -9,7 +9,7 @@ import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
-import org.tbk.electrum.model.OnchainHistory;
+import org.tbk.electrum.model.OnchainSummary;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.TxoValue;
@@ -63,8 +63,7 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
                 log.trace("         {} spendable", balance.getSpendable().toFriendlyString());
                 log.trace("         {} unmatured", balance.getUnmatured().toFriendlyString());
 
-                OnchainHistory history = client.delegate().getOnchainHistory();
-                OnchainHistory.Summary summary = history.getSummary();
+                OnchainSummary summary = client.delegate().getOnchainCapitalGains();
 
                 log.trace("History: {} end balance", friendlyBtcString(summary.getEndBalance()));
                 log.trace("         {} start balance", friendlyBtcString(summary.getStartBalance()));

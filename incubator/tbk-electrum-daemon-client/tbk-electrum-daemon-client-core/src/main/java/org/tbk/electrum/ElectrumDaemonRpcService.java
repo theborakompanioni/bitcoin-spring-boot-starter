@@ -354,13 +354,13 @@ public interface ElectrumDaemonRpcService {
     String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     @JsonRpcMethod("onchain_capital_gains")
-    HistoryResponse.Summary onchaincapitalgains();
+    OnchainCapitalGainsResponse onchaincapitalgains();
 
     @JsonRpcMethod("onchain_capital_gains")
-    HistoryResponse.Summary onchaincapitalgains(@JsonRpcParam("year") long year);
+    OnchainCapitalGainsResponse onchaincapitalgains(@JsonRpcParam("year") long year);
 
     @JsonRpcMethod("onchain_capital_gains")
-    HistoryResponse.Summary onchaincapitalgains(
+    OnchainCapitalGainsResponse onchaincapitalgains(
             @JsonRpcOptional @JsonRpcParam("year") Long year,
             @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
@@ -373,20 +373,20 @@ public interface ElectrumDaemonRpcService {
     String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     @JsonRpcMethod("onchain_history")
-    List<HistoryResponse.Transaction> onchainhistory();
+    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory();
 
     @JsonRpcMethod("onchain_history")
-    List<HistoryResponse.Transaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
+    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
 
     @JsonRpcMethod("onchain_history")
-    List<HistoryResponse.Transaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
-                                                     @JsonRpcParam("year") long year);
+    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
+                                                                    @JsonRpcParam("year") long year);
 
     @JsonRpcMethod("onchain_history")
-    List<HistoryResponse.Transaction> onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
-                                                     @JsonRpcOptional @JsonRpcParam("year") Long year,
-                                                     @JsonRpcOptional @JsonRpcParam("show_fiat") Boolean showFiat,
-                                                     @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
+                                                                    @JsonRpcOptional @JsonRpcParam("year") Long year,
+                                                                    @JsonRpcOptional @JsonRpcParam("show_fiat") Boolean showFiat,
+                                                                    @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * List wallets open in daemon

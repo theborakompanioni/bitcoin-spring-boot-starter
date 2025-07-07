@@ -68,6 +68,8 @@ public interface ElectrumClient {
 
     OnchainHistory getOnchainHistory();
 
+    OnchainSummary getOnchainCapitalGains();
+
     RawTx getRawTransaction(String txHash);
 
     Tx getDeserializedTransaction(String txHash);

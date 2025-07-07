@@ -11,10 +11,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.command.*;
-import org.tbk.electrum.model.Balance;
-import org.tbk.electrum.model.OnchainHistory;
-import org.tbk.electrum.model.Version;
-import org.tbk.electrum.model.Wallet;
+import org.tbk.electrum.model.*;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
@@ -263,12 +260,20 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    void testHistory() {
+    void testOnchainHistory() {
         OnchainHistory history = sut.getOnchainHistory();
 
         assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
-        assertThat(history.getSummary().getStartBalance().isZero(), is(true));
-        assertThat(history.getSummary().getOutgoing().isZero(), is(true));
+    }
+
+    @Test
+    void testOnchainCapitalGains() {
+        OnchainSummary summary = sut.getOnchainCapitalGains();
+
+        assertThat(summary.getStartBalance().isZero(), is(true));
+        assertThat(summary.getEndBalance().isZero(), is(true));
+        assertThat(summary.getIncoming().isZero(), is(true));
+        assertThat(summary.getOutgoing().isZero(), is(true));
     }
 
     @Test
@@ -428,6 +433,7 @@ class ElectrumDaemonClientContainerTest {
 
         assertThat(versionInfo, is(notNullValue()));
     }
+
     @Test
     void testValidateAddress() {
         assertThat(sut.isValidAddress(firstAddress), is(true));

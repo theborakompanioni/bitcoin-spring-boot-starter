@@ -2,6 +2,8 @@ package org.tbk.electrum;
 
 import lombok.SneakyThrows;
 import org.tbk.electrum.command.*;
+import org.tbk.electrum.command.OnchainCapitalGainsResponse.FlowStats;
+import org.tbk.electrum.command.OnchainCapitalGainsResponse.PointInTimeStats;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
+import static org.tbk.electrum.model.BtcTxoValues.fromBtcStringOrZero;
 
 public class ElectrumClientImpl implements ElectrumClient {
     final static byte[] PSBT_MAGIC_BYTES = {'p', 's', 'b', 't', (byte) 0xff};
@@ -107,7 +110,10 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public RawTx createUnsignedTransaction(TxoValue value, String destinationAddress, String changeAddress, TxoValue fee) {
+    public RawTx createUnsignedTransaction(TxoValue value,
+                                           String destinationAddress,
+                                           String changeAddress,
+                                           TxoValue fee) {
         checkArgument(fee != null, "`fee` must not be null");
 
         return this.createTransaction(PaytoParams.builder()
@@ -236,7 +242,8 @@ public class ElectrumClientImpl implements ElectrumClient {
                 options.getFrozen(),
                 options.getUnused(),
                 options.getFunded(),
-                options.getBalance());
+                options.getBalance()
+        );
     }
 
     @Override
@@ -303,8 +310,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     @SneakyThrows
     public OnchainHistory getOnchainHistory() {
-        List<HistoryResponse.Transaction> onchainhistory = delegate.onchainhistory(true);
-        HistoryResponse.Summary summary = delegate.onchaincapitalgains();
+        List<OnchainHistoryResponse.HistoricTransaction> onchainhistory = delegate.onchainhistory(true);
 
         List<SimpleOnchainHistory.SimpleTransaction> transactions = onchainhistory.stream()
                 .map(it -> {
@@ -346,16 +352,19 @@ public class ElectrumClientImpl implements ElectrumClient {
                 })
                 .toList();
 
-        SimpleOnchainHistory.SimpleSummary historySummary = SimpleOnchainHistory.SimpleSummary.builder()
-                .startBalance(BtcTxoValues.fromBtcStringOrZero(summary.getBegin().map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
-                .endBalance(BtcTxoValues.fromBtcStringOrZero(summary.getEnd().map(HistoryResponse.Summary.SummaryTime::getBalance).orElse(null)))
-                .incoming(BtcTxoValues.fromBtcStringOrZero(summary.getFlow().map(HistoryResponse.Summary.SummaryFlow::getIncoming).orElse(null)))
-                .outgoing(BtcTxoValues.fromBtcStringOrZero(summary.getFlow().map(HistoryResponse.Summary.SummaryFlow::getOutgoing).orElse(null)))
-                .build();
-
         return SimpleOnchainHistory.builder()
-                .summary(historySummary)
                 .transactions(transactions)
+                .build();
+    }
+
+    @Override
+    public OnchainSummary getOnchainCapitalGains() {
+        OnchainCapitalGainsResponse summary = delegate.onchaincapitalgains();
+        return SimpleOnchainSummary.builder()
+                .startBalance(fromBtcStringOrZero(summary.getBegin().map(PointInTimeStats::getBalance).orElse(null)))
+                .endBalance(fromBtcStringOrZero(summary.getEnd().map(PointInTimeStats::getBalance).orElse(null)))
+                .incoming(fromBtcStringOrZero(summary.getFlow().map(FlowStats::getIncoming).orElse(null)))
+                .outgoing(fromBtcStringOrZero(summary.getFlow().map(FlowStats::getOutgoing).orElse(null)))
                 .build();
     }
 

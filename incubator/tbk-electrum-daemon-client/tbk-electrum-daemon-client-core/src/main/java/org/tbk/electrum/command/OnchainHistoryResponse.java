@@ -8,7 +8,6 @@ import lombok.extern.jackson.Jacksonized;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Represents a history call which includes onchain transactions.
@@ -101,91 +100,10 @@ import java.util.Optional;
 @Builder
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HistoryResponse {
-
-    @JsonProperty("summary")
-    Summary summary;
+public class OnchainHistoryResponse {
 
     @JsonProperty("transactions")
-    List<Transaction> transactions;
-
-    /**
-     * {
-     *     "begin": {
-     *         "BTC_balance": "0.",
-     *         "block_height": 0,
-     *         "date": "2025-07-06 13:14"
-     *     },
-     *     "end": {
-     *         "BTC_balance": "6550.",
-     *         "block_height": 131,
-     *         "date": "2025-07-06 13:17"
-     *     },
-     *     "flow": {
-     *         "BTC_incoming": "6550.",
-     *         "BTC_outgoing": "0."
-     *     }
-     * }
-     */
-    @Value
-    @Builder
-    @Jacksonized
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Summary {
-
-        @Value
-        @Builder
-        @Jacksonized
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class SummaryTime {
-            @JsonProperty("BTC_balance")
-            String balance;
-
-            @Nullable
-            @JsonProperty("block_height")
-            Long blockHeight;
-
-            @Nullable
-            @JsonProperty("date")
-            String date;
-        }
-
-        @Value
-        @Builder
-        @Jacksonized
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class SummaryFlow {
-            @JsonProperty("BTC_incoming")
-            String incoming;
-
-            @JsonProperty("BTC_outgoing")
-            String outgoing;
-        }
-
-        @Nullable
-        @JsonProperty("begin")
-        SummaryTime begin;
-
-        @Nullable
-        @JsonProperty("end")
-        SummaryTime end;
-
-        @Nullable
-        @JsonProperty("flow")
-        SummaryFlow flow;
-
-        public Optional<SummaryTime> getBegin() {
-            return Optional.ofNullable(begin);
-        }
-
-        public Optional<SummaryTime> getEnd() {
-            return Optional.ofNullable(end);
-        }
-
-        public Optional<SummaryFlow> getFlow() {
-            return Optional.ofNullable(flow);
-        }
-    }
+    List<HistoricTransaction> transactions;
 
     /**
      * {
@@ -232,9 +150,9 @@ public class HistoryResponse {
     @Builder
     @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Transaction {
+    public static class HistoricTransaction {
         @JsonProperty("amount_sat")
-        Long amount_sat;
+        Long amountSat;
         
         @JsonProperty("bc_balance")
         String balance;
