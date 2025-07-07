@@ -4,24 +4,34 @@ import com.google.common.base.MoreObjects;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
+import org.tbk.electrum.command.AddressBalanceResponse;
 import org.tbk.electrum.command.BalanceResponse;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+import static org.tbk.electrum.model.BtcTxoValues.fromBtcString;
+
 @Value
 @Builder
 public class SimpleBalance implements Balance {
-    public static SimpleBalance from(BalanceResponse balance) {
+    public static SimpleBalance from(AddressBalanceResponse val) {
         return SimpleBalance.builder()
-                .confirmed(BtcTxoValues.fromBtcString(balance.getConfirmed()))
-                .unconfirmed(balance.getUnconfirmed()
+                .confirmed(fromBtcString(val.getConfirmed()))
+                .unconfirmed(fromBtcString(val.getUnconfirmed()))
+                .build();
+    }
+
+    public static SimpleBalance from(BalanceResponse val) {
+        return SimpleBalance.builder()
+                .confirmed(fromBtcString(val.getConfirmed()))
+                .unconfirmed(val.getUnconfirmed()
                         .map(BtcTxoValues::fromBtcString)
                         .orElseGet(SimpleTxoValue::zero))
-                .unmatured(balance.getUnmatured()
+                .unmatured(val.getUnmatured()
                         .map(BtcTxoValues::fromBtcString)
                         .orElse(null))
-                .lightning(balance.getLightning()
+                .lightning(val.getLightning()
                         .map(BtcTxoValues::fromBtcString)
                         .orElse(null))
                 .build();

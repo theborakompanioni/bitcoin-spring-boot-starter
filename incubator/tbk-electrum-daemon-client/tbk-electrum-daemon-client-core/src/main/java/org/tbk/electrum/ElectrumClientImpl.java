@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
+import static org.tbk.electrum.model.BtcTxoValues.fromBtcString;
 import static org.tbk.electrum.model.BtcTxoValues.fromBtcStringOrZero;
 
 public class ElectrumClientImpl implements ElectrumClient {
@@ -177,7 +178,7 @@ public class ElectrumClientImpl implements ElectrumClient {
             throw new IllegalArgumentException("'password' must not be empty if encryption is enabled");
         }
 
-        CreateResponse createResponse = delegate.create(
+        CreateResponse result = delegate.create(
                 params.getPassphrase(),
                 params.getEncryptFile(),
                 params.getSeedType(),
@@ -188,12 +189,12 @@ public class ElectrumClientImpl implements ElectrumClient {
         return new Wallet() {
             @Override
             public Seed getSeed() {
-                return () -> Arrays.asList(createResponse.getSeed().split(" "));
+                return () -> Arrays.asList(result.getSeed().split(" "));
             }
 
             @Override
             public String getFilePath() {
-                return createResponse.getPath();
+                return result.getPath();
             }
         };
     }
@@ -273,99 +274,35 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Balance getAddressBalance(String address) {
-        AddressBalanceResponse addressBalance = delegate.getaddressbalance(address);
-
-        return SimpleBalance.builder()
-                .confirmed(BtcTxoValues.fromBtcString(addressBalance.getConfirmed()))
-                .unconfirmed(BtcTxoValues.fromBtcString(addressBalance.getUnconfirmed()))
-                .build();
+        AddressBalanceResponse result = delegate.getaddressbalance(address);
+        return SimpleBalance.from(result);
     }
 
     @Override
     public Utxos getAddressUnspent(String address) {
-        List<Utxo> utxos = delegate.getaddressunspent(address).stream()
-                .map(val -> SimpleUtxo.builder()
-                        .height(val.getHeight())
-                        .txHash(val.getTxHash())
-                        .txPos(val.getTxPos())
-                        .value(SimpleTxoValue.of(val.getValue()))
-                        .build())
-                .collect(Collectors.toUnmodifiableList());
-
-        return SimpleUtxos.builder()
-                .utxos(utxos)
-                .build();
+        List<AddressUnspentResponse.Utxo> result = delegate.getaddressunspent(address);
+        return SimpleUtxos.from(result);
     }
 
     @Override
     public List<TxHashAndBlockHeight> getAddressHistory(String address) {
-        return delegate.getaddresshistory(address).stream()
-                .map(it -> SimpleTxHashAndBlockHeight.builder()
-                        .height(it.getHeight())
-                        .txHash(it.getTxHash())
-                        .build())
+        List<AddressHistoryResponse.Entry> getaddresshistory = delegate.getaddresshistory(address);
+        return getaddresshistory.stream()
+                .map(SimpleTxHashAndBlockHeight::from)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     @SneakyThrows
     public OnchainHistory getOnchainHistory() {
-        List<OnchainHistoryResponse.HistoricTransaction> onchainhistory = delegate.onchainhistory(true);
-
-        List<SimpleOnchainHistory.SimpleTransaction> transactions = onchainhistory.stream()
-                .map(it -> {
-                    List<SimpleOnchainHistory.SimpleHistoryTxInput> inputsOrEmpty = Optional.ofNullable(it.getInputs())
-                            .map(inputs -> inputs.stream()
-                                    .map(input -> SimpleOnchainHistory.SimpleHistoryTxInput.builder()
-                                            .txHash(input.getPrevoutHash())
-                                            .outputIndex(input.getPrevoutN())
-                                            .build())
-                                    .toList())
-                            .orElseGet(Collections::emptyList);
-
-                    List<SimpleOnchainHistory.SimpleHistoryTxOutput> outputsOrEmpty = Optional.ofNullable(it.getOutputs())
-                            .map(outputs -> outputs.stream()
-                                    .map(output -> SimpleOnchainHistory.SimpleHistoryTxOutput.builder()
-                                            .value(SimpleTxoValue.of(output.getValueSat()))
-                                            .address(output.getAddress())
-                                            .build())
-                                    .toList())
-                            .orElseGet(Collections::emptyList);
-
-                    Instant timestampOrNull = Optional.ofNullable(it.getTimestamp())
-                            .map(Instant::ofEpochSecond)
-                            .orElse(null);
-
-                    return SimpleOnchainHistory.SimpleTransaction.builder()
-                            .balance(BtcTxoValues.fromBtcString(it.getBalance()))
-                            .txHash(it.getTxId())
-                            .value(BtcTxoValues.fromBtcString(it.getValue()))
-                            .incoming(it.isIncoming())
-                            .confirmations(it.getConfirmations())
-                            .timestamp(timestampOrNull)
-                            .height(it.getHeight())
-                            .label(it.getLabel())
-                            .txPosInBlock(it.getTxPosInBlock())
-                            .inputs(inputsOrEmpty)
-                            .outputs(outputsOrEmpty)
-                            .build();
-                })
-                .toList();
-
-        return SimpleOnchainHistory.builder()
-                .transactions(transactions)
-                .build();
+        List<OnchainHistoryResponse.HistoricTransaction> result = delegate.onchainhistory(true);
+        return SimpleOnchainHistory.from(result);
     }
 
     @Override
     public OnchainSummary getOnchainCapitalGains() {
-        OnchainCapitalGainsResponse summary = delegate.onchaincapitalgains();
-        return SimpleOnchainSummary.builder()
-                .startBalance(fromBtcStringOrZero(summary.getBegin().map(PointInTimeStats::getBalance).orElse(null)))
-                .endBalance(fromBtcStringOrZero(summary.getEnd().map(PointInTimeStats::getBalance).orElse(null)))
-                .incoming(fromBtcStringOrZero(summary.getFlow().map(FlowStats::getIncoming).orElse(null)))
-                .outgoing(fromBtcStringOrZero(summary.getFlow().map(FlowStats::getOutgoing).orElse(null)))
-                .build();
+        OnchainCapitalGainsResponse result = delegate.onchaincapitalgains();
+        return SimpleOnchainSummary.from(result);
     }
 
     @Override
@@ -382,8 +319,8 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Tx getDeserializedTransaction(String txHash) {
-        RawTx rawTx = this.getRawTransaction(txHash);
-        return getDeserializedTransaction(rawTx);
+        RawTx result = this.getRawTransaction(txHash);
+        return getDeserializedTransaction(result);
     }
 
     @Override
@@ -454,17 +391,17 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Boolean addAddressChangedNotificationCallback(String address, String url) {
-        return this.delegate.notify(address, url);
+        return delegate.notify(address, url);
     }
 
     @Override
     public String encryptMessage(String publicKeyHex, String plaintext) {
-        return this.delegate.encrypt(publicKeyHex, plaintext);
+        return delegate.encrypt(publicKeyHex, plaintext);
     }
 
     @Override
     public String decryptMessage(DecryptParams params) {
-        return this.delegate.decrypt(params.getPublicKey(),
+        return delegate.decrypt(params.getPublicKey(),
                 params.getEncryptedMessage(),
                 params.getPassword(),
                 params.getWalletPath());
@@ -482,7 +419,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public List<String> getPublicKeys(String address) {
-        return this.delegate.getpubkeys(address);
+        return delegate.getpubkeys(address);
     }
 
     @Override

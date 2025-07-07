@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import org.tbk.electrum.command.AddressUnspentResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,14 @@ import java.util.List;
 @Value
 @Builder
 public class SimpleUtxos implements Utxos {
+
+    public static SimpleUtxos from(List<AddressUnspentResponse.Utxo> val) {
+        return SimpleUtxos.builder()
+                .utxos(val.stream()
+                        .map(SimpleUtxo::from)
+                        .toList())
+                .build();
+    }
 
     public static Utxos empty() {
         return SimpleUtxos.builder()
