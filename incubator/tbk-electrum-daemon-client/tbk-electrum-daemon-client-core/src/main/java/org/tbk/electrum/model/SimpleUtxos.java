@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import org.tbk.electrum.command.AddressUnspentResponse;
+import org.tbk.electrum.rpc.command.AddressUnspentResponse;
 
 import java.util.Collections;
 import java.util.List;

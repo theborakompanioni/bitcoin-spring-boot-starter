@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.GetInfoResponse;
+import org.tbk.electrum.rpc.command.GetInfoResponse;
 
 @RestController
 @RequestMapping("/api/v1/electrum")

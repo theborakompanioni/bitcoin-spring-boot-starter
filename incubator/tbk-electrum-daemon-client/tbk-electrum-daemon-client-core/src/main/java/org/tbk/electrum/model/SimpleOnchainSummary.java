@@ -3,7 +3,7 @@ package org.tbk.electrum.model;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.tbk.electrum.command.OnchainCapitalGainsResponse;
+import org.tbk.electrum.rpc.command.OnchainCapitalGainsResponse;
 
 import static org.tbk.electrum.model.BtcTxoValues.fromBtcStringOrZero;
 

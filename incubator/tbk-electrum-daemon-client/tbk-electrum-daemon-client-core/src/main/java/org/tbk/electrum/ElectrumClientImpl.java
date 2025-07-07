@@ -1,20 +1,16 @@
 package org.tbk.electrum;
 
 import lombok.SneakyThrows;
-import org.tbk.electrum.command.*;
-import org.tbk.electrum.command.OnchainCapitalGainsResponse.FlowStats;
-import org.tbk.electrum.command.OnchainCapitalGainsResponse.PointInTimeStats;
+import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
+import org.tbk.electrum.rpc.command.*;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
-import static org.tbk.electrum.model.BtcTxoValues.fromBtcString;
-import static org.tbk.electrum.model.BtcTxoValues.fromBtcStringOrZero;
 
 public class ElectrumClientImpl implements ElectrumClient {
     final static byte[] PSBT_MAGIC_BYTES = {'p', 's', 'b', 't', (byte) 0xff};

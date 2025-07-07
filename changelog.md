@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## Breaking
+- Moved electrum RPC related code to distinct package
 
 ### Changed
 - upgrade: update tor testcontainer from v0.4.7.8 to v0.4.8.10

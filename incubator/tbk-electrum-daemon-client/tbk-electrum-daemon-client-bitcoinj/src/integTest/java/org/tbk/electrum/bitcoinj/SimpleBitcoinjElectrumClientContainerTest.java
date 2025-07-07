@@ -14,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
-import org.tbk.electrum.command.LoadWalletParams;
-import org.tbk.electrum.command.GetInfoResponse;
-import org.tbk.electrum.command.ListWalletEntry;
+import org.tbk.electrum.rpc.command.LoadWalletParams;
+import org.tbk.electrum.rpc.command.GetInfoResponse;
+import org.tbk.electrum.rpc.command.ListWalletEntry;
 import org.tbk.electrum.model.Version;
 import reactor.core.publisher.Flux;
 

@@ -12,6 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;

@@ -5,7 +5,7 @@ import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.GetInfoResponse;
+import org.tbk.electrum.rpc.command.GetInfoResponse;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.OnchainHistory;
 import org.tbk.electrum.model.TxoValue;

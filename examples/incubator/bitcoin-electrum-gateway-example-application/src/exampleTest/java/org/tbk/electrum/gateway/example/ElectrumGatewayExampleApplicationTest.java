@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.ElectrumClientFactory;
 import org.tbk.electrum.ElectrumClientFactoryImpl;
-import org.tbk.electrum.command.GetInfoResponse;
+import org.tbk.electrum.rpc.command.GetInfoResponse;
 import org.tbk.electrum.config.ElectrumDaemonJsonrpcConfig;
 import org.tbk.electrum.config.ElectrumDaemonJsonrpcConfigBuilder;
 import org.tbk.electrum.model.Balance;

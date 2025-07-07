@@ -1,4 +1,4 @@
-package org.tbk.electrum.command;
+package org.tbk.electrum.rpc.command;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,10 +7,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class GetSeedParams {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("password")
-    String password;
+public class CloseWalletParams {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")

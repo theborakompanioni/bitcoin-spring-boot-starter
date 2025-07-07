@@ -1,4 +1,4 @@
-package org.tbk.electrum;
+package org.tbk.electrum.rpc;
 
 import com.github.arteam.simplejsonrpc.client.JsonRpcId;
 import com.github.arteam.simplejsonrpc.client.JsonRpcParams;
@@ -8,7 +8,7 @@ import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcMethod;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcOptional;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcParam;
 import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcService;
-import org.tbk.electrum.command.*;
+import org.tbk.electrum.rpc.command.*;
 
 import javax.annotation.Nullable;
 import java.util.List;

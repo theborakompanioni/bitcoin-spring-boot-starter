@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
-import org.tbk.electrum.command.OnchainHistoryResponse;
+import org.tbk.electrum.rpc.command.OnchainHistoryResponse;
 
 import javax.annotation.Nullable;
 import java.time.Instant;

@@ -2,7 +2,7 @@ package org.tbk.electrum;
 
 import lombok.Builder;
 import lombok.Value;
-import org.tbk.electrum.command.*;
+import org.tbk.electrum.rpc.command.*;
 import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;

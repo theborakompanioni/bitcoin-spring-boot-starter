@@ -1,4 +1,4 @@
-package org.tbk.electrum.command;
+package org.tbk.electrum.rpc.command;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

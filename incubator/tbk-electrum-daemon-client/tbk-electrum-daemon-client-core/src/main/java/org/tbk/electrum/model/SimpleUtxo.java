@@ -3,7 +3,7 @@ package org.tbk.electrum.model;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.tbk.electrum.command.AddressUnspentResponse;
+import org.tbk.electrum.rpc.command.AddressUnspentResponse;
 
 @Value
 @Builder

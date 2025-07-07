@@ -3,7 +3,7 @@ package org.tbk.electrum.model;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.tbk.electrum.command.AddressHistoryResponse;
+import org.tbk.electrum.rpc.command.AddressHistoryResponse;
 
 @Value
 @Builder

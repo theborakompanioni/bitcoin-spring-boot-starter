@@ -4,8 +4,8 @@ import com.google.common.base.MoreObjects;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.tbk.electrum.command.AddressBalanceResponse;
-import org.tbk.electrum.command.BalanceResponse;
+import org.tbk.electrum.rpc.command.AddressBalanceResponse;
+import org.tbk.electrum.rpc.command.BalanceResponse;
 
 import javax.annotation.Nullable;
 import java.util.Optional;

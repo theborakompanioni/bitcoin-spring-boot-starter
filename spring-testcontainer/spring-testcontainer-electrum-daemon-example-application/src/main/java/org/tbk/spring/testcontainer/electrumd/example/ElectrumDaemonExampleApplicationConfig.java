@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.command.GetInfoResponse;
+import org.tbk.electrum.rpc.command.GetInfoResponse;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
