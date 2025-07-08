@@ -275,8 +275,7 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("getseed")
     String getseed(@JsonRpcOptional @JsonRpcParam("password") String password,
-                   // sanity comment: yes, it is called "wallet" and not "wallet_path" here!
-                   @JsonRpcOptional @JsonRpcParam("wallet") String walletPath);
+                   @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * return wallet synchronization status

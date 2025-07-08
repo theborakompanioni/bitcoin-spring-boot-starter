@@ -95,7 +95,7 @@ class ElectrumDaemonClientContainerTest {
         assertThat(infoResponse.getServerHeight(), is(greaterThanOrEqualTo(-1)));
         assertThat(infoResponse.getSpvNodes(), is(greaterThanOrEqualTo(0)));
         assertThat(infoResponse.isConnected(), is(true));
-        assertThat(infoResponse.isAutoConnect(), is(true));
+        assertThat(infoResponse.isAutoConnect(), is(false));
         assertThat(infoResponse.getVersion(), is(not(emptyOrNullString())));
         assertThat(infoResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
     }
@@ -113,7 +113,7 @@ class ElectrumDaemonClientContainerTest {
                 .walletPath("new_wallet")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet"));
+        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet"));
         assertThat(wallet.getSeed().getWords(), hasSize(12));
     }
 
@@ -123,23 +123,25 @@ class ElectrumDaemonClientContainerTest {
                 .walletPath("new_wallet_and_get_seed")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet_and_get_seed"));
+        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_and_get_seed"));
         assertThat(wallet.getSeed().getWords(), hasSize(12));
 
-        boolean loaded = sut.loadWallet(LoadWalletParams.builder()
-                .walletPath(wallet.getFilePath())
-                .build());
-        assertThat(loaded, is(true));
+        try {
+            boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath(wallet.getFilePath())
+                    .build());
+            assertThat(loaded, is(true));
 
-        List<String> result = sut.getMnemonicSeed(GetSeedParams.builder()
-                .walletPath(wallet.getFilePath())
-                .build());
-        assertThat(String.join("", wallet.getSeed().getWords()), is(String.join("", result)));
-
-        Boolean closed = sut.closeWallet(CloseWalletParams.builder()
-                .walletPath(wallet.getFilePath())
-                .build());
-        assertThat(closed, is(true));
+            List<String> result = sut.getMnemonicSeed(GetSeedParams.builder()
+                    .walletPath(wallet.getFilePath())
+                    .build());
+            assertThat(String.join("", result), is(String.join("", wallet.getSeed().getWords())));
+        } finally {
+            Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                    .walletPath(wallet.getFilePath())
+                    .build());
+            assertThat(closed, is(true));
+        }
     }
 
     @Test
@@ -150,19 +152,21 @@ class ElectrumDaemonClientContainerTest {
                 .password("correcthorsebatterystaple")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet_encrypted"));
+        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_encrypted"));
         assertThat(wallet.getSeed().getWords(), hasSize(12));
 
-        boolean loaded = sut.loadWallet(LoadWalletParams.builder()
-                .walletPath(wallet.getFilePath())
-                .password("correcthorsebatterystaple")
-                .build());
-        assertThat(loaded, is(true));
-
-        Boolean closed = sut.closeWallet(CloseWalletParams.builder()
-                .walletPath(wallet.getFilePath())
-                .build());
-        assertThat(closed, is(true));
+        try {
+            boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath(wallet.getFilePath())
+                    .password("correcthorsebatterystaple")
+                    .build());
+            assertThat(loaded, is(true));
+        } finally {
+            Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                    .walletPath(wallet.getFilePath())
+                    .build());
+            assertThat(closed, is(true));
+        }
     }
 
     @Test
@@ -173,7 +177,7 @@ class ElectrumDaemonClientContainerTest {
                 .password("correcthorsebatterystaple")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/new_wallet_encrypted_and_load"));
+        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_encrypted_and_load"));
 
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
             sut.loadWallet(LoadWalletParams.builder()
@@ -194,7 +198,7 @@ class ElectrumDaemonClientContainerTest {
                 .walletPath("new_wallet_error")
                 .build());
 
-        assertThat(ignoreOnPurpose.getFilePath(), is("/home/electrum/new_wallet_error"));
+        assertThat(ignoreOnPurpose.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_error"));
 
         // try creating the wallet again should throw an error
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
@@ -222,8 +226,8 @@ class ElectrumDaemonClientContainerTest {
         ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
 
         assertThat("wallet is known", listWalletEntry.getPath(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
-        assertThat("wallet is synchronized", listWalletEntry.getSynced(), is(notNullValue()));
-        assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(false));
+        assertThat("wallet is synchronized", listWalletEntry.getSynced(), either(is(true)).or(is(false)));
+        assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(true));
     }
 
     @Test
@@ -299,8 +303,8 @@ class ElectrumDaemonClientContainerTest {
         });
 
         ErrorMessage error = e.getErrorMessage();
-        assertThat(error.getMessage(), is("internal error while executing RPC"));
-        assertThat(error.getCode(), is(2));
+        assertThat(error.getMessage(), is("wallet not loaded"));
+        assertThat(error.getCode(), is(1));
     }
 
     @Test
@@ -358,16 +362,17 @@ class ElectrumDaemonClientContainerTest {
         });
 
         ErrorMessage error = e.getErrorMessage();
-        assertThat(error.getMessage(), is("internal error while executing RPC"));
-        assertThat(error.getCode(), is(2));
+        assertThat(error.getMessage(), is("wallet not loaded"));
+        assertThat(error.getCode(), is(1));
     }
 
     @Test
     void testGetBalanceErrorWalletNotLoaded() {
-        sut.closeWallet(CloseWalletParams.builder().build());
+        Boolean closed = sut.closeWallet(CloseWalletParams.builder().build());
+        assertThat(closed, is(true));
 
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
-            sut.getBalance();
+            Balance ignoredOnPurpose = sut.getBalance();
         });
 
         ErrorMessage error = e.getErrorMessage();
