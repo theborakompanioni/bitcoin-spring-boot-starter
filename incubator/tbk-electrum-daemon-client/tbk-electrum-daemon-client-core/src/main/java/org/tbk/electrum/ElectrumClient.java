@@ -2,13 +2,14 @@ package org.tbk.electrum;
 
 import lombok.Builder;
 import lombok.Value;
-import org.tbk.electrum.rpc.command.*;
 import org.tbk.electrum.model.*;
+import org.tbk.electrum.rpc.command.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Future;
 
 public interface ElectrumClient {
 
@@ -136,6 +137,8 @@ public interface ElectrumClient {
     Map<String, String> daemonVersionInfo();
 
     Boolean isValidAddress(String firstAddress);
+
+    Future<?> waitForWalletSynchronization();
 
     @Value
     @Builder

@@ -22,6 +22,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -277,13 +280,14 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    void testWalletSynchronized() {
-        Boolean walletSynchronized = Flux.interval(Duration.ofMillis(100))
-                .map(it -> sut.isWalletSynchronized())
-                .filter(it -> it)
-                .blockFirst(Duration.ofSeconds(10));
+    void testWalletSynchronized() throws ExecutionException, InterruptedException, TimeoutException {
+        Boolean walletSynchronized0 = sut.isWalletSynchronized();
+        assertThat(walletSynchronized0, either(is(true)).or(is(false)));
 
-        assertThat("wallet is synchronized", walletSynchronized, is(true));
+        sut.waitForWalletSynchronization().get(10, TimeUnit.SECONDS);
+
+        Boolean walletSynchronized1 = sut.isWalletSynchronized();
+        assertThat("wallet is synchronized", walletSynchronized1, is(true));
     }
 
     @Test

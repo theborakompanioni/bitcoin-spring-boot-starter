@@ -1,18 +1,26 @@
 package org.tbk.electrum;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
 import org.tbk.electrum.rpc.command.*;
-import org.tbk.electrum.model.*;
 
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.util.concurrent.MoreExecutors.shutdownAndAwaitTermination;
 import static java.util.Objects.requireNonNull;
 
-public class ElectrumClientImpl implements ElectrumClient {
+@Slf4j
+public class ElectrumClientImpl implements ElectrumClient, AutoCloseable {
     final static byte[] PSBT_MAGIC_BYTES = {'p', 's', 'b', 't', (byte) 0xff};
     private static final String PSBT_BASE64_PREFIX = Base64.getEncoder().encodeToString(PSBT_MAGIC_BYTES).replaceAll("=", "");
 
@@ -23,6 +31,13 @@ public class ElectrumClientImpl implements ElectrumClient {
     private static List<String> splitMnemonicSeed(String seed) {
         return Arrays.asList(seed.split(" "));
     }
+
+    private final String serviceId = Integer.toHexString(System.identityHashCode(this));
+
+    private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+            .setNameFormat("electrum-sync-" + serviceId + "-%d")
+            .setDaemon(true)
+            .build());
 
     private final ElectrumDaemonRpcService delegate;
 
@@ -433,6 +448,11 @@ public class ElectrumClientImpl implements ElectrumClient {
         return delegate.validateaddress(address);
     }
 
+    @Override
+    public Future<?> waitForWalletSynchronization() {
+        return syncExecutor.submit(delegate::waitforsync);
+    }
+
     private static byte[] fromHexOrBase64(String value) {
         if (looksLikePsbt(value)) {
             return Base64.getDecoder().decode(value);
@@ -441,6 +461,14 @@ public class ElectrumClientImpl implements ElectrumClient {
             return HexFormat.of().parseHex(value);
         } catch (Exception e) {
             return Base64.getDecoder().decode(value);
+        }
+    }
+
+    @Override
+    public void close() {
+        boolean executorShutdownSuccessful = shutdownAndAwaitTermination(syncExecutor, Duration.ofSeconds(10));
+        if (!executorShutdownSuccessful) {
+            log.warn("unclean shutdown of executor service");
         }
     }
 }

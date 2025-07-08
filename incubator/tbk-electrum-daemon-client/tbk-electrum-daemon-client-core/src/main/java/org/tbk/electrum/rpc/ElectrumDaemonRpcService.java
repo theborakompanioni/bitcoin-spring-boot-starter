@@ -124,7 +124,7 @@ import java.util.Map;
  * [x] "verifymessage",
  * [x] "version",
  * [x] "version_info",
- * [ ] "wait_for_sync"
+ * [x] "wait_for_sync"
  * ]
  */
 @JsonRpcService
@@ -565,4 +565,10 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("validateaddress")
     Boolean validateaddress(@JsonRpcParam("address") String address);
+
+    /**
+     * Block until the wallet synchronization finishes.
+     */
+    @JsonRpcMethod("wait_for_sync")
+    void waitforsync();
 }
