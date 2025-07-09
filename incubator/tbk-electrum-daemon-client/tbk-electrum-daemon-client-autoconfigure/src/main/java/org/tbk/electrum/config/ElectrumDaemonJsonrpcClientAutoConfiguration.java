@@ -27,7 +27,7 @@ public class ElectrumDaemonJsonrpcClientAutoConfiguration {
         this.properties = requireNonNull(properties);
     }
 
-    @Bean
+    @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean
     ElectrumClient electrumClient(ElectrumDaemonJsonrpcConfig electrumDaemonJsonrpcConfig,
                                   ElectrumClientFactory factory) {

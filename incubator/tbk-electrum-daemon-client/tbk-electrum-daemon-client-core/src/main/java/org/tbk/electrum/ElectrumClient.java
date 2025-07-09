@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 
-public interface ElectrumClient {
+public interface ElectrumClient extends AutoCloseable {
 
     default boolean isDaemonConnected() {
         return this.getInfo().isConnected();

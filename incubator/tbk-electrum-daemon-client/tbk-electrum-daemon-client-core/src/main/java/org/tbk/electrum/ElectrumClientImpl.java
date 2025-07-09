@@ -20,7 +20,7 @@ import static com.google.common.util.concurrent.MoreExecutors.shutdownAndAwaitTe
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class ElectrumClientImpl implements ElectrumClient, AutoCloseable {
+public class ElectrumClientImpl implements ElectrumClient {
     final static byte[] PSBT_MAGIC_BYTES = {'p', 's', 'b', 't', (byte) 0xff};
     private static final String PSBT_BASE64_PREFIX = Base64.getEncoder().encodeToString(PSBT_MAGIC_BYTES).replaceAll("=", "");
 
