@@ -29,6 +29,7 @@ import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -83,7 +84,7 @@ class ElectrumGatewayExampleApplicationTest {
     }
 
     @Test
-    void primaryElectrumDaemonContainerStarted() {
+    void primaryElectrumDaemonContainerStarted() throws Exception {
         assertThat(primaryElectrumDaemonContainer, is(notNullValue()));
         assertThat(primaryElectrumDaemonContainer.isRunning(), is(true));
 
@@ -93,11 +94,12 @@ class ElectrumGatewayExampleApplicationTest {
 
         GetInfoResponse daemonStatusResponse = primaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
+        primaryElectrumClient.waitForWalletSynchronization().get(30, TimeUnit.SECONDS);
         assertThat(primaryElectrumClient.isWalletSynchronized(), is(true));
     }
 
     @Test
-    void secondaryElectrumDaemonContainerStarted() {
+    void secondaryElectrumDaemonContainerStarted() throws Exception {
         assertThat(secondaryElectrumDaemonContainer, is(notNullValue()));
         assertThat(secondaryElectrumDaemonContainer.isRunning(), is(true));
 
@@ -107,6 +109,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         GetInfoResponse daemonStatusResponse = secondaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
+        secondaryElectrumClient.waitForWalletSynchronization().get(30, TimeUnit.SECONDS);
         assertThat(secondaryElectrumClient.isWalletSynchronized(), is(true));
     }
 
@@ -185,7 +188,7 @@ class ElectrumGatewayExampleApplicationTest {
         }
 
         @Primary
-        @Bean("primaryElectrumClient")
+        @Bean(name = "primaryElectrumClient", destroyMethod = "close")
         ElectrumClient primaryElectrumClient(ElectrumClientFactory electrumClientFactory,
                                              @Qualifier("primaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
             ElectrumDaemonJsonrpcConfig config = new ElectrumDaemonJsonrpcConfigBuilder()
@@ -198,7 +201,7 @@ class ElectrumGatewayExampleApplicationTest {
             return electrumClientFactory.create(config.getUri(), config.getUsername(), config.getPassword());
         }
 
-        @Bean("secondaryElectrumClient")
+        @Bean(name = "secondaryElectrumClient", destroyMethod = "close")
         ElectrumClient secondaryElectrumClient(ElectrumClientFactory electrumClientFactory,
                                                @Qualifier("secondaryElectrumDaemonContainer") ElectrumDaemonContainer<?> electrumDaemonContainer) {
             ElectrumDaemonJsonrpcConfig config = new ElectrumDaemonJsonrpcConfigBuilder()

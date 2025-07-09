@@ -44,16 +44,10 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
     @Override
     protected void startUp() throws InterruptedException {
         this.client.daemonSetConfig(ConfigKey.confirmed_only, Boolean.FALSE.toString());
-        this.client.daemonSetConfig(ConfigKey.fee_per_kb, String.valueOf(120 * 1_024));
-        this.client.daemonSetConfig(ConfigKey.dynamic_fees, Boolean.FALSE.toString());
-        this.client.daemonSetConfig(ConfigKey.check_updates, Boolean.FALSE.toString());
-        this.client.daemonSetConfig(ConfigKey.dont_show_testnet_warning, Boolean.TRUE.toString());
         // call to "Abstract_Wallet.get_full_history" logs every access - logs can grow quite large
         this.client.daemonSetConfig(ConfigKey.log_to_file, Boolean.FALSE.toString());
 
         printConfig(ConfigKey.confirmed_only);
-        printConfig(ConfigKey.check_updates);
-        printConfig(ConfigKey.fee_per_kb);
 
         List<String> addresses = client.listAddresses();
         log.info("start watching addresses: {}", addresses);
