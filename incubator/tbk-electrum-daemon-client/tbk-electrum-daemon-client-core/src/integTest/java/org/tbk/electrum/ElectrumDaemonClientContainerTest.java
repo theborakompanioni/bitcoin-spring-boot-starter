@@ -10,15 +10,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.rpc.command.*;
 import org.tbk.electrum.model.*;
+import org.tbk.electrum.rpc.command.*;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
-import reactor.core.publisher.Flux;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -97,7 +95,6 @@ class ElectrumDaemonClientContainerTest {
         assertThat(infoResponse.isConnected(), is(true));
         assertThat(infoResponse.isAutoConnect(), is(false));
         assertThat(infoResponse.getVersion(), is(not(emptyOrNullString())));
-        assertThat(infoResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
     }
 
     @Test

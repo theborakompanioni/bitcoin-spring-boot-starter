@@ -59,9 +59,7 @@ public class GetInfoResponse {
     @JsonProperty("version")
     String version;
 
-    @JsonProperty("fee_per_kb")
-    int feePerKb;
-
-    @JsonProperty("default_wallet")
-    String defaultWallet;
+    // TODO: add type for fee estimates
+    @JsonProperty("fee_estimates")
+    Object feeEstimates;
 }
