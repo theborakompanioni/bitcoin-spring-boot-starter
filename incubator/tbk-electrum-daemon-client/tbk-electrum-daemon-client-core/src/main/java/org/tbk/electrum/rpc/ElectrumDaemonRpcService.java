@@ -282,6 +282,14 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("getaddressunspent")
     List<AddressUnspentResponse.Utxo> getaddressunspent(@JsonRpcParam("address") String address);
 
+    /**
+     * Return current fee estimate given network conditions (in sat/kvByte).
+     * To change the fee policy, use 'getconfig/setconfig fee_policy'
+     * @return the feerate
+     */
+    @JsonRpcMethod("getfeerate")
+    GetFeerateResponse getfeerate();
+
     @JsonRpcMethod("gettransaction")
     String gettransaction(@JsonRpcParam("txid") String txId);
 

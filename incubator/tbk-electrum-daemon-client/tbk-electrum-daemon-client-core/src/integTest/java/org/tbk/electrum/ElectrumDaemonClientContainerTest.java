@@ -98,6 +98,14 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testGetFeerate() {
+        Feerate feerate = sut.getFeerate();
+
+        assertThat(feerate.getPolicy(), is(startsWith("eta:")));
+        assertThat(feerate.getSatPerVbyte().getSatPerVbyte().longValue(), is(greaterThan(0L)));
+    }
+
+    @Test
     void testMakeSeed() {
         List<String> result = sut.createMnemonicSeed();
 

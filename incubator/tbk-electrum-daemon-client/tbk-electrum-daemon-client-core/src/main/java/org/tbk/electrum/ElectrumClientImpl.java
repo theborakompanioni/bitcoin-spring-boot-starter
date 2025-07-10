@@ -8,6 +8,8 @@ import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
 import org.tbk.electrum.rpc.command.*;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -371,6 +373,18 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public GetInfoResponse getInfo() {
         return delegate.getinfo();
+    }
+
+    @Override
+    public Feerate getFeerate() {
+        GetFeerateResponse result = delegate.getfeerate();
+        return SimpleFeerate.builder()
+                .policy(result.getPolicy())
+                .satPerVbyte(SimpleSatPerVbyte.builder()
+                        .satPerVbyte(BigDecimal.valueOf(result.getSatPerKvb())
+                                .divide(BigDecimal.valueOf(1_000), 2, RoundingMode.UP))
+                        .build())
+                .build();
     }
 
     @Override

@@ -79,6 +79,8 @@ public interface ElectrumClient extends AutoCloseable {
 
     GetInfoResponse getInfo();
 
+    Feerate getFeerate();
+
     boolean loadWallet(LoadWalletParams request);
 
     Boolean closeWallet(CloseWalletParams request);
