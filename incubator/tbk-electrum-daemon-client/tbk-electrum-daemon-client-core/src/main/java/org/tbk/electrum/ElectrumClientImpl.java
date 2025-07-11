@@ -412,6 +412,20 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
+    public boolean changeGapLimit(ChangeGapLimitParams params) {
+        return delegate.changegaplimit(
+                params.getGaplimit(),
+                true,
+                params.getWalletPath()
+        );
+    }
+
+    @Override
+    public int getMinAcceptableGap(GetMinAcceptableGapParams params) {
+        return delegate.getminacceptablegap(params.getWalletPath());
+    }
+
+    @Override
     public boolean loadWallet(LoadWalletParams params) {
         delegate.loadwallet(params.getWalletPath(),
                 params.getPassword(),

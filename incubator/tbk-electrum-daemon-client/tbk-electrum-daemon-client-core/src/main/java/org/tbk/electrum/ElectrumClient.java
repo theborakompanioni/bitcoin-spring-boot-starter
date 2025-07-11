@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 
 public interface ElectrumClient extends AutoCloseable {
 
-    default boolean isDaemonConnected() {
+    default boolean isConnected() {
         return this.getInfo().isConnected();
     }
 
@@ -85,9 +85,17 @@ public interface ElectrumClient extends AutoCloseable {
 
     Feerate getFeerate();
 
-    boolean loadWallet(LoadWalletParams request);
+    boolean changeGapLimit(ChangeGapLimitParams params);
 
-    Boolean closeWallet(CloseWalletParams request);
+    default int getMinAcceptableGap() {
+        return getMinAcceptableGap(GetMinAcceptableGapParams.builder().build());
+    }
+
+    int getMinAcceptableGap(GetMinAcceptableGapParams params);
+
+    boolean loadWallet(LoadWalletParams params);
+
+    Boolean closeWallet(CloseWalletParams params);
 
     default Optional<Object> getConfig(ConfigKeyEnum key) {
         return getConfig(key.getKey());

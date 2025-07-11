@@ -144,6 +144,23 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testChangeGapLimit() {
+        boolean success = sut.changeGapLimit(ChangeGapLimitParams.builder()
+                .gaplimit(10)
+                .build());
+        assertThat(success, is(true));
+    }
+
+    @Test
+    void testGetMinAcceptableGap() {
+        // needs a synchronized wallet
+        sut.waitForWalletSynchronization();
+
+        int value = sut.getMinAcceptableGap();
+        assertThat(value, is(greaterThanOrEqualTo(1)));
+    }
+
+    @Test
     void testMakeSeed() {
         List<String> result = sut.createMnemonicSeed();
 

@@ -74,7 +74,7 @@ class ElectrumPersonalServerContainerApplicationTest {
 
     @Test
     void clientIsConnected() {
-        assertThat(electrumClient.isDaemonConnected(), is(true));
+        assertThat(electrumClient.isConnected(), is(true));
 
         // triggers a lookup on the server
         assertThat(electrumClient.getAddressBalance(electrumClient.createNewAddress()), is(SimpleBalance.zero()));

@@ -298,6 +298,28 @@ public interface ElectrumDaemonRpcService {
     GetInfoResponse getinfo();
 
     /**
+     * Change the gap limit of the wallet.
+     *
+     * @param newLimit         new gap limit
+     * @param iknowwhatimdoing Acknowledge that I understand the full implications of what I am about to do
+     * @param walletPath       wallet path
+     * @return true in case of success
+     */
+    @JsonRpcMethod("changegaplimit")
+    Boolean changegaplimit(@JsonRpcParam("new_limit") int newLimit,
+                           @JsonRpcOptional @JsonRpcParam("iknowwhatimdoing") Boolean iknowwhatimdoing,
+                           @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
+     * Returns the minimum value for gap limit that would be sufficient to discover all known addresses in the wallet.
+     *
+     * @param walletPath wallet path
+     * @return minimum value for gap limit
+     */
+    @JsonRpcMethod("getminacceptablegap")
+    Integer getminacceptablegap(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
+
+    /**
      * Generates a new seed. Does not change the current seed.
      *
      * @return a new seed
@@ -308,21 +330,21 @@ public interface ElectrumDaemonRpcService {
     /**
      * Generates a new seed. Does not change the current seed.
      *
-     * @param seed_type the type of seed to create, e.g. 'standard' or 'segwit'
+     * @param seedType the type of seed to create, e.g. 'standard' or 'segwit'
      * @return a new seed
      */
     @JsonRpcMethod("make_seed")
-    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seed_type);
+    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seedType);
 
     /**
      * Generates a new seed. Does not change the current seed.
      *
-     * @param seed_type the type of seed to create, e.g. 'standard' or 'segwit'
-     * @param language  default language for wordlist
+     * @param seedType the type of seed to create, e.g. 'standard' or 'segwit'
+     * @param language default language for wordlist
      * @return a new seed
      */
     @JsonRpcMethod("make_seed")
-    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seed_type,
+    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seedType,
                     @JsonRpcOptional @JsonRpcParam("language") String language);
 
     /**
@@ -402,7 +424,7 @@ public interface ElectrumDaemonRpcService {
                                                 @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                                 @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
                                                 @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
-                                                /* `balance` MUST be set to `true` to deserialize response correctly */
+            /* `balance` MUST be set to `true` to deserialize response correctly */
                                                 @JsonRpcOptional @JsonRpcParam("balance") Boolean balance);
 
     /**

@@ -53,7 +53,7 @@ class BitcoinRegtestExampleApplicationConfig {
     @Bean
     CommandLineRunner loadElectrumWallet(ElectrumClient electrumClient) {
         return args -> {
-            boolean daemonConnected = electrumClient.isDaemonConnected();
+            boolean daemonConnected = electrumClient.isConnected();
             log.info("electrum daemon connected: {}", daemonConnected);
 
             Boolean loadWalletResult = electrumClient.loadWallet(LoadWalletParams.builder()
