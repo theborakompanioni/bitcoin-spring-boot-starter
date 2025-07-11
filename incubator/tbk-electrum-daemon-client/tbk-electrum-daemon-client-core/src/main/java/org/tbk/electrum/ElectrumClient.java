@@ -41,6 +41,10 @@ public interface ElectrumClient extends AutoCloseable {
 
     List<String> listAddressesUnfunded();
 
+    List<AddressWithBalance> listAddressesWithBalance();
+
+    List<AddressWithBalance> listAddressesWithBalance(ListAddressOptions options);
+
     default Boolean isOwnerOfAddress(String address) {
         return isOwnerOfAddress(IsMineParams.builder()
                 .address(address)
@@ -163,7 +167,5 @@ public interface ElectrumClient extends AutoCloseable {
         Boolean unused;
         @Nullable
         Boolean funded;
-        @Nullable
-        Boolean balance;
     }
 }

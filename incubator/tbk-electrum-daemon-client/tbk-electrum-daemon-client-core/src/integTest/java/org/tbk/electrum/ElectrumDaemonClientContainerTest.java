@@ -347,6 +347,19 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testListAddressesWithBalance() {
+        List<AddressWithBalance> addresses = sut.listAddressesWithBalance();
+
+        assertThat(addresses, hasSize(greaterThan(0)));
+
+        AddressWithBalance addressWithBalance = addresses.stream()
+                .filter(it -> firstAddress.equals(it.getAddress()))
+                .findFirst()
+                .orElseThrow();
+        assertThat(addressWithBalance.getBalance(), is(SimpleTxoValue.zero()));
+    }
+
+    @Test
     void testGetBalance() {
         Balance balance = sut.getBalance();
 

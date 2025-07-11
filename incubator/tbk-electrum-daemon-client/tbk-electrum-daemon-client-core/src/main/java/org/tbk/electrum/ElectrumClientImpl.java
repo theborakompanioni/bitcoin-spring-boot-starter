@@ -1,7 +1,9 @@
 package org.tbk.electrum;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import lombok.Builder;
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
@@ -255,8 +257,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                 options.getLabels(),
                 options.getFrozen(),
                 options.getUnused(),
-                options.getFunded(),
-                options.getBalance()
+                options.getFunded()
         );
     }
 
@@ -268,6 +269,31 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public List<String> listAddressesUnfunded() {
         return delegate.listaddresses(false);
+    }
+
+    @Override
+    public List<AddressWithBalance> listAddressesWithBalance() {
+        return listAddressesWithBalance(ListAddressOptions.all());
+    }
+
+    @Override
+    public List<AddressWithBalance> listAddressesWithBalance(ListAddressOptions options) {
+        List<List<String>> result = delegate.listaddresseswithbalance(
+                options.getReceiving(),
+                options.getChange(),
+                options.getLabels(),
+                options.getFrozen(),
+                options.getUnused(),
+                options.getFunded(),
+                true
+        );
+        return result.stream()
+                .filter(it -> it.size() >= 2)
+                .map(it -> SimpleAddressWithBalance.builder()
+                        .address(it.get(0))
+                        .balance(BtcTxoValues.fromBtcString(it.get(1)))
+                        .build())
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
