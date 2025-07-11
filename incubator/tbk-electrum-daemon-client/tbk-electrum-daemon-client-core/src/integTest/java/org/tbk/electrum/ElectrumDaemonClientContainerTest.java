@@ -173,7 +173,7 @@ class ElectrumDaemonClientContainerTest {
                 .walletPath("new_wallet")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet"));
+        assertThat(wallet.getPath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet"));
         assertThat(wallet.getSeed().getWords(), hasSize(12));
     }
 
@@ -183,22 +183,22 @@ class ElectrumDaemonClientContainerTest {
                 .walletPath("new_wallet_and_get_seed")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_and_get_seed"));
+        assertThat(wallet.getPath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_and_get_seed"));
         assertThat(wallet.getSeed().getWords(), hasSize(12));
 
         try {
             boolean loaded = sut.loadWallet(LoadWalletParams.builder()
-                    .walletPath(wallet.getFilePath())
+                    .walletPath(wallet.getPath())
                     .build());
             assertThat(loaded, is(true));
 
             List<String> result = sut.getMnemonicSeed(GetSeedParams.builder()
-                    .walletPath(wallet.getFilePath())
+                    .walletPath(wallet.getPath())
                     .build());
             assertThat(String.join("", result), is(String.join("", wallet.getSeed().getWords())));
         } finally {
             Boolean closed = sut.closeWallet(CloseWalletParams.builder()
-                    .walletPath(wallet.getFilePath())
+                    .walletPath(wallet.getPath())
                     .build());
             assertThat(closed, is(true));
         }
@@ -212,18 +212,18 @@ class ElectrumDaemonClientContainerTest {
                 .password("correcthorsebatterystaple")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_encrypted"));
+        assertThat(wallet.getPath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_encrypted"));
         assertThat(wallet.getSeed().getWords(), hasSize(12));
 
         try {
             boolean loaded = sut.loadWallet(LoadWalletParams.builder()
-                    .walletPath(wallet.getFilePath())
+                    .walletPath(wallet.getPath())
                     .password("correcthorsebatterystaple")
                     .build());
             assertThat(loaded, is(true));
         } finally {
             Boolean closed = sut.closeWallet(CloseWalletParams.builder()
-                    .walletPath(wallet.getFilePath())
+                    .walletPath(wallet.getPath())
                     .build());
             assertThat(closed, is(true));
         }
@@ -237,11 +237,11 @@ class ElectrumDaemonClientContainerTest {
                 .password("correcthorsebatterystaple")
                 .build());
 
-        assertThat(wallet.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_encrypted_and_load"));
+        assertThat(wallet.getPath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_encrypted_and_load"));
 
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
             sut.loadWallet(LoadWalletParams.builder()
-                    .walletPath(wallet.getFilePath())
+                    .walletPath(wallet.getPath())
                     .password("wrong_password")
                     .build());
         });
@@ -258,7 +258,7 @@ class ElectrumDaemonClientContainerTest {
                 .walletPath("new_wallet_error")
                 .build());
 
-        assertThat(ignoreOnPurpose.getFilePath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_error"));
+        assertThat(ignoreOnPurpose.getPath(), is("/home/electrum/.electrum/regtest/wallets/new_wallet_error"));
 
         // try creating the wallet again should throw an error
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
@@ -312,6 +312,48 @@ class ElectrumDaemonClientContainerTest {
                     .password("correcthorsebatterystaple")
                     .build());
             assertThat(loaded, is(true));
+        } finally {
+            Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .build());
+            assertThat(closed, is(true));
+        }
+    }
+
+    @Test
+    void testUnlockWalletSuccess() {
+        RestoreResponse result = sut.restoreWallet(RestoreParams.builder()
+                .text(String.join(" ", sut.createMnemonicSeed()))
+                .walletPath("unlock_wallet")
+                .password("correcthorsebatterystaple")
+                .build());
+
+        assertThat(result.getPath(), is("/home/electrum/.electrum/regtest/wallets/unlock_wallet"));
+
+        try {
+            boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .password("correcthorsebatterystaple")
+                    .build());
+            assertThat(loaded, is(true));
+
+            ListWalletEntry listWalletEntry0 = sut.listOpenWallets().stream()
+                    .filter(it -> result.getPath().equals(it.getPath()))
+                    .findFirst()
+                    .orElseThrow();
+            assertThat(listWalletEntry0.getUnlocked(), is(false));
+
+            boolean success = sut.unlockWallet(UnlockWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .password("correcthorsebatterystaple")
+                    .build());
+            assertThat(success, is(true));
+
+            ListWalletEntry listWalletEntry1 = sut.listOpenWallets().stream()
+                    .filter(it -> result.getPath().equals(it.getPath()))
+                    .findFirst()
+                    .orElseThrow();
+            assertThat(listWalletEntry1.getUnlocked(), is(true));
         } finally {
             Boolean closed = sut.closeWallet(CloseWalletParams.builder()
                     .walletPath(result.getPath())

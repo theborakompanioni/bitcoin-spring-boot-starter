@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class LoadWalletParams {
+public class UnlockWalletParams {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet")

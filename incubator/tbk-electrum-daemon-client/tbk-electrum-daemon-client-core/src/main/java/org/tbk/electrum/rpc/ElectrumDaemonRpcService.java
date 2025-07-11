@@ -171,6 +171,7 @@ import java.util.Map;
  * [ ] "signmessage",
  * [ ] "signtransaction",
  * [x] "stop",
+ * [x] "unlock",
  * [x] "validateaddress",
  * [x] "verifymessage",
  * [x] "version",
@@ -512,12 +513,14 @@ public interface ElectrumDaemonRpcService {
      *
      * @param walletPath wallet path
      * @param password   wallet password
-     * @param unlock     unlock the wallet (store the password in memory)
      */
     @JsonRpcMethod("load_wallet")
     void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
-                    @JsonRpcOptional @JsonRpcParam("password") String password,
-                    @JsonRpcOptional @JsonRpcParam("unlock") Boolean unlock);
+                    @JsonRpcOptional @JsonRpcParam("password") String password);
+
+    @JsonRpcMethod("unlock")
+    void unlock(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
+                @JsonRpcOptional @JsonRpcParam("password") String password);
 
     @JsonRpcMethod("getconfig")
     @Nullable

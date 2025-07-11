@@ -206,7 +206,7 @@ public class ElectrumClientImpl implements ElectrumClient {
             }
 
             @Override
-            public String getFilePath() {
+            public String getPath() {
                 return result.getPath();
             }
         };
@@ -428,10 +428,13 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public boolean loadWallet(LoadWalletParams params) {
-        delegate.loadwallet(params.getWalletPath(),
-                params.getPassword(),
-                params.getUnlock()
-        );
+        delegate.loadwallet(params.getWalletPath(), params.getPassword());
+        return true;
+    }
+
+    @Override
+    public boolean unlockWallet(UnlockWalletParams params) {
+        delegate.unlock(params.getWalletPath(), params.getPassword());
         return true;
     }
 

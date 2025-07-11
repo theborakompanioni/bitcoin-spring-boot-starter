@@ -97,6 +97,8 @@ public interface ElectrumClient extends AutoCloseable {
 
     boolean loadWallet(LoadWalletParams params);
 
+    boolean unlockWallet(UnlockWalletParams params);
+
     Boolean closeWallet(CloseWalletParams params);
 
     RestoreResponse restoreWallet(RestoreParams params);

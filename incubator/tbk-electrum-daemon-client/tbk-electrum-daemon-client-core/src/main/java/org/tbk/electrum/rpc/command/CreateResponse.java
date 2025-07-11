@@ -12,7 +12,7 @@ import lombok.extern.jackson.Jacksonized;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateResponse {
     @JsonProperty("msg")
-    String confirmed;
+    String message;
 
     @JsonProperty("path")
     String path;
