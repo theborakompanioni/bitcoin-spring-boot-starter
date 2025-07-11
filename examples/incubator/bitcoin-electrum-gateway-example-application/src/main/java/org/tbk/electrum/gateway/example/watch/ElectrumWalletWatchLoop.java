@@ -43,9 +43,9 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
 
     @Override
     protected void startUp() throws InterruptedException {
-        this.client.daemonSetConfig(ConfigKey.confirmed_only, Boolean.FALSE.toString());
+        this.client.setConfig(ConfigKey.confirmed_only, Boolean.FALSE.toString());
         // call to "Abstract_Wallet.get_full_history" logs every access - logs can grow quite large
-        this.client.daemonSetConfig(ConfigKey.log_to_file, Boolean.FALSE.toString());
+        this.client.setConfig(ConfigKey.log_to_file, Boolean.FALSE.toString());
 
         printConfig(ConfigKey.confirmed_only);
 
@@ -87,7 +87,7 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
     }
 
     private void printConfig(ConfigKey key) {
-        log.info("config '{}': {}", key.name(), this.client.daemonGetConfig(key).orElse(null));
+        log.info("config '{}': {}", key.name(), this.client.getConfig(key).orElse(null));
     }
 
     @Override

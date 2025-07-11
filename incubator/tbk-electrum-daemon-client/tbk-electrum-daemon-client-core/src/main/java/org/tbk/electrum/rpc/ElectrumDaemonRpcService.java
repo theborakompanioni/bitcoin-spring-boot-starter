@@ -149,7 +149,7 @@ import java.util.Map;
  * [x] "getaddressbalance",
  * [x] "getaddresshistory",
  * [x] "getaddressunspent",
- * [ ] "getbalance",
+ * [x] "getbalance",
  * [ ] "getconfig",
  * [x] "getinfo",
  * [ ] "getpubkeys",

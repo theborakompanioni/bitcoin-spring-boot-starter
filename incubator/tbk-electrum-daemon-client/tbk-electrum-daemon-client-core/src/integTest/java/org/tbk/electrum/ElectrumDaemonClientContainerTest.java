@@ -106,6 +106,44 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testGetConfig() {
+        Optional<Object> raw = sut.getConfig(ConfigKey.log_to_file);
+        assertThat(raw.isPresent(), is(true));
+
+        boolean value = raw.map(it -> Boolean.parseBoolean(it.toString())).orElse(false);
+        assertThat(value, is(true));
+    }
+
+    @Test
+    void testGetConfigError() {
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            Optional<Object> ignoredOnPurpose = sut.getConfig("non_existing_config_key");
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getMessage(), is("internal error while executing RPC"));
+        assertThat(error.getData().get("exception").asText(), is("KeyError(\"No ConfigVar with key='non_existing_config_key'\")"));
+        assertThat(error.getCode(), is(2));
+    }
+
+    @Test
+    void testSetConfig() {
+        boolean value0 = sut.getConfig(ConfigKey.log_to_file)
+                .map(it -> Boolean.parseBoolean(it.toString()))
+                .orElse(false);
+        assertThat(value0, is(true));
+
+        sut.setConfig(ConfigKey.log_to_file, String.valueOf(!value0));
+
+        boolean value1 = sut.getConfig(ConfigKey.log_to_file)
+                .map(it -> Boolean.parseBoolean(it.toString()))
+                .orElse(true);
+        assertThat(value1, is(false));
+
+        sut.setConfig(ConfigKey.log_to_file, String.valueOf(!value1));
+    }
+
+    @Test
     void testMakeSeed() {
         List<String> result = sut.createMnemonicSeed();
 
@@ -246,7 +284,7 @@ class ElectrumDaemonClientContainerTest {
     void testLoadWalletError() {
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
             sut.loadWallet(LoadWalletParams.builder()
-                    .walletPath("/not/existing/wallet")
+                    .walletPath("/non/existing/wallet")
                     .build());
         });
 
@@ -265,7 +303,7 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testCloseWalletError() {
         Boolean success = sut.closeWallet(CloseWalletParams.builder()
-                .walletPath("/not/existing/wallet")
+                .walletPath("/non/existing/wallet")
                 .build());
 
         assertThat(success, is(false));
@@ -303,7 +341,7 @@ class ElectrumDaemonClientContainerTest {
     void testWalletSynchronizedError() {
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
             sut.isWalletSynchronized(IsSynchronizedParams.builder()
-                    .walletPath("/not/existing/wallet")
+                    .walletPath("/non/existing/wallet")
                     .build());
         });
 
@@ -375,7 +413,7 @@ class ElectrumDaemonClientContainerTest {
     void testGetBalanceError() {
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
             sut.getBalance(GetBalanceParams.builder()
-                    .walletPath("/not/existing/wallet")
+                    .walletPath("/non/existing/wallet")
                     .build());
         });
 

@@ -1,9 +1,7 @@
 package org.tbk.electrum;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import lombok.Builder;
 import lombok.SneakyThrows;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
@@ -50,13 +48,23 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Optional<Object> daemonGetConfig(ConfigKey key) {
-        return Optional.ofNullable(delegate.getconfig(key.name()));
+    public Optional<Object> getConfig(ConfigKey key) {
+        return this.getConfig(key.name());
     }
 
     @Override
-    public void daemonSetConfig(ConfigKey key, String value) {
-        delegate.setconfig(key.name(), value);
+    public Optional<Object> getConfig(String key) {
+        return Optional.ofNullable(delegate.getconfig(key));
+    }
+
+    @Override
+    public void setConfig(ConfigKey key, String value) {
+        this.setConfig(key.name(), value);
+    }
+
+    @Override
+    public void setConfig(String key, String value) {
+        delegate.setconfig(key, value);
     }
 
     @Override

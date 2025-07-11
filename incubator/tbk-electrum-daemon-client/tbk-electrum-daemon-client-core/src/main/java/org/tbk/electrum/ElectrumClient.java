@@ -89,9 +89,13 @@ public interface ElectrumClient extends AutoCloseable {
 
     Boolean closeWallet(CloseWalletParams request);
 
-    Optional<Object> daemonGetConfig(ConfigKey key);
+    Optional<Object> getConfig(ConfigKey key);
 
-    void daemonSetConfig(ConfigKey key, String value);
+    Optional<Object> getConfig(String key);
+
+    void setConfig(ConfigKey key, String value);
+
+    void setConfig(String key, String value);
 
     RawTx createTransaction(PaytoParams params);
 
