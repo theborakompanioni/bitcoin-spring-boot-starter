@@ -412,7 +412,6 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("listaddresses")
     List<String> listaddresses(@JsonRpcOptional @JsonRpcParam("receiving") Boolean receiving,
                                @JsonRpcOptional @JsonRpcParam("change") Boolean change,
-                               @JsonRpcOptional @JsonRpcParam("labels") Boolean labels,
                                @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
                                @JsonRpcOptional @JsonRpcParam("funded") Boolean funded);
@@ -420,12 +419,12 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("listaddresses")
     List<List<String>> listaddresseswithbalance(@JsonRpcOptional @JsonRpcParam("receiving") Boolean receiving,
                                                 @JsonRpcOptional @JsonRpcParam("change") Boolean change,
-                                                @JsonRpcOptional @JsonRpcParam("labels") Boolean labels,
                                                 @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                                 @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
                                                 @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
-            /* `balance` MUST be set to `true` to deserialize response correctly */
-                                                @JsonRpcOptional @JsonRpcParam("balance") Boolean balance);
+                                                /* `balance` MUST be set to `true` to deserialize response correctly */
+                                                @JsonRpcOptional @JsonRpcParam("balance") Boolean balance,
+                                                @JsonRpcOptional @JsonRpcParam("labels") Boolean labels);
 
     /**
      * Returns the first unused address of the wallet, or none if all addresses are used.

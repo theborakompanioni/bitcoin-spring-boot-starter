@@ -252,7 +252,6 @@ public class ElectrumClientImpl implements ElectrumClient {
         return delegate.listaddresses(
                 options.getReceiving(),
                 options.getChange(),
-                options.getLabels(),
                 options.getFrozen(),
                 options.getUnused(),
                 options.getFunded()
@@ -279,10 +278,10 @@ public class ElectrumClientImpl implements ElectrumClient {
         List<List<String>> result = delegate.listaddresseswithbalance(
                 options.getReceiving(),
                 options.getChange(),
-                options.getLabels(),
                 options.getFrozen(),
                 options.getUnused(),
                 options.getFunded(),
+                true,
                 true
         );
         return result.stream()
@@ -290,6 +289,9 @@ public class ElectrumClientImpl implements ElectrumClient {
                 .map(it -> SimpleAddressWithBalance.builder()
                         .address(it.get(0))
                         .balance(BtcTxoValues.fromBtcString(it.get(1)))
+                        .label(it.size() < 3 ? null : Optional.ofNullable(it.get(2))
+                                .filter(label -> !"''".equals(label))
+                                .orElse(null))
                         .build())
                 .collect(Collectors.toUnmodifiableList());
     }

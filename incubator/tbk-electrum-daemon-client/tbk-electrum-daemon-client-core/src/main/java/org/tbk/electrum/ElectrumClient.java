@@ -184,8 +184,6 @@ public interface ElectrumClient extends AutoCloseable {
         @Nullable
         Boolean change;
         @Nullable
-        Boolean labels;
-        @Nullable
         Boolean frozen;
         @Nullable
         Boolean unused;
