@@ -172,6 +172,7 @@ import java.util.Map;
  * [ ] "signtransaction",
  * [x] "stop",
  * [x] "unlock",
+ * [x] "unsetconfig",
  * [x] "validateaddress",
  * [x] "verifymessage",
  * [x] "version",
@@ -536,6 +537,8 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("setconfig")
     Boolean setconfig(@JsonRpcParam("key") String key, @JsonRpcParam("value") String value);
 
+    @JsonRpcMethod("unsetconfig")
+    Boolean unsetconfig(@JsonRpcParam("key") String key);
 
     @JsonRpcMethod("payto")
     String payto(@JsonRpcParam("destination") String destination,

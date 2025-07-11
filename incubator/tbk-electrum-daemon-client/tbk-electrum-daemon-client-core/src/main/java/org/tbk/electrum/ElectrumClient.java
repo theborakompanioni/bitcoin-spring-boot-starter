@@ -123,6 +123,16 @@ public interface ElectrumClient extends AutoCloseable {
 
     void setConfig(String key, String value);
 
+    default void unsetConfig(ConfigKeyEnum key) {
+        unsetConfig(key.getKey());
+    }
+
+    default void unsetConfig(ConfigKey key) {
+        unsetConfig(key.getKey());
+    }
+
+    void unsetConfig(String key);
+
     RawTx createTransaction(PaytoParams params);
 
     RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress);

@@ -58,6 +58,11 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
+    public void unsetConfig(String key) {
+        delegate.unsetconfig(key);
+    }
+
+    @Override
     public RawTx createTransaction(PaytoParams params) {
         try {
             String payto = delegate.payto(

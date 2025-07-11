@@ -140,7 +140,29 @@ class ElectrumDaemonClientContainerTest {
                 .orElse(false);
         assertThat(value1, is(true));
 
-        sut.setConfig(ConfigKeyEnum.network_offline, String.valueOf(!value1));
+        sut.unsetConfig(ConfigKeyEnum.network_offline);
+    }
+
+    @Test
+    void testUnsetConfig() {
+        String value0 = sut.getConfig(ConfigKeyEnum.fee_policy_default)
+                .map(Object::toString)
+                .orElseThrow();
+        assertThat(value0, is("eta:2"));
+
+        sut.setConfig(ConfigKeyEnum.fee_policy_default, "eta:42");
+
+        String value1 = sut.getConfig(ConfigKeyEnum.fee_policy_default)
+                .map(Object::toString)
+                .orElseThrow();
+        assertThat(value1, is("eta:42"));
+
+        sut.unsetConfig(ConfigKeyEnum.fee_policy_default);
+
+        String value2 = sut.getConfig(ConfigKeyEnum.fee_policy_default)
+                .map(Object::toString)
+                .orElseThrow();
+        assertThat(value2, is("eta:2"));
     }
 
     @Test

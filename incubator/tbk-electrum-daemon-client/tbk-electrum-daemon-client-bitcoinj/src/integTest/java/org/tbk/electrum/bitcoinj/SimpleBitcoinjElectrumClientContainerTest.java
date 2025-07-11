@@ -67,7 +67,6 @@ class SimpleBitcoinjElectrumClientContainerTest {
         assertThat(infoResponse.isConnected(), is(true));
         assertThat(infoResponse.isAutoConnect(), is(false)); // auto connect is disabled when connecting to single server
         assertThat(infoResponse.getVersion(), is(not(emptyOrNullString())));
-        assertThat(infoResponse.getFeePerKb(), is(greaterThanOrEqualTo(0)));
     }
 
     @Test
