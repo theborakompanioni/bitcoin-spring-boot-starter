@@ -107,7 +107,7 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testGetConfig() {
-        Optional<Object> raw = sut.getConfig(ConfigKey.log_to_file);
+        Optional<Object> raw = sut.getConfig(ConfigKeyEnum.log_to_file);
         assertThat(raw.isPresent(), is(true));
 
         boolean value = raw.map(it -> Boolean.parseBoolean(it.toString())).orElse(false);
@@ -128,19 +128,19 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testSetConfig() {
-        boolean value0 = sut.getConfig(ConfigKey.log_to_file)
-                .map(it -> Boolean.parseBoolean(it.toString()))
-                .orElse(false);
-        assertThat(value0, is(true));
-
-        sut.setConfig(ConfigKey.log_to_file, String.valueOf(!value0));
-
-        boolean value1 = sut.getConfig(ConfigKey.log_to_file)
+        boolean value0 = sut.getConfig(ConfigKeyEnum.network_offline)
                 .map(it -> Boolean.parseBoolean(it.toString()))
                 .orElse(true);
-        assertThat(value1, is(false));
+        assertThat(value0, is(false));
 
-        sut.setConfig(ConfigKey.log_to_file, String.valueOf(!value1));
+        sut.setConfig(ConfigKeyEnum.network_offline, String.valueOf(!value0));
+
+        boolean value1 = sut.getConfig(ConfigKeyEnum.network_offline)
+                .map(it -> Boolean.parseBoolean(it.toString()))
+                .orElse(false);
+        assertThat(value1, is(true));
+
+        sut.setConfig(ConfigKeyEnum.network_offline, String.valueOf(!value1));
     }
 
     @Test

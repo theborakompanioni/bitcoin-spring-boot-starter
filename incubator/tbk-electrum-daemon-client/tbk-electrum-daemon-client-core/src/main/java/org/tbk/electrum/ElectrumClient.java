@@ -89,11 +89,23 @@ public interface ElectrumClient extends AutoCloseable {
 
     Boolean closeWallet(CloseWalletParams request);
 
-    Optional<Object> getConfig(ConfigKey key);
+    default Optional<Object> getConfig(ConfigKeyEnum key) {
+        return getConfig(key.getKey());
+    }
+
+    default Optional<Object> getConfig(ConfigKey key) {
+        return getConfig(key.getKey());
+    }
 
     Optional<Object> getConfig(String key);
 
-    void setConfig(ConfigKey key, String value);
+    default void setConfig(ConfigKeyEnum key, String value) {
+        setConfig(key.getKey(), value);
+    }
+
+    default void setConfig(ConfigKey key, String value) {
+        setConfig(key.getKey(), value);
+    }
 
     void setConfig(String key, String value);
 

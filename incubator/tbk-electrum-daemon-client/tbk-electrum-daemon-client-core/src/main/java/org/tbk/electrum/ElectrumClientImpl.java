@@ -48,18 +48,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Optional<Object> getConfig(ConfigKey key) {
-        return this.getConfig(key.name());
-    }
-
-    @Override
     public Optional<Object> getConfig(String key) {
         return Optional.ofNullable(delegate.getconfig(key));
-    }
-
-    @Override
-    public void setConfig(ConfigKey key, String value) {
-        this.setConfig(key.name(), value);
     }
 
     @Override
