@@ -286,14 +286,13 @@ public class ElectrumClientImpl implements ElectrumClient {
         );
         return result.stream()
                 .filter(it -> it.size() >= 2)
-                .map(it -> SimpleAddressWithBalance.builder()
-                        .address(it.get(0))
-                        .balance(BtcTxoValues.fromBtcString(it.get(1)))
-                        .label(it.size() < 3 ? null : Optional.ofNullable(it.get(2))
-                                .filter(label -> !"''".equals(label))
-                                .orElse(null))
-                        .build())
+                .map(SimpleAddressWithBalance::from)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public void setLabel(SetLabelParams params) {
+        delegate.setlabel(params.getKey(), params.getLabel(), params.getWalletPath());
     }
 
     @Override
@@ -439,6 +438,17 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public Boolean closeWallet(CloseWalletParams params) {
         return delegate.closewallet(params.getWalletPath());
+    }
+
+    @Override
+    public RestoreResponse restoreWallet(RestoreParams params) {
+        return delegate.restore(
+                params.getText(),
+                params.getPassphrase(),
+                params.getEncryptFile(),
+                params.getPassword(),
+                params.getWalletPath()
+        );
     }
 
     @Override

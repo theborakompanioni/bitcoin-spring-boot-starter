@@ -45,6 +45,8 @@ public interface ElectrumClient extends AutoCloseable {
 
     List<AddressWithBalance> listAddressesWithBalance(ListAddressOptions options);
 
+    void setLabel(SetLabelParams params);
+
     default Boolean isOwnerOfAddress(String address) {
         return isOwnerOfAddress(IsMineParams.builder()
                 .address(address)
@@ -96,6 +98,8 @@ public interface ElectrumClient extends AutoCloseable {
     boolean loadWallet(LoadWalletParams params);
 
     Boolean closeWallet(CloseWalletParams params);
+
+    RestoreResponse restoreWallet(RestoreParams params);
 
     default Optional<Object> getConfig(ConfigKeyEnum key) {
         return getConfig(key.getKey());

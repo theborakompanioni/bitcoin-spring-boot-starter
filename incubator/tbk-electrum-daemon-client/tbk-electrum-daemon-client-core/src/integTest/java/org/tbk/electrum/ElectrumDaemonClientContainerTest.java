@@ -272,6 +272,55 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testRestoreWalletSuccess() {
+        RestoreResponse result = sut.restoreWallet(RestoreParams.builder()
+                .text("truth fever mom transfer steak immense lake jacket glide bring fancy electric")
+                .walletPath("restored_wallet")
+                .build());
+
+        assertThat(result.getMessage(), is("This wallet was restored offline. It may contain more addresses than displayed. Start a daemon and use load_wallet to sync its history."));
+        assertThat(result.getPath(), is("/home/electrum/.electrum/regtest/wallets/restored_wallet"));
+
+        try {
+            boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .build());
+            assertThat(loaded, is(true));
+        } finally {
+            Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .build());
+            assertThat(closed, is(true));
+        }
+    }
+
+    @Test
+    void testRestoreAndLoadEncryptedWalletSuccess() {
+        RestoreResponse result = sut.restoreWallet(RestoreParams.builder()
+                .text("truth fever mom transfer steak immense lake jacket glide bring fancy electric")
+                .walletPath("restored_wallet_encrypted")
+                .encryptFile(true)
+                .password("correcthorsebatterystaple")
+                .build());
+
+        assertThat(result.getMessage(), is("This wallet was restored offline. It may contain more addresses than displayed. Start a daemon and use load_wallet to sync its history."));
+        assertThat(result.getPath(), is("/home/electrum/.electrum/regtest/wallets/restored_wallet_encrypted"));
+
+        try {
+            boolean loaded = sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .password("correcthorsebatterystaple")
+                    .build());
+            assertThat(loaded, is(true));
+        } finally {
+            Boolean closed = sut.closeWallet(CloseWalletParams.builder()
+                    .walletPath(result.getPath())
+                    .build());
+            assertThat(closed, is(true));
+        }
+    }
+
+    @Test
     void testGetSeed() {
         List<String> result = sut.getMnemonicSeed(GetSeedParams.builder().build());
 
@@ -412,6 +461,29 @@ class ElectrumDaemonClientContainerTest {
                 .findFirst()
                 .orElseThrow();
         assertThat(addressWithBalance.getBalance(), is(SimpleTxoValue.zero()));
+    }
+
+    @Test
+    void testSetLabel() {
+        List<AddressWithBalance> addressesWithLabels0 = sut.listAddressesWithBalance().stream()
+                .filter(it -> it.getLabel().isPresent())
+                .toList();
+        assertThat(addressesWithLabels0, hasSize(0));
+
+        String label = "label0";
+        sut.setLabel(SetLabelParams.builder()
+                .key(firstAddress)
+                .label(label)
+                .build());
+
+        List<AddressWithBalance> addressesWithLabels1 = sut.listAddressesWithBalance().stream()
+                .filter(it -> it.getLabel().isPresent())
+                .toList();
+        assertThat(addressesWithLabels1, hasSize(1));
+
+        AddressWithBalance first = addressesWithLabels1.getFirst();
+        assertThat(first.getAddress(), is(firstAddress));
+        assertThat(first.getLabel().orElseThrow(), is(label));
     }
 
     @Test

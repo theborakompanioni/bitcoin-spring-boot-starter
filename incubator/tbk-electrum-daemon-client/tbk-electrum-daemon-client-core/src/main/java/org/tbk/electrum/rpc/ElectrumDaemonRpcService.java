@@ -150,10 +150,10 @@ import java.util.Map;
  * [x] "getaddresshistory",
  * [x] "getaddressunspent",
  * [x] "getbalance",
- * [ ] "getconfig",
+ * [x] "getconfig",
  * [x] "getinfo",
  * [ ] "getpubkeys",
- * [ ] "getseed",
+ * [x] "getseed",
  * [ ] "gettransaction",
  * [ ] "getunusedaddress",
  * [x] "is_synchronized",
@@ -165,8 +165,9 @@ import java.util.Map;
  * [ ] "notify",
  * [x] "onchain_history",
  * [x] "payto",
- * [ ] "setconfig",
- * [ ] "setfeerate",
+ * [x] "restore",
+ * [x] "setconfig",
+ * [x] "setlabel",
  * [ ] "signmessage",
  * [ ] "signtransaction",
  * [x] "stop",
@@ -422,9 +423,21 @@ public interface ElectrumDaemonRpcService {
                                                 @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                                 @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
                                                 @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
-                                                /* `balance` MUST be set to `true` to deserialize response correctly */
+            /* `balance` MUST be set to `true` to deserialize response correctly */
                                                 @JsonRpcOptional @JsonRpcParam("balance") Boolean balance,
                                                 @JsonRpcOptional @JsonRpcParam("labels") Boolean labels);
+
+    /**
+     * Assign a label to an item. Item may be a bitcoin address or a transaction ID
+     *
+     * @param key        Key
+     * @param label      Label
+     * @param walletPath wallet path
+     */
+    @JsonRpcMethod("setlabel")
+    void setlabel(@JsonRpcParam("key") String key,
+                  @JsonRpcParam("label") String label,
+                  @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * Returns the first unused address of the wallet, or none if all addresses are used.
@@ -486,6 +499,13 @@ public interface ElectrumDaemonRpcService {
 
     @JsonRpcMethod("load_wallet")
     Boolean loadwallet();
+
+    @JsonRpcMethod("restore")
+    RestoreResponse restore(@JsonRpcParam("text") String text,
+                            @JsonRpcOptional @JsonRpcParam("passphrase") String passphrase,
+                            @JsonRpcOptional @JsonRpcParam("encrypt_file") Boolean encryptionPassword,
+                            @JsonRpcOptional @JsonRpcParam("password") String password,
+                            @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * Load the wallet in memory
