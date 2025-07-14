@@ -10,6 +10,7 @@ import org.tbk.electrum.rpc.command.*;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -491,8 +492,14 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Boolean addAddressChangedNotificationCallback(String address, String url) {
-        return delegate.notify(address, url);
+    public Boolean addAddressChangedNotificationCallback(String address, URI url) {
+        return delegate.notify(address, url.toString());
+    }
+
+    @Override
+    public Boolean removeAddressChangedNotificationCallback(String address) {
+        String emptyUrlToRemoveAddressCallback = "";
+        return delegate.notify(address,emptyUrlToRemoveAddressCallback);
     }
 
     @Override

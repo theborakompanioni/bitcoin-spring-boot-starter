@@ -7,6 +7,7 @@ import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,4 +36,6 @@ public interface BitcoinjElectrumClient {
     BitcoinjUtxos getAddressUnspent(Address address);
 
     Transaction getTransaction(Sha256Hash txHash);
+
+    Boolean addAddressChangedNotificationCallback(Address address, URI url);
 }

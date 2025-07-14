@@ -140,4 +140,3 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         assertThat(addressInUtxo, is(address2));
     }
 }
-

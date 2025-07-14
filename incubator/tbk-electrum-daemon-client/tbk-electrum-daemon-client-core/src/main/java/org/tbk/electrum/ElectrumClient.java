@@ -6,6 +6,7 @@ import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
 
 import javax.annotation.Nullable;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -170,7 +171,9 @@ public interface ElectrumClient extends AutoCloseable {
 
     String broadcast(RawTx rawTx);
 
-    Boolean addAddressChangedNotificationCallback(String address, String url);
+    Boolean addAddressChangedNotificationCallback(String address, URI url);
+
+    Boolean removeAddressChangedNotificationCallback(String address);
 
     List<String> getPublicKeys(String address);
 

@@ -163,13 +163,13 @@ import java.util.Map;
  * [x] "listconfig",
  * [ ] "load_wallet",
  * [x] "make_seed",
- * [ ] "notify",
+ * [x] "notify",
  * [x] "onchain_history",
  * [x] "payto",
  * [x] "restore",
  * [x] "setconfig",
  * [x] "setlabel",
- * [ ] "signmessage",
+ * [x] "signmessage",
  * [ ] "signtransaction",
  * [x] "stop",
  * [x] "unlock",
@@ -568,6 +568,7 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Watch an address. Everytime the address changes, a http POST is sent to the URL.
+     * Call with an empty URL to stop watching an address.
      *
      * @param address the address being watched
      * @param url     the url to POST to when address balances changes

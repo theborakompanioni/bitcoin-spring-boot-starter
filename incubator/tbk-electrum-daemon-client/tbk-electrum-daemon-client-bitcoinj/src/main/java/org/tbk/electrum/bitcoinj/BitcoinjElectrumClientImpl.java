@@ -11,6 +11,7 @@ import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.Utxos;
 
+import java.net.URI;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
@@ -111,5 +112,10 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
         RawTx rawTransaction = this.delegate.getRawTransaction(txHash.toString());
         byte[] raw = HexFormat.of().parseHex(rawTransaction.getHex().toLowerCase());
         return new Transaction(this.network, raw);
+    }
+
+    @Override
+    public Boolean addAddressChangedNotificationCallback(Address address, URI url) {
+        return delegate.addAddressChangedNotificationCallback(address.toString(), url);
     }
 }
