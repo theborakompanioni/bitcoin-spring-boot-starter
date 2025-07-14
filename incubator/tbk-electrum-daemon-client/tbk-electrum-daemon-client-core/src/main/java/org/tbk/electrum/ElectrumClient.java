@@ -105,6 +105,8 @@ public interface ElectrumClient extends AutoCloseable {
 
     RestoreResponse restoreWallet(RestoreParams params);
 
+    List<String> listConfigKeys();
+
     default Optional<Object> getConfig(ConfigKeyEnum key) {
         return getConfig(key.getKey());
     }

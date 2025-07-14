@@ -43,6 +43,12 @@ public class ElectrumClientImpl implements ElectrumClient {
         this.delegate = requireNonNull(delegate);
     }
 
+
+    @Override
+    public List<String> listConfigKeys() {
+        return delegate.listconfig();
+    }
+
     @Override
     public Optional<Object> getConfig(String key) {
         return Optional.ofNullable(delegate.getconfig(key));

@@ -160,8 +160,9 @@ import java.util.Map;
  * [x] "ismine",
  * [x] "list_wallets",
  * [ ] "listaddresses",
+ * [x] "listconfig",
  * [ ] "load_wallet",
- * [ ] "make_seed",
+ * [x] "make_seed",
  * [ ] "notify",
  * [x] "onchain_history",
  * [x] "payto",
@@ -532,6 +533,13 @@ public interface ElectrumDaemonRpcService {
 
     @JsonRpcMethod("unsetconfig")
     Boolean unsetconfig(@JsonRpcParam("key") String key);
+
+    /**
+     * Returns the list of all configuration variables.
+     * @return a list of all config keys
+     */
+    @JsonRpcMethod("listconfig")
+    List<String> listconfig();
 
     @JsonRpcMethod("payto")
     String payto(@JsonRpcParam("destination") String destination,

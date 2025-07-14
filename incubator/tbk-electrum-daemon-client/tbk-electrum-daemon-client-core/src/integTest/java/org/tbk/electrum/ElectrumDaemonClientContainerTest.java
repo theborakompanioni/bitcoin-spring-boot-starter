@@ -108,6 +108,20 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testListConfig() {
+        List<String> result = sut.listConfigKeys();
+
+        assertThat(result, is(notNullValue()));
+        assertThat(result, hasItem("rpchost"));
+        assertThat(result, hasItem("offline"));
+        assertThat(result, hasItem("server"));
+        assertThat(result, hasItem("oneserver"));
+        assertThat(result, hasItem("auto_connect"));
+        assertThat(result, hasItem("fee_policy.default"));
+        assertThat(result, hasItem("check_updates"));
+    }
+
+    @Test
     void testGetConfig() {
         Optional<Object> raw = sut.getConfig(ConfigKeyEnum.log_to_file);
         assertThat(raw.isPresent(), is(true));
