@@ -30,10 +30,6 @@ public class ElectrumClientImpl implements ElectrumClient {
         return value.startsWith(PSBT_BASE64_PREFIX);
     }
 
-    private static List<String> splitMnemonicSeed(String seed) {
-        return Arrays.asList(seed.split(" "));
-    }
-
     private final String serviceId = Integer.toHexString(System.identityHashCode(this));
 
     private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
@@ -185,8 +181,20 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public List<String> createMnemonicSeed() {
-        return Arrays.asList(delegate.makeseed().split(" "));
+    public Seed createMnemonicSeed() {
+        return createMnemonicSeed(MakeSeedParams.builder().build());
+    }
+
+    @Override
+    public Seed createMnemonicSeed(MakeSeedParams params) {
+        String result = delegate.makeseed(
+                params.getSeedType(),
+                params.getLanguage(),
+                params.getNbits()
+        );
+        return SimpleSeed.builder()
+                .words(Arrays.asList(result.split(" ")))
+                .build();
     }
 
     @Override
@@ -207,7 +215,9 @@ public class ElectrumClientImpl implements ElectrumClient {
         return new Wallet() {
             @Override
             public Seed getSeed() {
-                return () -> Arrays.asList(result.getSeed().split(" "));
+                return SimpleSeed.builder()
+                        .words(Arrays.asList(result.getSeed().split(" ")))
+                        .build();
             }
 
             @Override
@@ -460,16 +470,18 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public List<String> getMnemonicSeed(GetSeedParams params) {
-        String getseed = delegate.getseed(params.getPassword(), params.getWalletPath());
+    public Seed getMnemonicSeed(GetSeedParams params) {
+        String result = delegate.getseed(params.getPassword(), params.getWalletPath());
 
-        boolean seedIsAbsent = getseed == null || getseed.isEmpty();
+        boolean seedIsAbsent = result == null || result.isEmpty();
         if (seedIsAbsent) {
             throw new IllegalStateException("Seed has not been returned by electrum - "
                                             + "maybe you have loaded a watchonly wallet?");
         }
 
-        return splitMnemonicSeed(getseed);
+        return SimpleSeed.builder()
+                .words(Arrays.asList(result.split(" ")))
+                .build();
     }
 
     @Override

@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface Seed {
     List<String> getWords();
+
+    String getPhrase();
 }

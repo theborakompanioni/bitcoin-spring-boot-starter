@@ -62,7 +62,9 @@ class ElectrumDaemonClientContainerTest {
     void tryLoadWallet() {
         try {
             log.trace("Load default wallet before test case");
-            sut.loadWallet(LoadWalletParams.builder().build());
+            sut.loadWallet(LoadWalletParams.builder()
+                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .build());
         } catch (Exception e) {
             log.warn("Could not load default wallet");
         }
@@ -183,10 +185,32 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    void testMakeSeed() {
-        List<String> result = sut.createMnemonicSeed();
+    void testMakeSeed0() {
+        Seed result = sut.createMnemonicSeed();
 
-        assertThat(result, hasSize(12));
+        assertThat(result.getWords(), hasSize(12));
+    }
+
+    @Test
+    void testMakeSeed1() {
+        Seed result = sut.createMnemonicSeed(MakeSeedParams.builder()
+                .language("english")
+                .seedType("standard")
+                .nbits(256)
+                .build());
+
+        assertThat(result.getWords(), hasSize(24));
+    }
+
+    @Test
+    void testMakeSeed2() {
+        Seed result = sut.createMnemonicSeed(MakeSeedParams.builder()
+                .language("english")
+                .seedType("segwit")
+                .nbits(128 + 64)
+                .build());
+
+        assertThat(result.getWords(), hasSize(18));
     }
 
     @Test
@@ -214,10 +238,10 @@ class ElectrumDaemonClientContainerTest {
                     .build());
             assertThat(loaded, is(true));
 
-            List<String> result = sut.getMnemonicSeed(GetSeedParams.builder()
+            Seed result = sut.getMnemonicSeed(GetSeedParams.builder()
                     .walletPath(wallet.getPath())
                     .build());
-            assertThat(String.join("", result), is(String.join("", wallet.getSeed().getWords())));
+            assertThat(result.getPhrase(), is(wallet.getSeed().getPhrase()));
         } finally {
             Boolean closed = sut.closeWallet(CloseWalletParams.builder()
                     .walletPath(wallet.getPath())
@@ -345,7 +369,7 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testUnlockWalletSuccess() {
         RestoreResponse result = sut.restoreWallet(RestoreParams.builder()
-                .text(String.join(" ", sut.createMnemonicSeed()))
+                .text(sut.createMnemonicSeed().getPhrase())
                 .walletPath("unlock_wallet")
                 .password("correcthorsebatterystaple")
                 .build());
@@ -386,9 +410,9 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testGetSeed() {
-        List<String> result = sut.getMnemonicSeed(GetSeedParams.builder().build());
+        Seed result = sut.getMnemonicSeed(GetSeedParams.builder().build());
 
-        assertThat(String.join(" ", result), is("truth fever mom transfer steak immense lake jacket glide bring fancy electric"));
+        assertThat(result.getPhrase(), is("truth fever mom transfer steak immense lake jacket glide bring fancy electric"));
     }
 
     @Test

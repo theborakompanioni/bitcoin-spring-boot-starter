@@ -334,21 +334,14 @@ public interface ElectrumDaemonRpcService {
      * Generates a new seed. Does not change the current seed.
      *
      * @param seedType the type of seed to create, e.g. 'standard' or 'segwit'
-     * @return a new seed
-     */
-    @JsonRpcMethod("make_seed")
-    String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seedType);
-
-    /**
-     * Generates a new seed. Does not change the current seed.
-     *
-     * @param seedType the type of seed to create, e.g. 'standard' or 'segwit'
      * @param language default language for wordlist
+     * @param nbits    number of bits of entropy
      * @return a new seed
      */
     @JsonRpcMethod("make_seed")
     String makeseed(@JsonRpcOptional @JsonRpcParam("seed_type") String seedType,
-                    @JsonRpcOptional @JsonRpcParam("language") String language);
+                    @JsonRpcOptional @JsonRpcParam("language") String language,
+                    @JsonRpcOptional @JsonRpcParam("nbits") Integer nbits);
 
     /**
      * Return the wallet’s mnemonic seed.

@@ -17,11 +17,13 @@ public interface ElectrumClient extends AutoCloseable {
         return this.getInfo().isConnected();
     }
 
-    List<String> createMnemonicSeed();
+    Seed createMnemonicSeed();
+
+    Seed createMnemonicSeed(MakeSeedParams params);
 
     Wallet createWallet(CreateParams params);
 
-    List<String> getMnemonicSeed(GetSeedParams params);
+    Seed getMnemonicSeed(GetSeedParams params);
 
     Boolean isWalletSynchronized();
 
