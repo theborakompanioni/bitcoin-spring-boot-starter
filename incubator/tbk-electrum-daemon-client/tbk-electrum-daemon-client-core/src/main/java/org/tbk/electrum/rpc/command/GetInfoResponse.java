@@ -12,17 +12,16 @@ import lombok.extern.jackson.Jacksonized;
  * <pre>
  * ~ $ electrum --regtest getinfo
  * {
- *     "auto_connect": true,
+ *     "auto_connect": false,
  *     "blockchain_height": -1,
- *     "connected": false,
- *     "default_wallet": "/home/electrum/.electrum/regtest/wallets/default_wallet",
- *     "fee_per_kb": 150000,
+ *     "connected": true,
+ *     "fee_estimates": {},
  *     "network": "regtest",
  *     "path": "/home/electrum/.electrum/regtest",
- *     "server": "host.testcontainers.internal",
+ *     "server": "electrumx_regtest",
  *     "server_height": 0,
- *     "spv_nodes": 0,
- *     "version": "4.5.8"
+ *     "spv_nodes": 1,
+ *     "version": "4.6.0b1"
  * }
  * </pre>
  */

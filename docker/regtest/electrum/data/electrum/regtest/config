@@ -1,5 +1,8 @@
 {
     "config_version": 3,
+    "auto_connect": false,
+    "check_updates": false,
+    "dont_show_testnet_warning": true,
     "log_to_file": true,
     "oneserver": true,
     "rpchost": "0.0.0.0",

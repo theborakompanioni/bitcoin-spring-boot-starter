@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * See https://github.com/JavaMoney/jsr354-tck/blob/master/src/main/asciidoc/userguide.adoc
+ * See <a href="https://github.com/JavaMoney/jsr354-tck/blob/master/src/main/asciidoc/userguide.adoc">https://github.com/JavaMoney/jsr354-tck/blob/master/src/main/asciidoc/userguide.adoc</a>
  * for a complete user guide on how to use the technical compatibility kit.
  */
 class Jsr354TechnicalCompatibilityKitTest {

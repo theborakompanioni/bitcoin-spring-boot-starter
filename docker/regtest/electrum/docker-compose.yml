@@ -76,9 +76,15 @@ services:
       electrumx_regtest:
         condition: service_healthy
     environment:
+      - ELECTRUM_NETWORK=regtest
       - ELECTRUM_RPCUSER=rpc-user
       - ELECTRUM_RPCPASSWORD=rpc-pwd
-      - ELECTRUM_NETWORK=regtest
+      - ELECTRUM_RPCPORT=7000
+      - ELECTRUM_CONFIG_ONESERVER=true
+      - ELECTRUM_CONFIG_SERVER=electrumx_regtest:50002:s
+      - ELECTRUM_CONFIG_AUTO_CONNECT=false # must be disabled if "oneserver" := true
+      - ELECTRUM_CONFIG_CONFIRMED_ONLY=false
+      - ELECTRUM_CONFIG_LOG_TO_FILE=true
     expose:
       - "7000"
     ports:
