@@ -13,6 +13,7 @@ import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
+import org.tbk.electrum.gateway.example.watch.InitElectrumConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +30,11 @@ class ElectrumGatewayExampleApplicationConfig {
 
     public ElectrumGatewayExampleApplicationConfig(ElectrumGatewayExampleApplicationProperties properties) {
         this.properties = requireNonNull(properties);
+    }
+
+    @Bean
+    InitElectrumConfig initElectrumConfig(ElectrumClient electrumClient) {
+        return new InitElectrumConfig(electrumClient);
     }
 
     @Bean(destroyMethod = "stopAsync")
