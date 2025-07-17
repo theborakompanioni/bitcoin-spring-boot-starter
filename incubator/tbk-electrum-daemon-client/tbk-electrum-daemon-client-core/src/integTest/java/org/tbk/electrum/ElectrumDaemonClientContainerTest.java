@@ -566,6 +566,12 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
+    void testGetUtxos() {
+        Utxos utxos = sut.getUtxos(ListUnspentParams.builder().build());
+        assertThat(utxos.isEmpty(), is(true));
+    }
+
+    @Test
     void testSetLabel() {
         List<AddressWithBalance> addressesWithLabels0 = sut.listAddressesWithBalance().stream()
                 .filter(it -> it.getLabel().isPresent())

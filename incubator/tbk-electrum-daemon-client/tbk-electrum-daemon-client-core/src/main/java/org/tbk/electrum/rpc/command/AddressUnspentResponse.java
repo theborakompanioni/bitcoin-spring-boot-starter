@@ -15,7 +15,7 @@ public final class AddressUnspentResponse {
     @Builder
     @Jacksonized
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Utxo {
+    public static class AddressUnspentEntry {
 
         @JsonProperty("height")
         long height;

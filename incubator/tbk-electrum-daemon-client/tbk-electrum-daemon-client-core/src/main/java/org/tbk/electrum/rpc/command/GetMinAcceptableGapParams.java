@@ -9,6 +9,6 @@ import lombok.Value;
 @Builder
 public class GetMinAcceptableGapParams {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("wallet")
+    @JsonProperty("wallet_path")
     String walletPath;
 }

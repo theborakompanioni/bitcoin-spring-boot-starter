@@ -36,9 +36,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -129,7 +127,7 @@ class AddressCallbackElectrumClientContainerTest {
     }
 
     @BeforeEach
-    void waitForWalletSynchronization() throws ExecutionException, InterruptedException, TimeoutException {
+    void waitForWalletSynchronization() throws Exception {
         sut.waitForWalletSynchronization().get(10, TimeUnit.SECONDS);
     }
 
@@ -177,7 +175,6 @@ class AddressCallbackElectrumClientContainerTest {
         Boolean callbackUnregisteredSuccessfully = sut.removeAddressChangedNotificationCallback(address1);
         assertThat(callbackUnregisteredSuccessfully, is(true));
     }
-
 
 }
 

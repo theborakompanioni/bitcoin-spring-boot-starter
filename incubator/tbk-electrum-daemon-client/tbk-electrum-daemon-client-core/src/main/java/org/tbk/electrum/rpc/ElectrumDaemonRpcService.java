@@ -140,6 +140,7 @@ import java.util.Map;
  * Implemented (box checked means "tested"):
  * [
  * [x] "broadcast",
+ * [x] "changegaplimit",
  * [x] "close_wallet",
  * [x] "create",
  * [x] "createnewaddress",
@@ -161,6 +162,7 @@ import java.util.Map;
  * [x] "list_wallets",
  * [ ] "listaddresses",
  * [x] "listconfig",
+ * [x] "listunspent",
  * [x] "load_wallet",
  * [x] "make_seed",
  * [x] "notify",
@@ -284,7 +286,7 @@ public interface ElectrumDaemonRpcService {
      * @return a list of unspent transaction outputs
      */
     @JsonRpcMethod("getaddressunspent")
-    List<AddressUnspentResponse.Utxo> getaddressunspent(@JsonRpcParam("address") String address);
+    List<AddressUnspentResponse.AddressUnspentEntry> getaddressunspent(@JsonRpcParam("address") String address);
 
     /**
      * Return current fee estimate given network conditions (in sat/kvByte).
@@ -536,10 +538,22 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Returns the list of all configuration variables.
+     *
      * @return a list of all config keys
      */
     @JsonRpcMethod("listconfig")
     List<String> listconfig();
+
+    /**
+     * List unspent outputs.
+     *
+     * @return the list of unspent transaction outputs in your wallet.
+     */
+    @JsonRpcMethod("listunspent")
+    List<ListUnspentResponse.ListUnspentEntry> listunspent(
+            @JsonRpcOptional @JsonRpcParam("password") String password,
+            @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath
+    );
 
     @JsonRpcMethod("payto")
     String payto(@JsonRpcParam("destination") String destination,

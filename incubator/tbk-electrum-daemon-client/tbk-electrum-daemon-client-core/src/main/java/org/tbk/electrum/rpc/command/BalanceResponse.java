@@ -37,6 +37,7 @@ public class BalanceResponse {
     public Optional<String> getUnmatured() {
         return Optional.ofNullable(unmatured);
     }
+
     public Optional<String> getLightning() {
         return Optional.ofNullable(lightning);
     }

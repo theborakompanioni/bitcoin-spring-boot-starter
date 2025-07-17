@@ -340,8 +340,14 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Utxos getAddressUnspent(String address) {
-        List<AddressUnspentResponse.Utxo> result = delegate.getaddressunspent(address);
-        return SimpleUtxos.from(result);
+        List<AddressUnspentResponse.AddressUnspentEntry> result = delegate.getaddressunspent(address);
+        return SimpleUtxos.fromAddressUnspent(result);
+    }
+
+    @Override
+    public Utxos getUtxos(ListUnspentParams params) {
+        List<ListUnspentResponse.ListUnspentEntry> result = delegate.listunspent(params.getPassword(), params.getWalletPath());
+        return SimpleUtxos.fromUnspent(result);
     }
 
     @Override
@@ -499,7 +505,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public Boolean removeAddressChangedNotificationCallback(String address) {
         String emptyUrlToRemoveAddressCallback = "";
-        return delegate.notify(address,emptyUrlToRemoveAddressCallback);
+        return delegate.notify(address, emptyUrlToRemoveAddressCallback);
     }
 
     @Override

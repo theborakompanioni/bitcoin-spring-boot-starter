@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import org.tbk.electrum.rpc.command.AddressUnspentResponse;
+import org.tbk.electrum.rpc.command.ListUnspentResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,15 @@ import java.util.List;
 @Builder
 public class SimpleUtxos implements Utxos {
 
-    public static SimpleUtxos from(List<AddressUnspentResponse.Utxo> val) {
+    public static SimpleUtxos fromAddressUnspent(List<AddressUnspentResponse.AddressUnspentEntry> val) {
+        return SimpleUtxos.builder()
+                .utxos(val.stream()
+                        .map(SimpleUtxo::from)
+                        .toList())
+                .build();
+    }
+
+    public static SimpleUtxos fromUnspent(List<ListUnspentResponse.ListUnspentEntry> val) {
         return SimpleUtxos.builder()
                 .utxos(val.stream()
                         .map(SimpleUtxo::from)

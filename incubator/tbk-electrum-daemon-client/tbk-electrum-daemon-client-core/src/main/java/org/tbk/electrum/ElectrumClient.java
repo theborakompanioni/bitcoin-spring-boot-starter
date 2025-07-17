@@ -74,6 +74,8 @@ public interface ElectrumClient extends AutoCloseable {
 
     Utxos getAddressUnspent(String address);
 
+    Utxos getUtxos(ListUnspentParams params);
+
     List<TxHashAndBlockHeight> getAddressHistory(String address);
 
     OnchainHistory getOnchainHistory();
