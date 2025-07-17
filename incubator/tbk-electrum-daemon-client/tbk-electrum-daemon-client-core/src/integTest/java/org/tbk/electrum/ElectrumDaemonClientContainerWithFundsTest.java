@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.electrum.faucet.SimpleElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;

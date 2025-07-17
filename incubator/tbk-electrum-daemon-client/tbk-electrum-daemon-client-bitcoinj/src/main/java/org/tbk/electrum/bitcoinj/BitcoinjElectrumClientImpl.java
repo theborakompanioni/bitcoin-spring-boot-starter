@@ -7,6 +7,7 @@ import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
+import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.Utxos;
@@ -43,9 +44,8 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     }
 
     @Override
-    public List<Address> listAddresses(ElectrumClient.ListAddressOptions options) {
+    public List<Address> listAddresses(ListAddressParams options) {
         List<String> addresses = this.delegate.listAddresses(options);
-
         return addresses.stream()
                 .map(it -> Address.fromString(this.network, it))
                 .toList();
@@ -54,16 +54,6 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     @Override
     public List<Address> listAddressesFunded() {
         List<String> addresses = this.delegate.listAddressesFunded();
-
-        return addresses.stream()
-                .map(it -> Address.fromString(this.network, it))
-                .toList();
-    }
-
-    @Override
-    public List<Address> listAddressesUnfunded() {
-        List<String> addresses = this.delegate.listAddressesUnfunded();
-
         return addresses.stream()
                 .map(it -> Address.fromString(this.network, it))
                 .toList();
@@ -88,7 +78,6 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     @Override
     public BitcoinjBalance getAddressBalance(Address address) {
         Balance balance = delegate.getAddressBalance(address.toString());
-
         return toBitcoinjBalance(balance);
     }
 

@@ -4,7 +4,7 @@ import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
-import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.rpc.command.IsSynchronizedParams;

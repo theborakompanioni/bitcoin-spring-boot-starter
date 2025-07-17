@@ -5,15 +5,14 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.tbk.bitcoin.regtest.common.AddressSupplier;
-import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.common.ListAddressParams;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.OnchainHistory;
-import org.tbk.electrum.model.Wallet;
 import org.tbk.electrum.rpc.command.CreateParams;
 import org.tbk.electrum.rpc.command.GetBalanceParams;
-import org.tbk.electrum.rpc.command.IsSynchronizedParams;
 import org.tbk.electrum.rpc.command.LoadWalletParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -82,7 +81,11 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
 
         Coin neededSpendableAmount = amount.plus(txFee);
 
-        Mono<Address> rewardAddress = Mono.fromCallable(() -> electrumClient.listAddresses())
+        Mono<Address> rewardAddress = Mono.fromCallable(() -> electrumClient.listAddresses(ListAddressParams.builder()
+                        .walletPath(walletParams.getWalletPath())
+                        .unused(true)
+                        .receiving(true)
+                        .build()))
                 .flatMapIterable(it -> it)
                 .next()
                 .cache();
@@ -107,7 +110,6 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
         GetBalanceParams balanceParams = GetBalanceParams.builder()
                 .walletPath(walletParams.getWalletPath())
                 .build();
-
 
         return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(10)))
                 .map(it -> electrumClient.getBalance(balanceParams).getSpendable())

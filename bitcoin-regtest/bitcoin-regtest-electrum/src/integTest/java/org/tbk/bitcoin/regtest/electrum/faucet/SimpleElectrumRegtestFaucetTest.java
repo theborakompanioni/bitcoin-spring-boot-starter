@@ -13,12 +13,12 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
@@ -35,11 +35,11 @@ import static org.hamcrest.Matchers.*;
 class SimpleElectrumRegtestFaucetTest {
 
     @SpringBootApplication(proxyBeanMethods = false)
-    public static class BitcoinContainerClientTestApplication {
+    public static class SimpleElectrumRegtestFaucetTestApplication {
 
         public static void main(String[] args) {
             new SpringApplicationBuilder()
-                    .sources(BitcoinContainerClientTestApplication.class)
+                    .sources(SimpleElectrumRegtestFaucetTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
         }
@@ -121,7 +121,7 @@ class SimpleElectrumRegtestFaucetTest {
         Address destinationAddress1 = electrumClient.createNewAddress();
 
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress1);
-        assertThat("balance of addres is zero before test", balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
+        assertThat("balance of address is zero before test", balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
 
         sut.requestBitcoin(() -> destinationAddress1, Coin.FIFTY_COINS.plus(Coin.SATOSHI))
                 .block(Duration.ofSeconds(60));

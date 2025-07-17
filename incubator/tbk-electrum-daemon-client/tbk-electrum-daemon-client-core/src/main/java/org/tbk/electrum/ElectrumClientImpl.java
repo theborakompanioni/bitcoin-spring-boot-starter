@@ -3,6 +3,7 @@ package org.tbk.electrum;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
 import org.tbk.electrum.rpc.command.*;
@@ -254,36 +255,28 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public List<String> listAddresses(ListAddressOptions options) {
+    public List<String> listAddresses(ListAddressParams params) {
         return delegate.listaddresses(
-                options.getReceiving(),
-                options.getChange(),
-                options.getFrozen(),
-                options.getUnused(),
-                options.getFunded()
+                params.getReceiving(),
+                params.getChange(),
+                params.getFrozen(),
+                params.getUnused(),
+                params.getFunded(),
+                params.getWalletPath()
         );
     }
 
     @Override
-    public List<String> listAddressesFunded() {
-        return delegate.listaddresses(true);
-    }
-
-    @Override
-    public List<String> listAddressesUnfunded() {
-        return delegate.listaddresses(false);
-    }
-
-    @Override
-    public List<AddressWithBalance> listAddressesWithBalance(ListAddressOptions options) {
+    public List<AddressWithBalance> listAddressesWithBalance(ListAddressParams params) {
         List<List<String>> result = delegate.listaddresseswithbalance(
-                options.getReceiving(),
-                options.getChange(),
-                options.getFrozen(),
-                options.getUnused(),
-                options.getFunded(),
+                params.getReceiving(),
+                params.getChange(),
+                params.getFrozen(),
+                params.getUnused(),
+                params.getFunded(),
                 true,
-                true
+                true,
+                params.getWalletPath()
         );
         return result.stream()
                 .filter(it -> it.size() >= 2)

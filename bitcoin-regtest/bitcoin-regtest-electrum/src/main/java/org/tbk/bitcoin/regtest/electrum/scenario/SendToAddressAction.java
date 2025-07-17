@@ -6,7 +6,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.reactivestreams.Subscriber;
-import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
@@ -94,7 +94,7 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
 
             String broadcastTxid = client.delegate().broadcast(rawTx);
 
-            log.debug("Broadcast tx {} with electrum.. ", broadcastTxid);
+            log.debug("Broadcast tx {} with electrum...", broadcastTxid);
 
             return Sha256Hash.wrap(broadcastTxid);
         });

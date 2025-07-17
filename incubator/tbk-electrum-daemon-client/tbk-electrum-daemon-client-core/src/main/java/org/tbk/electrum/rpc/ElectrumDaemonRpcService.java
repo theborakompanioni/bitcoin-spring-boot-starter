@@ -403,17 +403,12 @@ public interface ElectrumDaemonRpcService {
      * @return a list of addresses controlled by the wallet
      */
     @JsonRpcMethod("listaddresses")
-    List<String> listaddresses();
-
-    @JsonRpcMethod("listaddresses")
-    List<String> listaddresses(@JsonRpcParam("funded") boolean funded);
-
-    @JsonRpcMethod("listaddresses")
     List<String> listaddresses(@JsonRpcOptional @JsonRpcParam("receiving") Boolean receiving,
                                @JsonRpcOptional @JsonRpcParam("change") Boolean change,
                                @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
-                               @JsonRpcOptional @JsonRpcParam("funded") Boolean funded);
+                               @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
+                               @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     @JsonRpcMethod("listaddresses")
     List<List<String>> listaddresseswithbalance(@JsonRpcOptional @JsonRpcParam("receiving") Boolean receiving,
@@ -421,9 +416,10 @@ public interface ElectrumDaemonRpcService {
                                                 @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                                 @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
                                                 @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
-            /* `balance` MUST be set to `true` to deserialize response correctly */
-                                                @JsonRpcOptional @JsonRpcParam("balance") Boolean balance,
-                                                @JsonRpcOptional @JsonRpcParam("labels") Boolean labels);
+                                                /* `balance` MUST be set to `true` to deserialize response correctly */
+                                                @JsonRpcParam("balance") boolean balance,
+                                                @JsonRpcParam("labels") boolean labels,
+                                                @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * Assign a label to an item. Item may be a bitcoin address or a transaction ID

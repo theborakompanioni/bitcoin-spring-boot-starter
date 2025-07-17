@@ -1,7 +1,6 @@
 package org.tbk.electrum;
 
-import lombok.Builder;
-import lombok.Value;
+import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
 
@@ -43,20 +42,21 @@ public interface ElectrumClient extends AutoCloseable {
     Balance getBalance(GetBalanceParams params);
 
     default List<String> listAddresses() {
-        return listAddresses(ListAddressOptions.all());
+        return listAddresses(ListAddressParams.all());
+    }
+    default List<String> listAddressesFunded() {
+        return listAddresses(ListAddressParams.builder()
+                .funded(true)
+                .build());
     }
 
-    List<String> listAddresses(ListAddressOptions options);
-
-    List<String> listAddressesFunded();
-
-    List<String> listAddressesUnfunded();
+    List<String> listAddresses(ListAddressParams options);
 
     default List<AddressWithBalance> listAddressesWithBalance() {
-        return listAddressesWithBalance(ListAddressOptions.all());
+        return listAddressesWithBalance(ListAddressParams.all());
     }
 
-    List<AddressWithBalance> listAddressesWithBalance(ListAddressOptions options);
+    List<AddressWithBalance> listAddressesWithBalance(ListAddressParams options);
 
     void setLabel(SetLabelParams params);
 
@@ -204,24 +204,4 @@ public interface ElectrumClient extends AutoCloseable {
 
     Future<?> waitForWalletSynchronization();
 
-    @Value
-    @Builder
-    class ListAddressOptions {
-        private static final ListAddressOptions ALL = builder().build();
-
-        public static ListAddressOptions all() {
-            return ALL;
-        }
-
-        @Nullable
-        Boolean receiving;
-        @Nullable
-        Boolean change;
-        @Nullable
-        Boolean frozen;
-        @Nullable
-        Boolean unused;
-        @Nullable
-        Boolean funded;
-    }
 }
