@@ -4,8 +4,10 @@ import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.rpc.command.IsSynchronizedParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -20,20 +22,22 @@ public final class AwaitWalletSynchronizedAction implements RegtestAction<Boolea
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final ElectrumClient client;
+    private final WalletParams params;
     private final Duration timeout;
     private final Duration checkInterval;
 
-    public AwaitWalletSynchronizedAction(ElectrumClient client) {
-        this(client, defaultTimeout);
+    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams params) {
+        this(client, params, defaultTimeout);
     }
 
-    public AwaitWalletSynchronizedAction(ElectrumClient client, Duration timeout) {
-        this(client, timeout, defaultCheckInterval);
+    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams params, Duration timeout) {
+        this(client, params, timeout, defaultCheckInterval);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
-    public AwaitWalletSynchronizedAction(ElectrumClient client, Duration timeout, Duration checkInterval) {
+    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams params, Duration timeout, Duration checkInterval) {
         this.client = requireNonNull(client);
+        this.params = requireNonNull(params);
         this.timeout = requireNonNull(timeout);
         this.checkInterval = requireNonNull(checkInterval);
 
@@ -56,7 +60,9 @@ public final class AwaitWalletSynchronizedAction implements RegtestAction<Boolea
 
             Boolean walletSynchronized = Flux.interval(checkInterval)
                     .doOnNext(it -> log.trace("Waiting for wallet to be synchronized.. ({} attempt)", it))
-                    .map(it -> this.client.isWalletSynchronized())
+                    .map(it -> this.client.isWalletSynchronized(IsSynchronizedParams.builder()
+                            .walletPath(params.getWalletPath())
+                            .build()))
                     .filter(it -> it)
                     .blockFirst(timeout);
 

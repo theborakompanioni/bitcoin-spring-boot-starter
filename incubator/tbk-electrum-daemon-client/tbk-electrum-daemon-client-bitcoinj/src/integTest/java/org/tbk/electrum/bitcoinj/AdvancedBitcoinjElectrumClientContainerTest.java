@@ -13,6 +13,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
@@ -98,15 +99,17 @@ class AdvancedBitcoinjElectrumClientContainerTest {
 
         AtomicReference<Sha256Hash> firstSentTxHash = new AtomicReference<>();
 
+        WalletParams walletParams = WalletParams.builder().build();
+
         Coin amountSentFromAddress1ToAddress2 = Flux.from(bitcoinRegtestActions.mineBlock())
                 .flatMap(lastBlockHash -> bitcoinRegtestActions.fundAddress(() -> address1))
                 .flatMap(minedBlockHashes -> electrumRegtestActions.awaitExactPayment(Coin.FIFTY_COINS, address1))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.FIFTY_COINS, address1))
                 .flatMap(balanceOnAddress -> electrumRegtestActions.awaitSpendableBalance(Coin.FIFTY_COINS))
                 // PAYMENT 1337 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(address2, Coin.valueOf(1337)))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(walletParams, address2, Coin.valueOf(1337)))
                 .doOnNext(firstSentTxHash::set)
-                .flatMap(txId -> electrumRegtestActions.awaitTransaction(txId, 0))
+                .flatMap(txId -> electrumRegtestActions.awaitTransaction(walletParams, txId, 0))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(1337), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1337), address2))
                 .blockFirst(Duration.ofSeconds(90));
@@ -130,7 +133,7 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         assertThat(firstUtxo.getValue(), is(Coin.valueOf(1337)));
 
         Flux.from(bitcoinRegtestActions.mineBlocks(21)).blockFirst(Duration.ofSeconds(90));
-        Flux.from(electrumRegtestActions.awaitTransaction(firstSentTxHash.get(), 21));
+        Flux.from(electrumRegtestActions.awaitTransaction(walletParams, firstSentTxHash.get(), 21));
 
         Transaction transaction = this.sut.getTransaction(firstSentTxHash.get());
         TransactionOutput output = transaction.getOutput(firstUtxo.getTxPos());

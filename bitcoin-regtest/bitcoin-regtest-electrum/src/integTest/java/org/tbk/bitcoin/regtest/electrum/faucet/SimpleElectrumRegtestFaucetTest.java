@@ -13,6 +13,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
@@ -70,7 +71,12 @@ class SimpleElectrumRegtestFaucetTest {
 
     @BeforeEach
     void setUp() {
-        this.sut = new SimpleElectrumRegtestFaucet(electrumClient, bitcoinRegtestActions);
+        this.sut = new SimpleElectrumRegtestFaucet(electrumClient,
+                bitcoinRegtestActions,
+                WalletParams.builder()
+                        .walletPath(SimpleElectrumRegtestFaucetTest.class.getSimpleName())
+                        .password("faucet")
+                        .build());
     }
 
     @Test

@@ -18,7 +18,9 @@ public interface ElectrumClient extends AutoCloseable {
         return this.getInfo().isConnected();
     }
 
-    Seed createMnemonicSeed();
+    default Seed createMnemonicSeed() {
+        return createMnemonicSeed(MakeSeedParams.builder().build());
+    }
 
     Seed createMnemonicSeed(MakeSeedParams params);
 
@@ -26,17 +28,23 @@ public interface ElectrumClient extends AutoCloseable {
 
     Seed getMnemonicSeed(GetSeedParams params);
 
-    Boolean isWalletSynchronized();
+    default Boolean isWalletSynchronized() {
+        return isWalletSynchronized(IsSynchronizedParams.builder().build());
+    }
 
     Boolean isWalletSynchronized(IsSynchronizedParams params);
 
     List<ListWalletEntry> listOpenWallets();
 
-    Balance getBalance();
+    default Balance getBalance() {
+        return getBalance(GetBalanceParams.builder().build());
+    }
 
     Balance getBalance(GetBalanceParams params);
 
-    List<String> listAddresses();
+    default List<String> listAddresses() {
+        return listAddresses(ListAddressOptions.all());
+    }
 
     List<String> listAddresses(ListAddressOptions options);
 
@@ -44,7 +52,9 @@ public interface ElectrumClient extends AutoCloseable {
 
     List<String> listAddressesUnfunded();
 
-    List<AddressWithBalance> listAddressesWithBalance();
+    default List<AddressWithBalance> listAddressesWithBalance() {
+        return listAddressesWithBalance(ListAddressOptions.all());
+    }
 
     List<AddressWithBalance> listAddressesWithBalance(ListAddressOptions options);
 
@@ -80,7 +90,12 @@ public interface ElectrumClient extends AutoCloseable {
 
     OnchainHistory getOnchainHistory();
 
-    OnchainSummary getOnchainCapitalGains();
+    default OnchainSummary getOnchainCapitalGains() {
+        return getOnchainCapitalGains(OnchainCapitalGainsParams.builder().build());
+    }
+
+    OnchainSummary getOnchainCapitalGains(OnchainCapitalGainsParams params);
+
 
     RawTx getRawTransaction(String txHash);
 
@@ -149,7 +164,9 @@ public interface ElectrumClient extends AutoCloseable {
     RawTx createUnsignedTransaction(TxoValue value,
                                     String destinationAddress,
                                     String changeAddress,
-                                    TxoValue fee);
+                                    TxoValue fee,
+                                    String walletPath,
+                                    String password);
 
     RawTx createUnsignedTransaction(TxoValue value,
                                     String destinationAddress,
@@ -158,17 +175,9 @@ public interface ElectrumClient extends AutoCloseable {
     /**
      * Sign an unsigned transaction.
      *
-     * @param rawTx            an unsigned transaction
-     * @param walletPassphrase the wallet password or null if wallet is not encrypted
+     * @param params an unsigned transaction and wallet details
      * @return a signed transaction
      */
-    default RawTx signTransaction(RawTx rawTx, @Nullable String walletPassphrase) {
-        return signTransaction(SignTransactionParams.of(rawTx)
-                .password(walletPassphrase)
-                .build()
-        );
-    }
-
     RawTx signTransaction(SignTransactionParams params);
 
     String broadcast(RawTx rawTx);

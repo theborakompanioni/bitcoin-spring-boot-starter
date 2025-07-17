@@ -10,6 +10,7 @@ import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.Utxos;
+import org.tbk.electrum.rpc.command.GetBalanceParams;
 
 import java.net.URI;
 import java.util.HexFormat;
@@ -36,19 +37,9 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     }
 
     @Override
-    public BitcoinjBalance getBalance() {
-        Balance balance = delegate.getBalance();
-
+    public BitcoinjBalance getBalance(GetBalanceParams params) {
+        Balance balance = delegate.getBalance(params);
         return toBitcoinjBalance(balance);
-    }
-
-    @Override
-    public List<Address> listAddresses() {
-        List<String> addresses = this.delegate.listAddresses();
-
-        return addresses.stream()
-                .map(it -> Address.fromString(this.network, it))
-                .toList();
     }
 
     @Override

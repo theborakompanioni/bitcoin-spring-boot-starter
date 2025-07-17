@@ -16,11 +16,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.rpc.command.ListWalletEntry;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
@@ -97,6 +99,13 @@ class ElectrumRegtestScenarioTest {
     void itShouldHaveFluentSyntaxToSendBalance() {
         Stopwatch sw = Stopwatch.createStarted();
 
+        ListWalletEntry listWalletEntry = electrumClient.delegate().listOpenWallets()
+                .stream().findFirst().orElseThrow();
+
+        WalletParams walletParams = WalletParams.builder()
+                .walletPath(listWalletEntry.getPath())
+                .build();
+
         Address address1 = electrumClient.createNewAddress();
         Address address2 = electrumClient.createNewAddress();
 
@@ -109,15 +118,15 @@ class ElectrumRegtestScenarioTest {
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.FIFTY_COINS, address1))
                 .flatMap(balanceOnAddress -> electrumRegtestActions.awaitSpendableBalance(Coin.FIFTY_COINS))
                 // FIRST PAYMENT 1000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(1_000L)))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, address2, Coin.valueOf(1_000L)))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(1_000L), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1_000L), address2))
                 // SECOND PAYMENT 2000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(2_000L)))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, address2, Coin.valueOf(2_000L)))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(2_000L), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(3_000L), address2))
                 // THIRD PAYMENT 3000 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(address2, Coin.valueOf(4_000L)))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, address2, Coin.valueOf(4_000L)))
                 .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(4_000L), address2))
                 .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(7_000L), address2))
                 .blockFirst(Duration.ofSeconds(90));

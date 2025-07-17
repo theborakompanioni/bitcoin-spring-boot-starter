@@ -96,7 +96,7 @@ public class ElectrumClientImpl implements ElectrumClient {
                     .signed(signed)
                     .build();
         } catch (Exception e) {
-            throw new IllegalStateException("Could not deserialize request");
+            throw new IllegalStateException("Could not deserialize request", e);
         }
     }
 
@@ -135,7 +135,9 @@ public class ElectrumClientImpl implements ElectrumClient {
     public RawTx createUnsignedTransaction(TxoValue value,
                                            String destinationAddress,
                                            String changeAddress,
-                                           TxoValue fee) {
+                                           TxoValue fee,
+                                           String walletPath,
+                                           String password) {
         checkArgument(fee != null, "`fee` must not be null");
 
         return this.createTransaction(PaytoParams.builder()
@@ -144,6 +146,8 @@ public class ElectrumClientImpl implements ElectrumClient {
                 .unsigned(true)
                 .changeAddress(changeAddress)
                 .fee(BtcTxoValues.toBtc(fee).toPlainString())
+                .walletPath(walletPath)
+                .password(password)
                 .build());
     }
 
@@ -185,11 +189,6 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public String broadcast(RawTx rawTx) {
         return this.delegate.broadcast(rawTx.getHex());
-    }
-
-    @Override
-    public Seed createMnemonicSeed() {
-        return createMnemonicSeed(MakeSeedParams.builder().build());
     }
 
     @Override
@@ -235,18 +234,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Boolean isWalletSynchronized() {
-        return delegate.issynchronized();
-    }
-
-    @Override
     public Boolean isWalletSynchronized(IsSynchronizedParams params) {
         return delegate.issynchronized(params.getWalletPath());
-    }
-
-    @Override
-    public Balance getBalance() {
-        return SimpleBalance.from(delegate.getbalance());
     }
 
     @Override
@@ -262,11 +251,6 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public List<ListWalletEntry> listOpenWallets() {
         return delegate.listwallets();
-    }
-
-    @Override
-    public List<String> listAddresses() {
-        return delegate.listaddresses();
     }
 
     @Override
@@ -288,11 +272,6 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public List<String> listAddressesUnfunded() {
         return delegate.listaddresses(false);
-    }
-
-    @Override
-    public List<AddressWithBalance> listAddressesWithBalance() {
-        return listAddressesWithBalance(ListAddressOptions.all());
     }
 
     @Override
@@ -366,8 +345,11 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public OnchainSummary getOnchainCapitalGains() {
-        OnchainCapitalGainsResponse result = delegate.onchaincapitalgains();
+    public OnchainSummary getOnchainCapitalGains(OnchainCapitalGainsParams params) {
+        OnchainCapitalGainsResponse result = delegate.onchaincapitalgains(
+                params.getYear(),
+                params.getWalletPath()
+        );
         return SimpleOnchainSummary.from(result);
     }
 

@@ -5,10 +5,16 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.tbk.bitcoin.regtest.common.AddressSupplier;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.model.OnchainHistory;
+import org.tbk.electrum.model.Wallet;
+import org.tbk.electrum.rpc.command.CreateParams;
+import org.tbk.electrum.rpc.command.GetBalanceParams;
+import org.tbk.electrum.rpc.command.IsSynchronizedParams;
+import org.tbk.electrum.rpc.command.LoadWalletParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,21 +32,57 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
     private final BitcoinjElectrumClient electrumClient;
     private final BitcoinRegtestActions bitcoinRegtestActions;
     private final ElectrumRegtestActions electrumRegtestActions;
+    private final WalletParams walletParams;
 
     public SimpleElectrumRegtestFaucet(BitcoinjElectrumClient electrumClient,
-                                       BitcoinRegtestActions bitcoinRegtestActions) {
+                                       BitcoinRegtestActions bitcoinRegtestActions,
+                                       WalletParams walletParams) {
         this.electrumClient = requireNonNull(electrumClient);
         this.bitcoinRegtestActions = requireNonNull(bitcoinRegtestActions);
+        this.walletParams = requireNonNull(walletParams);
+
         this.electrumRegtestActions = new ElectrumRegtestActions(electrumClient);
+    }
+
+    private void createWalletIfNecessaryOrThrow() {
+        LoadWalletParams loadWalletParams = LoadWalletParams.builder()
+                .walletPath(walletParams.getWalletPath())
+                .password(walletParams.getPassword().orElse(null))
+                .build();
+
+        boolean walletAlreadyLoaded = tryLoadWallet(loadWalletParams);
+        if (!walletAlreadyLoaded) {
+            this.electrumClient.delegate().createWallet(CreateParams.builder()
+                    .walletPath(walletParams.getWalletPath())
+                    .password(walletParams.getPassword().orElse(null))
+                    .passphrase("faucet")
+                    .encryptFile(!walletParams.getPassword().isEmpty())
+                    .build());
+            boolean walletLoadedAfterCreation = tryLoadWallet(loadWalletParams);
+            if (!walletLoadedAfterCreation) {
+                throw new IllegalStateException("Cannot load faucet wallet '%s'".formatted(loadWalletParams.getWalletPath()));
+            }
+        }
+    }
+
+    private boolean tryLoadWallet(LoadWalletParams params) {
+        try {
+            return this.electrumClient.delegate().loadWallet(params);
+        } catch (Exception e) {
+            log.trace("Exception while trying to load wallet: {}", e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public Mono<Sha256Hash> requestBitcoin(AddressSupplier destinationAddress, Coin amount) {
         checkAmount(amount);
 
+        createWalletIfNecessaryOrThrow();
+
         Coin neededSpendableAmount = amount.plus(txFee);
 
-        Mono<Address> rewardAddress = Mono.fromCallable(electrumClient::listAddresses)
+        Mono<Address> rewardAddress = Mono.fromCallable(() -> electrumClient.listAddresses())
                 .flatMapIterable(it -> it)
                 .next()
                 .cache();
@@ -62,9 +104,13 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                     .filter(newBlockchainHeight -> newBlockchainHeight > currentBlockchainHeight)
                     .blockFirst(Duration.ofSeconds(30));
         });
+        GetBalanceParams balanceParams = GetBalanceParams.builder()
+                .walletPath(walletParams.getWalletPath())
+                .build();
 
-        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(Duration.ofSeconds(10)))
-                .map(it -> electrumClient.getBalance().getSpendable())
+
+        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(10)))
+                .map(it -> electrumClient.getBalance(balanceParams).getSpendable())
                 .filter(spendable -> {
                     boolean hasEnoughFunds = !spendable.isLessThan(neededSpendableAmount);
                     log.debug("does the faucet control enough funds? {} (spendable {} less than {} needed)",
@@ -74,7 +120,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 // mine a new coinbase reward to an address the electrum client is in control of
                 .switchIfEmpty(fundWithCoinbaseReward
                         .flatMap(address -> Mono.from(awaitBlockchainHeightIncrease))
-                        .map(blockheight -> electrumClient.getBalance().getSpendable()))
+                        .map(blockheight -> electrumClient.getBalance(balanceParams).getSpendable()))
                 .repeat()
                 .takeWhile(spendable -> {
                     boolean mineMoreBlocks = spendable.isLessThan(neededSpendableAmount);
@@ -83,7 +129,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                     return mineMoreBlocks;
                 })
                 .collectList()
-                .flatMap(receivedAmount -> Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(destinationAddress.get(), amount, txFee)))
+                .flatMap(receivedAmount -> Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, destinationAddress.get(), amount, txFee)))
                 .map(OnchainHistory.Transaction::getTxHash)
                 .map(Sha256Hash::wrap);
     }

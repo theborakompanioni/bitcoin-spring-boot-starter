@@ -495,8 +495,20 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("list_wallets")
     List<ListWalletEntry> listwallets();
 
+    /**
+     * Load the wallet in memory
+     *
+     * @param walletPath wallet path
+     * @param password   wallet password
+     * @return path of the loaded wallet
+     */
     @JsonRpcMethod("load_wallet")
-    Boolean loadwallet();
+    String loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
+                      @JsonRpcOptional @JsonRpcParam("password") String password);
+
+    @JsonRpcMethod("unlock")
+    void unlock(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
+                @JsonRpcOptional @JsonRpcParam("password") String password);
 
     @JsonRpcMethod("restore")
     RestoreResponse restore(@JsonRpcParam("text") String text,
@@ -504,20 +516,6 @@ public interface ElectrumDaemonRpcService {
                             @JsonRpcOptional @JsonRpcParam("encrypt_file") Boolean encryptionPassword,
                             @JsonRpcOptional @JsonRpcParam("password") String password,
                             @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
-
-    /**
-     * Load the wallet in memory
-     *
-     * @param walletPath wallet path
-     * @param password   wallet password
-     */
-    @JsonRpcMethod("load_wallet")
-    void loadwallet(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
-                    @JsonRpcOptional @JsonRpcParam("password") String password);
-
-    @JsonRpcMethod("unlock")
-    void unlock(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath,
-                @JsonRpcOptional @JsonRpcParam("password") String password);
 
     @JsonRpcMethod("getconfig")
     @Nullable

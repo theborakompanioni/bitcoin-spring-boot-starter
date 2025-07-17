@@ -6,6 +6,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.reactivestreams.Subscriber;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
@@ -13,6 +14,8 @@ import org.tbk.electrum.model.OnchainSummary;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.rpc.command.OnchainCapitalGainsParams;
+import org.tbk.electrum.rpc.command.SignTransactionParams;
 import reactor.core.publisher.Mono;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -24,17 +27,19 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
     private static final Coin defaultTxFee = Coin.valueOf(200_000);
 
     private final BitcoinjElectrumClient client;
+    private final WalletParams params;
     private final Address address;
     private final Coin amount;
     private final Coin txFee;
 
-    public SendToAddressAction(BitcoinjElectrumClient client, Address address, Coin amount) {
-        this(client, address, amount, defaultTxFee);
+    public SendToAddressAction(BitcoinjElectrumClient client, WalletParams params, Address address, Coin amount) {
+        this(client, params, address, amount, defaultTxFee);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
-    public SendToAddressAction(BitcoinjElectrumClient client, Address address, Coin amount, Coin txFee) {
+    public SendToAddressAction(BitcoinjElectrumClient client, WalletParams params, Address address, Coin amount, Coin txFee) {
         this.client = requireNonNull(client);
+        this.params = requireNonNull(params);
         this.address = requireNonNull(address);
         this.amount = requireNonNull(amount);
         this.txFee = requireNonNull(txFee);
@@ -63,7 +68,9 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
                 log.trace("         {} spendable", balance.getSpendable().toFriendlyString());
                 log.trace("         {} unmatured", balance.getUnmatured().toFriendlyString());
 
-                OnchainSummary summary = client.delegate().getOnchainCapitalGains();
+                OnchainSummary summary = client.delegate().getOnchainCapitalGains(OnchainCapitalGainsParams.builder()
+                        .walletPath(params.getWalletPath())
+                        .build());
 
                 log.trace("History: {} end balance", friendlyBtcString(summary.getEndBalance()));
                 log.trace("         {} start balance", friendlyBtcString(summary.getStartBalance()));
@@ -75,10 +82,15 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
                     SimpleTxoValue.of(amount.getValue()),
                     address.toString(),
                     changeAddress.toString(),
-                    SimpleTxoValue.of(txFee.getValue())
+                    SimpleTxoValue.of(txFee.getValue()),
+                    params.getWalletPath(),
+                    params.getPassword().orElse(null)
             );
 
-            RawTx rawTx = client.delegate().signTransaction(unsignedTransaction, null);
+            RawTx rawTx = client.delegate().signTransaction(SignTransactionParams.of(unsignedTransaction)
+                    .walletPath(params.getWalletPath())
+                    .password(params.getPassword().orElse(null))
+                    .build());
 
             String broadcastTxid = client.delegate().broadcast(rawTx);
 

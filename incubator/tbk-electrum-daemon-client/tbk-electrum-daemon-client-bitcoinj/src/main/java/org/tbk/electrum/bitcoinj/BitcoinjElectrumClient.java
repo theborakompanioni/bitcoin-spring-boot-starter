@@ -6,6 +6,7 @@ import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
+import org.tbk.electrum.rpc.command.GetBalanceParams;
 
 import java.net.URI;
 import java.util.List;
@@ -15,9 +16,15 @@ public interface BitcoinjElectrumClient {
 
     ElectrumClient delegate();
 
-    BitcoinjBalance getBalance();
+    default BitcoinjBalance getBalance() {
+        return getBalance(GetBalanceParams.builder().build());
+    }
 
-    List<Address> listAddresses();
+    BitcoinjBalance getBalance(GetBalanceParams params);
+
+    default List<Address> listAddresses() {
+        return listAddresses(ElectrumClient.ListAddressOptions.all());
+    }
 
     List<Address> listAddresses(ElectrumClient.ListAddressOptions options);
 

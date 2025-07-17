@@ -9,6 +9,7 @@ import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.OnchainSummary;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.rpc.command.SignTransactionParams;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
@@ -77,7 +78,9 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
         RawTx unsignedTransaction = client
                 .createUnsignedTransactionSendingEntireBalance(options.getDestinationAddress());
 
-        RawTx rawTx = client.signTransaction(unsignedTransaction, options.getWalletPassphrase());
+        RawTx rawTx = client.signTransaction(SignTransactionParams.of(unsignedTransaction)
+                        .password(options.getWalletPassphrase())
+                        .build());
 
         log.info("rawTx (signed): {}", rawTx);
 

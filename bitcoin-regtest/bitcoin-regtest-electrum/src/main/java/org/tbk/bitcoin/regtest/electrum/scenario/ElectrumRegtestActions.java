@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.model.OnchainHistory;
@@ -34,17 +35,17 @@ public final class ElectrumRegtestActions {
         return new AwaitSpendableBalanceAction(electrumClient, expectedAmount);
     }
 
-    public AwaitTransactionAction awaitTransaction(Sha256Hash txid, int confirmations) {
-        return new AwaitTransactionAction(electrumClient.delegate(), txid, confirmations);
+    public AwaitTransactionAction awaitTransaction(WalletParams params, Sha256Hash txid, int confirmations) {
+        return new AwaitTransactionAction(electrumClient.delegate(), params, txid, confirmations);
     }
 
     @Deprecated
-    public SendToAddressAction sendPayment(Address address, Coin amount) {
-        return new SendToAddressAction(electrumClient, address, amount);
+    public SendToAddressAction sendPayment(WalletParams params, Address address, Coin amount) {
+        return new SendToAddressAction(electrumClient, params, address, amount);
     }
 
-    public SendToAddressAction sendPayment(Address address, Coin amount, Coin txFee) {
-        return new SendToAddressAction(electrumClient, address, amount, txFee);
+    public SendToAddressAction sendPayment(WalletParams params, Address address, Coin amount, Coin txFee) {
+        return new SendToAddressAction(electrumClient, params, address, amount, txFee);
     }
 
     /**
@@ -55,9 +56,9 @@ public final class ElectrumRegtestActions {
      * @param amount  the amount sent to address
      * @return the action itself
      */
-    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount) {
-        return s -> Mono.from(sendPayment(address, amount))
-                .flatMap(txId -> Mono.from(awaitTransaction(txId, 0)))
+    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(WalletParams params, Address address, Coin amount) {
+        return s -> Mono.from(sendPayment(params, address, amount))
+                .flatMap(txId -> Mono.from(awaitTransaction(params, txId, 0)))
                 .subscribe(s);
     }
 
@@ -70,13 +71,13 @@ public final class ElectrumRegtestActions {
      * @param txFee   the transaction fee
      * @return the action itself
      */
-    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(Address address, Coin amount, Coin txFee) {
-        return s -> Mono.from(sendPayment(address, amount, txFee))
-                .flatMap(txId -> Mono.from(awaitTransaction(txId, 0)))
+    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(WalletParams params, Address address, Coin amount, Coin txFee) {
+        return s -> Mono.from(sendPayment(params, address, amount, txFee))
+                .flatMap(txId -> Mono.from(awaitTransaction(params, txId, 0)))
                 .subscribe(s);
     }
 
-    public AwaitWalletSynchronizedAction awaitWalletSynchronized(Duration timeout) {
-        return new AwaitWalletSynchronizedAction(electrumClient.delegate(), timeout);
+    public AwaitWalletSynchronizedAction awaitWalletSynchronized(WalletParams params, Duration timeout) {
+        return new AwaitWalletSynchronizedAction(electrumClient.delegate(), params, timeout);
     }
 }

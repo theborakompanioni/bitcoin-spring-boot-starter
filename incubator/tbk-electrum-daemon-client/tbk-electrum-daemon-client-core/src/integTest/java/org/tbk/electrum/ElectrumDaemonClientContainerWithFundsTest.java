@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.bitcoin.regtest.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.electrum.faucet.SimpleElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
@@ -65,7 +66,14 @@ class ElectrumDaemonClientContainerWithFundsTest {
         @Bean
         ElectrumRegtestFaucet electrumRegtestFaucet(BitcoinjElectrumClient electrumClient,
                                                     BitcoinRegtestActions bitcoinRegtestActions) {
-            return new SimpleElectrumRegtestFaucet(electrumClient, bitcoinRegtestActions);
+            return new SimpleElectrumRegtestFaucet(
+                    electrumClient,
+                    bitcoinRegtestActions,
+                    WalletParams.builder()
+                            .walletPath(ElectrumDaemonClientContainerWithFundsTest.class.getSimpleName())
+                            .password("faucet")
+                            .build()
+            );
         }
     }
 
