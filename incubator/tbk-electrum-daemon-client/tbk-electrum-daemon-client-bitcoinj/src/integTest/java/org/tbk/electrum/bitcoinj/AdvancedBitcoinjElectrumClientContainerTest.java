@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,13 +16,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
+import org.tbk.electrum.common.WalletParams;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -88,7 +91,6 @@ class AdvancedBitcoinjElectrumClientContainerTest {
     }
 
     @Test
-    @Disabled("get transaction has a bug in 4.6.0b1")
     void itShouldHaveFluentSyntaxToSendBalance() {
         Stopwatch sw = Stopwatch.createStarted();
         Address address1 = sut.createNewAddress();
@@ -99,7 +101,9 @@ class AdvancedBitcoinjElectrumClientContainerTest {
 
         AtomicReference<Sha256Hash> firstSentTxHash = new AtomicReference<>();
 
-        WalletParams walletParams = WalletParams.builder().build();
+        WalletParams walletParams = WalletParams.builder()
+                .walletPath(this.sut.delegate().listOpenWallets().getFirst().getPath())
+                .build();
 
         Coin amountSentFromAddress1ToAddress2 = Flux.from(bitcoinRegtestActions.mineBlock())
                 .flatMap(lastBlockHash -> bitcoinRegtestActions.fundAddress(() -> address1))
