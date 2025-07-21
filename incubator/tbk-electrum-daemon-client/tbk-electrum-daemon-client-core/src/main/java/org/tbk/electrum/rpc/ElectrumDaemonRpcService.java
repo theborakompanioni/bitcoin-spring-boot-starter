@@ -17,9 +17,9 @@ import java.util.Map;
 /**
  * Represents a raw electrum rpc interfaces.
  * Uses the same name for the method as electrum does.
- * e.g. method for command "makeseed" is named {@link #makeseed()}
+ * e.g. method for command "make_seed" is named {@link #makeseed()}
  *
- * <p>This interface is tested with electrum v3.3.8.
+ * <p>This interface is tested with electrum v4.6.0.
  *
  * <p>Not every method is currently implemented.
  * <p>`electrum --regtest help`:
@@ -360,22 +360,11 @@ public interface ElectrumDaemonRpcService {
     /**
      * return wallet synchronization status
      *
-     * @return wallet synchronization status
-     */
-    @JsonRpcMethod("is_synchronized")
-    Boolean issynchronized();
-
-    /**
-     * return wallet synchronization status
-     *
      * @param walletPath wallet path
      * @return wallet synchronization status
      */
     @JsonRpcMethod("is_synchronized")
     Boolean issynchronized(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
-
-    @JsonRpcMethod("getbalance")
-    BalanceResponse getbalance();
 
     /**
      * Return the balance of your wallet.
@@ -416,7 +405,7 @@ public interface ElectrumDaemonRpcService {
                                                 @JsonRpcOptional @JsonRpcParam("frozen") Boolean frozen,
                                                 @JsonRpcOptional @JsonRpcParam("unused") Boolean unused,
                                                 @JsonRpcOptional @JsonRpcParam("funded") Boolean funded,
-                                                /* `balance` MUST be set to `true` to deserialize response correctly */
+            /* `balance` MUST be set to `true` to deserialize response correctly */
                                                 @JsonRpcParam("balance") boolean balance,
                                                 @JsonRpcParam("labels") boolean labels,
                                                 @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
@@ -442,17 +431,7 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("getunusedaddress")
     @Nullable
-    String getunusedaddress();
-
-    @JsonRpcMethod("getunusedaddress")
-    @Nullable
     String getunusedaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
-
-    @JsonRpcMethod("onchain_capital_gains")
-    OnchainCapitalGainsResponse onchaincapitalgains();
-
-    @JsonRpcMethod("onchain_capital_gains")
-    OnchainCapitalGainsResponse onchaincapitalgains(@JsonRpcParam("year") long year);
 
     @JsonRpcMethod("onchain_capital_gains")
     OnchainCapitalGainsResponse onchaincapitalgains(
@@ -466,9 +445,6 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("createnewaddress")
     String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
-
-    @JsonRpcMethod("onchain_history")
-    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory();
 
     @JsonRpcMethod("onchain_history")
     List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
