@@ -5,12 +5,8 @@ description = 'electrum-daemon testcontainer example application package'
 dependencies {
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
-    implementation project(':spring-testcontainer:spring-testcontainer-lnd-starter')
-    implementation project(':lnd-grpc-client:lnd-grpc-client-starter')
-
     implementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
-
 
     implementation 'io.projectreactor:reactor-core'
 

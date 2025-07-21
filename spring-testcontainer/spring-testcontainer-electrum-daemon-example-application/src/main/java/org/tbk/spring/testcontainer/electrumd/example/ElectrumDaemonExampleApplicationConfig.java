@@ -4,9 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
-import org.lightningj.lnd.wrapper.StatusException;
-import org.lightningj.lnd.wrapper.SynchronousLndAPI;
-import org.lightningj.lnd.wrapper.ValidationException;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,26 +53,6 @@ class ElectrumDaemonExampleApplicationConfig {
                     BlockChainInfo info = bitcoinJsonRpcClient.getBlockChainInfo();
                     log.info("[bitcoind] new best block (height: {}): {}", info.getBlocks(), info.getBestBlockHash());
                 } catch (IOException e) {
-                    log.error("", e);
-                }
-            });
-
-            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
-        };
-    }
-
-    @Bean
-    @Profile("!test")
-    ApplicationRunner lndBestBlockLogger(MessagePublishService<Block> bitcoinBlockPublishService,
-                                         SynchronousLndAPI lndApi) {
-        return args -> {
-            bitcoinBlockPublishService.awaitRunning(Duration.ofSeconds(20));
-
-            Disposable subscription = Flux.from(bitcoinBlockPublishService).subscribe(val -> {
-                try {
-                    org.lightningj.lnd.wrapper.message.GetInfoResponse info = lndApi.getInfo();
-                    log.info("[lnd] block hash (height: {}): {}", info.getBlockHeight(), info.getBlockHash());
-                } catch (StatusException | ValidationException e) {
                     log.error("", e);
                 }
             });

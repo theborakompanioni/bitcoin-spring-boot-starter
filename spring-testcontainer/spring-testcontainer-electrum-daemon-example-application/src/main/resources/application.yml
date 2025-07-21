@@ -45,24 +45,6 @@ org.tbk.spring.testcontainer.electrumx:
     PEER_ANNOUNCE: ''
     MAX_SESSIONS: 250
 
-org.tbk.spring.testcontainer.lnd:
-  enabled: true
-  restport: 19080
-  rpcport: 19009
-  commands:
-    - '--alias=tbk-lnd-example'
-    - '--bitcoind.rpcuser=this-is-my-rpc-user99'
-    - '--bitcoind.rpcpass=correct_horse_battery_staple_99'
-
-org.tbk.lightning.lnd.grpc:
-  enabled: true
-  host: localhost
-  port: ${org.tbk.spring.testcontainer.lnd.rpcport}
-  # path to the admin macaroon file within the container!
-  macaroon-file-path: '/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon'
-  # path to the tls cert file within the container!
-  cert-file-path: '/root/.lnd/tls.cert'
-
 org.tbk.spring.testcontainer.bitcoind:
   enabled: true
   rpcuser: this-is-my-rpc-user99
