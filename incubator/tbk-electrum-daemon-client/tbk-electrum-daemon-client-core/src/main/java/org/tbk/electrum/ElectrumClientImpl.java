@@ -219,19 +219,12 @@ public class ElectrumClientImpl implements ElectrumClient {
                 params.getWalletPath()
         );
 
-        return new Wallet() {
-            @Override
-            public Seed getSeed() {
-                return SimpleSeed.builder()
+        return SimpleWallet.builder()
+                .seed(SimpleSeed.builder()
                         .words(Arrays.asList(result.getSeed().split(" ")))
-                        .build();
-            }
-
-            @Override
-            public String getPath() {
-                return result.getPath();
-            }
-        };
+                        .build())
+                .path(result.getPath())
+                .build();
     }
 
     @Override
