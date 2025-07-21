@@ -107,27 +107,12 @@ class SimpleElectrumRegtestFaucetWithMultipleWalletsTest {
     void itShouldFundMultipleWallets() {
         String walletPrefix = SimpleElectrumRegtestFaucetWithMultipleWalletsTest.class.getSimpleName();
 
-        List<WalletParams> walletParamList = Stream.of(0, 1, 2)
+        List<WalletParams> walletParamList = createAndLoadWalletsOrThrow(Stream.of(0, 1, 2)
                 .map(i -> WalletParams.builder()
                         .walletPath("%s_%d".formatted(walletPrefix, i))
                         .password("ANY_PASSWORD_%d".formatted(i))
                         .build())
-                .toList();
-
-        walletParamList.forEach(it -> {
-            electrumClient.delegate().createWallet(CreateParams.builder()
-                    .walletPath(it.getWalletPath())
-                    .password(it.getPassword().orElse(null))
-                    .encryptFile(true)
-                    .build());
-        });
-
-        walletParamList.forEach(it -> {
-            electrumClient.delegate().loadWallet(LoadWalletParams.builder()
-                    .walletPath(it.getWalletPath())
-                    .password(it.getPassword().orElse(null))
-                    .build());
-        });
+                .toList());
 
         String newAddress0 = electrumClient.delegate().createNewAddress(CreateNewAddressParams.builder()
                 .walletPath(walletParamList.get(0).getWalletPath())
@@ -167,12 +152,30 @@ class SimpleElectrumRegtestFaucetWithMultipleWalletsTest {
         assertThat("address1 now funded", addressBalanceAfter1.getTotal(), is(SimpleTxoValue.of(42_000)));
         assertThat("wallet1 now funded", walletBalanceAfter1.getTotal(), is(SimpleTxoValue.of(42_000)));
 
-
         Balance addressBalanceAfter2 = electrumClient.delegate().getAddressBalance(newAddress2);
         Balance walletBalanceAfter2 = electrumClient.delegate().getBalance(GetBalanceParams.builder()
                 .walletPath(walletParamList.get(2).getWalletPath())
                 .build());
         assertThat("address2 now funded", addressBalanceAfter2.getTotal(), is(SimpleTxoValue.of(84_000)));
         assertThat("wallet1 now funded", walletBalanceAfter2.getTotal(), is(SimpleTxoValue.of(84_000)));
+    }
+
+    private List<WalletParams> createAndLoadWalletsOrThrow(List<WalletParams> walletParamList) {
+        walletParamList.forEach(it -> {
+            electrumClient.delegate().createWallet(CreateParams.builder()
+                    .walletPath(it.getWalletPath())
+                    .password(it.getPassword().orElse(null))
+                    .encryptFile(it.getPassword().isPresent())
+                    .build());
+        });
+
+        walletParamList.forEach(it -> {
+            electrumClient.delegate().loadWallet(LoadWalletParams.builder()
+                    .walletPath(it.getWalletPath())
+                    .password(it.getPassword().orElse(null))
+                    .build());
+        });
+
+        return walletParamList;
     }
 }

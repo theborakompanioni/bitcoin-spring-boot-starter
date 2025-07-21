@@ -99,8 +99,10 @@ class ElectrumRegtestScenarioTest {
     void itShouldHaveFluentSyntaxToSendBalance() {
         Stopwatch sw = Stopwatch.createStarted();
 
-        ListWalletEntry listWalletEntry = electrumClient.delegate().listOpenWallets()
-                .stream().findFirst().orElseThrow();
+        ListWalletEntry listWalletEntry = electrumClient.delegate().listOpenWallets().stream()
+                .filter(it -> it.getPath().endsWith("default_wallet"))
+                .findFirst()
+                .orElseThrow();
 
         WalletParams walletParams = WalletParams.builder()
                 .walletPath(listWalletEntry.getPath())
