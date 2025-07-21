@@ -68,7 +68,7 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
 
         Stopwatch sw = Stopwatch.createStarted();
 
-        log.debug("Schedule SendBalance task... on {}", LocalDateTime.now());
+        log.debug("Schedule SendBalance task on {}...", LocalDateTime.now());
 
         Boolean success = task.call();
         log.debug("Schedule SendBalance ended with {} after {}", success, sw);
