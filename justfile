@@ -20,9 +20,9 @@ evaluate:
 # print system information such as OS and architecture
 [group("project-agnostic")]
 system-info:
-  @echo "architecture: {{arch()}}"
-  @echo "os: {{os()}}"
-  @echo "os family: {{os_family()}}"
+   @echo "architecture: {{arch()}}"
+   @echo "os: {{os()}}"
+   @echo "os family: {{os_family()}}"
 
 # clean (remove) the build artifacts
 [group("development")]
@@ -72,9 +72,24 @@ test-all:
 # update metadata for dependency verification
 [group("development")]
 update-verification:
-   @./gradlew \
-     -Dorg.gradle.caching=false \
-     -Dorg.gradle.configureondemand=false \
-     -Dorg.gradle.parallel=false \
-     dependencies \
-     --write-verification-metadata pgp,sha256 --export-keys --write-locks
+    @./gradlew \
+      -Dorg.gradle.caching=false \
+      -Dorg.gradle.configureondemand=false \
+      -Dorg.gradle.parallel=false \
+      dependencies \
+      --write-verification-metadata pgp,sha256 --export-keys --write-locks
+
+# check style
+[group("development")]
+checkstyle:
+    @./gradlew checkstyleMain checkstyleTest checkstyleIntegTest checkstyleE2eTest checkstyleExampleTest checkstyleTestcontainerTest
+
+# spot bugs
+[group("development")]
+spotbugs:
+    @./gradlew spotbugsMain spotbugsTest spotbugsIntegTest spotbugsE2eTest spotbugsExampleTest spotbugsTestcontainerTest
+
+# lint files
+[group("development")]
+lint:
+    @./gradlew autoLintGradle
