@@ -64,7 +64,7 @@ public final class SimpleElectrumDaemonContainerFactory {
     }
 
     // currently only the image from "theborakompanioni" is supported
-    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.0@sha256:f55ed2e0c4c2e80e195caa4ba4ef256f57ac621487112eb9b3897a3ee4139ec9";
+    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.0.1@sha256:1e97f069ea9053f7d4c922dfdeac7336e444f4f2933a24662a3842dba3157de5";
 
     private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
