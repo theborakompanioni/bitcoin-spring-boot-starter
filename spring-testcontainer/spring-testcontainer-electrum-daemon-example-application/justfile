@@ -1,0 +1,15 @@
+# This justfile requires https://github.com/casey/just
+
+# run in development mode
+[group("development")]
+run-development:
+    @../../gradlew \
+     --console=plain \
+      bootRun --args="--spring.profiles.active=development"
+
+# run in mainnet mode
+[group("mainnet")]
+run-mainnet:
+    @../../gradlew \
+     --console=plain \
+      bootRun --args="--spring.profiles.active=mainnet"

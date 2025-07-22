@@ -25,7 +25,6 @@ public class ElectrumDaemonExampleApplication {
                 .sources(ElectrumDaemonExampleApplication.class)
                 .listeners(applicationPidFileWriter())
                 .web(WebApplicationType.NONE)
-                .profiles("development", "local")
                 .run(args);
     }
 

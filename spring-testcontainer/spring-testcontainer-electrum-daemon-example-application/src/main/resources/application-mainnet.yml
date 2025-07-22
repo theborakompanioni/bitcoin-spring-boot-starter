@@ -1,0 +1,38 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
+spring.http.log-request-details: false
+spring.threads.virtual.enabled: true
+
+server.port: 8080
+server.compression.enabled: true
+
+management.server.port: 9001
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: ${logging.file.path}/application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: INFO
+logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+#logging.level.web: DEBUG
+
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: true
+  environment:
+    ELECTRUM_NETWORK: mainnet
+    ELECTRUM_RPCUSER: electrum
+    ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20210508
+    ELECTRUM_CONFIG_SERVER: 'blockstream.info:700:s'
+    #ELECTRUM_CONFIG_SERVER: 'electrum.acinq.co:50002:s'
+    ELECTRUM_CONFIG_ONESERVER: true
+    ELECTRUM_CONFIG_AUTO_CONNECT: false
+    ELECTRUM_CONFIG_PROXY: none
+
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 7000
+  rpcuser: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCUSER}
+  rpcpassword: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCPASSWORD}
