@@ -1,9 +1,6 @@
 package org.tbk.electrum.bitcoinj;
 
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.*;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
@@ -43,18 +40,22 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
         return toBitcoinjBalance(balance);
     }
 
+    public List<ECKey> getPublicKeys(Address address) {
+        return delegate.getPublicKeys(address.toString()).stream()
+                .map(it -> ECKey.fromPublicOnly(HexFormat.of().parseHex(it)))
+                .toList();
+    }
+
     @Override
     public List<Address> listAddresses(ListAddressParams options) {
-        List<String> addresses = this.delegate.listAddresses(options);
-        return addresses.stream()
+        return this.delegate.listAddresses(options).stream()
                 .map(it -> Address.fromString(this.network, it))
                 .toList();
     }
 
     @Override
     public List<Address> listAddressesFunded() {
-        List<String> addresses = this.delegate.listAddressesFunded();
-        return addresses.stream()
+        return this.delegate.listAddressesFunded().stream()
                 .map(it -> Address.fromString(this.network, it))
                 .toList();
     }

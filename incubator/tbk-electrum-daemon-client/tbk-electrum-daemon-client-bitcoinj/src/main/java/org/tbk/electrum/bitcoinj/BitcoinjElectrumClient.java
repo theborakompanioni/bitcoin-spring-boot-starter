@@ -1,12 +1,13 @@
 package org.tbk.electrum.bitcoinj;
 
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
+import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.rpc.command.GetBalanceParams;
 
 import java.net.URI;
@@ -22,6 +23,8 @@ public interface BitcoinjElectrumClient {
     }
 
     BitcoinjBalance getBalance(GetBalanceParams params);
+
+    List<ECKey> getPublicKeys(Address address);
 
     default List<Address> listAddresses() {
         return listAddresses(ListAddressParams.all());

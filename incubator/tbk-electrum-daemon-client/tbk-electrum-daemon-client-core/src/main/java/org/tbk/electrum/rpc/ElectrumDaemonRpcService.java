@@ -153,7 +153,7 @@ import java.util.Map;
  * [x] "getbalance",
  * [x] "getconfig",
  * [x] "getinfo",
- * [ ] "getpubkeys",
+ * [x] "getpubkeys",
  * [x] "getseed",
  * [ ] "gettransaction",
  * [x] "getunusedaddress",

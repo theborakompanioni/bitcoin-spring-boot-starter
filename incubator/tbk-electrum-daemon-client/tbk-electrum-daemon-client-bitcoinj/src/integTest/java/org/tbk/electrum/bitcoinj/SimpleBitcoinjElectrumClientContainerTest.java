@@ -3,6 +3,7 @@ package org.tbk.electrum.bitcoinj;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.ECKey;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.script.Script;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
-import org.tbk.electrum.rpc.command.LoadWalletParams;
+import org.tbk.electrum.model.Version;
 import org.tbk.electrum.rpc.command.GetInfoResponse;
 import org.tbk.electrum.rpc.command.ListWalletEntry;
-import org.tbk.electrum.model.Version;
+import org.tbk.electrum.rpc.command.LoadWalletParams;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -79,7 +80,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
 
             wallets = sut.delegate().listOpenWallets();
         }
-        
+
         ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
 
         assertThat(listWalletEntry, is(notNullValue()));
@@ -109,6 +110,19 @@ class SimpleBitcoinjElectrumClientContainerTest {
         Address addressNotControlledByWallet = Address.fromString(RegTestParams.get(), "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j");
         Boolean ownerOfAddress2 = sut.isOwnerOfAddress(addressNotControlledByWallet);
         assertThat("address is not controlled by wallet", ownerOfAddress2, is(false));
+    }
+
+    @Test
+    void testGetPublicKeys() {
+        List<ECKey> publicKeys = sut.getPublicKeys(firstAddress);
+
+        ECKey firstPublicKey = publicKeys.stream().findFirst()
+                .orElseThrow(IllegalStateException::new);
+
+        assertThat(firstPublicKey.getPublicKeyAsHex(), is("02595181ef386bf74a43efcb03b34b5843acdd1883c78393d933903e8d2e4baf1c"));
+        assertThat(firstPublicKey.isPubKeyOnly(), is(true));
+        assertThat(firstPublicKey.isCompressed(), is(true));
+        assertThat(firstPublicKey.isEncrypted(), is(false));
     }
 
     @Test

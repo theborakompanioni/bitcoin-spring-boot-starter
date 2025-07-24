@@ -538,8 +538,8 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testGetPublicKeys() {
         List<String> publicKeys = this.sut.getPublicKeys(firstAddress);
-        String firstPublicKey = publicKeys.stream()
-                .findFirst().orElseThrow(IllegalStateException::new);
+        String firstPublicKey = publicKeys.stream().findFirst()
+                .orElseThrow(IllegalStateException::new);
 
         assertThat(firstPublicKey, is("02595181ef386bf74a43efcb03b34b5843acdd1883c78393d933903e8d2e4baf1c"));
     }
