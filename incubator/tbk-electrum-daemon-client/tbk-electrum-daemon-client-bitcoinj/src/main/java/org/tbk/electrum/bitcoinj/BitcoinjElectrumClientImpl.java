@@ -92,8 +92,8 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     }
 
     @Override
-    public BitcoinjUtxos getAddressUnspent(Address address) {
-        Utxos addressUnspent = this.delegate.getAddressUnspent(address.toString());
+    public BitcoinjUtxos getUtxosByAddress(Address address) {
+        Utxos addressUnspent = this.delegate.getUtxosByAddress(address.toString());
         return toBitcoinjUtxos(addressUnspent);
     }
 

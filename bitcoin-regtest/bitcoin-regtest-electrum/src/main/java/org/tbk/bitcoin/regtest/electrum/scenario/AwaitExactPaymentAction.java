@@ -75,7 +75,7 @@ public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo
                     .doOnNext(it -> log.trace("Waiting  till address {} controls a utxo of {}.. ({} attempt)",
                             this.address, this.expectedAmount.toFriendlyString(), it))
                     .flatMapIterable(it -> {
-                        BitcoinjUtxos addressUnspent = this.client.getAddressUnspent(this.address);
+                        BitcoinjUtxos addressUnspent = this.client.getUtxosByAddress(this.address);
 
                         log.trace("UTXOs: {} total", addressUnspent.getValue().toFriendlyString());
                         for (BitcoinjUtxo utxo : addressUnspent.getUtxos()) {

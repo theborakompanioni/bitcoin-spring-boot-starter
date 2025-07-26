@@ -211,11 +211,11 @@ class SimpleBitcoinjElectrumClientContainerTest {
     }
 
     @Test
-    void testGetAddressUnspent() {
+    void testGetUtxosByAddress() {
         Address newAddress = sut.createNewAddress(CreateNewAddressParams.builder()
                 .walletPath(defaultWalletParams.getWalletPath())
                 .build());
-        BitcoinjUtxos addressUnspent = sut.getAddressUnspent(newAddress);
+        BitcoinjUtxos addressUnspent = sut.getUtxosByAddress(newAddress);
 
         assertThat(addressUnspent, is(notNullValue()));
         assertThat(addressUnspent.getValue(), is(Coin.ZERO));

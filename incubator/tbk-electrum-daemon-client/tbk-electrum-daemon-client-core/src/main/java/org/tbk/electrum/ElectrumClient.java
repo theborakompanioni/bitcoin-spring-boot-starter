@@ -77,7 +77,7 @@ public interface ElectrumClient extends AutoCloseable {
 
     Balance getAddressBalance(String address);
 
-    Utxos getAddressUnspent(String address);
+    Utxos getUtxosByAddress(String address);
 
     Utxos getUtxos(ListUnspentParams params);
 

@@ -140,7 +140,7 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         assertThat(balanceOnAddress2After, is(Coin.valueOf(1337)));
         assertThat(amountSentFromAddress1ToAddress2, is(balanceOnAddress2After));
 
-        BitcoinjUtxos addressUnspent = this.sut.getAddressUnspent(address2);
+        BitcoinjUtxos addressUnspent = this.sut.getUtxosByAddress(address2);
         assertThat(addressUnspent.getValue(), is(balanceOnAddress2After));
         assertThat(addressUnspent.getUtxos(), hasSize(1));
 

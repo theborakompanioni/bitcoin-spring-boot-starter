@@ -37,7 +37,7 @@ public interface BitcoinjElectrumClient {
 
     BitcoinjBalance getAddressBalance(Address address);
 
-    BitcoinjUtxos getAddressUnspent(Address address);
+    BitcoinjUtxos getUtxosByAddress(Address address);
 
     Transaction getTransaction(Sha256Hash txHash);
 
