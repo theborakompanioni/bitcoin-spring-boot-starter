@@ -83,7 +83,7 @@ class SimpleElectrumRegtestFaucetWithMultipleWalletsTest {
         this.sut = new SimpleElectrumRegtestFaucet(electrumClient,
                 bitcoinRegtestActions,
                 WalletParams.builder()
-                        .walletPath(SimpleElectrumRegtestFaucetWithMultipleWalletsTest.class.getSimpleName())
+                        .walletPath("faucet_%s".formatted(this.getClass().getSimpleName()))
                         .password("faucet")
                         .build());
     }

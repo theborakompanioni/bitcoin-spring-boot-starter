@@ -18,14 +18,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
-import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.electrum.faucet.SimpleElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.SimpleTxoValue;
+import org.tbk.electrum.model.Utxo;
 import org.tbk.electrum.model.Utxos;
 import org.tbk.electrum.rpc.command.ListUnspentParams;
 import org.tbk.electrum.rpc.command.LoadWalletParams;
@@ -41,10 +42,8 @@ import static org.hamcrest.Matchers.*;
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElectrumDaemonClientContainerWithFundsTest {
-
     @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumDaemonContainerWithFundsTestApplication {
-
         public static void main(String[] args) {
             new SpringApplicationBuilder()
                     .sources(ElectrumDaemonContainerWithFundsTestApplication.class)
@@ -70,10 +69,18 @@ class ElectrumDaemonClientContainerWithFundsTest {
                     electrumClient,
                     bitcoinRegtestActions,
                     WalletParams.builder()
-                            .walletPath(ElectrumDaemonClientContainerWithFundsTest.class.getSimpleName())
+                            .walletPath("faucet_%s".formatted(this.getClass().getSimpleName()))
                             .password("faucet")
                             .build()
             );
+        }
+
+        @Bean
+        @Primary
+        WalletParams defaultWalletParams() {
+            return WalletParams.builder()
+                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .build();
         }
     }
 
@@ -83,42 +90,53 @@ class ElectrumDaemonClientContainerWithFundsTest {
     @Autowired
     private ElectrumClient sut;
 
+    @Autowired
+    private WalletParams defaultWalletParams;
+
     @BeforeEach
     void tryLoadWallet() {
         try {
-            log.trace("Load default wallet before test case");
+            log.trace("Load default wallet before test case...");
             sut.loadWallet(LoadWalletParams.builder()
-                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .walletPath(defaultWalletParams.getWalletPath())
                     .build());
+            log.trace("Successfully loaded default wallet before test case.");
         } catch (Exception e) {
-            log.warn("Could not load default wallet");
+            throw new IllegalStateException("Could not load default wallet.");
         }
     }
 
     @BeforeEach
     void waitForWalletSynchronization() throws Exception {
-        sut.waitForWalletSynchronization().get(10, TimeUnit.SECONDS);
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
     }
 
     @Test
-    void testGetUtxos() {
-        Utxos utxos0 = sut.getUtxos(ListUnspentParams.builder().build());
-        assertThat(utxos0.getUtxos(), hasSize(0));
-        assertThat(utxos0.getValue(), is(SimpleTxoValue.zero()));
+    void testGetUtxos() throws Exception {
+        Utxos utxosBefore = sut.getUtxos(ListUnspentParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         String address0 = sut.createNewAddress();
 
-        Sha256Hash block0 = electrumRegtestFaucet.requestBitcoin(
+        Sha256Hash txHash = electrumRegtestFaucet.requestBitcoin(
                 () -> Address.fromString(RegTestParams.get(), address0),
                 Coin.valueOf(21_000)
         ).block(Duration.ofSeconds(90));
+        assertThat(txHash, is(notNullValue()));
 
-        assertThat(block0, is(notNullValue()));
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
 
-        Utxos utxos1 = sut.getUtxos(ListUnspentParams.builder().build());
-        assertThat(utxos1.getUtxos(), hasSize(greaterThanOrEqualTo(1)));
-        // TODO: after faucet refactoring (not using one testing wallet), uncomment these
-        //assertThat(utxos1.getUtxos(), hasSize(1));
-        //assertThat(utxos1.getValue(), is(SimpleTxoValue.of(21_000)));
+        Utxos utxosAfter = sut.getUtxos(ListUnspentParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        assertThat(utxosAfter.getUtxos(), hasSize(utxosBefore.getUtxos().size() + 1));
+
+        Utxo utxo = utxosAfter.getUtxos().stream()
+                .filter(it -> txHash.equals(Sha256Hash.wrap(it.getTxHash())))
+                .findFirst()
+                .orElse(null);
+        assertThat(utxo, is(notNullValue()));
+        assertThat(utxo.getValue(), is(SimpleTxoValue.of(21_000)));
     }
 }

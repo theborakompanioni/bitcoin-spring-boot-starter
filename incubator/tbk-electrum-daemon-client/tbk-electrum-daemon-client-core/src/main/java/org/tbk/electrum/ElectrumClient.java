@@ -1,6 +1,7 @@
 package org.tbk.electrum;
 
 import org.tbk.electrum.common.ListAddressParams;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
 
@@ -88,7 +89,11 @@ public interface ElectrumClient extends AutoCloseable {
 
     List<TxHashAndBlockHeight> getAddressHistory(String address);
 
-    OnchainHistory getOnchainHistory();
+    default OnchainHistory getOnchainHistory() {
+        return getOnchainHistory(OnchainHistoryParams.builder().build());
+    }
+
+    OnchainHistory getOnchainHistory(OnchainHistoryParams params);
 
     default OnchainSummary getOnchainCapitalGains() {
         return getOnchainCapitalGains(OnchainCapitalGainsParams.builder().build());
@@ -203,5 +208,7 @@ public interface ElectrumClient extends AutoCloseable {
     Boolean isValidAddress(String firstAddress);
 
     Future<?> waitForWalletSynchronization();
+
+    Future<?> waitForWalletSynchronization(WalletParams wallet);
 
 }

@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.electrum.common.ListAddressParams;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.ElectrumDaemonRpcService;
 import org.tbk.electrum.rpc.command.*;
@@ -323,10 +324,16 @@ public class ElectrumClientImpl implements ElectrumClient {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+
     @Override
     @SneakyThrows
-    public OnchainHistory getOnchainHistory() {
-        List<OnchainHistoryResponse.HistoricTransaction> result = delegate.onchainhistory(true);
+    public OnchainHistory getOnchainHistory(OnchainHistoryParams params) {
+        List<OnchainHistoryResponse.HistoricTransaction> result = delegate.onchainhistory(
+                true,
+                params.getYear(),
+                false,
+                params.getWalletPath()
+        );
         return SimpleOnchainHistory.from(result);
     }
 
@@ -521,7 +528,12 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Future<?> waitForWalletSynchronization() {
-        return syncExecutor.submit(delegate::waitforsync);
+        return syncExecutor.submit(() -> delegate.waitforsync());
+    }
+
+    @Override
+    public Future<?> waitForWalletSynchronization(WalletParams wallet) {
+        return syncExecutor.submit(() -> delegate.waitforsync(wallet.getWalletPath()));
     }
 
     private static byte[] fromHexOrBase64(String value) {

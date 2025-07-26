@@ -447,13 +447,6 @@ public interface ElectrumDaemonRpcService {
     String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     @JsonRpcMethod("onchain_history")
-    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses);
-
-    @JsonRpcMethod("onchain_history")
-    List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcParam("show_addresses") boolean showAddresses,
-                                                                    @JsonRpcParam("year") long year);
-
-    @JsonRpcMethod("onchain_history")
     List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
                                                                     @JsonRpcOptional @JsonRpcParam("year") Long year,
                                                                     @JsonRpcOptional @JsonRpcParam("show_fiat") Boolean showFiat,
@@ -577,8 +570,8 @@ public interface ElectrumDaemonRpcService {
      * Password is optional (if you have an unencrypted wallet - which is highly discouraged).
      *
      * @param tx         a raw transaction (hexadecimal)
-     * @param password   the wallet passphrase (null if unencrypted).
      * @param walletPath wallet path
+     * @param password   the wallet passphrase (null if unencrypted).
      * @return a signed transaction
      */
     @JsonRpcMethod("signtransaction")
@@ -671,4 +664,11 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("wait_for_sync")
     void waitforsync();
+
+    /**
+     * Block until the wallet synchronization finishes.
+     * @param walletPath wallet path
+     */
+    @JsonRpcMethod("wait_for_sync")
+    void waitforsync(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 }
