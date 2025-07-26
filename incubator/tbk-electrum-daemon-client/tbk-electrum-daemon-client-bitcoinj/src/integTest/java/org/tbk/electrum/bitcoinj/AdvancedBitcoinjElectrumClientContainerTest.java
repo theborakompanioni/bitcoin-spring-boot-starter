@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
@@ -23,6 +24,8 @@ import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
+import org.tbk.electrum.rpc.command.IsSynchronizedParams;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -61,6 +64,14 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
             return new ElectrumRegtestActions(electrumClient);
         }
+
+        @Bean
+        @Primary
+        WalletParams defaultWalletParams() {
+            return WalletParams.builder()
+                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .build();
+        }
     }
 
     @Autowired
@@ -68,6 +79,9 @@ class AdvancedBitcoinjElectrumClientContainerTest {
 
     @Autowired
     private ElectrumRegtestActions electrumRegtestActions;
+
+    @Autowired
+    private WalletParams defaultWalletParams;
 
     @Autowired
     private BitcoinjElectrumClient sut;
@@ -83,7 +97,9 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         // wallet might need some time to be synchronized as some addresses beyond
         // the gap limit are created in other test methods
         Boolean walletSynchronized = Flux.interval(Duration.ofMillis(100))
-                .map(it -> sut.delegate().isWalletSynchronized())
+                .map(it -> sut.delegate().isWalletSynchronized(IsSynchronizedParams.builder()
+                        .walletPath(defaultWalletParams.getWalletPath())
+                        .build()))
                 .filter(it -> it)
                 .blockFirst(Duration.ofSeconds(10));
 
@@ -93,31 +109,30 @@ class AdvancedBitcoinjElectrumClientContainerTest {
     @Test
     void itShouldHaveFluentSyntaxToSendBalance() {
         Stopwatch sw = Stopwatch.createStarted();
-        Address address1 = sut.createNewAddress();
-        Address address2 = sut.createNewAddress();
+        Address address1 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        Address address2 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         Coin balanceOnAddress2Before = this.sut.getAddressBalance(address2).getTotal();
         assertThat(balanceOnAddress2Before, is(Coin.ZERO));
 
         AtomicReference<Sha256Hash> firstSentTxHash = new AtomicReference<>();
 
-        WalletParams walletParams = WalletParams.builder()
-                .walletPath(this.sut.delegate().listOpenWallets().getFirst().getPath())
-                .build();
-
         Coin amountSentFromAddress1ToAddress2 = Flux.from(bitcoinRegtestActions.mineBlock())
                 .flatMap(lastBlockHash -> bitcoinRegtestActions.fundAddress(() -> address1))
-                .flatMap(minedBlockHashes -> electrumRegtestActions.awaitExactPayment(Coin.FIFTY_COINS, address1))
-                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.FIFTY_COINS, address1))
-                .flatMap(balanceOnAddress -> electrumRegtestActions.awaitSpendableBalance(Coin.FIFTY_COINS))
+                .flatMap(minedBlockHashes -> electrumRegtestActions.awaitExactPayment(defaultWalletParams, Coin.FIFTY_COINS, address1))
+                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(defaultWalletParams, Coin.FIFTY_COINS, address1))
+                .flatMap(balanceOnAddress -> electrumRegtestActions.awaitSpendableBalance(defaultWalletParams, Coin.FIFTY_COINS))
                 // PAYMENT 1337 sats
-                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(walletParams, address2, Coin.valueOf(1337)))
+                .flatMap(receivedAmount -> electrumRegtestActions.sendPayment(defaultWalletParams, address2, Coin.valueOf(1337)))
                 .doOnNext(firstSentTxHash::set)
-                .flatMap(txId -> electrumRegtestActions.awaitTransaction(walletParams, txId, 0))
-                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(Coin.valueOf(1337), address2))
-                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(Coin.valueOf(1337), address2))
+                .flatMap(txId -> electrumRegtestActions.awaitTransaction(defaultWalletParams, txId, 0))
+                .flatMap(tx -> electrumRegtestActions.awaitExactPayment(defaultWalletParams, Coin.valueOf(1337), address2))
+                .flatMap(utxo -> electrumRegtestActions.awaitBalanceOnAddress(defaultWalletParams, Coin.valueOf(1337), address2))
                 .blockFirst(Duration.ofSeconds(90));
-
 
         log.debug("Finished after {}", sw.stop());
 
@@ -137,7 +152,7 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         assertThat(firstUtxo.getValue(), is(Coin.valueOf(1337)));
 
         Flux.from(bitcoinRegtestActions.mineBlocks(21)).blockFirst(Duration.ofSeconds(90));
-        Flux.from(electrumRegtestActions.awaitTransaction(walletParams, firstSentTxHash.get(), 21));
+        Flux.from(electrumRegtestActions.awaitTransaction(defaultWalletParams, firstSentTxHash.get(), 21));
 
         Transaction transaction = this.sut.getTransaction(firstSentTxHash.get());
         TransactionOutput output = transaction.getOutput(firstUtxo.getTxPos());

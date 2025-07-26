@@ -9,6 +9,7 @@ import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.OnchainHistory;
+import org.tbk.electrum.rpc.command.OnchainHistoryParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,34 +25,34 @@ public final class AwaitTransactionAction implements RegtestAction<OnchainHistor
     private static final int DEFAULT_CONFIRMATIONS = 0;
 
     private final ElectrumClient client;
-    private final WalletParams params;
+    private final WalletParams wallet;
     private final Sha256Hash txHash;
     private final int confirmations;
     private final Duration timeout;
     private final Duration checkInterval;
 
-    public AwaitTransactionAction(ElectrumClient client, WalletParams params, Sha256Hash txHash) {
-        this(client, params, txHash, DEFAULT_CONFIRMATIONS);
+    public AwaitTransactionAction(ElectrumClient client, WalletParams wallet, Sha256Hash txHash) {
+        this(client, wallet, txHash, DEFAULT_CONFIRMATIONS);
     }
 
-    public AwaitTransactionAction(ElectrumClient client,  WalletParams params, Sha256Hash txHash, int confirmations) {
-        this(client, params, txHash, confirmations, defaultTimeout);
+    public AwaitTransactionAction(ElectrumClient client, WalletParams wallet, Sha256Hash txHash, int confirmations) {
+        this(client, wallet, txHash, confirmations, defaultTimeout);
     }
 
-    public AwaitTransactionAction(ElectrumClient client,  WalletParams params, Sha256Hash txHash, Duration timeout) {
-        this(client, params, txHash, DEFAULT_CONFIRMATIONS, timeout, defaultCheckInterval);
+    public AwaitTransactionAction(ElectrumClient client, WalletParams wallet, Sha256Hash txHash, Duration timeout) {
+        this(client, wallet, txHash, DEFAULT_CONFIRMATIONS, timeout, defaultCheckInterval);
     }
 
-    public AwaitTransactionAction(ElectrumClient client,  WalletParams params, Sha256Hash txHash, int confirmations, Duration timeout) {
-        this(client, params, txHash, confirmations, timeout, defaultCheckInterval);
+    public AwaitTransactionAction(ElectrumClient client, WalletParams wallet, Sha256Hash txHash, int confirmations, Duration timeout) {
+        this(client, wallet, txHash, confirmations, timeout, defaultCheckInterval);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
-    public AwaitTransactionAction(ElectrumClient client,  WalletParams params, Sha256Hash txHash, int confirmations, Duration timeout, Duration checkInterval) {
+    public AwaitTransactionAction(ElectrumClient client, WalletParams wallet, Sha256Hash txHash, int confirmations, Duration timeout, Duration checkInterval) {
         checkArgument(confirmations >= 0, "'confirmations' must be greater than or equal to zero");
 
         this.client = requireNonNull(client);
-        this.params = requireNonNull(params);
+        this.wallet = requireNonNull(wallet);
         this.txHash = requireNonNull(txHash);
         this.confirmations = confirmations;
         this.timeout = requireNonNull(timeout);
@@ -81,7 +82,9 @@ public final class AwaitTransactionAction implements RegtestAction<OnchainHistor
 
             OnchainHistory.Transaction broadcastedTx = Flux.interval(this.checkInterval)
                     .doOnNext(it -> log.trace("Waiting for tx {} to be processed by electrum.. ({} attempt)", this.txHash, it))
-                    .flatMapIterable(it -> this.client.getOnchainHistory().getTransactions())
+                    .flatMapIterable(it -> this.client.getOnchainHistory(OnchainHistoryParams.builder()
+                                    .walletPath(wallet.getWalletPath())
+                            .build()).getTransactions())
                     .filter(it -> this.txHash.toString().equalsIgnoreCase(it.getTxHash()))
                     .filter(it -> it.getConfirmations() >= this.confirmations)
                     .blockFirst(this.timeout);

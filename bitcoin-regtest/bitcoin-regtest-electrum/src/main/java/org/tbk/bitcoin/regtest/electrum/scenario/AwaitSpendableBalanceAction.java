@@ -8,6 +8,8 @@ import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
+import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.rpc.command.GetBalanceParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,21 +24,25 @@ public final class AwaitSpendableBalanceAction implements RegtestAction<Coin> {
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final BitcoinjElectrumClient client;
+    private final WalletParams wallet;
     private final Coin expectedAmount;
     private final Duration timeout;
     private final Duration checkInterval;
 
     public AwaitSpendableBalanceAction(BitcoinjElectrumClient client,
+                                       WalletParams wallet,
                                        Coin expectedAmount) {
-        this(client, expectedAmount, defaultTimeout, defaultCheckInterval);
+        this(client, wallet, expectedAmount, defaultTimeout, defaultCheckInterval);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
     public AwaitSpendableBalanceAction(BitcoinjElectrumClient client,
+                                       WalletParams wallet,
                                        Coin expectedAmount,
                                        Duration timeout,
                                        Duration checkInterval) {
         this.client = requireNonNull(client);
+        this.wallet = requireNonNull(wallet);
         this.expectedAmount = requireNonNull(expectedAmount);
         this.timeout = requireNonNull(timeout);
         this.checkInterval = requireNonNull(checkInterval);
@@ -63,7 +69,9 @@ public final class AwaitSpendableBalanceAction implements RegtestAction<Coin> {
             Coin coin = Flux.interval(this.checkInterval)
                     .doOnNext(it -> log.trace("Waiting balance of {} by electrum.. ({} attempt)",
                             this.expectedAmount.toFriendlyString(), it))
-                    .map(it -> this.client.getBalance())
+                    .map(it -> this.client.getBalance(GetBalanceParams.builder()
+                            .walletPath(wallet.getWalletPath())
+                            .build()))
                     .doOnNext(balance -> {
                         log.trace("Balance: {} total", balance.getTotal().toFriendlyString());
                         log.trace("         {} confirmed", balance.getConfirmed().toFriendlyString());

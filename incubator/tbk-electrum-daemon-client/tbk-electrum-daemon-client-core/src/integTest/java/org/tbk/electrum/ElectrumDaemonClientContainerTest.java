@@ -9,7 +9,10 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
@@ -47,6 +50,14 @@ class ElectrumDaemonClientContainerTest {
                     .web(WebApplicationType.NONE)
                     .run(args);
         }
+
+        @Bean
+        @Primary
+        WalletParams defaultWalletParams() {
+            return WalletParams.builder()
+                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .build();
+        }
     }
 
     @Autowired(required = false)
@@ -58,12 +69,16 @@ class ElectrumDaemonClientContainerTest {
     @Autowired(required = false)
     private ElectrumClient sut;
 
+    @Autowired(required = false)
+    private WalletParams defaultWalletParams;
+
     @BeforeEach
     void tryLoadWallet() {
         try {
             log.trace("Load default wallet before test case");
             sut.loadWallet(LoadWalletParams.builder()
-                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .walletPath(defaultWalletParams.getWalletPath())
+                    .password(defaultWalletParams.getPassword().orElse(null))
                     .build());
         } catch (Exception e) {
             log.warn("Could not load default wallet");
@@ -74,6 +89,7 @@ class ElectrumDaemonClientContainerTest {
     @Order(1)
     void contextLoads() {
         assertThat(sut, is(notNullValue()));
+        assertThat(defaultWalletParams, is(notNullValue()));
         assertThat(electrumDaemonContainer, is(notNullValue()));
         assertThat("electrum daemon container is running", electrumDaemonContainer.isRunning(), is(true));
 
@@ -185,6 +201,7 @@ class ElectrumDaemonClientContainerTest {
     void testChangeGapLimit() {
         boolean success = sut.changeGapLimit(ChangeGapLimitParams.builder()
                 .gaplimit(10)
+                .walletPath(defaultWalletParams.getWalletPath())
                 .build());
         assertThat(success, is(true));
     }
@@ -192,7 +209,7 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testGetMinAcceptableGap() {
         // needs a synchronized wallet
-        sut.waitForWalletSynchronization();
+        sut.waitForWalletSynchronization(defaultWalletParams);
 
         int value = sut.getMinAcceptableGap();
         assertThat(value, is(greaterThanOrEqualTo(1)));
@@ -434,16 +451,21 @@ class ElectrumDaemonClientContainerTest {
         List<ListWalletEntry> wallets = sut.listOpenWallets();
         assertThat(wallets, hasSize(greaterThanOrEqualTo(1)));
 
-        ListWalletEntry listWalletEntry = wallets.stream().findFirst().orElseThrow();
+        ListWalletEntry listWalletEntry = wallets.stream()
+                .filter(it -> it.getPath().equals(defaultWalletParams.getWalletPath()))
+                .findFirst()
+                .orElseThrow();
 
-        assertThat("wallet is known", listWalletEntry.getPath(), is("/home/electrum/.electrum/regtest/wallets/default_wallet"));
         assertThat("wallet is synchronized", listWalletEntry.getSynced(), either(is(true)).or(is(false)));
         assertThat("wallet is locked", listWalletEntry.getUnlocked(), is(true));
     }
 
     @Test
     void testLoadWallet() {
-        boolean result = sut.loadWallet(LoadWalletParams.builder().build());
+        boolean result = sut.loadWallet(LoadWalletParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .password(defaultWalletParams.getPassword().orElse(null))
+                .build());
 
         assertThat(result, is(true));
     }
@@ -463,7 +485,9 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testCloseWallet() {
-        boolean result = sut.closeWallet(CloseWalletParams.builder().build());
+        boolean result = sut.closeWallet(CloseWalletParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         assertThat(result, is(true));
     }
@@ -479,14 +503,18 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testOnchainHistory() {
-        OnchainHistory history = sut.getOnchainHistory();
+        OnchainHistory history = sut.getOnchainHistory(OnchainHistoryParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
     }
 
     @Test
     void testOnchainCapitalGains() {
-        OnchainSummary summary = sut.getOnchainCapitalGains();
+        OnchainSummary summary = sut.getOnchainCapitalGains(OnchainCapitalGainsParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         assertThat(summary.getStartBalance().isZero(), is(true));
         assertThat(summary.getEndBalance().isZero(), is(true));
@@ -496,12 +524,15 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testWalletSynchronized() throws ExecutionException, InterruptedException, TimeoutException {
-        Boolean walletSynchronized0 = sut.isWalletSynchronized();
+        IsSynchronizedParams synchronizedParams = IsSynchronizedParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build();
+        Boolean walletSynchronized0 = sut.isWalletSynchronized(synchronizedParams);
         assertThat(walletSynchronized0, either(is(true)).or(is(false)));
 
-        sut.waitForWalletSynchronization().get(10, TimeUnit.SECONDS);
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
 
-        Boolean walletSynchronized1 = sut.isWalletSynchronized();
+        Boolean walletSynchronized1 = sut.isWalletSynchronized(synchronizedParams);
         assertThat("wallet is synchronized", walletSynchronized1, is(true));
     }
 
@@ -520,16 +551,24 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testOwnerOfAddress() {
-        Boolean ownerOfAddress = sut.isOwnerOfAddress(firstAddress);
+        Boolean ownerOfAddress = sut.isOwnerOfAddress(IsMineParams.builder()
+                .address(firstAddress)
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         assertThat("address is controlled by wallet", ownerOfAddress, is(true));
 
-        Boolean ownerOfAddress2 = sut.isOwnerOfAddress(addressNotControlledByWallet);
+        Boolean ownerOfAddress2 = sut.isOwnerOfAddress(IsMineParams.builder()
+                .address(addressNotControlledByWallet)
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         assertThat("address is not controlled by wallet", ownerOfAddress2, is(false));
     }
 
     @Test
     void testGetUnusedAddress() {
-        Optional<String> unusedAddressOrEmpty = this.sut.getUnusedAddress();
+        Optional<String> unusedAddressOrEmpty = this.sut.getUnusedAddress(GetUnusedAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         String unusedAddress = unusedAddressOrEmpty.orElseThrow();
 
         assertThat(unusedAddress, startsWith("bcrt1"));
@@ -537,7 +576,10 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testGetPublicKeys() {
-        List<String> publicKeys = this.sut.getPublicKeys(firstAddress);
+        List<String> publicKeys = this.sut.getPublicKeys(GetPubkeysParams.builder()
+                .address(firstAddress)
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         String firstPublicKey = publicKeys.stream().findFirst()
                 .orElseThrow(IllegalStateException::new);
 
@@ -646,7 +688,10 @@ class ElectrumDaemonClientContainerTest {
         Boolean valid2 = sut.verifyMessage(address, signedMessage, "21" + randomMessage);
         assertThat(valid2, is(false));
 
-        Boolean valid3 = sut.verifyMessage(sut.createNewAddress(), signedMessage, randomMessage);
+        String newAddress = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        Boolean valid3 = sut.verifyMessage(newAddress, signedMessage, randomMessage);
         assertThat(valid3, is(false));
 
         Boolean valid4 = sut.verifyMessage(addressNotControlledByWallet, signedMessage, randomMessage);
@@ -655,7 +700,9 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testSignAndVerifyMessageWithWhitespaces() {
-        String address = sut.createNewAddress();
+        String address = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         String message = "A message with whitespaces.";
 
         String signedMessage = sut.signMessage(address, message, null);
@@ -666,7 +713,10 @@ class ElectrumDaemonClientContainerTest {
 
     @Test
     void testEncryptAndDecryptMessage() {
-        List<String> publicKeys = this.sut.getPublicKeys(firstAddress);
+        List<String> publicKeys = this.sut.getPublicKeys(GetPubkeysParams.builder()
+                .address(firstAddress)
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         String firstPublicKey = publicKeys.stream()
                 .findFirst().orElseThrow(IllegalStateException::new);
 

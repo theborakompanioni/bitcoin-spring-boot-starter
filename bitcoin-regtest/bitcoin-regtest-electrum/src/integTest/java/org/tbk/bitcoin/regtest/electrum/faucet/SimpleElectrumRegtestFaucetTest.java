@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
@@ -19,6 +20,7 @@ import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
@@ -53,6 +55,14 @@ class SimpleElectrumRegtestFaucetTest {
         BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
             return new BitcoinRegtestActions(regtestMiner);
         }
+
+        @Bean
+        @Primary
+        WalletParams defaultWalletParams() {
+            return WalletParams.builder()
+                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .build();
+        }
     }
 
     @Autowired
@@ -67,22 +77,27 @@ class SimpleElectrumRegtestFaucetTest {
     @Autowired
     private BitcoinjElectrumClient electrumClient;
 
+    @Autowired
+    private WalletParams defaultWalletParams;
+
     private ElectrumRegtestFaucet sut;
 
     @BeforeEach
     void setUp() {
+        WalletParams faucetWalletParams = WalletParams.builder()
+                .walletPath("faucet_%s".formatted(this.getClass().getSimpleName()))
+                .password("faucet")
+                .build();
         this.sut = new SimpleElectrumRegtestFaucet(electrumClient,
                 bitcoinRegtestActions,
-                WalletParams.builder()
-                        .walletPath("faucet_%s".formatted(this.getClass().getSimpleName()))
-                        .password("faucet")
-                        .build());
+                faucetWalletParams);
     }
 
     @Test
     @Order(1)
     void contextLoads() {
         assertThat(electrumClient, is(notNullValue()));
+        assertThat(defaultWalletParams, is(notNullValue()));
         assertThat(electrumDaemonContainer, is(notNullValue()));
         assertThat("electrum daemon container is running", electrumDaemonContainer.isRunning(), is(true));
 
@@ -96,7 +111,9 @@ class SimpleElectrumRegtestFaucetTest {
     @Test
     void itShouldValidateMinAmount() {
         IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1_000).minus(Coin.SATOSHI))
+            sut.requestBitcoin(() -> electrumClient.createNewAddress(CreateNewAddressParams.builder()
+                            .walletPath(defaultWalletParams.getWalletPath())
+                            .build()), Coin.SATOSHI.multiply(1_000).minus(Coin.SATOSHI))
                     .block(Duration.ofSeconds(3));
         });
 
@@ -106,7 +123,9 @@ class SimpleElectrumRegtestFaucetTest {
     @Test
     void itShouldValidateMaxAmount() {
         IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.COIN.multiply(100).plus(Coin.SATOSHI))
+            sut.requestBitcoin(() -> electrumClient.createNewAddress(CreateNewAddressParams.builder()
+                            .walletPath(defaultWalletParams.getWalletPath())
+                            .build()), Coin.COIN.multiply(100).plus(Coin.SATOSHI))
                     .block(Duration.ofSeconds(3));
         });
 
@@ -118,7 +137,9 @@ class SimpleElectrumRegtestFaucetTest {
     void itShouldSendRequestedBitcoinToAddress() {
         Stopwatch sw = Stopwatch.createStarted();
 
-        Address destinationAddress1 = electrumClient.createNewAddress();
+        Address destinationAddress1 = electrumClient.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress1);
         assertThat("balance of address is zero before test", balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
@@ -139,13 +160,17 @@ class SimpleElectrumRegtestFaucetTest {
 
         // if this test is called in isolation, this request will trigger the faucet to mine some blocks
         // if other test methods run before the faucet will already be in control of enough funds
-        sut.requestBitcoin(() -> electrumClient.createNewAddress(), Coin.SATOSHI.multiply(1_000))
+        sut.requestBitcoin(() -> electrumClient.createNewAddress(CreateNewAddressParams.builder()
+                        .walletPath(defaultWalletParams.getWalletPath())
+                        .build()), Coin.SATOSHI.multiply(1_000))
                 .block(Duration.ofSeconds(60));
 
         int blockchainHeightBefore = electrumClient.delegate().getInfo().getBlockchainHeight();
         assertThat("blocks have already been mined", blockchainHeightBefore, is(greaterThan(0)));
 
-        Address destinationAddress = electrumClient.createNewAddress();
+        Address destinationAddress = electrumClient.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress);
         assertThat(balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));

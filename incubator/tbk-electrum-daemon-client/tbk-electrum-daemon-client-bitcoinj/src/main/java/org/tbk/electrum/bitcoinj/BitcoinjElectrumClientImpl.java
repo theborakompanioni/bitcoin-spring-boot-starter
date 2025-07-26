@@ -2,12 +2,15 @@ package org.tbk.electrum.bitcoinj;
 
 import org.bitcoinj.core.*;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.bitcoinj.common.GetPubkeysParams;
+import org.tbk.electrum.bitcoinj.common.IsMineParams;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.Utxos;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import org.tbk.electrum.rpc.command.GetBalanceParams;
 
 import java.net.URI;
@@ -40,8 +43,11 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
         return toBitcoinjBalance(balance);
     }
 
-    public List<ECKey> getPublicKeys(Address address) {
-        return delegate.getPublicKeys(address.toString()).stream()
+    @Override
+    public List<ECKey> getPublicKeys(GetPubkeysParams params) {
+        return delegate.getPublicKeys(org.tbk.electrum.rpc.command.GetPubkeysParams.builder()
+                        .address(params.getAddress().toString())
+                        .build()).stream()
                 .map(it -> ECKey.fromPublicOnly(HexFormat.of().parseHex(it)))
                 .toList();
     }
@@ -61,8 +67,11 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     }
 
     @Override
-    public Boolean isOwnerOfAddress(Address address) {
-        return this.delegate.isOwnerOfAddress(address.toString());
+    public Boolean isOwnerOfAddress(IsMineParams params) {
+        return this.delegate.isOwnerOfAddress(org.tbk.electrum.rpc.command.IsMineParams.builder()
+                .address(params.getAddress().toString())
+                .walletPath(params.getWalletPath())
+                .build());
     }
 
     @Override
@@ -72,8 +81,8 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     }
 
     @Override
-    public Address createNewAddress() {
-        return Address.fromString(this.network, this.delegate.createNewAddress());
+    public Address createNewAddress(CreateNewAddressParams params) {
+        return Address.fromString(this.network, this.delegate.createNewAddress(params));
     }
 
     @Override

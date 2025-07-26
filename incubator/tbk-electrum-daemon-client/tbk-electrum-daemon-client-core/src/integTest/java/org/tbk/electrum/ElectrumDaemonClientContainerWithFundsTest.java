@@ -28,6 +28,7 @@ import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.Utxo;
 import org.tbk.electrum.model.Utxos;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import org.tbk.electrum.rpc.command.ListUnspentParams;
 import org.tbk.electrum.rpc.command.LoadWalletParams;
 
@@ -117,7 +118,9 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .walletPath(defaultWalletParams.getWalletPath())
                 .build());
 
-        String address0 = sut.createNewAddress();
+        String address0 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         Sha256Hash txHash = electrumRegtestFaucet.requestBitcoin(
                 () -> Address.fromString(RegTestParams.get(), address0),

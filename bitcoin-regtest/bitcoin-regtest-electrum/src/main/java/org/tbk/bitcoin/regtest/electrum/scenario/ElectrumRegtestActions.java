@@ -23,29 +23,29 @@ public final class ElectrumRegtestActions {
         this.electrumClient = requireNonNull(electrumClient);
     }
 
-    public AwaitSpendableBalanceOnAddressAction awaitBalanceOnAddress(Coin expectedAmount, Address address) {
-        return new AwaitSpendableBalanceOnAddressAction(electrumClient, expectedAmount, address);
+    public AwaitSpendableBalanceOnAddressAction awaitBalanceOnAddress(WalletParams wallet, Coin expectedAmount, Address address) {
+        return new AwaitSpendableBalanceOnAddressAction(electrumClient, wallet, expectedAmount, address);
     }
 
-    public AwaitExactPaymentAction awaitExactPayment(Coin expectedAmount, Address address) {
-        return new AwaitExactPaymentAction(electrumClient, expectedAmount, address);
+    public AwaitExactPaymentAction awaitExactPayment(WalletParams wallet, Coin expectedAmount, Address address) {
+        return new AwaitExactPaymentAction(electrumClient, wallet, expectedAmount, address);
     }
 
-    public AwaitSpendableBalanceAction awaitSpendableBalance(Coin expectedAmount) {
-        return new AwaitSpendableBalanceAction(electrumClient, expectedAmount);
+    public AwaitSpendableBalanceAction awaitSpendableBalance(WalletParams wallet, Coin expectedAmount) {
+        return new AwaitSpendableBalanceAction(electrumClient, wallet, expectedAmount);
     }
 
-    public AwaitTransactionAction awaitTransaction(WalletParams params, Sha256Hash txid, int confirmations) {
-        return new AwaitTransactionAction(electrumClient.delegate(), params, txid, confirmations);
+    public AwaitTransactionAction awaitTransaction(WalletParams wallet, Sha256Hash txid, int confirmations) {
+        return new AwaitTransactionAction(electrumClient.delegate(), wallet, txid, confirmations);
     }
 
     @Deprecated
-    public SendToAddressAction sendPayment(WalletParams params, Address address, Coin amount) {
-        return new SendToAddressAction(electrumClient, params, address, amount);
+    public SendToAddressAction sendPayment(WalletParams wallet, Address address, Coin amount) {
+        return new SendToAddressAction(electrumClient, wallet, address, amount);
     }
 
-    public SendToAddressAction sendPayment(WalletParams params, Address address, Coin amount, Coin txFee) {
-        return new SendToAddressAction(electrumClient, params, address, amount, txFee);
+    public SendToAddressAction sendPayment(WalletParams wallet, Address address, Coin amount, Coin txFee) {
+        return new SendToAddressAction(electrumClient, wallet, address, amount, txFee);
     }
 
     /**
@@ -56,9 +56,9 @@ public final class ElectrumRegtestActions {
      * @param amount  the amount sent to address
      * @return the action itself
      */
-    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(WalletParams params, Address address, Coin amount) {
-        return s -> Mono.from(sendPayment(params, address, amount))
-                .flatMap(txId -> Mono.from(awaitTransaction(params, txId, 0)))
+    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(WalletParams wallet, Address address, Coin amount) {
+        return s -> Mono.from(sendPayment(wallet, address, amount))
+                .flatMap(txId -> Mono.from(awaitTransaction(wallet, txId, 0)))
                 .subscribe(s);
     }
 
@@ -71,13 +71,13 @@ public final class ElectrumRegtestActions {
      * @param txFee   the transaction fee
      * @return the action itself
      */
-    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(WalletParams params, Address address, Coin amount, Coin txFee) {
-        return s -> Mono.from(sendPayment(params, address, amount, txFee))
-                .flatMap(txId -> Mono.from(awaitTransaction(params, txId, 0)))
+    public RegtestAction<OnchainHistory.Transaction> sendPaymentAndAwaitTx(WalletParams wallet, Address address, Coin amount, Coin txFee) {
+        return s -> Mono.from(sendPayment(wallet, address, amount, txFee))
+                .flatMap(txId -> Mono.from(awaitTransaction(wallet, txId, 0)))
                 .subscribe(s);
     }
 
-    public AwaitWalletSynchronizedAction awaitWalletSynchronized(WalletParams params, Duration timeout) {
-        return new AwaitWalletSynchronizedAction(electrumClient.delegate(), params, timeout);
+    public AwaitWalletSynchronizedAction awaitWalletSynchronized(WalletParams wallet, Duration timeout) {
+        return new AwaitWalletSynchronizedAction(electrumClient.delegate(), wallet, timeout);
     }
 }

@@ -5,9 +5,12 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.bitcoinj.common.GetPubkeysParams;
+import org.tbk.electrum.bitcoinj.common.IsMineParams;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import org.tbk.electrum.common.ListAddressParams;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import org.tbk.electrum.rpc.command.GetBalanceParams;
 
 import java.net.URI;
@@ -18,27 +21,19 @@ public interface BitcoinjElectrumClient {
 
     ElectrumClient delegate();
 
-    default BitcoinjBalance getBalance() {
-        return getBalance(GetBalanceParams.builder().build());
-    }
-
     BitcoinjBalance getBalance(GetBalanceParams params);
 
-    List<ECKey> getPublicKeys(Address address);
-
-    default List<Address> listAddresses() {
-        return listAddresses(ListAddressParams.all());
-    }
+    List<ECKey> getPublicKeys(GetPubkeysParams params);
 
     List<Address> listAddresses(ListAddressParams options);
 
     List<Address> listAddressesFunded();
 
-    Boolean isOwnerOfAddress(Address address);
+    Boolean isOwnerOfAddress(IsMineParams params);
 
     Optional<Address> getUnusedAddress();
 
-    Address createNewAddress();
+    Address createNewAddress(CreateNewAddressParams params);
 
     BitcoinjBalance getAddressBalance(Address address);
 

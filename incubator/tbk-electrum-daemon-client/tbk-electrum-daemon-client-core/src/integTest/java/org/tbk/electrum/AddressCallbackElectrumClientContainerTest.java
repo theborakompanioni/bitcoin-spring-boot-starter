@@ -26,8 +26,10 @@ import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.AddressCallbackElectrumClientContainerTest.ElectrumDaemonContainerTestApplication.TestCtrl;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.testcontainers.Testcontainers;
 import reactor.core.publisher.Flux;
@@ -75,6 +77,14 @@ class AddressCallbackElectrumClientContainerTest {
             return new ElectrumRegtestActions(electrumClient);
         }
 
+        @Bean
+        @Primary
+        WalletParams defaultWalletParams() {
+            return WalletParams.builder()
+                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .build();
+        }
+
         @RestController
         public static class TestCtrl {
             private final static AtomicReference<CallbackPayload> lastBody = new AtomicReference<>();
@@ -118,6 +128,9 @@ class AddressCallbackElectrumClientContainerTest {
     @Autowired
     private ElectrumClient sut;
 
+    @Autowired
+    private WalletParams defaultWalletParams;
+
     @Value(value = "${local.server.port}")
     private int port;
 
@@ -128,7 +141,7 @@ class AddressCallbackElectrumClientContainerTest {
 
     @BeforeEach
     void waitForWalletSynchronization() throws Exception {
-        sut.waitForWalletSynchronization().get(10, TimeUnit.SECONDS);
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
     }
 
     @Test
@@ -141,7 +154,9 @@ class AddressCallbackElectrumClientContainerTest {
     void itShouldAddChangeAddressListener() {
         assertThat(TestCtrl.getLastBody().isPresent(), is(false));
 
-        String address1 = sut.createNewAddress();
+        String address1 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
 
         TxoValue balanceOnAddress1Before = this.sut.getAddressBalance(address1).getTotal();
         assertThat(balanceOnAddress1Before, is(SimpleTxoValue.zero()));

@@ -6,14 +6,16 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.reactivestreams.Subscriber;
-import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.OnchainSummary;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.rpc.command.CreateNewAddressParams;
+import org.tbk.electrum.rpc.command.GetBalanceParams;
 import org.tbk.electrum.rpc.command.OnchainCapitalGainsParams;
 import org.tbk.electrum.rpc.command.SignTransactionParams;
 import reactor.core.publisher.Mono;
@@ -55,12 +57,16 @@ public final class SendToAddressAction implements RegtestAction<Sha256Hash> {
 
     private Mono<Sha256Hash> create() {
         return Mono.fromCallable(() -> {
-            Address changeAddress = client.createNewAddress();
+            Address changeAddress = client.createNewAddress(CreateNewAddressParams.builder()
+                    .walletPath(params.getWalletPath())
+                    .build());
 
             log.debug("Will try to send {} to address {} (with change to {})", amount.toFriendlyString(), address, changeAddress);
 
             if (log.isTraceEnabled()) {
-                BitcoinjBalance balance = client.getBalance();
+                BitcoinjBalance balance = client.getBalance(GetBalanceParams.builder()
+                        .walletPath(params.getWalletPath())
+                        .build());
 
                 log.trace("Balance: {} total", balance.getTotal().toFriendlyString());
                 log.trace("         {} confirmed", balance.getConfirmed().toFriendlyString());

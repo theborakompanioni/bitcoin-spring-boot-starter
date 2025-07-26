@@ -22,22 +22,22 @@ public final class AwaitWalletSynchronizedAction implements RegtestAction<Boolea
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final ElectrumClient client;
-    private final WalletParams params;
+    private final WalletParams wallet;
     private final Duration timeout;
     private final Duration checkInterval;
 
-    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams params) {
-        this(client, params, defaultTimeout);
+    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams wallet) {
+        this(client, wallet, defaultTimeout);
     }
 
-    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams params, Duration timeout) {
-        this(client, params, timeout, defaultCheckInterval);
+    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams wallet, Duration timeout) {
+        this(client, wallet, timeout, defaultCheckInterval);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
-    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams params, Duration timeout, Duration checkInterval) {
+    public AwaitWalletSynchronizedAction(ElectrumClient client, WalletParams wallet, Duration timeout, Duration checkInterval) {
         this.client = requireNonNull(client);
-        this.params = requireNonNull(params);
+        this.wallet = requireNonNull(wallet);
         this.timeout = requireNonNull(timeout);
         this.checkInterval = requireNonNull(checkInterval);
 
@@ -61,7 +61,7 @@ public final class AwaitWalletSynchronizedAction implements RegtestAction<Boolea
             Boolean walletSynchronized = Flux.interval(checkInterval)
                     .doOnNext(it -> log.trace("Waiting for wallet to be synchronized.. ({} attempt)", it))
                     .map(it -> this.client.isWalletSynchronized(IsSynchronizedParams.builder()
-                            .walletPath(params.getWalletPath())
+                            .walletPath(wallet.getWalletPath())
                             .build()))
                     .filter(it -> it)
                     .blockFirst(timeout);

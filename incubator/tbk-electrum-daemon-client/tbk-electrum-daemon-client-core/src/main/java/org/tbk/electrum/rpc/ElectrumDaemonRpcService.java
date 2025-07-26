@@ -558,11 +558,13 @@ public interface ElectrumDaemonRpcService {
     /**
      * Return the public keys for a wallet address.
      *
-     * @param address the wallet address
+     * @param address    the wallet address
+     * @param walletPath wallet path
      * @return the public keys for a wallet address
      */
     @JsonRpcMethod("getpubkeys")
-    List<String> getpubkeys(@JsonRpcParam("address") String address);
+    List<String> getpubkeys(@JsonRpcParam("address") String address,
+                            @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * Sign a transaction. The wallet keys will be used to sign the transaction.
@@ -667,6 +669,7 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Block until the wallet synchronization finishes.
+     *
      * @param walletPath wallet path
      */
     @JsonRpcMethod("wait_for_sync")

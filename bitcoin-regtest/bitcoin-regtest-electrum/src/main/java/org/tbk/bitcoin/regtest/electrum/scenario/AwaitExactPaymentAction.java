@@ -10,6 +10,7 @@ import org.tbk.bitcoin.regtest.scenario.RegtestAction;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
+import org.tbk.electrum.common.WalletParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,24 +25,28 @@ public final class AwaitExactPaymentAction implements RegtestAction<BitcoinjUtxo
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
 
     private final BitcoinjElectrumClient client;
+    private final WalletParams wallet;
     private final Address address;
     private final Coin expectedAmount;
     private final Duration timeout;
     private final Duration checkInterval;
 
     public AwaitExactPaymentAction(BitcoinjElectrumClient client,
+                                   WalletParams wallet,
                                    Coin expectedAmount,
                                    Address address) {
-        this(client, expectedAmount, address, defaultTimeout, defaultCheckInterval);
+        this(client, wallet, expectedAmount, address, defaultTimeout, defaultCheckInterval);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "false positive")
     public AwaitExactPaymentAction(BitcoinjElectrumClient client,
+                                   WalletParams wallet,
                                    Coin expectedAmount,
                                    Address address,
                                    Duration timeout,
                                    Duration checkInterval) {
         this.client = requireNonNull(client);
+        this.wallet = requireNonNull(wallet);
         this.address = requireNonNull(address);
         this.expectedAmount = requireNonNull(expectedAmount);
         this.timeout = requireNonNull(timeout);

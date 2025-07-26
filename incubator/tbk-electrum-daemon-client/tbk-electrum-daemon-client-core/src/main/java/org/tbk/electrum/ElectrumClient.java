@@ -61,12 +61,6 @@ public interface ElectrumClient extends AutoCloseable {
 
     void setLabel(SetLabelParams params);
 
-    default Boolean isOwnerOfAddress(String address) {
-        return isOwnerOfAddress(IsMineParams.builder()
-                .address(address)
-                .build());
-    }
-
     Boolean isOwnerOfAddress(IsMineParams params);
 
     default Optional<String> getUnusedAddress() {
@@ -191,7 +185,7 @@ public interface ElectrumClient extends AutoCloseable {
 
     Boolean removeAddressChangedNotificationCallback(String address);
 
-    List<String> getPublicKeys(String address);
+    List<String> getPublicKeys(GetPubkeysParams params);
 
     String encryptMessage(String publicKeyHex, String plaintext);
 

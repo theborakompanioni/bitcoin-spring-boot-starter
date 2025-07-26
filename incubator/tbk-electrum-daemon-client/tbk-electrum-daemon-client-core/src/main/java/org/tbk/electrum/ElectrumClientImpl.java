@@ -507,8 +507,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public List<String> getPublicKeys(String address) {
-        return delegate.getpubkeys(address);
+    public List<String> getPublicKeys(GetPubkeysParams params) {
+        return delegate.getpubkeys(params.getAddress(), params.getWalletPath());
     }
 
     @Override
