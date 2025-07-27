@@ -519,13 +519,6 @@ public interface ElectrumDaemonRpcService {
     );
 
     @JsonRpcMethod("payto")
-    String payto(@JsonRpcParam("destination") String destination,
-                 @JsonRpcParam("amount") String amount,
-                 @JsonRpcOptional @JsonRpcParam("change_addr") String changeAddr,
-                 @JsonRpcOptional @JsonRpcParam("unsigned") Boolean unsigned,
-                 @JsonRpcParam("password") String password);
-
-    @JsonRpcMethod("payto")
     String payto(
             @JsonRpcParam("destination") String destination,
             @JsonRpcParam("amount") String amount,

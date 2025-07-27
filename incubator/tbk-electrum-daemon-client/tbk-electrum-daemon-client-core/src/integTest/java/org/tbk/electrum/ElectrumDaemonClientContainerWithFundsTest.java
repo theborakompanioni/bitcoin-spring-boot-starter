@@ -25,12 +25,11 @@ import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.common.WalletParams;
-import org.tbk.electrum.model.SimpleTxoValue;
+import org.tbk.electrum.model.OnchainHistory;
+import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.Utxo;
 import org.tbk.electrum.model.Utxos;
-import org.tbk.electrum.rpc.command.CreateNewAddressParams;
-import org.tbk.electrum.rpc.command.ListUnspentParams;
-import org.tbk.electrum.rpc.command.LoadWalletParams;
+import org.tbk.electrum.rpc.command.*;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -122,9 +121,10 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .walletPath(defaultWalletParams.getWalletPath())
                 .build());
 
+        Coin requestAmount = Coin.valueOf(21_000);
         Sha256Hash txHash = electrumRegtestFaucet.requestBitcoin(
                 () -> Address.fromString(RegTestParams.get(), address0),
-                Coin.valueOf(21_000)
+                requestAmount
         ).block(Duration.ofSeconds(90));
         assertThat(txHash, is(notNullValue()));
 
@@ -140,6 +140,73 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .findFirst()
                 .orElse(null);
         assertThat(utxo, is(notNullValue()));
-        assertThat(utxo.getValue(), is(SimpleTxoValue.of(21_000)));
+        assertThat(utxo.getValue().getValue(), is(requestAmount.getValue()));
+    }
+
+    @Test
+    void testPayto() throws Exception {
+        String address0 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        electrumRegtestFaucet.requestBitcoin(
+                () -> Address.fromString(RegTestParams.get(), address0),
+                Coin.valueOf(42_000)
+        ).block(Duration.ofSeconds(90));
+
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
+
+        String destinationAddress = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        String changeAddress = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        Coin sendAmount = Coin.valueOf(2_100);
+        Coin fee = Coin.valueOf(2_100);
+        RawTx rawTx = sut.createTransaction(PaytoParams.builder()
+                .destination(destinationAddress)
+                .changeAddress(changeAddress)
+                .amount(sendAmount.toBtc().toPlainString())
+                .fee(fee.toBtc().toPlainString())
+                .walletPath(defaultWalletParams.getWalletPath())
+                .password(defaultWalletParams.getPassword().orElse(null))
+                .unsigned(false)
+                .addTransaction(true)
+                .build());
+
+        assertThat(rawTx, is(notNullValue()));
+        assertThat(rawTx.getHex(), is(not(emptyOrNullString())));
+
+        String txid = sut.broadcast(rawTx);
+        assertThat(txid, is(not(emptyOrNullString())));
+
+        // Check that the transaction is in the onchain history
+        OnchainHistory history = sut.getOnchainHistory(OnchainHistoryParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        OnchainHistory.Transaction tx = history.getTransactions().stream()
+                .filter(it -> txid.equalsIgnoreCase(it.getTxHash()))
+                .findFirst()
+                .orElse(null);
+        assertThat("Transaction should be in onchain history", tx, is(notNullValue()));
+        assertThat(tx.isIncoming(), is(false));
+        assertThat(tx.getValue().getValue(), is(sendAmount.negate().getValue()));
+        assertThat(tx.getOutputs(), hasSize(2));
+
+        OnchainHistory.HistoryTxOutput destinationTxout = tx.getOutputs().stream()
+                .filter(it -> destinationAddress.equals(it.getAddress().orElse(null)))
+                .findFirst()
+                .orElseThrow();
+        assertThat(destinationTxout, is(notNullValue()));
+        assertThat(destinationTxout.getValue().getValue(), is(sendAmount.getValue()));
+
+        OnchainHistory.HistoryTxOutput changeTxout = tx.getOutputs().stream()
+                .filter(it -> changeAddress.equals(it.getAddress().orElse(null)))
+                .findFirst()
+                .orElse(null);
+        assertThat(changeTxout, is(notNullValue()));
     }
 }
