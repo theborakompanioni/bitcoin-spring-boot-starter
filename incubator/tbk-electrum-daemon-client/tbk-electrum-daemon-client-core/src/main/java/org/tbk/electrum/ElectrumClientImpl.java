@@ -347,8 +347,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public RawTx getRawTransaction(String txHash) {
-        String gettransaction = delegate.gettransaction(txHash);
+    public RawTx getRawTransaction(GetTransactionParams params) {
+        String gettransaction = delegate.gettransaction(params.getTxid(), params.getWalletPath());
 
         byte[] raw = fromHexOrBase64(gettransaction);
 
@@ -359,8 +359,8 @@ public class ElectrumClientImpl implements ElectrumClient {
     }
 
     @Override
-    public Tx getDeserializedTransaction(String txHash) {
-        RawTx result = this.getRawTransaction(txHash);
+    public Tx getDeserializedTransaction(GetTransactionParams params) {
+        RawTx result = this.getRawTransaction(params);
         return getDeserializedTransaction(result);
     }
 

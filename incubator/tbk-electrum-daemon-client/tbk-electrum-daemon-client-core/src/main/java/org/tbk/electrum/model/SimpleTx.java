@@ -6,6 +6,7 @@ import lombok.Singular;
 import lombok.Value;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class SimpleTx implements Tx {
         String unlockingScript;
 
         @Nullable
-        String witness;
+        List<String> witness;
 
         @Nullable
         TxoValue value;
@@ -59,8 +60,9 @@ public class SimpleTx implements Tx {
         }
 
         @Override
-        public Optional<String> getWitness() {
-            return Optional.ofNullable(witness);
+        public Optional<List<String>> getWitness() {
+            return Optional.ofNullable(witness)
+                    .map(it -> Collections.unmodifiableList(witness));
         }
     }
 

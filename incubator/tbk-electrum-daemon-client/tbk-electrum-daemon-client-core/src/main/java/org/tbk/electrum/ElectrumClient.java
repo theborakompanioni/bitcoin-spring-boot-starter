@@ -96,9 +96,9 @@ public interface ElectrumClient extends AutoCloseable {
     OnchainSummary getOnchainCapitalGains(OnchainCapitalGainsParams params);
 
 
-    RawTx getRawTransaction(String txHash);
+    RawTx getRawTransaction(GetTransactionParams params);
 
-    Tx getDeserializedTransaction(String txHash);
+    Tx getDeserializedTransaction(GetTransactionParams params);
 
     Tx getDeserializedTransaction(RawTx rawTx);
 

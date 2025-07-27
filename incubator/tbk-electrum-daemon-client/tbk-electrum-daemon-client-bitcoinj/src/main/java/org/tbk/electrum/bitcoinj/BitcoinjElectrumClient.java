@@ -6,6 +6,7 @@ import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.common.GetPubkeysParams;
+import org.tbk.electrum.bitcoinj.common.GetTransactionParams;
 import org.tbk.electrum.bitcoinj.common.IsMineParams;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
@@ -39,7 +40,7 @@ public interface BitcoinjElectrumClient {
 
     BitcoinjUtxos getUtxosByAddress(Address address);
 
-    Transaction getTransaction(Sha256Hash txHash);
+    Transaction getTransaction(GetTransactionParams params);
 
     Boolean addAddressChangedNotificationCallback(Address address, URI url);
 }

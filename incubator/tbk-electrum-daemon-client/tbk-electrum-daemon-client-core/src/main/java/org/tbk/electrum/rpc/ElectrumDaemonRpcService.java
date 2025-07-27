@@ -302,11 +302,14 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Retrieve a transaction.
-     * @param txId Transaction ID
+     *
+     * @param txId       Transaction ID
+     * @param walletPath wallet path
      * @return transaction in hex format
      */
     @JsonRpcMethod("gettransaction")
-    String gettransaction(@JsonRpcParam("txid") String txId);
+    String gettransaction(@JsonRpcParam("txid") String txId,
+                          @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     @JsonRpcMethod("getinfo")
     GetInfoResponse getinfo();

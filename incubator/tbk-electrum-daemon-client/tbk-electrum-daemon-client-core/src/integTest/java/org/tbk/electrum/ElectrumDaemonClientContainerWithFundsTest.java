@@ -40,6 +40,9 @@ import static org.hamcrest.Matchers.*;
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElectrumDaemonClientContainerWithFundsTest {
+    // an address not controlled by wallet (taken from "second_wallet")
+    private static final String addressNotControlledByWallet = "bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j";
+
     @SpringBootApplication(proxyBeanMethods = false)
     public static class ElectrumDaemonContainerWithFundsTestApplication {
         public static void main(String[] args) {
@@ -178,6 +181,10 @@ class ElectrumDaemonClientContainerWithFundsTest {
         assertThat(rawTx, is(notNullValue()));
         assertThat(rawTx.getHex(), is(not(emptyOrNullString())));
 
+        Tx deserializedTx = sut.getDeserializedTransaction(rawTx);
+        assertThat(deserializedTx, is(notNullValue()));
+        assertThat(deserializedTx.getOutputs(), hasSize(2));
+
         String txid = sut.broadcast(rawTx);
         assertThat(txid, is(not(emptyOrNullString())));
 
@@ -227,9 +234,58 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .orElse(null);
         assertThat(txHashAndBlockHeight, is(notNullValue()));
         assertThat(txHashAndBlockHeight.getHeight(), is(greaterThanOrEqualTo(0L)));
+    }
 
-        RawTx rawTx = sut.getRawTransaction(txHashAndBlockHeight.getTxHash());
+    @Test
+    void testDeserializeTransaction() {
+        String address0 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        Coin requestAmount = Coin.valueOf(21_000);
+        Sha256Hash txHash = electrumRegtestFaucet.requestBitcoin(
+                () -> Address.fromString(RegTestParams.get(), address0),
+                requestAmount
+        ).block(Duration.ofSeconds(90));
+
+        RawTx rawTx = sut.getRawTransaction(GetTransactionParams.builder()
+                .txid(txHash.toString())
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         assertThat(rawTx, is(notNullValue()));
         assertThat(rawTx.getHex(), is(not(emptyOrNullString())));
+
+        Tx deserializedTx = sut.getDeserializedTransaction(rawTx);
+        assertThat(deserializedTx, is(notNullValue()));
+
+        Tx.TxOutput txOutput = deserializedTx.getOutputs().stream()
+                .filter(it -> address0.equals(it.getAddress().orElse(null)))
+                .findFirst()
+                .orElse(null);
+        assertThat(txOutput, is(notNullValue()));
+        assertThat(txOutput.getValue().getValue(), is(requestAmount.getValue()));
+    }
+
+    @Test
+    void testDeserializeTransactionFromTxOfOtherWallet() {
+        Coin requestAmount = Coin.valueOf(21_000);
+        Sha256Hash txHash = electrumRegtestFaucet.requestBitcoin(
+                () -> Address.fromString(RegTestParams.get(), addressNotControlledByWallet),
+                requestAmount
+        ).block(Duration.ofSeconds(90));
+        assertThat(txHash, is(notNullValue()));
+
+        RawTx rawTx = sut.getRawTransaction(GetTransactionParams.builder()
+                .txid(txHash.toString())
+                .build());
+        Tx deserializedTx = sut.getDeserializedTransaction(rawTx);
+        assertThat(deserializedTx, is(notNullValue()));
+
+        Tx.TxOutput txOutput = deserializedTx.getOutputs().stream()
+                .filter(it -> addressNotControlledByWallet.equals(it.getAddress().orElse(null)))
+                .findFirst()
+                .orElse(null);
+        assertThat(txOutput, is(notNullValue()));
+        assertThat(txOutput.getValue().getValue(), is(requestAmount.getValue()));
     }
 }

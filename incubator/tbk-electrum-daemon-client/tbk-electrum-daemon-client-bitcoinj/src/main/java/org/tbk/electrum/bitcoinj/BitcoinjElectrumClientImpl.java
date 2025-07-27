@@ -1,8 +1,12 @@
 package org.tbk.electrum.bitcoinj;
 
-import org.bitcoinj.core.*;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.common.GetPubkeysParams;
+import org.tbk.electrum.bitcoinj.common.GetTransactionParams;
 import org.tbk.electrum.bitcoinj.common.IsMineParams;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
@@ -98,8 +102,11 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
     }
 
     @Override
-    public Transaction getTransaction(Sha256Hash txHash) {
-        RawTx rawTransaction = this.delegate.getRawTransaction(txHash.toString());
+    public Transaction getTransaction(GetTransactionParams params) {
+        RawTx rawTransaction = this.delegate.getRawTransaction(org.tbk.electrum.rpc.command.GetTransactionParams.builder()
+                .txid(params.getTxid().toString())
+                .walletPath(params.getWalletPath())
+                .build());
         byte[] raw = HexFormat.of().parseHex(rawTransaction.getHex().toLowerCase());
         return new Transaction(this.network, raw);
     }

@@ -24,7 +24,7 @@ public interface Tx {
 
         Optional<String> getUnlockingScript();
 
-        Optional<String> getWitness();
+        Optional<List<String>> getWitness();
 
         Optional<TxoValue> getValue();
     }

@@ -21,6 +21,7 @@ import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
+import org.tbk.electrum.bitcoinj.common.GetTransactionParams;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxo;
 import org.tbk.electrum.bitcoinj.model.BitcoinjUtxos;
 import org.tbk.electrum.common.WalletParams;
@@ -154,7 +155,10 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         Flux.from(bitcoinRegtestActions.mineBlocks(21)).blockFirst(Duration.ofSeconds(90));
         Flux.from(electrumRegtestActions.awaitTransaction(defaultWalletParams, firstSentTxHash.get(), 21));
 
-        Transaction transaction = this.sut.getTransaction(firstSentTxHash.get());
+        Transaction transaction = this.sut.getTransaction(GetTransactionParams.builder()
+                .txid(firstSentTxHash.get())
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
         TransactionOutput output = transaction.getOutput(firstUtxo.getTxPos());
         assertThat(output.getValue(), is(Coin.valueOf(1337)));
 
