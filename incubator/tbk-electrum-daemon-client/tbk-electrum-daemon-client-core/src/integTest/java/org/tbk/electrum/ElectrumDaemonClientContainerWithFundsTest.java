@@ -25,13 +25,11 @@ import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.common.WalletParams;
-import org.tbk.electrum.model.OnchainHistory;
-import org.tbk.electrum.model.RawTx;
-import org.tbk.electrum.model.Utxo;
-import org.tbk.electrum.model.Utxos;
+import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -208,5 +206,30 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .findFirst()
                 .orElse(null);
         assertThat(changeTxout, is(notNullValue()));
+    }
+
+    @Test
+    void testGetAddressHistory() {
+        String address0 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        Sha256Hash txHash = electrumRegtestFaucet.requestBitcoin(
+                () -> Address.fromString(RegTestParams.get(), address0),
+                Coin.valueOf(21_000)
+        ).block(Duration.ofSeconds(90));
+
+        List<TxHashAndBlockHeight> addressHistory = sut.getAddressHistory(address0);
+        assertThat(addressHistory, hasSize(greaterThanOrEqualTo(1)));
+
+        TxHashAndBlockHeight txHashAndBlockHeight = addressHistory.stream()
+                .filter(it -> it.getTxHash().equals(txHash.toString()))
+                .findFirst()
+                .orElse(null);
+        assertThat(txHashAndBlockHeight, is(notNullValue()));
+        assertThat(txHashAndBlockHeight.getHeight(), is(greaterThanOrEqualTo(0L)));
+
+        RawTx rawTx = sut.getRawTransaction(txHashAndBlockHeight.getTxHash());
+        assertThat(rawTx, is(notNullValue()));
+        assertThat(rawTx.getHex(), is(not(emptyOrNullString())));
     }
 }

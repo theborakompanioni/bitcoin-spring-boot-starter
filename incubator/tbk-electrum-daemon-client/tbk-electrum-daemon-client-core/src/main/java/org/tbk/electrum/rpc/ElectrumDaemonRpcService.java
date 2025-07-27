@@ -261,6 +261,7 @@ public interface ElectrumDaemonRpcService {
 
     /**
      * Get the address history.
+     * <p>
      * e.g.:
      * [
      * {
@@ -275,6 +276,8 @@ public interface ElectrumDaemonRpcService {
      *
      * @param address the wallet address
      * @return the address history
+     * @implNote Return the transaction history of any address. Note: This is a
+     * walletless server query, results are not checked by SPV.
      */
     @JsonRpcMethod("getaddresshistory")
     List<AddressHistoryResponse.Entry> getaddresshistory(@JsonRpcParam("address") String address);
@@ -297,6 +300,11 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("getfeerate")
     GetFeerateResponse getfeerate();
 
+    /**
+     * Retrieve a transaction.
+     * @param txId Transaction ID
+     * @return transaction in hex format
+     */
     @JsonRpcMethod("gettransaction")
     String gettransaction(@JsonRpcParam("txid") String txId);
 
