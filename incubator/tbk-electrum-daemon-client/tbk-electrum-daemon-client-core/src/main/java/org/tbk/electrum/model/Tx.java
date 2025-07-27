@@ -13,7 +13,7 @@ public interface Tx {
     interface TxInput {
         String getTxHash();
 
-        int getOutputIndex();
+        long getOutputIndex();
 
         /**
          * Some electrum rpc responses can contain an address of an input.

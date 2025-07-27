@@ -27,6 +27,7 @@ import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
+import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
@@ -84,6 +85,9 @@ class ElectrumDaemonClientContainerWithFundsTest {
                     .build();
         }
     }
+
+    @Autowired
+    private RegtestMiner regtestMiner;
 
     @Autowired
     private ElectrumRegtestFaucet electrumRegtestFaucet;
@@ -226,7 +230,7 @@ class ElectrumDaemonClientContainerWithFundsTest {
         ).block(Duration.ofSeconds(90));
 
         List<TxHashAndBlockHeight> addressHistory = sut.getAddressHistory(address0);
-        assertThat(addressHistory, hasSize(greaterThanOrEqualTo(1)));
+        assertThat(addressHistory, hasSize(1));
 
         TxHashAndBlockHeight txHashAndBlockHeight = addressHistory.stream()
                 .filter(it -> it.getTxHash().equals(txHash.toString()))
@@ -287,5 +291,49 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .orElse(null);
         assertThat(txOutput, is(notNullValue()));
         assertThat(txOutput.getValue().getValue(), is(requestAmount.getValue()));
+    }
+
+    @Test
+    void testDeserializeTransactionFromCoinbase() {
+        Balance balanceBefore = sut.getBalance(GetBalanceParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        String address0 = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        List<Sha256Hash> blocks = regtestMiner.mineBlocks(1, () -> Address.fromString(RegTestParams.get(), address0));
+        assertThat(blocks, hasSize(1));
+
+        Balance balanceAfter = Flux.interval(Duration.ofMillis(100))
+                .map(it -> sut.getBalance(GetBalanceParams.builder()
+                        .walletPath(defaultWalletParams.getWalletPath())
+                        .build()))
+                .filter(it -> it.getTotal().getValue() > balanceBefore.getTotal().getValue())
+                .blockFirst(Duration.ofSeconds(30));
+        assertThat(balanceAfter, is(notNullValue()));
+        assertThat(balanceAfter.getUnmatured().getValue(), is(greaterThan(balanceBefore.getUnmatured().getValue())));
+
+        List<TxHashAndBlockHeight> addressHistory = sut.getAddressHistory(address0);
+        assertThat(addressHistory, hasSize(1));
+
+        RawTx rawTx = sut.getRawTransaction(GetTransactionParams.builder()
+                .txid(addressHistory.getFirst().getTxHash())
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        Tx deserializedTx = sut.getDeserializedTransaction(rawTx);
+        assertThat(deserializedTx, is(notNullValue()));
+        assertThat(deserializedTx.getInputs(), hasSize(1));
+
+        Tx.TxInput txInput = deserializedTx.getInputs().getFirst();
+        assertThat(txInput.getAddress().isPresent(), is(false));
+
+        Tx.TxOutput txOutput = deserializedTx.getOutputs().stream()
+                .filter(it -> address0.equals(it.getAddress().orElse(null)))
+                .findFirst()
+                .orElse(null);
+        assertThat(txOutput, is(notNullValue()));
+        assertThat(txOutput.getValue().getValue(), is(greaterThanOrEqualTo(0L)));
     }
 }

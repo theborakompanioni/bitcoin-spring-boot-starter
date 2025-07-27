@@ -251,10 +251,11 @@ public interface ElectrumDaemonRpcService {
     String encrypt(@JsonRpcParam("pubkey") String pubkey, @JsonRpcParam("message") String message);
 
     /**
-     * Returns the balance of address. This is a walletless server query. Results are not checked by SPV.
+     * Returns the balance of address.
      *
      * @param address the wallet address
      * @return the balance of address
+     * @implNote This is a walletless server query, results are not checked by SPV.
      */
     @JsonRpcMethod("getaddressbalance")
     AddressBalanceResponse getaddressbalance(@JsonRpcParam("address") String address);
@@ -276,8 +277,7 @@ public interface ElectrumDaemonRpcService {
      *
      * @param address the wallet address
      * @return the address history
-     * @implNote Return the transaction history of any address. Note: This is a
-     * walletless server query, results are not checked by SPV.
+     * @implNote This is a walletless server query, results are not checked by SPV.
      */
     @JsonRpcMethod("getaddresshistory")
     List<AddressHistoryResponse.Entry> getaddresshistory(@JsonRpcParam("address") String address);
@@ -285,6 +285,7 @@ public interface ElectrumDaemonRpcService {
     /**
      * Returns a list of unspent transaction outputs for the given address.
      *
+     * @implNote This is a walletless server query, results are not checked by SPV.
      * @param address the wallet address
      * @return a list of unspent transaction outputs
      */

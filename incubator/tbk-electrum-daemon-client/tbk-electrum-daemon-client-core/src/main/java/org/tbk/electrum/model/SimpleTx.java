@@ -28,7 +28,7 @@ public class SimpleTx implements Tx {
         @NonNull
         String txHash;
 
-        int outputIndex;
+        long outputIndex;
 
         long sequenceNumber;
 

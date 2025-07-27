@@ -80,8 +80,9 @@ public class DeserializeResponse {
         @JsonProperty("prevout_hash")
         String prevoutHash;
 
+        // prevout is 4294967295 for coinbase inputs, so field must be of type `long`
         @JsonProperty("prevout_n")
-        int prevoutN;
+        long prevoutN;
 
         @JsonProperty("scriptSig")
         String scriptSig;
