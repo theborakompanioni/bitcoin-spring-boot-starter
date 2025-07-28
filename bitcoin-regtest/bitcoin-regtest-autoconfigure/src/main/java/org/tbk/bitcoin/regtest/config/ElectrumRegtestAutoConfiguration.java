@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.regtest.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -53,6 +54,7 @@ public class ElectrumRegtestAutoConfiguration {
         );
     }
 
+    @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay for a regtest faucet
     WalletParams faucetWalletParams() {
         String pseudoRandomPostfix = UUID.randomUUID().toString().substring(0, 8);
         String walletName = "faucet_%d_%s".formatted(Instant.now().toEpochMilli(), pseudoRandomPostfix);

@@ -6,6 +6,10 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.common.ListAddressParams;
+import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.rpc.command.IsSynchronizedParams;
+import org.tbk.electrum.rpc.command.LoadWalletParams;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,11 +22,12 @@ import static java.util.Objects.requireNonNull;
 public class ElectrumWalletWatchLoop extends AbstractScheduledService {
 
     private static Scheduler defaultScheduler() {
-        return Scheduler.newFixedDelaySchedule(0, 30, TimeUnit.MINUTES);
+        return Scheduler.newFixedDelaySchedule(0, 10, TimeUnit.MINUTES);
     }
 
     private final ElectrumClient client;
     private final Scheduler scheduler;
+    private final WalletParams walletParams;
 
     private final LongAdder counter = new LongAdder();
     private final RateLimiter logRateLimiter = RateLimiter.create(1);
@@ -36,13 +41,19 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
     public ElectrumWalletWatchLoop(ElectrumClient client, ElectrumDaemonWalletSendBalance.Options options, Scheduler scheduler) {
         this.client = requireNonNull(client);
         this.scheduler = requireNonNull(scheduler);
+        this.walletParams = requireNonNull(options).getWalletParams();
 
         this.task = new ElectrumDaemonWalletSendBalance(this.client, options);
     }
 
     @Override
     protected void startUp() throws InterruptedException {
-        List<String> addresses = client.listAddresses();
+        this.client.loadWallet(LoadWalletParams.builder()
+                .walletPath(walletParams.getWalletPath())
+                .password(walletParams.getPassword().orElse(null))
+                .build());
+
+        List<String> addresses = client.listAddresses(ListAddressParams.all(walletParams.getWalletPath()));
         log.info("start watching addresses: {}", addresses);
 
         while (!this.client.getInfo().isConnected()) {
@@ -50,7 +61,9 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
             Thread.sleep(100L);
         }
 
-        while (!this.client.isWalletSynchronized()) {
+        while (!this.client.isWalletSynchronized(IsSynchronizedParams.builder()
+                .walletPath(walletParams.getWalletPath())
+                .build())) {
             log.info("waiting till wallet is synchronized");
             Thread.sleep(100L);
         }
@@ -58,7 +71,7 @@ public class ElectrumWalletWatchLoop extends AbstractScheduledService {
 
     @Override
     protected void shutDown() {
-        List<String> addresses = client.listAddresses();
+        List<String> addresses = client.listAddresses(ListAddressParams.all(walletParams.getWalletPath()));
         log.info("stop watching addresses: {}", addresses);
     }
 

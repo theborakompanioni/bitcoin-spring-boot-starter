@@ -1,15 +1,21 @@
 package org.tbk.electrum.gateway.example;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.tbk.electrum.common.WalletParams;
 
 import java.time.Duration;
-import java.util.Objects;
+import java.util.*;
+
+import static java.util.Objects.requireNonNullElse;
 
 @ConfigurationProperties(prefix = "my.application")
 @Getter
@@ -26,12 +32,17 @@ public class ElectrumGatewayExampleApplicationProperties implements Validator {
 
     private Duration delay;
 
+    private Map<String, WalletEntry> wallets;
+
     public Duration getInitialDelay() {
-        return Objects.requireNonNullElse(initialDelay, DEFAULT_INITIAL_DELAY);
+        return requireNonNullElse(initialDelay, DEFAULT_INITIAL_DELAY);
     }
 
     public Duration getDelay() {
-        return Objects.requireNonNullElse(delay, DEFAULT_DELAY);
+        return requireNonNullElse(delay, DEFAULT_DELAY);
+    }
+    public Map<String, WalletEntry> getWallets() {
+        return Collections.unmodifiableMap(requireNonNullElse(wallets, Collections.emptyMap()));
     }
 
     @Override
@@ -55,6 +66,19 @@ public class ElectrumGatewayExampleApplicationProperties implements Validator {
         if (delay.isNegative() || delay.isZero()) {
             String errorMessage = String.format("'delay' must not be less than or equal to zero - invalid value: %s", properties.getDelay());
             errors.rejectValue("delay", "delay.invalid", errorMessage);
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
+    public static class WalletEntry {
+        @NonNull
+        String walletPath;
+
+        String password;
+
+        public Optional<String> getPassword() {
+            return Optional.ofNullable(password);
         }
     }
 }

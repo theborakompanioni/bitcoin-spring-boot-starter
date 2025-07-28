@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.rpc.command.IsSynchronizedParams;
 import org.tbk.electrum.rpc.command.LoadWalletParams;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -24,6 +26,14 @@ import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.log
 @Configuration(proxyBeanMethods = false)
 @Profile("!test")
 class BitcoinRegtestExampleApplicationConfig {
+
+    @Bean
+    WalletParams defaultWalletParams() {
+        return WalletParams.builder()
+                .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                .password(null)
+                .build();
+    }
 
     @Bean
     CommandLineRunner logZmqRawBlocksMessages(MessagePublishService<Block> bitcoinjBlockPublishService) {
@@ -46,30 +56,35 @@ class BitcoinRegtestExampleApplicationConfig {
 
     @Bean
     CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                        ElectrumClient electrumClient) {
-        return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient);
+                                        ElectrumClient electrumClient,
+                                        WalletParams walletParams) {
+        return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient, walletParams);
     }
 
     @Bean
-    CommandLineRunner loadElectrumWallet(ElectrumClient electrumClient) {
+    CommandLineRunner loadElectrumWallet(ElectrumClient electrumClient, WalletParams walletParams) {
         return args -> {
             boolean daemonConnected = electrumClient.isConnected();
             log.info("electrum daemon connected: {}", daemonConnected);
 
             Boolean loadWalletResult = electrumClient.loadWallet(LoadWalletParams.builder()
-                    .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                    .walletPath(walletParams.getWalletPath())
+                    .password(walletParams.getPassword().orElse(null))
                     .build());
             log.info("electrum load wallet result: {}", loadWalletResult);
 
-            boolean walletSynchronized = electrumClient.isWalletSynchronized();
+            IsSynchronizedParams synchronizedParams = IsSynchronizedParams.builder()
+                    .walletPath(walletParams.getWalletPath())
+                    .build();
+            boolean walletSynchronized = electrumClient.isWalletSynchronized(synchronizedParams);
             log.info("electrum wallet synchronized: {}", walletSynchronized);
 
             if (!walletSynchronized) {
                 Duration timeout = Duration.ofSeconds(60);
                 log.info("Will wait max. {} for electrum wallet to synchronize..", timeout);
                 Stopwatch sw = Stopwatch.createStarted();
-                Boolean walletSynchronizedAfterWaiting = Flux.interval(Duration.ofMillis(1))
-                        .map(it -> electrumClient.isWalletSynchronized())
+                Boolean walletSynchronizedAfterWaiting = Flux.interval(Duration.ofMillis(100))
+                        .map(it -> electrumClient.isWalletSynchronized(synchronizedParams))
                         .filter(it -> it)
                         .blockFirst(timeout);
 

@@ -6,12 +6,14 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Coin;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.OnchainSummary;
 import org.tbk.electrum.model.RawTx;
 import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.rpc.command.OnchainCapitalGainsParams;
+import org.tbk.electrum.rpc.command.PaytoParams;
 import org.tbk.electrum.rpc.command.SignTransactionParams;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,12 +24,8 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
     @Value
     @Builder
     public static class Options {
-        /**
-         * @param walletPassphrase the wallet passphrase
-         * @return the wallet passphrase
-         */
-        @Nullable
-        String walletPassphrase;
+        @NonNull
+        WalletParams walletParams;
 
         /**
          * @param destinationAddress the destination address
@@ -52,15 +50,21 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
         try {
             return callInner();
         } catch (Exception e) {
-            log.error("", e);
+            log.error("Error during callInner", e);
             return false;
         }
     }
 
     private Boolean callInner() {
-        OnchainSummary summary = client.getOnchainCapitalGains();
+        WalletParams walletParams = options.getWalletParams();
 
-        log.debug("{}", summary);
+        log.info("Run ElectrumDaemonWalletSendBalance for {}..", walletParams.getWalletPath());
+
+        OnchainSummary summary = client.getOnchainCapitalGains(OnchainCapitalGainsParams.builder()
+                .walletPath(walletParams.getWalletPath())
+                .build());
+
+        log.debug("Wallet summary: {}", summary);
 
         TxoValue currentIncoming = summary.getIncoming();
         TxoValue previousIncoming = this.incoming.getAndSet(currentIncoming);
@@ -75,12 +79,18 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
 
         log.info("found end balance: {}", Coin.valueOf(summary.getEndBalance().getValue()).toFriendlyString());
 
-        RawTx unsignedTransaction = client
-                .createUnsignedTransactionSendingEntireBalance(options.getDestinationAddress());
+        RawTx unsignedTransaction = client.createTransaction(PaytoParams.builder()
+                .destination(options.getDestinationAddress())
+                .amount("!")
+                .unsigned(true)
+                .walletPath(walletParams.getWalletPath())
+                .password(walletParams.getPassword().orElse(null))
+                .build());
 
         RawTx rawTx = client.signTransaction(SignTransactionParams.of(unsignedTransaction)
-                        .password(options.getWalletPassphrase())
-                        .build());
+                .walletPath(walletParams.getWalletPath())
+                .password(walletParams.getPassword().orElse(null))
+                .build());
 
         log.info("rawTx (signed): {}", rawTx);
 
