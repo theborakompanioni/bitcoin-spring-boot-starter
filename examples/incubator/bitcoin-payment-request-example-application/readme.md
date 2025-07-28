@@ -2,8 +2,9 @@ bitcoin-payment-request-example-application
 ===
 
 ## Run
+Start the application with
 ```shell script
-./gradlew -p examples/incubator/bitcoin-payment-request-example-application bootRun
+./gradlew -p examples/incubator/bitcoin-payment-request-example-application bootRun --args="--spring.profiles.active=development"
 ```
 
 ### interact with local electrum

@@ -6,7 +6,7 @@ A small demo application with bitcoin/electrumx/electrum in regtest mode.
 
 1. Start application with
 ```shell
-./gradlew -p examples/incubator/bitcoin-electrum-gateway-example-application bootRun
+./gradlew -p examples/incubator/bitcoin-electrum-gateway-example-application bootRun --args="--spring.profiles.active=development"
 ```
 
 Example log output:

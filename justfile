@@ -1,5 +1,8 @@
 # This justfile requires https://github.com/casey/just
 
+# run example applications
+import 'examples.just'
+
 # Load environment variables from `.env` file.
 set dotenv-load
 # Fail the script if the env file is not found.
