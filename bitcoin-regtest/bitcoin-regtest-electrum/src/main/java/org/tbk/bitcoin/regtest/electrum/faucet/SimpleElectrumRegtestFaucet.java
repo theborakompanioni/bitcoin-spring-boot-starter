@@ -55,7 +55,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                     .walletPath(walletParams.getWalletPath())
                     .password(walletParams.getPassword().orElse(null))
                     .passphrase("faucet")
-                    .encryptFile(!walletParams.getPassword().isEmpty())
+                    .encryptFile(walletParams.getPassword().isPresent())
                     .build());
             boolean walletLoadedAfterCreation = tryLoadWallet(loadWalletParams);
             if (!walletLoadedAfterCreation) {

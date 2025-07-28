@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
-import org.tbk.bitcoin.regtest.mining.ScheduledRegtestMiner;
+import org.tbk.bitcoin.regtest.mining.ScheduledRegtestMining;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -48,10 +48,10 @@ class ScheduledRegtestMinerTest {
         }
 
         @Bean(destroyMethod = "stopAsync")
-        ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
-                                                    @Qualifier("regtestMinerScheduler")
+        ScheduledRegtestMining scheduledregtestMiner(RegtestMiner regtestMiner,
+                                                     @Qualifier("regtestMinerScheduler")
                                                     AbstractScheduledService.Scheduler scheduler) {
-            ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
+            ScheduledRegtestMining scheduledregtestMiner = new ScheduledRegtestMining(regtestMiner, scheduler);
             scheduledregtestMiner.startAsync();
             return scheduledregtestMiner;
         }

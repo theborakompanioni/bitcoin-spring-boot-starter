@@ -6,7 +6,6 @@ import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.params.RegTestParams;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,11 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
-import org.tbk.bitcoin.regtest.mining.RegtestMiner;
-import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.AddressCallbackElectrumClientContainerTest.ElectrumDaemonContainerTestApplication.TestCtrl;
-import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.SimpleTxoValue;
 import org.tbk.electrum.model.TxoValue;
@@ -59,22 +55,6 @@ class AddressCallbackElectrumClientContainerTest {
                     .sources(ElectrumDaemonContainerTestApplication.class)
                     .web(WebApplicationType.SERVLET)
                     .run(args);
-        }
-
-        @Bean
-        @Primary
-        RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
-            return new RegtestMinerImpl(bitcoinJsonRpcClient);
-        }
-
-        @Bean
-        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
-            return new BitcoinRegtestActions(regtestMiner);
-        }
-
-        @Bean
-        ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
-            return new ElectrumRegtestActions(electrumClient);
         }
 
         @Bean

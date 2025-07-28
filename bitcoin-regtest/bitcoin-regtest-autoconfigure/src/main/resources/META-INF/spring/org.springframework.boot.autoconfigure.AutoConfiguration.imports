@@ -1,2 +1,4 @@
 org.tbk.bitcoin.regtest.config.BitcoinRegtestAutoConfiguration
 org.tbk.bitcoin.regtest.config.BitcoinRegtestMiningAutoConfiguration
+org.tbk.bitcoin.regtest.config.BitcoinRegtestActionsAutoConfiguration
+org.tbk.bitcoin.regtest.config.ElectrumRegtestAutoConfiguration

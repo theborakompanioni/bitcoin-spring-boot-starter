@@ -52,21 +52,6 @@ class AdvancedBitcoinjElectrumClientContainerTest {
         }
 
         @Bean
-        RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
-            return new RegtestMinerImpl(bitcoinJsonRpcClient);
-        }
-
-        @Bean
-        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
-            return new BitcoinRegtestActions(regtestMiner);
-        }
-
-        @Bean
-        ElectrumRegtestActions electrumRegtestActions(BitcoinjElectrumClient electrumClient) {
-            return new ElectrumRegtestActions(electrumClient);
-        }
-
-        @Bean
         @Primary
         WalletParams defaultWalletParams() {
             return WalletParams.builder()

@@ -5,7 +5,6 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.params.RegTestParams;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -19,11 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
-import org.tbk.bitcoin.regtest.electrum.faucet.SimpleElectrumRegtestFaucet;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
-import org.tbk.bitcoin.regtest.mining.RegtestMinerImpl;
-import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
-import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
@@ -51,30 +46,6 @@ class ElectrumDaemonClientContainerWithFundsTest {
                     .sources(ElectrumDaemonContainerWithFundsTestApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(args);
-        }
-
-        @Bean
-        @Primary
-        RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient) {
-            return new RegtestMinerImpl(bitcoinJsonRpcClient);
-        }
-
-        @Bean
-        BitcoinRegtestActions bitcoinRegtestActions(RegtestMiner regtestMiner) {
-            return new BitcoinRegtestActions(regtestMiner);
-        }
-
-        @Bean
-        ElectrumRegtestFaucet electrumRegtestFaucet(BitcoinjElectrumClient electrumClient,
-                                                    BitcoinRegtestActions bitcoinRegtestActions) {
-            return new SimpleElectrumRegtestFaucet(
-                    electrumClient,
-                    bitcoinRegtestActions,
-                    WalletParams.builder()
-                            .walletPath("faucet_%s".formatted(this.getClass().getSimpleName()))
-                            .password("faucet")
-                            .build()
-            );
         }
 
         @Bean
@@ -228,6 +199,7 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 () -> Address.fromString(RegTestParams.get(), address0),
                 Coin.valueOf(21_000)
         ).block(Duration.ofSeconds(90));
+        assertThat(txHash, is(notNullValue()));
 
         List<TxHashAndBlockHeight> addressHistory = sut.getAddressHistory(address0);
         assertThat(addressHistory, hasSize(1));
@@ -251,6 +223,7 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 () -> Address.fromString(RegTestParams.get(), address0),
                 requestAmount
         ).block(Duration.ofSeconds(90));
+        assertThat(txHash, is(notNullValue()));
 
         RawTx rawTx = sut.getRawTransaction(GetTransactionParams.builder()
                 .txid(txHash.toString())

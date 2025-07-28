@@ -87,13 +87,13 @@ public class BitcoinRegtestMiningAutoConfiguration {
             RegtestMiner.class,
             MinMaxDurationScheduler.class
     })
-    @ConditionalOnMissingBean(ScheduledRegtestMiner.class)
+    @ConditionalOnMissingBean(ScheduledRegtestMining.class)
     @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
-    ScheduledRegtestMiner scheduledregtestMiner(RegtestMiner regtestMiner,
-                                                @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
-        ScheduledRegtestMiner scheduledregtestMiner = new ScheduledRegtestMiner(regtestMiner, scheduler);
-        scheduledregtestMiner.startAsync();
-        return scheduledregtestMiner;
+    ScheduledRegtestMining scheduledRegtestMining(RegtestMiner regtestMiner,
+                                                 @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
+        ScheduledRegtestMining scheduledRegtestMining = new ScheduledRegtestMining(regtestMiner, scheduler);
+        scheduledRegtestMining.startAsync();
+        return scheduledRegtestMining;
     }
 
     @Bean
