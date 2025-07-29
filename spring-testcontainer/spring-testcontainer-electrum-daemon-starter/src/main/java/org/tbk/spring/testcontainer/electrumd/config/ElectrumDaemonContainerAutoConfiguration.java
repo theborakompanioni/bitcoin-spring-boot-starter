@@ -45,6 +45,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
         return ElectrumDaemonContainerConfig.builder()
                 .environment(properties.getEnvironmentWithDefaults())
                 .defaultWallet(properties.getDefaultWallet().orElse(null))
+                .wallets(properties.getWallets())
                 .build();
     }
 

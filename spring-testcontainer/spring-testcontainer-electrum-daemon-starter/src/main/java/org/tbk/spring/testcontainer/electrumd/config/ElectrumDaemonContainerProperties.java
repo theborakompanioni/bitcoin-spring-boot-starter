@@ -8,12 +8,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -36,12 +34,21 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
      */
     private String defaultWallet;
 
+    /**
+     * (Optional) Specify multiple wallet that should be copied to the container.
+     */
+    private List<String> wallets;
+
     public ElectrumDaemonContainerProperties() {
         super(null, Collections.emptyList(), defaultEnvironment);
     }
 
     public Optional<String> getDefaultWallet() {
         return Optional.ofNullable(defaultWallet);
+    }
+
+    public List<String> getWallets() {
+        return Collections.unmodifiableList(requireNonNullElseGet(wallets, Collections::emptyList));
     }
 
     public String getNetwork() {

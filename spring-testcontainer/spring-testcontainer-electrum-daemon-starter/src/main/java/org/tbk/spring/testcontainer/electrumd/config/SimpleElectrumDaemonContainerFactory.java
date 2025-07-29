@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
@@ -17,6 +18,7 @@ import org.testcontainers.utility.MountableFile;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNullElseGet;
 import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 import static org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerProperties.ELECTRUM_NETWORK_ENV_NAME;
 
@@ -47,8 +50,15 @@ public final class SimpleElectrumDaemonContainerFactory {
 
         String defaultWallet;
 
+        @Singular("addWallet")
+        List<String> wallets;
+
         public Optional<String> getDefaultWallet() {
             return Optional.ofNullable(defaultWallet);
+        }
+
+        public List<String> getWallets() {
+            return Collections.unmodifiableList(requireNonNullElseGet(wallets, Collections::emptyList));
         }
 
         public Map<String, String> getEnvironment() {
@@ -112,7 +122,7 @@ public final class SimpleElectrumDaemonContainerFactory {
                 .withEnv(environmentBuilder.buildKeepingLast())
                 .waitingFor(containerWaitStrategy);
 
-        copyWalletToContainerIfNecessary(config, electrumDaemonContainer);
+        copyWalletsToContainerIfNecessary(config, electrumDaemonContainer);
 
         electrumDaemonContainer.start();
 
@@ -133,34 +143,47 @@ public final class SimpleElectrumDaemonContainerFactory {
                 .replace("/", "-");
     }
 
-    private void copyWalletToContainerIfNecessary(ElectrumDaemonContainerConfig config,
-                                                  ElectrumDaemonContainer<?> container) {
-        Optional<MountableFile> mountableWalletOrEmpty = config.getDefaultWallet()
-                .map(MountableFile::forClasspathResource);
+    private void copyWalletsToContainerIfNecessary(ElectrumDaemonContainerConfig config,
+                                                   ElectrumDaemonContainer<?> container) {
+        Stream.concat(
+                config.getDefaultWallet().stream(),
+                config.getWallets().stream()
+        ).forEach(wallet -> {
+            MountableFile mountableWallet = MountableFile.forClasspathResource(wallet);
+            String containerWalletFilePath = walletFilePathInContainer(wallet, config);
 
-        if (mountableWalletOrEmpty.isPresent()) {
-            String home = "/home/electrum";
-
-            // There are different wallet directories per network:
-            // - mainnet: /home/electrum/.electrum/wallets,
-            // - testnet: /home/electrum/.electrum/testnet/wallets
-            // - regtest: /home/electrum/.electrum/regtest/wallets
-            // - simnet: /home/electrum/.electrum/simnet/wallets
-            String networkWalletDir = home + "/.electrum" + Optional.of(config.getNetwork())
-                    .filter(it -> !"mainnet".equals(it))
-                    .map("/%s/wallets"::formatted)
-                    .orElse("/wallets");
-
-            String containerWalletFilePath = networkWalletDir + "/default_wallet";
-
-            MountableFile mountableWallet = mountableWalletOrEmpty.get();
             if (log.isDebugEnabled()) {
                 String filesystemPath = mountableWallet.getFilesystemPath();
                 log.debug("copy file to container: {} -> {}", filesystemPath, containerWalletFilePath);
             }
 
             container.withCopyFileToContainer(mountableWallet, containerWalletFilePath);
-        }
+        });
+    }
+
+    private String walletFilePathInContainer(String walletFileName, ElectrumDaemonContainerConfig config) {
+        String home = "/home/electrum";
+
+        // There are different wallet directories per network:
+        // - mainnet: /home/electrum/.electrum/wallets,
+        // - testnet: /home/electrum/.electrum/testnet/wallets
+        // - regtest: /home/electrum/.electrum/regtest/wallets
+        // - simnet: /home/electrum/.electrum/simnet/wallets
+        String networkWalletDir = home + "/.electrum" + Optional.of(config.getNetwork())
+                .filter(it -> !"mainnet".equals(it))
+                .map("/%s/wallets"::formatted)
+                .orElse("/wallets");
+
+        String fileNameExtensionOrEmpty = Optional.ofNullable(FileNameUtils.getExtension(walletFileName))
+                .filter(it -> !it.isBlank())
+                .map(".%s"::formatted)
+                .orElse("");
+        String fileName = "%s%s".formatted(
+                FileNameUtils.getBaseName(walletFileName),
+                fileNameExtensionOrEmpty
+        );
+
+        return "%s/%s".formatted(networkWalletDir, fileName);
     }
 
     private Optional<String> networkFlag(ElectrumDaemonContainer<?> container) {

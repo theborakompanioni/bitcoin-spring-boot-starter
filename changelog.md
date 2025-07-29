@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers
 - feat: ability to provide own wait strategy for lnd testcontainers
+- feat: ability to copy multiple wallets to electrum testcontainer
 
 ## [0.16.0] - 2025-04-13
 

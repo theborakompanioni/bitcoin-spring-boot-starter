@@ -1,7 +1,5 @@
 package org.tbk.electrum.gateway.example;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +8,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.tbk.electrum.common.WalletParams;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNullElse;
+import static java.util.Objects.requireNonNullElseGet;
 
 @ConfigurationProperties(prefix = "my.application")
 @Getter
@@ -41,8 +41,9 @@ public class ElectrumGatewayExampleApplicationProperties implements Validator {
     public Duration getDelay() {
         return requireNonNullElse(delay, DEFAULT_DELAY);
     }
+
     public Map<String, WalletEntry> getWallets() {
-        return Collections.unmodifiableMap(requireNonNullElse(wallets, Collections.emptyMap()));
+        return Collections.unmodifiableMap(requireNonNullElseGet(wallets, Collections::emptyMap));
     }
 
     @Override

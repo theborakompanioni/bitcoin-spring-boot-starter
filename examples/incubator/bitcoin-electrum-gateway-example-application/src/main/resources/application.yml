@@ -24,15 +24,17 @@ my.application:
   initial-delay: 15s
   delay: 30s
   wallets:
-    default_wallet:
-      wallet-path: "/home/electrum/.electrum/regtest/wallets/default_wallet"
-    # TODO: second wallet fails at the moment, as electrum testcontainer must support adding multiple wallets first
-    #second_wallet:
-    #  wallet-path: "/home/electrum/.electrum/regtest/wallets/second_wallet"
+    default:
+      wallet-path: '/home/electrum/.electrum/regtest/wallets/default_wallet'
+    second:
+      wallet-path: '/home/electrum/.electrum/regtest/wallets/second_wallet'
 
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   default-wallet: electrum/wallets/regtest/default_wallet
+  wallets:
+    - electrum/wallets/regtest/default_wallet
+    - electrum/wallets/regtest/second_wallet
   environment:
     ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
     ELECTRUM_RPCUSER: electrum
