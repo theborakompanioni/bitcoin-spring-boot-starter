@@ -24,7 +24,11 @@ import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
 import org.tbk.electrum.gateway.example.watch.InitElectrumConfig;
+import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -71,6 +75,19 @@ class ElectrumGatewayExampleApplicationConfig {
                                         ElectrumClient electrumClient,
                                         WalletParams walletParams) {
         return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient, walletParams);
+    }
+
+    @Bean
+    @Profile("!test")
+    CommandLineRunner logElectrumFeerate(ElectrumClient electrumClient) {
+        return args -> {
+            Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(60))
+                    .doOnNext(it -> log.info("Electrum fee rate: {}", electrumClient.getFeerate()))
+                    .onErrorResume(t -> Mono.empty())
+                    .subscribe();
+
+            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
+        };
     }
 
     @Bean
