@@ -16,7 +16,9 @@ public class InitElectrumConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        this.client.setConfig(ConfigKeyEnum.fee_policy_default, "eta:1");
+        //this.client.setConfig(ConfigKeyEnum.fee_policy_default, "feerate:1000"); // "1. sat/vbyte"
+        //this.client.setConfig(ConfigKeyEnum.fee_policy_default, "eta:1"); // "In the next block"
+        this.client.setConfig(ConfigKeyEnum.fee_policy_default, "mempool:100000"); // "0.1 vMB from tip"
         this.client.setConfig(ConfigKeyEnum.network_skipmerklecheck, Boolean.TRUE.toString());
         this.client.setConfig(ConfigKeyEnum.wallet_spend_confirmed_only, Boolean.FALSE.toString());
         this.client.setConfig(ConfigKeyEnum.wallet_freeze_reused_address_utxos, Boolean.FALSE.toString());

@@ -17,10 +17,10 @@ import lombok.extern.jackson.Jacksonized;
  * }
  * or
  * {
- *     "method": "static",
- *     "sat/kvB": 50000,
- *     "tooltip": "static feerate",
- *     "value": 50000
+ *     "description": "10. sat/vbyte",
+ *     "policy": "feerate:10000",
+ *     "sat/kvB": 10000,
+ *     "tooltip": "0.00 vMB from tip\nLow fee"
  * }
  * or
  * {

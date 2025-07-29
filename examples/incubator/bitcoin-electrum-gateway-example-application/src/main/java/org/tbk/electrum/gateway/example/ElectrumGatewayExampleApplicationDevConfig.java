@@ -14,12 +14,11 @@ import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.SimpleTxoValue;
-import org.tbk.electrum.model.TxoValue;
 import org.tbk.electrum.rpc.command.AddRequestParams;
 import org.tbk.electrum.rpc.command.AddRequestResponse;
-import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
@@ -59,11 +58,15 @@ class ElectrumGatewayExampleApplicationDevConfig {
                     .publishOn(Schedulers.boundedElastic())
                     .map(it -> Coin.valueOf(21_000 + it))
                     .flatMap(coins -> {
-                                Address address = destinationAddress.get();
-                                return faucet.requestBitcoin(() -> address, coins)
-                                        .doOnNext(txid -> log.info("[DEV] Sent {} to {} in {}", coins, address, txid));
-                            }
-                    )
+                        Address address = destinationAddress.get();
+                        return faucet.requestBitcoin(() -> address, coins)
+                                .doOnNext(txid -> log.info("[DEV] Sent {} to {} in {}", coins, address, txid));
+                    })
+                    .retry()
+                    .onErrorResume(e -> {
+                        log.info("[DEV] error while sending from faucet: {}", e.getMessage());
+                        return Mono.empty();
+                    })
                     .subscribe();
 
             Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
