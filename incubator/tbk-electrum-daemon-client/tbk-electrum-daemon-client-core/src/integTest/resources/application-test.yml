@@ -1,6 +1,9 @@
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
-  default-wallet: electrum/wallets/regtest/default_wallet
+  default-wallet:
+    wallet-path: 'default_wallet'
+  wallets:
+    - electrum/wallets/regtest/default_wallet
   environment:
     ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
     ELECTRUM_RPCUSER: electrum

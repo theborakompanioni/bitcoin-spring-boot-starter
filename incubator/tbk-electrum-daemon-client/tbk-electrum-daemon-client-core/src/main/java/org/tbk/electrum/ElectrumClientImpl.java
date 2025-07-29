@@ -35,8 +35,8 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     private final String serviceId = Integer.toHexString(System.identityHashCode(this));
 
-    private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
-            .setNameFormat("electrum-sync-" + serviceId + "-%d")
+    private final ExecutorService taskExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+            .setNameFormat("electrum-task-" + serviceId + "-%d")
             .setDaemon(true)
             .build());
 
@@ -528,12 +528,29 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Future<?> waitForWalletSynchronization() {
-        return syncExecutor.submit(() -> delegate.waitforsync());
+        return taskExecutor.submit(() -> delegate.waitforsync());
     }
 
     @Override
     public Future<?> waitForWalletSynchronization(WalletParams wallet) {
-        return syncExecutor.submit(() -> delegate.waitforsync(wallet.getWalletPath()));
+        return taskExecutor.submit(() -> delegate.waitforsync(wallet.getWalletPath()));
+    }
+
+    @Override
+    public Future<?> waitForServerConnection() {
+        return taskExecutor.submit(() -> {
+            while (!this.isConnected()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    return false;
+                }
+                try {
+                    Thread.sleep(100L);
+                } catch (InterruptedException e) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 
     private static byte[] fromHexOrBase64(String value) {
@@ -549,7 +566,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public void close() {
-        boolean executorShutdownSuccessful = shutdownAndAwaitTermination(syncExecutor, Duration.ofSeconds(10));
+        boolean executorShutdownSuccessful = shutdownAndAwaitTermination(taskExecutor, Duration.ofSeconds(10));
         if (!executorShutdownSuccessful) {
             log.warn("unclean shutdown of executor service");
         }

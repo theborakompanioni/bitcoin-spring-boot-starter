@@ -3,19 +3,19 @@ package org.tbk.spring.testcontainer.electrumd.config;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lombok.Builder;
-import lombok.Singular;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
+import org.tbk.spring.testcontainer.electrumd.config.SimpleElectrumDaemonContainerFactory.ElectrumDaemonContainerConfig.WalletParams;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
@@ -48,12 +48,13 @@ public final class SimpleElectrumDaemonContainerFactory {
         @Singular("addEnvVar")
         Map<String, String> environment;
 
-        String defaultWallet;
+        @Nullable
+        WalletParams defaultWallet;
 
         @Singular("addWallet")
         List<String> wallets;
 
-        public Optional<String> getDefaultWallet() {
+        public Optional<WalletParams> getDefaultWallet() {
             return Optional.ofNullable(defaultWallet);
         }
 
@@ -70,6 +71,21 @@ public final class SimpleElectrumDaemonContainerFactory {
 
         public String getNetwork() {
             return environment.getOrDefault(ELECTRUM_NETWORK_ENV_NAME, defaultEnvironment.get(ELECTRUM_NETWORK_ENV_NAME));
+        }
+
+
+        @Value
+        @Builder
+        public static class WalletParams {
+            @NonNull
+            String walletPath;
+
+            @Nullable
+            String password;
+
+            public Optional<String> getPassword() {
+                return Optional.ofNullable(password);
+            }
         }
     }
 
@@ -126,8 +142,14 @@ public final class SimpleElectrumDaemonContainerFactory {
 
         electrumDaemonContainer.start();
 
-        // let the daemon some time to startup; 5000ms seems to be enough
-        loadWalletIfNecessary(config, electrumDaemonContainer, Duration.ofMillis(5_000));
+        config.getDefaultWallet().ifPresent(it -> {
+            // give the daemon some time to startup; 5000ms seems to be enough
+            Container.ExecResult execResult = tryLoadWallet(electrumDaemonContainer, it, Duration.ofMillis(5_000));
+            if (execResult.getExitCode() != 0) {
+                log.error("Error while loading default wallet: {}", execResult.getStderr());
+                throw new IllegalStateException("Could not load default wallet");
+            }
+        });
 
         return electrumDaemonContainer;
     }
@@ -145,10 +167,7 @@ public final class SimpleElectrumDaemonContainerFactory {
 
     private void copyWalletsToContainerIfNecessary(ElectrumDaemonContainerConfig config,
                                                    ElectrumDaemonContainer<?> container) {
-        Stream.concat(
-                config.getDefaultWallet().stream(),
-                config.getWallets().stream()
-        ).forEach(wallet -> {
+        config.getWallets().forEach(wallet -> {
             MountableFile mountableWallet = MountableFile.forClasspathResource(wallet);
             String containerWalletFilePath = walletFilePathInContainer(wallet, config);
 
@@ -189,20 +208,33 @@ public final class SimpleElectrumDaemonContainerFactory {
     private Optional<String> networkFlag(ElectrumDaemonContainer<?> container) {
         return Optional.of(container.getEnvMap())
                 .map(it -> it.get(ELECTRUM_NETWORK_ENV_NAME))
-                .filter(it -> !"mainnet".equals(it))
                 .map(it -> "--" + it);
     }
 
-    private void loadWalletIfNecessary(ElectrumDaemonContainerConfig config, ElectrumDaemonContainer<?> container, Duration timeout) {
-        if (config.getDefaultWallet().isPresent()) {
+    private Container.ExecResult tryLoadWallet(ElectrumDaemonContainer<?> container, WalletParams wallet, Duration delay) {
+        Container.ExecResult execResult = tryLoadWallet(container, wallet);
+        if (execResult.getExitCode() != 0) {
+            // try again with given delay if first try did not work
             try {
-                Thread.sleep(timeout.toMillis());
-
-                daemonExec(container, "load_wallet");
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Error while adapting electrum-daemon: restart with auto-loading wallet failed", e);
+                Thread.sleep(delay.toMillis());
+                return tryLoadWallet(container, wallet);
+            } catch (InterruptedException ie) {
+                throw new RuntimeException("Error while adapting electrum-daemon: restart with auto-loading default wallet failed", ie);
             }
         }
+        return execResult;
+    }
+
+    private Container.ExecResult tryLoadWallet(ElectrumDaemonContainer<?> container, WalletParams wallet) {
+        String[] commands = Stream.concat(
+                Stream.of(
+                        // NOTE: there is no space between the "w" arg - otherwise electrum throws "no such file" error
+                        "-w%s".formatted(wallet.getWalletPath()),
+                        "load_wallet"
+                ),
+                wallet.getPassword().map("--password %s"::formatted).stream()
+        ).toArray(String[]::new);
+        return daemonExec(container, commands);
     }
 
     private Container.ExecResult daemonExec(ElectrumDaemonContainer<?> container, String... commands) {

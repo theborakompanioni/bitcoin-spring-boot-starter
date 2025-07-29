@@ -101,7 +101,9 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    void testGetInfo() {
+    void testGetInfo() throws Exception {
+        sut.waitForServerConnection().get(10, TimeUnit.SECONDS);
+
         GetInfoResponse infoResponse = sut.getInfo();
 
         assertThat(infoResponse.getNetwork(), is("regtest"));

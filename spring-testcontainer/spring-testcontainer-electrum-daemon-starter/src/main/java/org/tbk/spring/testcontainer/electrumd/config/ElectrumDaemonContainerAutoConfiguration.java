@@ -44,7 +44,12 @@ public class ElectrumDaemonContainerAutoConfiguration {
     ElectrumDaemonContainerConfig electrumDaemonContainerConfig() {
         return ElectrumDaemonContainerConfig.builder()
                 .environment(properties.getEnvironmentWithDefaults())
-                .defaultWallet(properties.getDefaultWallet().orElse(null))
+                .defaultWallet(properties.getDefaultWallet()
+                        .map(it -> ElectrumDaemonContainerConfig.WalletParams.builder()
+                                .walletPath(it.getWalletPath())
+                                .password(it.getPassword().orElse(null))
+                                .build())
+                        .orElse(null))
                 .wallets(properties.getWallets())
                 .build();
     }
@@ -75,7 +80,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(ElectrumDaemonContainer.class)
-    InitializingBean electrumDaemonContainerInitLogger(ElectrumDaemonContainer electrumDaemonContainer) {
+    InitializingBean electrumDaemonContainerInitLogger(ElectrumDaemonContainer<?> electrumDaemonContainer) {
         return () -> {
             if (log.isDebugEnabled()) {
                 log.debug("Started {} with exposed ports {}", electrumDaemonContainer.getContainerName(), electrumDaemonContainer.getExposedPorts());

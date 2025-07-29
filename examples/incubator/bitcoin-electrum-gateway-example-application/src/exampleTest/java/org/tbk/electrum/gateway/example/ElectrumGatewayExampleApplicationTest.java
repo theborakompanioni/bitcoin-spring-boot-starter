@@ -92,6 +92,8 @@ class ElectrumGatewayExampleApplicationTest {
 
         assertThat("primary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 
+        primaryElectrumClient.waitForServerConnection().get(10, TimeUnit.SECONDS);
+
         GetInfoResponse daemonStatusResponse = primaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
         primaryElectrumClient.waitForWalletSynchronization().get(30, TimeUnit.SECONDS);
@@ -106,6 +108,8 @@ class ElectrumGatewayExampleApplicationTest {
         Boolean ranForMinimumDuration = MoreTestcontainerTestUtil.ranForMinimumDuration(secondaryElectrumDaemonContainer).block();
 
         assertThat("secondary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
+
+        secondaryElectrumClient.waitForServerConnection().get(10, TimeUnit.SECONDS);
 
         GetInfoResponse daemonStatusResponse = secondaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
@@ -159,7 +163,10 @@ class ElectrumGatewayExampleApplicationTest {
                                                                   ElectrumxContainer<?> electrumxContainer) {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
-                    .defaultWallet("electrum/wallets/regtest/default_wallet")
+                    .defaultWallet(ElectrumDaemonContainerConfig.WalletParams.builder()
+                            .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                            .build())
+                    .addWallet("electrum/wallets/regtest/default_wallet")
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
                     .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD1)
@@ -173,7 +180,10 @@ class ElectrumGatewayExampleApplicationTest {
                                                                     ElectrumxContainer<?> electrumxContainer) {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
-                    .defaultWallet("electrum/wallets/regtest/second_wallet")
+                    .defaultWallet(ElectrumDaemonContainerConfig.WalletParams.builder()
+                            .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                            .build())
+                    .addWallet("electrum/wallets/regtest/default_wallet")
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
                     .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD2)

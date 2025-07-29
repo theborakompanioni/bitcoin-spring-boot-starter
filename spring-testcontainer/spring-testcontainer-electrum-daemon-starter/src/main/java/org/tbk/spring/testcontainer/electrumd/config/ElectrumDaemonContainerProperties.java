@@ -1,9 +1,9 @@
 package org.tbk.spring.testcontainer.electrumd.config;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
@@ -32,7 +32,7 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
     /**
      * (Optional) Specify the wallet that electrum should open on startup.
      */
-    private String defaultWallet;
+    private WalletEntry defaultWallet;
 
     /**
      * (Optional) Specify multiple wallet that should be copied to the container.
@@ -43,7 +43,7 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
         super(null, Collections.emptyList(), defaultEnvironment);
     }
 
-    public Optional<String> getDefaultWallet() {
+    public Optional<WalletEntry> getDefaultWallet() {
         return Optional.ofNullable(defaultWallet);
     }
 
@@ -91,6 +91,19 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
             }
         });
         errors.popNestedPath();
+    }
+
+    @Getter
+    @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
+    public static class WalletEntry {
+        @NonNull
+        String walletPath;
+
+        String password;
+
+        public Optional<String> getPassword() {
+            return Optional.ofNullable(password);
+        }
     }
 }
 

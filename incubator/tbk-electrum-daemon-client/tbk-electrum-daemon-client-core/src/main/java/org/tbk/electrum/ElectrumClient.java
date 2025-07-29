@@ -205,4 +205,5 @@ public interface ElectrumClient extends AutoCloseable {
 
     Future<?> waitForWalletSynchronization(WalletParams wallet);
 
+    Future<?> waitForServerConnection();
 }

@@ -27,6 +27,9 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -74,7 +77,8 @@ class SimpleBitcoinjElectrumClientContainerTest {
     }
 
     @Test
-    void testGetInfo() {
+    void testGetInfo() throws Exception {
+        sut.delegate().waitForServerConnection().get(10, TimeUnit.SECONDS);
         GetInfoResponse infoResponse = sut.delegate().getInfo();
 
         assertThat(infoResponse.getNetwork(), is("regtest"));

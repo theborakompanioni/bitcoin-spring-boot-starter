@@ -9,6 +9,8 @@ import org.tbk.electrum.model.SimpleBalance;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -34,7 +36,9 @@ class ElectrumDaemonExampleApplicationTest {
     }
 
     @Test
-    void clientIsConnected() {
+    void clientIsConnected() throws Exception {
+        electrumClient.waitForServerConnection().get(10, TimeUnit.SECONDS);
+
         assertThat(electrumClient.isConnected(), is(true));
 
         // triggers a lookup on the server

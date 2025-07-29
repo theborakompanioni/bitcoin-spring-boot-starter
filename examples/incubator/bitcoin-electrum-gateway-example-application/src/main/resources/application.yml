@@ -31,7 +31,8 @@ my.application:
 
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
-  default-wallet: electrum/wallets/regtest/default_wallet
+  default-wallet:
+    wallet-path: /home/electrum/.electrum/regtest/wallets/default_wallet
   wallets:
     - electrum/wallets/regtest/default_wallet
     - electrum/wallets/regtest/second_wallet
