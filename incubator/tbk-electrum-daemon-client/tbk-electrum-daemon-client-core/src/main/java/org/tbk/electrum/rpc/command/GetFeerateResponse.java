@@ -15,6 +15,20 @@ import lombok.extern.jackson.Jacksonized;
  *     "sat/kvB": 150000,
  *     "tooltip": "150. sat/vbyte"
  * }
+ * or
+ * {
+ *     "method": "static",
+ *     "sat/kvB": 50000,
+ *     "tooltip": "static feerate",
+ *     "value": 50000
+ * }
+ * or
+ * {
+ *     "method": "mempool",
+ *     "sat/kvB": 1000,
+ *     "tooltip": "2.00 vMB from tip",
+ *     "value": 2000000
+ * }
  * </pre>
  */
 @Value

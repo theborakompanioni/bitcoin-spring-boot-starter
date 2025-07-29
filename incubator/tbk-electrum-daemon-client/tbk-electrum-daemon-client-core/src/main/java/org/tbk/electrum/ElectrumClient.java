@@ -45,6 +45,7 @@ public interface ElectrumClient extends AutoCloseable {
     default List<String> listAddresses() {
         return listAddresses(ListAddressParams.all());
     }
+
     default List<String> listAddressesFunded() {
         return listAddresses(ListAddressParams.builder()
                 .funded(true)
@@ -206,4 +207,7 @@ public interface ElectrumClient extends AutoCloseable {
     Future<?> waitForWalletSynchronization(WalletParams wallet);
 
     Future<?> waitForServerConnection();
+
+    AddRequestResponse addRequest(AddRequestParams params);
+
 }

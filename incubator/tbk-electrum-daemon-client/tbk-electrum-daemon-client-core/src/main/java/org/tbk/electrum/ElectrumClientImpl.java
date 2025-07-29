@@ -553,6 +553,17 @@ public class ElectrumClientImpl implements ElectrumClient {
         });
     }
 
+    @Override
+    public AddRequestResponse addRequest(AddRequestParams params) {
+        return delegate.addrequest(
+                BtcTxoValues.toBtc(params.getAmount()).toPlainString(),
+                params.getMemo(),
+                Optional.ofNullable(params.getExpiry()).map(Duration::toSeconds).orElse(null),
+                params.getForce(),
+                params.getWalletPath()
+        );
+    }
+
     private static byte[] fromHexOrBase64(String value) {
         if (looksLikePsbt(value)) {
             return Base64.getDecoder().decode(value);

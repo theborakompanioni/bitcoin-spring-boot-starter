@@ -139,6 +139,7 @@ import java.util.Map;
  * <p>
  * Implemented (box checked means "tested"):
  * [
+ * [x] "add_request",
  * [x] "broadcast",
  * [x] "changegaplimit",
  * [x] "close_wallet",
@@ -187,6 +188,24 @@ import java.util.Map;
 @JsonRpcId(AtomicLongIdGenerator.class)
 @JsonRpcParams(ParamsType.MAP)
 public interface ElectrumDaemonRpcService {
+
+    /**
+     * Create a payment request, using the first unused address of the wallet. The address will be considered as used after this operation.
+     * If no payment is received, the address will be considered as unused if the payment request is deleted from the wallet.
+     *
+     * @param amount              Requested amount (in btc)
+     * @param memo                Description of the request
+     * @param expiryTimeInSeconds Time in seconds
+     * @param force               Create new address beyond gap limit, if no more addresses are available
+     * @param walletPath          wallet path
+     * @return add payment response
+     */
+    @JsonRpcMethod("add_request")
+    AddRequestResponse addrequest(@JsonRpcParam("amount") String amount,
+                                  @JsonRpcOptional @JsonRpcParam("memo") String memo,
+                                  @JsonRpcOptional @JsonRpcParam("expiry") Long expiryTimeInSeconds,
+                                  @JsonRpcOptional @JsonRpcParam("force") Boolean force,
+                                  @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**
      * Broadcast a transaction to the network.
@@ -285,9 +304,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Returns a list of unspent transaction outputs for the given address.
      *
-     * @implNote This is a walletless server query, results are not checked by SPV.
      * @param address the wallet address
      * @return a list of unspent transaction outputs
+     * @implNote This is a walletless server query, results are not checked by SPV.
      */
     @JsonRpcMethod("getaddressunspent")
     List<AddressUnspentResponse.AddressUnspentEntry> getaddressunspent(@JsonRpcParam("address") String address);

@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.model.SimpleTxoValue;
+import org.tbk.electrum.model.TxoValue;
+import org.tbk.electrum.rpc.command.AddRequestParams;
+import org.tbk.electrum.rpc.command.AddRequestResponse;
 import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -31,10 +35,12 @@ class ElectrumGatewayExampleApplicationDevConfig {
                                          ElectrumClient electrumClient,
                                          WalletParams defaultWalletParams) {
         return new FundDefaultWalletLoop(faucet, () -> {
-            String newAddress = electrumClient.createNewAddress(CreateNewAddressParams.builder()
+            AddRequestResponse result = electrumClient.addRequest(AddRequestParams.builder()
+                    .amount(SimpleTxoValue.zero())
+                    .expiry(Duration.ofSeconds(60))
                     .walletPath(defaultWalletParams.getWalletPath())
                     .build());
-            return Address.fromString(RegTestParams.get(), newAddress);
+            return Address.fromString(RegTestParams.get(), result.getAddress());
         });
     }
 

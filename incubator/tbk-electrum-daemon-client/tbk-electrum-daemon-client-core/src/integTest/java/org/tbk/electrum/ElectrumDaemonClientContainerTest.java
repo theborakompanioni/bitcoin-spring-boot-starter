@@ -20,6 +20,7 @@ import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -753,5 +754,52 @@ class ElectrumDaemonClientContainerTest {
         assertThat(sut.isValidAddress(firstAddress), is(true));
         assertThat(sut.isValidAddress(addressNotControlledByWallet), is(true));
         assertThat(sut.isValidAddress("invalid_address"), is(false));
+    }
+
+    @Test
+    void testAddRequest0() {
+        AddRequestResponse result = sut.addRequest(AddRequestParams.builder()
+                .amount(SimpleTxoValue.of(21_000))
+                .build());
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getAmount(), is(21_000L));
+        assertThat(result.getMessage(), is(""));
+        assertThat(result.isLightning(), is(false));
+        assertThat(result.getRequestId(), is(not(emptyOrNullString())));
+        assertThat(result.getExpiry(), is(greaterThanOrEqualTo(1L)));
+        assertThat(result.getTimestamp(), is(greaterThanOrEqualTo(1L)));
+        assertThat(result.getStatus(), is(0));
+        assertThat(result.getStatusMessage(), is("Expires in about 1 hour"));
+    }
+
+    @Test
+    void testAddRequest1ZeroAmount() {
+        AddRequestResponse result = sut.addRequest(AddRequestParams.builder()
+                .amount(SimpleTxoValue.of(0))
+                .build());
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getAmount(), is(nullValue()));
+    }
+
+    @Test
+    void testAddRequest2Expired() {
+        AddRequestResponse result = sut.addRequest(AddRequestParams.builder()
+                .amount(SimpleTxoValue.of(21_000))
+                .expiry(Duration.ofSeconds(1).negated())
+                .build());
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getExpiry(), is(-1L));
+        assertThat(result.getStatus(), is(1));
+        assertThat(result.getStatusMessage(), is("Expired"));
+    }
+    @Test
+    void testAddRequest3NeverExpire() {
+        AddRequestResponse result = sut.addRequest(AddRequestParams.builder()
+                .amount(SimpleTxoValue.of(21_000))
+                .expiry(Duration.ZERO)
+                .build());
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getAmount(), is(21_000L));
+        assertThat(result.getStatusMessage(), is("Unpaid"));
     }
 }
