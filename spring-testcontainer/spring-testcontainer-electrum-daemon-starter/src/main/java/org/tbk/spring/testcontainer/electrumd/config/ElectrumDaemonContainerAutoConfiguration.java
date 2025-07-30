@@ -1,5 +1,6 @@
 package org.tbk.spring.testcontainer.electrumd.config;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -16,8 +17,11 @@ import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.electrumx.config.ElectrumxContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
 import org.tbk.spring.testcontainer.eps.config.ElectrumPersonalServerContainerAutoConfiguration;
+import org.tbk.spring.testcontainer.tor.TorContainer;
+import org.tbk.spring.testcontainer.tor.config.TorContainerAutoConfiguration;
 
 import static java.util.Objects.requireNonNull;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
 @AutoConfiguration
@@ -26,7 +30,8 @@ import static java.util.Objects.requireNonNull;
 @AutoConfigureAfter({
         BitcoindContainerAutoConfiguration.class,
         ElectrumxContainerAutoConfiguration.class,
-        ElectrumPersonalServerContainerAutoConfiguration.class
+        ElectrumPersonalServerContainerAutoConfiguration.class,
+        TorContainerAutoConfiguration.class,
 })
 public class ElectrumDaemonContainerAutoConfiguration {
 
@@ -57,19 +62,38 @@ public class ElectrumDaemonContainerAutoConfiguration {
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumxContainer.class)
-    ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumxTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
-                                                                                 ElectrumxContainer<?> electrumxContainer) {
-        verifyCompatibilityWithElectrumx(electrumDaemonContainerConfig, electrumxContainer);
+    ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumxTestcontainer(ElectrumDaemonContainerConfig config,
+                                                                                 ElectrumxContainer<?> electrumServer) {
+        verifyCompatibilityWithElectrumx(config, electrumServer);
 
-        return containerFactory.createStartedElectrumDaemonContainer(electrumDaemonContainerConfig, electrumxContainer);
+        return containerFactory.createStartedElectrumDaemonContainer(config, electrumServer);
     }
 
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
     @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
     @ConditionalOnBean(ElectrumPersonalServerContainer.class)
-    ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(ElectrumDaemonContainerConfig electrumDaemonContainerConfig,
-                                                                                              ElectrumPersonalServerContainer<?> electrumPersonlServerContainer) {
-        return containerFactory.createStartedElectrumDaemonContainer(electrumDaemonContainerConfig, electrumPersonlServerContainer);
+    ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(ElectrumDaemonContainerConfig config,
+                                                                                              ElectrumPersonalServerContainer<?> electrumServer) {
+        return containerFactory.createStartedElectrumDaemonContainer(config, electrumServer);
+    }
+
+    @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
+    @ConditionalOnMissingBean(ElectrumDaemonContainer.class)
+    @ConditionalOnBean(TorContainer.class)
+    ElectrumDaemonContainer<?> electrumDaemonContainerWithTor(ElectrumDaemonContainerConfig config,
+                                                              TorContainer<?> torContainer) {
+        String proxy = "socks5:%s".formatted(buildInternalContainerUrlWithoutProtocol(torContainer, 9050));
+        ElectrumDaemonContainerConfig configWithProxy = config.toBuilder()
+                .clearEnvironment()
+                .environment(ImmutableMap.<String, String>builder()
+                        .putAll(config.getEnvironment())
+                        //.put("ELECTRUM_CONFIG_PROXY_ENABLED", Boolean.TRUE.toString())
+                        .put("ELECTRUM_CONFIG_PROXY", proxy)
+                        .put("ELECTRUM_CONFIG_PROXY_USER", "")
+                        .put("ELECTRUM_CONFIG_PROXY_PASSWORD", "")
+                        .buildKeepingLast())
+                .build();
+        return containerFactory.createStartedElectrumDaemonContainer(configWithProxy);
     }
 
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")

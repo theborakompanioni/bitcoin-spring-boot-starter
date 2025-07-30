@@ -12,6 +12,8 @@ dependencies {
     // currently a hard dependency on the electrumx/eps testcontainer packages - try to make them optional dependencies!
     implementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-electrum-personal-server-starter')
+    // currently a hard dependency on the tor testcontainer package - try to make it an optional dependency!
+    implementation project(':spring-testcontainer:spring-testcontainer-tor-starter')
 
     compileOnly project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-autoconfigure')
 

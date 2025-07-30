@@ -35,7 +35,7 @@ import static org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContai
 public final class SimpleElectrumDaemonContainerFactory {
 
     @Value
-    @Builder
+    @Builder(toBuilder = true)
     public static class ElectrumDaemonContainerConfig {
         private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
                 .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
