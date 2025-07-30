@@ -92,7 +92,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         assertThat("primary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 
-        primaryElectrumClient.waitForServerConnection().get(10, TimeUnit.SECONDS);
+        primaryElectrumClient.waitForServerConnection().get(30, TimeUnit.SECONDS);
 
         GetInfoResponse daemonStatusResponse = primaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
@@ -109,7 +109,7 @@ class ElectrumGatewayExampleApplicationTest {
 
         assertThat("secondary electrumd container ran for the minimum amount of time to be considered healthy", ranForMinimumDuration, is(true));
 
-        secondaryElectrumClient.waitForServerConnection().get(10, TimeUnit.SECONDS);
+        secondaryElectrumClient.waitForServerConnection().get(30, TimeUnit.SECONDS);
 
         GetInfoResponse daemonStatusResponse = secondaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));

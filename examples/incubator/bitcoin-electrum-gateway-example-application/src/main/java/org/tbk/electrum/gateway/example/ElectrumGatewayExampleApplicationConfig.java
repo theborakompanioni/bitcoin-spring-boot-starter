@@ -23,6 +23,7 @@ import org.tbk.electrum.gateway.example.watch.LogElectrumConfig;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +52,7 @@ class ElectrumGatewayExampleApplicationConfig {
     }
 
     @Bean
+    @Profile("!test")
     LogElectrumConfig logElectrumConfig(ElectrumClient electrumClient) {
         return new LogElectrumConfig(electrumClient);
     }
@@ -61,6 +63,7 @@ class ElectrumGatewayExampleApplicationConfig {
                                                     WalletParams walletParams) {
         return args -> {
             Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(60))
+                    .publishOn(Schedulers.boundedElastic())
                     .doOnNext(it -> ElectrumdStatusLogging.logStatus(electrumClient, walletParams))
                     .onErrorResume(t -> Mono.empty())
                     .subscribe();

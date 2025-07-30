@@ -9,6 +9,10 @@ my.application:
   destinationAddress: bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j
   initial-delay: 0s
   delay: 1s
+  wallets:
+    default:
+      wallet-path: '/home/electrum/.electrum/regtest/wallets/default_wallet'
+      gap-limit: 1
 
 org.tbk.bitcoin.regtest:
   enabled: true
@@ -30,3 +34,52 @@ org.tbk.spring.testcontainer.electrum-daemon:
 # disable electrum client autoconfig - we will create two electrum clients programmatically
 org.tbk.bitcoin.electrum-daemon.jsonrpc:
   enabled: false
+
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true
+  rpchost: localhost
+  rpcport: 18443
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpass: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
+  environment:
+    NET: ${org.tbk.bitcoin.jsonrpc.network}
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-bitcoin-regtest-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
