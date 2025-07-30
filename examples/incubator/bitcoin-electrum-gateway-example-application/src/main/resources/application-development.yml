@@ -17,3 +17,99 @@ logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
+
+my.application:
+  # an address from "second_wallet" with key:
+  # castle else craft crush glass leisure client click embrace original bar senior
+  destinationAddress: bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j
+  initial-delay: 15s
+  delay: 30s
+  wallets:
+    default:
+      wallet-path: '/home/electrum/.electrum/regtest/wallets/default_wallet'
+    second:
+      wallet-path: '/home/electrum/.electrum/regtest/wallets/second_wallet'
+
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: true
+  default-wallet:
+    wallet-path: /home/electrum/.electrum/regtest/wallets/default_wallet
+  wallets:
+    - electrum/wallets/regtest/default_wallet
+    - electrum/wallets/regtest/second_wallet
+  environment:
+    ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
+    ELECTRUM_RPCUSER: electrum
+    ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20201224
+
+org.tbk.spring.testcontainer.electrumx:
+  enabled: true
+  rpchost: localhost
+  rpcport: 18443
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpass: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
+  environment:
+    NET: ${org.tbk.bitcoin.jsonrpc.network}
+    COIN: BitcoinSegwit
+    PEER_DISCOVERY: self
+    PEER_ANNOUNCE: ''
+    MAX_SESSIONS: 250
+
+org.tbk.spring.testcontainer.bitcoind:
+  enabled: true
+  rpcuser: this-is-my-rpc-user99
+  rpcpassword: correct_horse_battery_staple_99
+  exposed-ports:
+    - 28332
+    - 28333
+  commands:
+    # [zeromq]
+    # Enable publishing of raw block hex to <address>.
+    - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+    # Enable publishing of raw transaction hex to <address>.
+    - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    # [rpc]
+    # Number of seconds after which an uncompleted RPC call will time out
+    - '-rpcservertimeout=10' # default is 30
+    # [debug]
+    # Enable debug logging for categories.
+    # '-debug=1' would log ALL messages
+    - '-debug=rpc'
+    # Log IP Addresses in debug output.
+    - '-logips=1'
+    # Append comment to the user agent string.
+    - '-uacomment=tbk-bitcoin-regtest-example'
+    # Allows you to test address relay on localhost.
+    - '-addrmantest=1'
+    # Send trace/debug info to console instead of debug.log.
+    - '-printtoconsole=1'
+
+org.tbk.bitcoin.regtest:
+  enabled: true
+  # mine blocks every 1 - 10 seconds
+  mining:
+    enabled: true
+    coinbase-reward-address: 'bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl' # regtest eater address
+    mine-initial-amount-of-blocks: 1
+    next-block-duration:
+      min-duration: PT3S
+      max-duration: PT21S
+
+org.tbk.bitcoin.jsonrpc:
+  network: regtest
+  rpchost: http://localhost
+  rpcport: 18443
+  rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
+  rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
+
+org.tbk.bitcoin.zeromq:
+  network: ${org.tbk.bitcoin.jsonrpc.network}
+  zmqpubrawblock: tcp://localhost:28332
+  zmqpubrawtx: tcp://localhost:28333
+
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 7000
+  rpcuser: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCUSER}
+  rpcpassword: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCPASSWORD}
