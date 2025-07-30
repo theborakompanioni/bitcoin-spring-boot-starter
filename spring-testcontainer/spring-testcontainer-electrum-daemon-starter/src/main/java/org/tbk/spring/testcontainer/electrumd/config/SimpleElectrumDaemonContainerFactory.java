@@ -3,7 +3,10 @@ package org.tbk.spring.testcontainer.electrumd.config;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lombok.*;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Singular;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
@@ -17,6 +20,8 @@ import org.testcontainers.utility.MountableFile;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -167,17 +172,38 @@ public final class SimpleElectrumDaemonContainerFactory {
 
     private void copyWalletsToContainerIfNecessary(ElectrumDaemonContainerConfig config,
                                                    ElectrumDaemonContainer<?> container) {
-        config.getWallets().forEach(wallet -> {
-            MountableFile mountableWallet = MountableFile.forClasspathResource(wallet);
-            String containerWalletFilePath = walletFilePathInContainer(wallet, config);
-
-            if (log.isDebugEnabled()) {
-                String filesystemPath = mountableWallet.getFilesystemPath();
-                log.debug("copy file to container: {} -> {}", filesystemPath, containerWalletFilePath);
-            }
-
-            container.withCopyFileToContainer(mountableWallet, containerWalletFilePath);
+        config.getWallets().forEach(walletPath -> {
+            tryCopyWalletToContainer(config, container, walletPath);
         });
+    }
+
+    private void tryCopyWalletToContainer(ElectrumDaemonContainerConfig config,
+                                          ElectrumDaemonContainer<?> container,
+                                          String walletPath) {
+        try {
+            MountableFile mountableWalletFromClasspath = MountableFile.forClasspathResource(walletPath);
+            copyWalletToContainer(config, container, mountableWalletFromClasspath);
+        } catch (Exception e) {
+            // fallback search on host
+            MountableFile mountableWalletFromHost = MountableFile.forHostPath(walletPath);
+            if (!Files.exists(Path.of(mountableWalletFromHost.getResolvedPath()))) {
+                throw new IllegalStateException("Could not find wallet file '%s'".formatted(walletPath));
+            }
+            copyWalletToContainer(config, container, mountableWalletFromHost);
+        }
+    }
+
+    private void copyWalletToContainer(ElectrumDaemonContainerConfig config,
+                                       ElectrumDaemonContainer<?> container,
+                                       MountableFile mountableWallet) {
+        String containerWalletFilePath = walletFilePathInContainer(mountableWallet.getResolvedPath(), config);
+
+        if (log.isDebugEnabled()) {
+            String filesystemPath = mountableWallet.getFilesystemPath();
+            log.debug("copy file to container: {} -> {}", filesystemPath, containerWalletFilePath);
+        }
+
+        container.withCopyFileToContainer(mountableWallet, containerWalletFilePath);
     }
 
     private String walletFilePathInContainer(String walletFileName, ElectrumDaemonContainerConfig config) {
