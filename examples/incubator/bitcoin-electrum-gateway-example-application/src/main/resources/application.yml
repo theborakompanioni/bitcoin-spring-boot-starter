@@ -88,12 +88,11 @@ org.tbk.bitcoin.regtest:
   # mine blocks every 1 - 10 seconds
   mining:
     enabled: true
-    # regtest eater address
-    coinbase-reward-address: bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl
-    mine-initial-amount-of-blocks: 100
+    coinbase-reward-address: 'bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl' # regtest eater address
+    mine-initial-amount-of-blocks: 1
     next-block-duration:
-      min-duration: PT1S
-      max-duration: PT10S
+      min-duration: PT3S
+      max-duration: PT21S
 
 org.tbk.bitcoin.jsonrpc:
   network: regtest
