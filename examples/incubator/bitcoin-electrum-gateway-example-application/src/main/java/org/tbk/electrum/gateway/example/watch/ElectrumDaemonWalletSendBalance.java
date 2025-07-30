@@ -58,7 +58,7 @@ public class ElectrumDaemonWalletSendBalance implements Callable<Boolean> {
     private Boolean callInner() {
         WalletParams walletParams = options.getWalletParams();
 
-        log.info("Run ElectrumDaemonWalletSendBalance for {}..", walletParams.getWalletPath());
+        log.debug("Run ElectrumDaemonWalletSendBalance for {}..", walletParams.getWalletPath());
 
         OnchainSummary summary = client.getOnchainCapitalGains(OnchainCapitalGainsParams.builder()
                 .walletPath(walletParams.getWalletPath())

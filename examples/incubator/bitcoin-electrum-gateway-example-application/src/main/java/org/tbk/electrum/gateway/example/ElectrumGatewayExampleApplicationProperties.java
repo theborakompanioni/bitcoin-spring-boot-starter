@@ -78,8 +78,14 @@ public class ElectrumGatewayExampleApplicationProperties implements Validator {
 
         String password;
 
+        Integer gapLimit;
+
         public Optional<String> getPassword() {
             return Optional.ofNullable(password);
+        }
+
+        public Optional<Integer> getGapLimit() {
+            return Optional.ofNullable(gapLimit);
         }
     }
 }

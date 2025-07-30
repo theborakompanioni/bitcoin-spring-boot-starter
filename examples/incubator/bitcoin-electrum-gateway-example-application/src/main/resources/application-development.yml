@@ -27,8 +27,10 @@ my.application:
   wallets:
     default:
       wallet-path: '/home/electrum/.electrum/regtest/wallets/default_wallet'
+      gap-limit: 21
     second:
       wallet-path: '/home/electrum/.electrum/regtest/wallets/second_wallet'
+      gap-limit: 42
 
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true

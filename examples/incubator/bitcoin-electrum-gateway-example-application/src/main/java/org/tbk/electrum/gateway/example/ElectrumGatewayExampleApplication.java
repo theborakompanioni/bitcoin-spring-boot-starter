@@ -24,7 +24,6 @@ public class ElectrumGatewayExampleApplication {
                 .sources(ElectrumGatewayExampleApplication.class)
                 .listeners(applicationPidFileWriter(), webServerPortFileWriter())
                 .web(WebApplicationType.SERVLET)
-                .profiles("development", "local")
                 .run(args);
     }
 

@@ -3,7 +3,6 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <logger name="org.tbk.spring.testcontainer.bitcoind" level="DEBUG"/>
-    <logger name="org.tbk.spring.testcontainer.lnd" level="DEBUG"/>
     <logger name="org.tbk.spring.testcontainer.electrumx" level="DEBUG"/>
     <logger name="org.tbk.spring.testcontainer.electrumd" level="DEBUG"/>
 

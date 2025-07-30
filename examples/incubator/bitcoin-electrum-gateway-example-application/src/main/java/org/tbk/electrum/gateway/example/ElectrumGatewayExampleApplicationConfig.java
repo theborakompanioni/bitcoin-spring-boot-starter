@@ -111,7 +111,7 @@ class ElectrumGatewayExampleApplicationConfig {
                 log.info("Create watch loop for wallet '{}': {}", name, walletParams.getWalletPath());
                 String beanName = name + "ElectrumWalletWatchLoop";
                 if (beanFactory.containsBean(beanName)) {
-                    log.debug("Skip creating bean '{}' - factory already contains a bean with the same name", beanName);
+                    log.warn("Skip creating bean '{}' - factory already contains a bean with the same name", beanName);
                 } else {
                     ElectrumWalletWatchLoop bean = createElectrumWalletWatchLoop(properties, electrumClient, walletParams);
                     InitializingBean initHook = bean::startAsync;
@@ -124,6 +124,7 @@ class ElectrumGatewayExampleApplicationConfig {
                     beanFactory.initializeBean(bean, beanName);
                     beanFactory.initializeBean(destroyHook, beanName + "DestroyHook");
                     beanFactory.initializeBean(initHook, beanName + "InitHook");
+                    log.info("Successfully created watch loop for wallet '{}': {}", name, walletParams.getWalletPath());
                 }
             });
         }
@@ -137,12 +138,17 @@ class ElectrumGatewayExampleApplicationConfig {
                     TimeUnit.NANOSECONDS
             );
 
-            ElectrumDaemonWalletSendBalance.Options options = ElectrumDaemonWalletSendBalance.Options.builder()
+            ElectrumDaemonWalletSendBalance.Options sendBalanceOptions = ElectrumDaemonWalletSendBalance.Options.builder()
                     .walletParams(WalletParams.builder()
                             .walletPath(walletEntry.getWalletPath())
                             .password(walletEntry.getPassword().orElse(null))
                             .build())
                     .destinationAddress(properties.getDestinationAddress())
+                    .build();
+
+            ElectrumWalletWatchLoop.Options options = ElectrumWalletWatchLoop.Options.builder()
+                    .sendBalanceOptions(sendBalanceOptions)
+                    .gapLimit(walletEntry.getGapLimit().orElse(null))
                     .build();
 
             return new ElectrumWalletWatchLoop(electrumClient, options, scheduler);
