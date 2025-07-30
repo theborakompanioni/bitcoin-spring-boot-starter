@@ -21,8 +21,8 @@ import org.tbk.electrum.config.ElectrumDaemonJsonrpcConfigBuilder;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.rpc.command.GetInfoResponse;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
+import org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerConfig;
 import org.tbk.spring.testcontainer.electrumd.config.SimpleElectrumDaemonContainerFactory;
-import org.tbk.spring.testcontainer.electrumd.config.SimpleElectrumDaemonContainerFactory.ElectrumDaemonContainerConfig;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.electrumx.config.ElectrumxContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
 @SpringBootTest(classes = {
@@ -170,9 +171,10 @@ class ElectrumGatewayExampleApplicationTest {
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
                     .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD1)
+                    .server(String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumxContainer, 50002)))
                     .build();
 
-            return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
+            return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig);
         }
 
         @Bean("secondaryElectrumDaemonContainer")
@@ -187,9 +189,10 @@ class ElectrumGatewayExampleApplicationTest {
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
                     .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD2)
+                    .server(String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumxContainer, 50002)))
                     .build();
 
-            return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig, electrumxContainer);
+            return electrumDaemonContainerFactory.createStartedElectrumDaemonContainer(containerConfig);
         }
 
         @Bean

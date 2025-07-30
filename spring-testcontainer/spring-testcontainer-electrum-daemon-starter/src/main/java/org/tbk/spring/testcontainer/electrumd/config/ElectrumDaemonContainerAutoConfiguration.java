@@ -1,6 +1,5 @@
 package org.tbk.spring.testcontainer.electrumd.config;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -12,7 +11,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.tbk.spring.testcontainer.bitcoind.config.BitcoindContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
-import org.tbk.spring.testcontainer.electrumd.config.SimpleElectrumDaemonContainerFactory.ElectrumDaemonContainerConfig;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.electrumx.config.ElectrumxContainerAutoConfiguration;
 import org.tbk.spring.testcontainer.eps.ElectrumPersonalServerContainer;
@@ -66,7 +64,10 @@ public class ElectrumDaemonContainerAutoConfiguration {
                                                                                  ElectrumxContainer<?> electrumServer) {
         verifyCompatibilityWithElectrumx(config, electrumServer);
 
-        return containerFactory.createStartedElectrumDaemonContainer(config, electrumServer);
+        ElectrumDaemonContainerConfig configWithServer = config.toBuilder()
+                .server(String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumServer, 50002)))
+                .build();
+        return containerFactory.createStartedElectrumDaemonContainer(configWithServer);
     }
 
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
@@ -74,7 +75,10 @@ public class ElectrumDaemonContainerAutoConfiguration {
     @ConditionalOnBean(ElectrumPersonalServerContainer.class)
     ElectrumDaemonContainer<?> electrumDaemonContainerWithElectrumPersonalServerTestcontainer(ElectrumDaemonContainerConfig config,
                                                                                               ElectrumPersonalServerContainer<?> electrumServer) {
-        return containerFactory.createStartedElectrumDaemonContainer(config, electrumServer);
+        ElectrumDaemonContainerConfig configWithServer = config.toBuilder()
+                .server(String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumServer, 50002)))
+                .build();
+        return containerFactory.createStartedElectrumDaemonContainer(configWithServer);
     }
 
     @Bean(name = "electrumDaemonContainer", destroyMethod = "stop")
@@ -84,14 +88,9 @@ public class ElectrumDaemonContainerAutoConfiguration {
                                                               TorContainer<?> torContainer) {
         String proxy = "socks5:%s".formatted(buildInternalContainerUrlWithoutProtocol(torContainer, 9050));
         ElectrumDaemonContainerConfig configWithProxy = config.toBuilder()
-                .clearEnvironment()
-                .environment(ImmutableMap.<String, String>builder()
-                        .putAll(config.getEnvironment())
-                        //.put("ELECTRUM_CONFIG_PROXY_ENABLED", Boolean.TRUE.toString())
-                        .put("ELECTRUM_CONFIG_PROXY", proxy)
-                        .put("ELECTRUM_CONFIG_PROXY_USER", "")
-                        .put("ELECTRUM_CONFIG_PROXY_PASSWORD", "")
-                        .buildKeepingLast())
+                .proxy(ElectrumDaemonContainerConfig.ProxyParams.builder()
+                        .proxy(proxy)
+                        .build())
                 .build();
         return containerFactory.createStartedElectrumDaemonContainer(configWithProxy);
     }

@@ -3,96 +3,31 @@ package org.tbk.spring.testcontainer.electrumd.config;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Singular;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
 import org.tbk.spring.testcontainer.core.CustomHostPortWaitStrategy;
 import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
-import org.tbk.spring.testcontainer.electrumd.config.SimpleElectrumDaemonContainerFactory.ElectrumDaemonContainerConfig.WalletParams;
+import org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerConfig.WalletParams;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNullElseGet;
-import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 import static org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerProperties.ELECTRUM_NETWORK_ENV_NAME;
 
 @Slf4j
 public final class SimpleElectrumDaemonContainerFactory {
-
-    @Value
-    @Builder(toBuilder = true)
-    public static class ElectrumDaemonContainerConfig {
-        private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
-                .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
-                .put("ELECTRUM_CONFIG_AUTO_CONNECT", "true")
-                .put("ELECTRUM_CONFIG_LOG_TO_FILE", "true")
-                .put("ELECTRUM_CONFIG_CHECK_UPDATES", "false")
-                .put("ELECTRUM_CONFIG_DONT_SHOW_TESTNET_WARNING", "true")
-                .build();
-
-        @Singular("addEnvVar")
-        Map<String, String> environment;
-
-        @Nullable
-        WalletParams defaultWallet;
-
-        @Singular("addWallet")
-        List<String> wallets;
-
-        public Optional<WalletParams> getDefaultWallet() {
-            return Optional.ofNullable(defaultWallet);
-        }
-
-        public List<String> getWallets() {
-            return Collections.unmodifiableList(requireNonNullElseGet(wallets, Collections::emptyList));
-        }
-
-        public Map<String, String> getEnvironment() {
-            return ImmutableMap.<String, String>builder()
-                    .putAll(defaultEnvironment)
-                    .putAll(environment)
-                    .buildKeepingLast();
-        }
-
-        public String getNetwork() {
-            return environment.getOrDefault(ELECTRUM_NETWORK_ENV_NAME, defaultEnvironment.get(ELECTRUM_NETWORK_ENV_NAME));
-        }
-
-
-        @Value
-        @Builder
-        public static class WalletParams {
-            @NonNull
-            String walletPath;
-
-            @Nullable
-            String password;
-
-            public Optional<String> getPassword() {
-                return Optional.ofNullable(password);
-            }
-        }
-    }
 
     // currently only the image from "theborakompanioni" is supported
     private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.0.1@sha256:1e97f069ea9053f7d4c922dfdeac7336e444f4f2933a24662a3842dba3157de5";
@@ -111,30 +46,23 @@ public final class SimpleElectrumDaemonContainerFactory {
 
     private static final AtomicLong containerNameIdCounter = new AtomicLong(0L);
 
-    public ElectrumDaemonContainer<?> createStartedElectrumDaemonContainer(ElectrumDaemonContainerConfig config,
-                                                                           Container<?> electrumServerContainer) {
-
-        String serverUrl = String.format("%s:s", buildInternalContainerUrlWithoutProtocol(electrumServerContainer, 50002));
-
-        return createStartedElectrumDaemonContainer(config, () -> Optional.of(serverUrl));
-    }
-
     public ElectrumDaemonContainer<?> createStartedElectrumDaemonContainer(ElectrumDaemonContainerConfig config) {
-        return createStartedElectrumDaemonContainer(config, Optional::empty);
-    }
-
-    public ElectrumDaemonContainer<?> createStartedElectrumDaemonContainer(ElectrumDaemonContainerConfig config,
-                                                                           Supplier<Optional<String>> serverUrlSupplier) {
         ImmutableMap.Builder<String, String> environmentBuilder = ImmutableMap.<String, String>builder()
                 .putAll(config.getEnvironment());
 
-        serverUrlSupplier.get().ifPresent(serverUrl -> {
-            environmentBuilder.put("ELECTRUM_CONFIG_SERVER", serverUrlSupplier.get().orElse("empty"));
+        config.getServer().ifPresent(serverUrl -> {
+            environmentBuilder.put("ELECTRUM_CONFIG_SERVER", serverUrl);
             environmentBuilder.put("ELECTRUM_CONFIG_ONESERVER", "true");
             // electrum says:
             // > `both "oneserver" and "auto_connect" options enabled, disabling "auto_connect" and resetting "server"`
             // and will disable our server if we do not disable auto_connect
             environmentBuilder.put("ELECTRUM_CONFIG_AUTO_CONNECT", "false");
+        });
+
+        config.getProxy().ifPresent(proxyParams -> {
+            environmentBuilder.put("ELECTRUM_CONFIG_PROXY", proxyParams.getProxy());
+            environmentBuilder.put("ELECTRUM_CONFIG_PROXY_USER", proxyParams.getUser().orElse(""));
+            environmentBuilder.put("ELECTRUM_CONFIG_PROXY_PASSWORD", proxyParams.getPassword().orElse(""));
         });
 
         ElectrumDaemonContainer<?> electrumDaemonContainer = new ElectrumDaemonContainer<>(dockerImageName)
