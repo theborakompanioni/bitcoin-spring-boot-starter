@@ -43,6 +43,15 @@ org.tbk.spring.testcontainer.electrum-daemon:
     ELECTRUM_NETWORK: ${org.tbk.bitcoin.jsonrpc.network}
     ELECTRUM_RPCUSER: electrum
     ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20201224
+    ELECTRUM_CONFIG_ENABLE_PROXY: ${org.tbk.spring.testcontainer.tor.enabled}
+    ELECTRUM_CONFIG_PROXY: 'none' # later eventually replaced by application with tor container host
+
+org.tbk.spring.testcontainer.tor:
+  enabled: false
+  environment:
+    TOR_EXTRA_ARGS: |
+      # no exits allowed
+      ExitPolicy reject *:*
 
 org.tbk.spring.testcontainer.electrumx:
   enabled: true

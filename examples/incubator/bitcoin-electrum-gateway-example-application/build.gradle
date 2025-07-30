@@ -5,9 +5,11 @@ description = 'electrum gateway example application package'
 dependencies {
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
+    implementation project(':spring-testcontainer:spring-testcontainer-core')
     implementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
     implementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter')
+    implementation project(':spring-testcontainer:spring-testcontainer-tor-starter')
 
     implementation 'io.projectreactor:reactor-core'
 

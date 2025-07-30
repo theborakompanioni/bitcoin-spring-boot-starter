@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,8 @@ import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
 import org.tbk.electrum.gateway.example.watch.InitElectrumConfig;
+import org.tbk.electrum.gateway.example.watch.InitElectrumProxyConfig;
+import org.tbk.spring.testcontainer.tor.TorContainer;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -54,6 +57,14 @@ class ElectrumGatewayExampleApplicationConfig {
     @Bean
     InitElectrumConfig initElectrumConfig(ElectrumClient electrumClient) {
         return new InitElectrumConfig(electrumClient);
+    }
+
+    @Bean
+    @ConditionalOnBean(TorContainer.class)
+    InitializingBean initElectrumProxyConfig(ElectrumClient electrumClient,
+                                             InitElectrumConfig initElectrumConfig,
+                                             TorContainer<?> torContainer) {
+        return new InitElectrumProxyConfig(electrumClient, torContainer);
     }
 
     @Bean
@@ -114,7 +125,7 @@ class ElectrumGatewayExampleApplicationConfig {
                     log.warn("Skip creating bean '{}' - factory already contains a bean with the same name", beanName);
                 } else {
                     ElectrumWalletWatchLoop bean = createElectrumWalletWatchLoop(properties, electrumClient, walletParams);
-                    InitializingBean initHook = bean::startAsync;
+                    CommandLineRunner initHook = args -> bean.startAsync();
                     DisposableBean destroyHook = bean::stopAsync;
 
                     beanFactory.registerSingleton(beanName, bean);

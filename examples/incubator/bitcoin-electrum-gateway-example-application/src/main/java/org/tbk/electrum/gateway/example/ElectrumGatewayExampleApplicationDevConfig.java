@@ -8,7 +8,6 @@ import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
@@ -54,9 +53,9 @@ class ElectrumGatewayExampleApplicationDevConfig {
     }
 
     @Bean
-    InitializingBean sendToDefaultWallet(ElectrumRegtestFaucet faucet,
-                                         ElectrumClient electrumClient,
-                                         WalletParams defaultWalletParams) {
+    CommandLineRunner sendToDefaultWallet(ElectrumRegtestFaucet faucet,
+                                          ElectrumClient electrumClient,
+                                          WalletParams defaultWalletParams) {
         return new FundDefaultWalletLoop(faucet, () -> {
             AddRequestResponse result = electrumClient.addRequest(AddRequestParams.builder()
                     .amount(SimpleTxoValue.zero())
@@ -68,7 +67,7 @@ class ElectrumGatewayExampleApplicationDevConfig {
     }
 
     @RequiredArgsConstructor
-    public static class FundDefaultWalletLoop implements InitializingBean {
+    public static class FundDefaultWalletLoop implements CommandLineRunner {
 
         @NonNull
         private final ElectrumRegtestFaucet faucet;
@@ -77,7 +76,7 @@ class ElectrumGatewayExampleApplicationDevConfig {
         private final Supplier<Address> destinationAddress;
 
         @Override
-        public void afterPropertiesSet() {
+        public void run(String... args) {
             Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(21))
                     .publishOn(Schedulers.boundedElastic())
                     .map(it -> Coin.valueOf(21_000 + it))
