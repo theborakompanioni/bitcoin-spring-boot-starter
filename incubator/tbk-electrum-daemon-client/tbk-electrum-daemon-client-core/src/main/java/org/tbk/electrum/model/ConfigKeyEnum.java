@@ -29,7 +29,7 @@ public enum ConfigKeyEnum {
 
     fee_policy_default(ConfigKey.of("fee_policy.default")),
     fee_policy_lightning(ConfigKey.of("fee_policy.lnwatcher")),
-    fee_policy_swaps(ConfigKey.of("fee_policy.'fee_policy.swaps'")),
+    fee_policy_swaps(ConfigKey.of("fee_policy.swaps")),
 
     log_to_file(ConfigKey.of("log_to_file")),
     logs_num_files_keep(ConfigKey.of("logs_num_files_keep")),

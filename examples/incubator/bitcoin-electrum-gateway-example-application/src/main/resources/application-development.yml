@@ -44,7 +44,15 @@ org.tbk.spring.testcontainer.electrum-daemon:
     ELECTRUM_RPCUSER: electrum
     ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20201224
     ELECTRUM_CONFIG_ENABLE_PROXY: ${org.tbk.spring.testcontainer.tor.enabled}
-    ELECTRUM_CONFIG_PROXY: 'none' # later eventually replaced by application with tor container host
+    ELECTRUM_CONFIG_PROXY: 'socks5:127.0.0.1:9050' # later eventually replaced by application with tor container host
+    ELECTRUM_CONFIG_LOG_TO_FILE: false # call to "Abstract_Wallet.get_full_history" logs every access - logs can grow quite large
+    ELECTRUM_CONFIG_SKIPMERKLECHECK: false
+    ELECTRUM_CONFIG_CONFIRMED_ONLY: true
+    ELECTRUM_CONFIG_WALLET_FREEZE_REUSED_ADDRESS_UTXOS: false
+    ELECTRUM_CONFIG_COIN_CHOOSER_OUTPUT_ROUNDING: false
+    #ELECTRUM_CONFIG_FEE_POLICY.DEFAULT: 'feerate:1000' # "1. sat/vbyte"
+    #ELECTRUM_CONFIG_FEE_POLICY.DEFAULT: 'eta:1' # "In the next block"
+    ELECTRUM_CONFIG_FEE_POLICY.DEFAULT: 'mempool:100000' # "0.1 vMB from tip"
 
 org.tbk.spring.testcontainer.tor:
   enabled: false

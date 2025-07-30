@@ -6,10 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.ConfigKeyEnum;
-import org.tbk.spring.testcontainer.core.MoreTestcontainers;
 import org.tbk.spring.testcontainer.tor.TorContainer;
 
-import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrl;
+import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternalContainerUrlWithoutProtocol;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,17 +22,12 @@ public class InitElectrumProxyConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        log.info("Setting up tor proxy for electrum...");
+        String proxy = "socks5:%s".formatted(buildInternalContainerUrlWithoutProtocol(torContainer, 9050));
+        log.info("Setting up tor proxy for electrum '{}'...", proxy);
+
         this.client.setConfig(ConfigKeyEnum.network_proxy_enabled, Boolean.TRUE.toString());
-        this.client.setConfig(ConfigKeyEnum.network_proxy, buildInternalContainerUrl(torContainer, "socks5", 9050));
+        this.client.setConfig(ConfigKeyEnum.network_proxy, proxy);
         this.client.setConfig(ConfigKeyEnum.network_proxy_user, "");
         this.client.setConfig(ConfigKeyEnum.network_proxy_password, "");
-
-        printConfig(ConfigKeyEnum.network_proxy_enabled);
-        printConfig(ConfigKeyEnum.network_proxy);
-    }
-
-    private void printConfig(ConfigKeyEnum key) {
-        log.info("config '{}': {}", key.getKey().getKey(), this.client.getConfig(key).orElse(null));
     }
 }

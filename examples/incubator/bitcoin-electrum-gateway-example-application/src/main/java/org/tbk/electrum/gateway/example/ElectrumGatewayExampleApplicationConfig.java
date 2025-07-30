@@ -21,8 +21,8 @@ import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
-import org.tbk.electrum.gateway.example.watch.InitElectrumConfig;
 import org.tbk.electrum.gateway.example.watch.InitElectrumProxyConfig;
+import org.tbk.electrum.gateway.example.watch.LogElectrumConfig;
 import org.tbk.spring.testcontainer.tor.TorContainer;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -55,16 +55,15 @@ class ElectrumGatewayExampleApplicationConfig {
     }
 
     @Bean
-    InitElectrumConfig initElectrumConfig(ElectrumClient electrumClient) {
-        return new InitElectrumConfig(electrumClient);
+    @ConditionalOnBean(TorContainer.class)
+    InitializingBean initElectrumProxyConfig(ElectrumClient electrumClient,
+                                             TorContainer<?> torContainer) {
+        return new InitElectrumProxyConfig(electrumClient, torContainer);
     }
 
     @Bean
-    @ConditionalOnBean(TorContainer.class)
-    InitializingBean initElectrumProxyConfig(ElectrumClient electrumClient,
-                                             InitElectrumConfig initElectrumConfig,
-                                             TorContainer<?> torContainer) {
-        return new InitElectrumProxyConfig(electrumClient, torContainer);
+    LogElectrumConfig logElectrumConfig(ElectrumClient electrumClient) {
+        return new LogElectrumConfig(electrumClient);
     }
 
     @Bean
