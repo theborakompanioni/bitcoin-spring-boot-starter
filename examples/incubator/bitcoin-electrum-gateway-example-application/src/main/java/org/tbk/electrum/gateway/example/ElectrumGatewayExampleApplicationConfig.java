@@ -6,12 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +19,7 @@ import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
-import org.tbk.electrum.gateway.example.watch.InitElectrumProxyConfig;
 import org.tbk.electrum.gateway.example.watch.LogElectrumConfig;
-import org.tbk.spring.testcontainer.tor.TorContainer;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -52,13 +48,6 @@ class ElectrumGatewayExampleApplicationConfig {
                         .password(it.getPassword().orElse(null))
                         .build())
                 .orElseThrow(() -> new IllegalStateException("At least one wallet must be specified."));
-    }
-
-    @Bean
-    @ConditionalOnBean(TorContainer.class)
-    InitializingBean initElectrumProxyConfig(ElectrumClient electrumClient,
-                                             TorContainer<?> torContainer) {
-        return new InitElectrumProxyConfig(electrumClient, torContainer);
     }
 
     @Bean
