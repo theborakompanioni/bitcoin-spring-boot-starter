@@ -4,13 +4,18 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.RegTestParams;
+import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.tbk.bitcoin.regtest.electrum.faucet.ElectrumRegtestFaucet;
+import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.SimpleTxoValue;
@@ -24,10 +29,29 @@ import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import static org.tbk.bitcoin.regtest.common.BitcoindStatusLogging.logBitcoinStatusOnNewBlock;
+import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.logElectrumStatusOnNewBlock;
+
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @Profile("development")
 class ElectrumGatewayExampleApplicationDevConfig {
+
+    @Bean
+    @Profile("!test")
+    CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+                                       BitcoinClient bitcoinClient) {
+        return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
+    }
+
+    @Bean
+    @Profile("!test")
+    @ConditionalOnBean(WalletParams.class)
+    CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
+                                        ElectrumClient electrumClient,
+                                        WalletParams walletParams) {
+        return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient, walletParams);
+    }
 
     @Bean
     InitializingBean sendToDefaultWallet(ElectrumRegtestFaucet faucet,

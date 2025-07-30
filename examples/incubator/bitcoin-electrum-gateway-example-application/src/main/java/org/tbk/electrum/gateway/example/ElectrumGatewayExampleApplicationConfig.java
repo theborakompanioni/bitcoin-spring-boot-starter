@@ -4,8 +4,6 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Block;
-import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,12 +11,11 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.tbk.bitcoin.zeromq.client.MessagePublishService;
+import org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
@@ -32,8 +29,6 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
-import static org.tbk.bitcoin.regtest.common.BitcoindStatusLogging.logBitcoinStatusOnNewBlock;
-import static org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging.logElectrumStatusOnNewBlock;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -63,23 +58,21 @@ class ElectrumGatewayExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    CommandLineRunner logBitcoinStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                       BitcoinClient bitcoinClient) {
-        return args -> logBitcoinStatusOnNewBlock(bitcoinjBlockPublishService, bitcoinClient);
+    CommandLineRunner logElectrumStatusPeriodically(ElectrumClient electrumClient,
+                                                    WalletParams walletParams) {
+        return args -> {
+            Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(60))
+                    .doOnNext(it -> ElectrumdStatusLogging.logStatus(electrumClient, walletParams))
+                    .onErrorResume(t -> Mono.empty())
+                    .subscribe();
+
+            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
+        };
     }
 
     @Bean
     @Profile("!test")
-    @ConditionalOnBean(WalletParams.class)
-    CommandLineRunner logElectrumStatus(MessagePublishService<Block> bitcoinjBlockPublishService,
-                                        ElectrumClient electrumClient,
-                                        WalletParams walletParams) {
-        return args -> logElectrumStatusOnNewBlock(bitcoinjBlockPublishService, electrumClient, walletParams);
-    }
-
-    @Bean
-    @Profile("!test")
-    CommandLineRunner logElectrumFeerate(ElectrumClient electrumClient) {
+    CommandLineRunner logElectrumFeeratePeriodically(ElectrumClient electrumClient) {
         return args -> {
             Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(60))
                     .doOnNext(it -> log.info("Electrum fee rate: {}", electrumClient.getFeerate()))
@@ -91,18 +84,17 @@ class ElectrumGatewayExampleApplicationConfig {
     }
 
     @Bean
-    public static BeanFactoryPostProcessor electrumGatewayBeanFactoryPostProcessor() {
+    public static BeanFactoryPostProcessor createElectrumWalletWatchLoopsPostProcessor() {
         return beanFactory -> {
-            beanFactory.addBeanPostProcessor(new ElectrumGatewayBeanFactoryPostProcessor(beanFactory));
+            beanFactory.addBeanPostProcessor(new CreateElectrumWalletWatchLoopsPostProcessor(beanFactory));
         };
     }
 
     @RequiredArgsConstructor
-    public static class ElectrumGatewayBeanFactoryPostProcessor implements BeanPostProcessor {
+    public static class CreateElectrumWalletWatchLoopsPostProcessor implements BeanPostProcessor {
 
         @NonNull
         private final ConfigurableListableBeanFactory beanFactory;
-
 
         @Override
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -114,7 +106,6 @@ class ElectrumGatewayExampleApplicationConfig {
         }
 
         private void createElectrumWalletWatchLoops(ElectrumGatewayExampleApplicationProperties properties) {
-
             ElectrumClient electrumClient = beanFactory.getBean(ElectrumClient.class);
             properties.getWallets().forEach((name, walletParams) -> {
                 log.info("Create watch loop for wallet '{}': {}", name, walletParams.getWalletPath());
