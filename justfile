@@ -74,13 +74,18 @@ test-all:
 
 # update metadata for dependency verification
 [group("development")]
-update-verification:
+update-verification *args='':
     @./gradlew \
       -Dorg.gradle.caching=false \
       -Dorg.gradle.configureondemand=false \
       -Dorg.gradle.parallel=false \
       dependencies \
-      --write-verification-metadata pgp,sha256 --export-keys --write-locks
+      --write-verification-metadata pgp,sha256 --export-keys --write-locks {{args}}
+
+# update metadata for dependency verification and refresh keys
+[group("development")]
+update-verification-refresh-keys:
+    @just update-verification --refresh-keys
 
 # check style
 [group("development")]
