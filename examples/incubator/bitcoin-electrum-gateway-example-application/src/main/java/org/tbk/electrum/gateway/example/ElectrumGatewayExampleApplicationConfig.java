@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -23,12 +24,12 @@ import org.tbk.electrum.gateway.example.watch.LogElectrumConfig;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
+import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -59,30 +60,24 @@ class ElectrumGatewayExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    CommandLineRunner logElectrumStatusPeriodically(ElectrumClient electrumClient,
-                                                    WalletParams walletParams) {
-        return args -> {
-            Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(60))
-                    .publishOn(Schedulers.boundedElastic())
-                    .doOnNext(it -> ElectrumdStatusLogging.logStatus(electrumClient, walletParams))
-                    .onErrorResume(t -> Mono.empty())
-                    .subscribe();
-
-            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
-        };
+    Trigger triggerLogElectrumStatus(JobDetail electrumStatusLoggingJobDetail) {
+        return TriggerBuilder.newTrigger().forJob(electrumStatusLoggingJobDetail)
+                .withIdentity("ElectrumStatusLoggingJobTrigger")
+                .withDescription("Trigger ElectrumStatusLoggingJob every 60s")
+                .withSchedule(repeatSecondlyForever(60))
+                .startNow()
+                .build();
     }
 
     @Bean
     @Profile("!test")
-    CommandLineRunner logElectrumFeeratePeriodically(ElectrumClient electrumClient) {
-        return args -> {
-            Disposable subscription = Flux.interval(Duration.ofSeconds(1), Duration.ofSeconds(60))
-                    .doOnNext(it -> log.info("Electrum fee rate: {}", electrumClient.getFeerate()))
-                    .onErrorResume(t -> Mono.empty())
-                    .subscribe();
-
-            Runtime.getRuntime().addShutdownHook(new Thread(subscription::dispose));
-        };
+    Trigger triggerLogElectrumFeerate(JobDetail electrumFeerateLoggingJobDetail) {
+        return TriggerBuilder.newTrigger().forJob(electrumFeerateLoggingJobDetail)
+                .withIdentity("ElectrumFeerateLoggingJob")
+                .withDescription("Trigger ElectrumFeerateLoggingJob every 30s")
+                .withSchedule(repeatSecondlyForever(30))
+                .startNow()
+                .build();
     }
 
     @Bean
