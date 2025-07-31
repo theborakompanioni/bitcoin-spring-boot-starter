@@ -21,13 +21,14 @@ class LogElectrumStatusJobConfig {
     @RequiredArgsConstructor
     public static class ElectrumStatusLoggingJob implements Job {
         @NonNull
-        private ElectrumClient electrumClient;
+        private ElectrumClient client;
 
         @NonNull
         private WalletParams walletParams;
 
+        @Override
         public void execute(JobExecutionContext context) {
-            ElectrumdStatusLogging.logStatus(electrumClient, walletParams);
+            ElectrumdStatusLogging.logStatus(client, walletParams);
         }
     }
 
@@ -44,7 +45,7 @@ class LogElectrumStatusJobConfig {
                 .ofType(ElectrumStatusLoggingJob.class)
                 .storeDurably()
                 .withIdentity("ElectrumStatusLoggingJob")
-                .withDescription("Fetch and log electrum status...")
+                .withDescription("Fetch and log electrum status.")
                 .build();
     }
 }

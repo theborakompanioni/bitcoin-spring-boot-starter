@@ -17,4 +17,8 @@ logging.level.org.springframework: INFO
 logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 #logging.level.web: DEBUG
 
+spring.quartz:
+  startup-delay: 1s
+  wait-for-jobs-to-complete-on-shutdown: true
+
 spring.profiles.default: development, local

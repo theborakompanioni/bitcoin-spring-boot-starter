@@ -4,7 +4,10 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.*;
+import org.quartz.JobDetail;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -15,21 +18,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.gateway.example.watch.ElectrumDaemonWalletSendBalance;
 import org.tbk.electrum.gateway.example.watch.ElectrumWalletWatchLoop;
-import org.tbk.electrum.gateway.example.watch.LogElectrumConfig;
-import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
@@ -54,13 +52,18 @@ class ElectrumGatewayExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    LogElectrumConfig logElectrumConfig(ElectrumClient electrumClient) {
-        return new LogElectrumConfig(electrumClient);
+    Trigger electrumConfigLoggingJobTrigger(JobDetail electrumConfigLoggingJobDetail) {
+        return TriggerBuilder.newTrigger().forJob(electrumConfigLoggingJobDetail)
+                .withIdentity("electrumConfigLoggingJobTrigger")
+                .withDescription("Trigger ElectrumConfigLoggingJob once")
+                .withSchedule(simpleSchedule().withRepeatCount(0))
+                .startNow()
+                .build();
     }
 
     @Bean
     @Profile("!test")
-    Trigger triggerLogElectrumStatus(JobDetail electrumStatusLoggingJobDetail) {
+    Trigger electrumStatusLoggingJobTrigger(JobDetail electrumStatusLoggingJobDetail) {
         return TriggerBuilder.newTrigger().forJob(electrumStatusLoggingJobDetail)
                 .withIdentity("ElectrumStatusLoggingJobTrigger")
                 .withDescription("Trigger ElectrumStatusLoggingJob every 60s")
@@ -71,7 +74,7 @@ class ElectrumGatewayExampleApplicationConfig {
 
     @Bean
     @Profile("!test")
-    Trigger triggerLogElectrumFeerate(JobDetail electrumFeerateLoggingJobDetail) {
+    Trigger electrumFeerateLoggingJobTrigger(JobDetail electrumFeerateLoggingJobDetail) {
         return TriggerBuilder.newTrigger().forJob(electrumFeerateLoggingJobDetail)
                 .withIdentity("ElectrumFeerateLoggingJob")
                 .withDescription("Trigger ElectrumFeerateLoggingJob every 30s")

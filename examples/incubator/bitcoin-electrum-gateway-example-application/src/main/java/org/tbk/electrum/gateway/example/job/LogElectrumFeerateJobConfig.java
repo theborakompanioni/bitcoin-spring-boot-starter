@@ -18,10 +18,11 @@ class LogElectrumFeerateJobConfig {
     @RequiredArgsConstructor
     public static class ElectrumFeerateLoggingJob implements Job {
         @NonNull
-        private ElectrumClient electrumClient;
+        private ElectrumClient client;
 
+        @Override
         public void execute(JobExecutionContext context) {
-            log.info("Electrum fee rate: {}", electrumClient.getFeerate());
+            log.info("Electrum fee rate: {}", client.getFeerate());
         }
     }
 
@@ -36,7 +37,7 @@ class LogElectrumFeerateJobConfig {
                 .ofType(ElectrumFeerateLoggingJob.class)
                 .storeDurably()
                 .withIdentity("ElectrumFeerateLoggingJob")
-                .withDescription("Fetch and log electrum feerate...")
+                .withDescription("Fetch and log electrum feerate.")
                 .build();
     }
 }
