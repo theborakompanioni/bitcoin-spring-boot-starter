@@ -7,7 +7,6 @@ import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.tbk.bitcoin.regtest.electrum.common.ElectrumdStatusLogging;
@@ -33,7 +32,6 @@ class LogElectrumStatusJobConfig {
     }
 
     @Bean
-    @ConditionalOnBean(WalletParams.class)
     ElectrumStatusLoggingJob electrumStatusLoggingJob(ElectrumClient electrumClient,
                                                       WalletParams walletParams) {
         return new ElectrumStatusLoggingJob(electrumClient, walletParams);

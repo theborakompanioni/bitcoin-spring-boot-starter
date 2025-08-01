@@ -5,7 +5,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDetail;
-import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.BeansException;
@@ -54,7 +53,7 @@ class ElectrumGatewayExampleApplicationConfig {
     @Profile("!test")
     Trigger electrumConfigLoggingJobTrigger(JobDetail electrumConfigLoggingJobDetail) {
         return TriggerBuilder.newTrigger().forJob(electrumConfigLoggingJobDetail)
-                .withIdentity("electrumConfigLoggingJobTrigger")
+                .withIdentity("ElectrumConfigLoggingJob")
                 .withDescription("Trigger ElectrumConfigLoggingJob once")
                 .withSchedule(simpleSchedule().withRepeatCount(0))
                 .startNow()
@@ -65,7 +64,7 @@ class ElectrumGatewayExampleApplicationConfig {
     @Profile("!test")
     Trigger electrumStatusLoggingJobTrigger(JobDetail electrumStatusLoggingJobDetail) {
         return TriggerBuilder.newTrigger().forJob(electrumStatusLoggingJobDetail)
-                .withIdentity("ElectrumStatusLoggingJobTrigger")
+                .withIdentity("ElectrumStatusLoggingJob")
                 .withDescription("Trigger ElectrumStatusLoggingJob every 60s")
                 .withSchedule(repeatSecondlyForever(60))
                 .startNow()
