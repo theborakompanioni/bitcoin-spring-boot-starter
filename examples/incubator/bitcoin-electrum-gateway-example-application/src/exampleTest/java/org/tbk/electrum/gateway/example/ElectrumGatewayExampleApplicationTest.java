@@ -4,7 +4,10 @@ import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Coin;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -42,6 +45,7 @@ import static org.tbk.spring.testcontainer.core.MoreTestcontainers.buildInternal
         ElectrumGatewayExampleApplicationTest.TestConfig.class
 })
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElectrumGatewayExampleApplicationTest {
 
     @Autowired(required = false)
@@ -64,6 +68,7 @@ class ElectrumGatewayExampleApplicationTest {
     private ElectrumClient secondaryElectrumClient;
 
     @Test
+    @Order(1)
     void contextLoads() {
         assertThat(electrumxContainer, is(notNullValue()));
 
@@ -75,6 +80,7 @@ class ElectrumGatewayExampleApplicationTest {
     }
 
     @Test
+    @Order(10)
     void electrumxContainerStarted() {
         assertThat(electrumxContainer, is(notNullValue()));
         assertThat(electrumxContainer.isRunning(), is(true));
@@ -85,6 +91,7 @@ class ElectrumGatewayExampleApplicationTest {
     }
 
     @Test
+    @Order(20)
     void primaryElectrumDaemonContainerStarted() throws Exception {
         assertThat(primaryElectrumDaemonContainer, is(notNullValue()));
         assertThat(primaryElectrumDaemonContainer.isRunning(), is(true));
@@ -102,6 +109,7 @@ class ElectrumGatewayExampleApplicationTest {
     }
 
     @Test
+    @Order(30)
     void secondaryElectrumDaemonContainerStarted() throws Exception {
         assertThat(secondaryElectrumDaemonContainer, is(notNullValue()));
         assertThat(secondaryElectrumDaemonContainer.isRunning(), is(true));
@@ -119,27 +127,27 @@ class ElectrumGatewayExampleApplicationTest {
     }
 
     @Test
+    @Order(100)
     void verifyTargetWalletReceivesCoins() {
         Stopwatch sw = Stopwatch.createStarted();
 
         Balance initialBalanceOfSecondaryWallet = secondaryElectrumClient.getBalance();
-        Coin initialSpendableValue = Coin.valueOf(initialBalanceOfSecondaryWallet.getSpendable().getValue());
-
-        log.info("Starting with balance {} on target wallet", initialSpendableValue.toFriendlyString());
+        Coin initialBalance = Coin.valueOf(initialBalanceOfSecondaryWallet.getTotal().getValue());
+        assertThat("balance of secondary wallet is zero initially", initialBalance, is(Coin.ZERO));
 
         // poll every 1s for at most 60s till second_wallet received coins
         // with blocks mined every second, electrum takes ~30s to fully synchronize and "see" updated balances
         Balance finalBalanceOfSecondaryWallet = Flux.interval(Duration.ofSeconds(1))
                 .map(foo -> secondaryElectrumClient.getBalance())
-                .filter(currentBalance -> currentBalance.getSpendable().getValue() > initialSpendableValue.getValue())
+                .filter(currentBalance -> currentBalance.getTotal().getValue() > initialBalance.getValue())
                 .blockFirst(Duration.ofSeconds(60));
 
         assertThat(finalBalanceOfSecondaryWallet, is(notNullValue()));
-        Coin finalSpendableValue = Coin.valueOf(finalBalanceOfSecondaryWallet.getSpendable().getValue());
+        Coin finalBalance = Coin.valueOf(finalBalanceOfSecondaryWallet.getSpendable().getValue());
 
-        log.info("Found new balance {} on target wallet after {}", finalSpendableValue.toFriendlyString(), sw.stop());
+        log.info("Found new balance {} on target wallet after {}", finalBalance.toFriendlyString(), sw.stop());
 
-        assertThat("spendable value of secondary wallet increased", finalSpendableValue.isGreaterThan(initialSpendableValue), is(true));
+        assertThat("balance of secondary wallet increased", finalBalance.isGreaterThan(initialBalance), is(true));
     }
 
     /**
@@ -183,9 +191,9 @@ class ElectrumGatewayExampleApplicationTest {
 
             ElectrumDaemonContainerConfig containerConfig = ElectrumDaemonContainerConfig.builder()
                     .defaultWallet(ElectrumDaemonContainerConfig.WalletParams.builder()
-                            .walletPath("/home/electrum/.electrum/regtest/wallets/default_wallet")
+                            .walletPath("/home/electrum/.electrum/regtest/wallets/second_wallet")
                             .build())
-                    .addWallet("electrum/wallets/regtest/default_wallet")
+                    .addWallet("config/data/electrum/wallets/regtest/second_wallet")
                     .addEnvVar("ELECTRUM_NETWORK", "regtest")
                     .addEnvVar("ELECTRUM_RPCUSER", "electrum")
                     .addEnvVar("ELECTRUM_RPCPASSWORD", TEST_ELECTRUM_RPCPASSWORD2)
