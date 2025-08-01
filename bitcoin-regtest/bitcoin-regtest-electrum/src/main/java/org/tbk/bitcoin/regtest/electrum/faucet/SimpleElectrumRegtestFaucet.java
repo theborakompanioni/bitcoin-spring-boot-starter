@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
     // e.g. below electrum will throw "TxBroadcastServerReturnedError: Transaction could not be broadcast due to dust outputs."
-    private static final Coin minAllowedAmountPerRequest = Coin.SATOSHI.multiply(1000);
+    private static final Coin minAllowedAmountPerRequest = Coin.SATOSHI.multiply(1_000);
     private static final Coin maxAllowedAmountPerRequest = Coin.COIN.multiply(100);
     private static final Coin txFee = Coin.valueOf(50_000L);
 
@@ -79,7 +79,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
 
         createWalletIfNecessaryOrThrow();
 
-        Coin neededSpendableAmount = amount.plus(txFee);
+        Coin neededAmount = amount.plus(txFee);
 
         Mono<Address> rewardAddress = Mono.fromCallable(() -> electrumClient.listAddresses(ListAddressParams.builder()
                         .walletPath(walletParams.getWalletPath())
@@ -111,23 +111,23 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 .walletPath(walletParams.getWalletPath())
                 .build();
 
-        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(10)))
-                .map(it -> electrumClient.getBalance(balanceParams).getSpendable())
-                .filter(spendable -> {
-                    boolean hasEnoughFunds = !spendable.isLessThan(neededSpendableAmount);
-                    log.debug("does the faucet control enough funds? {} (spendable {} less than {} needed)",
-                            hasEnoughFunds, spendable.toFriendlyString(), neededSpendableAmount.toFriendlyString());
+        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30)))
+                .map(it -> electrumClient.getBalance(balanceParams).getConfirmed())
+                .filter(confirmed -> {
+                    boolean hasEnoughFunds = !confirmed.isLessThan(neededAmount);
+                    log.debug("Does the faucet control enough funds? {} (confirmed {} less than {} needed)",
+                            hasEnoughFunds, confirmed.toFriendlyString(), neededAmount.toFriendlyString());
                     return hasEnoughFunds;
                 })
                 // mine a new coinbase reward to an address the electrum client is in control of
                 .switchIfEmpty(fundWithCoinbaseReward
                         .flatMap(address -> Mono.from(awaitBlockchainHeightIncrease))
-                        .map(blockheight -> electrumClient.getBalance(balanceParams).getSpendable()))
+                        .map(blockheight -> electrumClient.getBalance(balanceParams).getConfirmed()))
                 .repeat()
                 .takeWhile(spendable -> {
-                    boolean mineMoreBlocks = spendable.isLessThan(neededSpendableAmount);
-                    log.debug("does the faucet needs more coinbase rewards? {} (spendable {} less than {} needed)",
-                            mineMoreBlocks, spendable.toFriendlyString(), neededSpendableAmount.toFriendlyString());
+                    boolean mineMoreBlocks = spendable.isLessThan(neededAmount);
+                    log.debug("Does the faucet need more coinbase rewards? {} (confirmed {} less than {} needed)",
+                            mineMoreBlocks, spendable.toFriendlyString(), neededAmount.toFriendlyString());
                     return mineMoreBlocks;
                 })
                 .collectList()
