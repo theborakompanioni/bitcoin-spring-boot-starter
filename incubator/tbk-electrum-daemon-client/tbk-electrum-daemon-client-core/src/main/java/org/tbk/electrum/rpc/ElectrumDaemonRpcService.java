@@ -294,10 +294,9 @@ public interface ElectrumDaemonRpcService {
      * }
      * ]
      *
-     * @implNote This is a walletless server query, results are not checked by SPV.
-     *
      * @param address the wallet address
      * @return the address history
+     * @implNote This is a walletless server query, results are not checked by SPV.
      * @implNote This is a walletless server query, results are not checked by SPV.
      */
     @JsonRpcMethod("getaddresshistory")
@@ -306,10 +305,9 @@ public interface ElectrumDaemonRpcService {
     /**
      * Returns the UTXO list of any address.
      *
-     * @implNote This is a walletless server query, results are not checked by SPV.
-     *
      * @param address the wallet address
      * @return a list of unspent transaction outputs
+     * @implNote This is a walletless server query, results are not checked by SPV.
      * @implNote This is a walletless server query, results are not checked by SPV.
      */
     @JsonRpcMethod("getaddressunspent")
@@ -549,7 +547,6 @@ public interface ElectrumDaemonRpcService {
      */
     @JsonRpcMethod("listunspent")
     List<ListUnspentResponse.ListUnspentEntry> listunspent(
-            @JsonRpcOptional @JsonRpcParam("password") String password,
             @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath
     );
 

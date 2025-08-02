@@ -645,6 +645,7 @@ class ElectrumDaemonClientContainerTest {
 
         assertThat(balance, is(notNullValue()));
         assertThat(balance.getTotal(), is(notNullValue()));
+        assertThat(balance.getTotalOnChain(), is(notNullValue()));
         assertThat(balance.getUnconfirmed(), is(notNullValue()));
         assertThat(balance.getConfirmed(), is(notNullValue()));
         assertThat(balance.getSpendable(), is(notNullValue()));

@@ -190,14 +190,16 @@ class SimpleElectrumRegtestFaucetTest {
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress);
         assertThat(balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
 
-        sut.requestBitcoin(() -> destinationAddress, Coin.ofSat(1_000))
-                .repeat(2)
+        Coin requestedAmount = Coin.FIFTY_COINS.plus(Coin.SATOSHI);
+        long numberOfRequests = 3;
+        sut.requestBitcoin(() -> destinationAddress, requestedAmount)
+                .repeat(numberOfRequests - 1)
                 .collectList()
                 .block(Duration.ofSeconds(90));
 
         log.debug("Finished after {}", sw.stop());
 
         BitcoinjBalance balanceOnDestinationAddress2After = this.electrumClient.getAddressBalance(destinationAddress);
-        assertThat(balanceOnDestinationAddress2After.getTotal(), is(Coin.ofSat(1_000).multiply(3)));
+        assertThat(balanceOnDestinationAddress2After.getTotal(), is(requestedAmount.multiply(numberOfRequests)));
     }
 }

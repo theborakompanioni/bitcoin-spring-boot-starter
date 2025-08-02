@@ -12,4 +12,10 @@ public interface BitcoinjBalance {
     Coin getTotal();
 
     Coin getSpendable();
+
+    default Coin getTotalOnChain() {
+        return getConfirmed()
+                .plus(getUnconfirmed())
+                .plus(getUnmatured());
+    }
 }

@@ -312,7 +312,7 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public Utxos getUtxos(ListUnspentParams params) {
-        List<ListUnspentResponse.ListUnspentEntry> result = delegate.listunspent(params.getPassword(), params.getWalletPath());
+        List<ListUnspentResponse.ListUnspentEntry> result = delegate.listunspent(params.getWalletPath());
         return SimpleUtxos.fromUnspent(result);
     }
 

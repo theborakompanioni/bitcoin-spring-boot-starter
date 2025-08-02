@@ -91,6 +91,13 @@ public class SimpleBalance implements Balance {
                 .orElseGet(SimpleTxoValue::zero);
     }
 
+    @Override
+    public TxoValue getTotalOnChain() {
+        return SimpleTxoValue.of(confirmed.getValue()
+                                 + getUnconfirmed().getValue()
+                                 + getUnmatured().getValue());
+    }
+
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("total", getTotal().getValue())

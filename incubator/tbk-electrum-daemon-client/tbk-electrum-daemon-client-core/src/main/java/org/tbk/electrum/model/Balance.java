@@ -12,4 +12,6 @@ public interface Balance {
     TxoValue getTotal();
 
     TxoValue getSpendable();
+
+    TxoValue getTotalOnChain();
 }

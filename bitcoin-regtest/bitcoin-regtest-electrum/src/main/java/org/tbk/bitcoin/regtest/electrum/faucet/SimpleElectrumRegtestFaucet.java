@@ -4,13 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.params.RegTestParams;
 import org.tbk.bitcoin.regtest.common.AddressSupplier;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
-import org.tbk.electrum.common.ListAddressParams;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.OnchainHistory;
+import org.tbk.electrum.model.SimpleTxoValue;
+import org.tbk.electrum.rpc.command.AddRequestParams;
 import org.tbk.electrum.rpc.command.CreateParams;
 import org.tbk.electrum.rpc.command.GetBalanceParams;
 import org.tbk.electrum.rpc.command.LoadWalletParams;
@@ -27,6 +29,8 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
     private static final Coin minAllowedAmountPerRequest = Coin.SATOSHI.multiply(1_000);
     private static final Coin maxAllowedAmountPerRequest = Coin.COIN.multiply(100);
     private static final Coin txFee = Coin.valueOf(50_000L);
+    // apply a default timeout as sending from the faucet should not really take too long
+    private static final Duration defaultRequestBitcoinTimeout = Duration.ofMinutes(3);
 
     private final BitcoinjElectrumClient electrumClient;
     private final BitcoinRegtestActions bitcoinRegtestActions;
@@ -81,16 +85,15 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
 
         Coin neededAmount = amount.plus(txFee);
 
-        Mono<Address> rewardAddress = Mono.fromCallable(() -> electrumClient.listAddresses(ListAddressParams.builder()
+        Mono<Address> rewardAddress = Mono.fromCallable(() -> electrumClient.delegate().addRequest(AddRequestParams.builder()
                         .walletPath(walletParams.getWalletPath())
-                        .unused(true)
-                        .receiving(true)
+                        .amount(SimpleTxoValue.zero())
+                        .expiry(Duration.ZERO)
                         .build()))
-                .flatMapIterable(it -> it)
-                .next()
+                .map(it -> Address.fromString(RegTestParams.get(), it.getAddress()))
                 .cache();
 
-        Mono<Address> fundWithCoinbaseReward = rewardAddress
+        Mono<Address> fundWithCoinbaseReward = Mono.from(rewardAddress)
                 .flatMap(address -> Mono.from(bitcoinRegtestActions.mineBlockWithCoinbase(() -> address, 101))
                         .thenReturn(address));
 
@@ -111,31 +114,36 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 .walletPath(walletParams.getWalletPath())
                 .build();
 
-        return Mono.just(1)
-                .flatMap(it -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
+        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30)))
                 .map(it -> electrumClient.getBalance(balanceParams))
-                .filter(balance -> {
-                    boolean hasEnoughFunds = !balance.getConfirmed().isLessThan(neededAmount);
-                    log.debug("Does the faucet control enough funds? {} (confirmed {} less than {} needed)",
-                            hasEnoughFunds, balance.getConfirmed().toFriendlyString(), neededAmount.toFriendlyString());
-                    return hasEnoughFunds;
-                })
-                // mine a new coinbase reward to an address the electrum client is in control of
-                .switchIfEmpty(fundWithCoinbaseReward
+                .filter(balance -> balance.getTotalOnChain().isPositive())
+                .switchIfEmpty(Mono.just(1)
+                        .doOnNext(it -> log.debug("Faucet is empty, initialize by funding with coinbase reward."))
+                        .then(fundWithCoinbaseReward)
                         .flatMap(address -> Mono.from(awaitBlockchainHeightIncrease))
                         .flatMap(it -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
-                        .map(blockheight -> electrumClient.getBalance(balanceParams)))
+                        .map(it -> electrumClient.getBalance(balanceParams)))
+                .filter(balance -> !balance.getConfirmed().isLessThan(neededAmount))
+                .switchIfEmpty(Mono.from(rewardAddress)
+                        .doOnNext(it -> log.debug("Faucet has funds but needs more blocks for them to be confirmed."))
+                        .flatMap(address -> Mono.from(bitcoinRegtestActions.mineBlockWithCoinbase(() -> address, 1)))
+                        .flatMap(it -> Mono.from(awaitBlockchainHeightIncrease))
+                        .map(it -> electrumClient.getBalance(balanceParams)))
                 .repeat()
                 .takeWhile(balance -> {
-                    boolean mineMoreBlocks = balance.getConfirmed().isLessThan(neededAmount);
-                    log.debug("Does the faucet need more coinbase rewards? {} (confirmed {} less than {} needed)",
-                            mineMoreBlocks, balance.getConfirmed().toFriendlyString(), neededAmount.toFriendlyString());
-                    return mineMoreBlocks;
+                    boolean hasEnoughFunds = !balance.getConfirmed().isLessThan(neededAmount);
+                    log.debug("Does the faucet control enough funds? {} (needed {}; confirmed {}; unconfirmed {}; unmatured {};)",
+                            hasEnoughFunds, neededAmount.toFriendlyString(),
+                            balance.getConfirmed().toFriendlyString(),
+                            balance.getUnconfirmed().toFriendlyString(),
+                            balance.getUnmatured().toFriendlyString());
+                    return !hasEnoughFunds;
                 })
                 .collectList()
-                .flatMap(receivedAmount -> Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, destinationAddress.get(), amount, txFee)))
+                .then(Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, destinationAddress.get(), amount, txFee)))
                 .map(OnchainHistory.Transaction::getTxHash)
-                .map(Sha256Hash::wrap);
+                .map(Sha256Hash::wrap)
+                .timeout(defaultRequestBitcoinTimeout);
     }
 
     private void checkAmount(Coin amount) {
