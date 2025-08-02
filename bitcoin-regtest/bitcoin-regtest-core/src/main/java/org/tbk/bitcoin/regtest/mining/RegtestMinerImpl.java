@@ -41,7 +41,9 @@ public final class RegtestMinerImpl implements RegtestMiner {
 
             log.debug("Trying to mine {} block(s) with coinbase reward for address {}", count, coinbaseRewardAddress);
 
+            blockHashes.addAll(this.client.generateToAddress(count, coinbaseRewardAddress));
             while (blockHashes.size() < count) {
+                // might have mined less blocks than requested, mine till requested amount is reached
                 blockHashes.addAll(this.client.generateToAddress(1, coinbaseRewardAddress));
             }
 

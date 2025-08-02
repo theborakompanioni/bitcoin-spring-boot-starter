@@ -111,23 +111,25 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 .walletPath(walletParams.getWalletPath())
                 .build();
 
-        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30)))
-                .map(it -> electrumClient.getBalance(balanceParams).getConfirmed())
-                .filter(confirmed -> {
-                    boolean hasEnoughFunds = !confirmed.isLessThan(neededAmount);
+        return Mono.just(1)
+                .flatMap(it -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
+                .map(it -> electrumClient.getBalance(balanceParams))
+                .filter(balance -> {
+                    boolean hasEnoughFunds = !balance.getConfirmed().isLessThan(neededAmount);
                     log.debug("Does the faucet control enough funds? {} (confirmed {} less than {} needed)",
-                            hasEnoughFunds, confirmed.toFriendlyString(), neededAmount.toFriendlyString());
+                            hasEnoughFunds, balance.getConfirmed().toFriendlyString(), neededAmount.toFriendlyString());
                     return hasEnoughFunds;
                 })
                 // mine a new coinbase reward to an address the electrum client is in control of
                 .switchIfEmpty(fundWithCoinbaseReward
                         .flatMap(address -> Mono.from(awaitBlockchainHeightIncrease))
-                        .map(blockheight -> electrumClient.getBalance(balanceParams).getConfirmed()))
+                        .flatMap(it -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
+                        .map(blockheight -> electrumClient.getBalance(balanceParams)))
                 .repeat()
-                .takeWhile(spendable -> {
-                    boolean mineMoreBlocks = spendable.isLessThan(neededAmount);
+                .takeWhile(balance -> {
+                    boolean mineMoreBlocks = balance.getConfirmed().isLessThan(neededAmount);
                     log.debug("Does the faucet need more coinbase rewards? {} (confirmed {} less than {} needed)",
-                            mineMoreBlocks, spendable.toFriendlyString(), neededAmount.toFriendlyString());
+                            mineMoreBlocks, balance.getConfirmed().toFriendlyString(), neededAmount.toFriendlyString());
                     return mineMoreBlocks;
                 })
                 .collectList()

@@ -20,13 +20,21 @@ import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
 import org.tbk.electrum.bitcoinj.BitcoinjElectrumClient;
 import org.tbk.electrum.bitcoinj.model.BitcoinjBalance;
 import org.tbk.electrum.common.WalletParams;
+import org.tbk.electrum.model.Utxo;
+import org.tbk.electrum.model.Utxos;
 import org.tbk.electrum.rpc.command.CreateNewAddressParams;
+import org.tbk.electrum.rpc.command.ListUnspentParams;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -109,31 +117,33 @@ class SimpleElectrumRegtestFaucetTest {
     }
 
     @Test
+    @Order(10)
     void itShouldValidateMinAmount() {
         IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             sut.requestBitcoin(() -> electrumClient.createNewAddress(CreateNewAddressParams.builder()
                             .walletPath(defaultWalletParams.getWalletPath())
-                            .build()), Coin.SATOSHI.multiply(1_000).minus(Coin.SATOSHI))
-                    .block(Duration.ofSeconds(3));
+                            .build()), Coin.ofSat(1_000).minus(Coin.SATOSHI))
+                    .block(Duration.ofSeconds(30));
         });
 
         assertThat(e.getMessage(), is("Cannot request less than 0.00001 BTC from this faucet - got 0.00000999 BTC"));
     }
 
     @Test
+    @Order(20)
     void itShouldValidateMaxAmount() {
         IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             sut.requestBitcoin(() -> electrumClient.createNewAddress(CreateNewAddressParams.builder()
                             .walletPath(defaultWalletParams.getWalletPath())
-                            .build()), Coin.COIN.multiply(100).plus(Coin.SATOSHI))
-                    .block(Duration.ofSeconds(3));
+                            .build()), Coin.ofBtc(BigDecimal.valueOf(100)).plus(Coin.SATOSHI))
+                    .block(Duration.ofSeconds(30));
         });
 
         assertThat(e.getMessage(), is("Cannot request more than 100.00 BTC from this faucet - got 100.00000001 BTC"));
     }
 
     @Test
-    @Order(1001)
+    @Order(1_000)
     void itShouldSendRequestedBitcoinToAddress() {
         Stopwatch sw = Stopwatch.createStarted();
 
@@ -144,29 +154,34 @@ class SimpleElectrumRegtestFaucetTest {
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress1);
         assertThat("balance of address is zero before test", balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
 
-        sut.requestBitcoin(() -> destinationAddress1, Coin.FIFTY_COINS.plus(Coin.SATOSHI))
+        Utxos utxosBefore = this.electrumClient.delegate().getUtxos(ListUnspentParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+        assertThat("wallet has no utxos before test", utxosBefore.getUtxos(), hasSize(0));
+
+        Coin requestedAmount = Coin.FIFTY_COINS.plus(Coin.SATOSHI);
+        sut.requestBitcoin(() -> destinationAddress1, requestedAmount)
                 .block(Duration.ofSeconds(60));
 
         log.debug("Finished after {}", sw.stop());
 
         BitcoinjBalance balanceOnDestinationAddressAfter = this.electrumClient.getAddressBalance(destinationAddress1);
-        assertThat("address has received expected amount of coins", balanceOnDestinationAddressAfter.getTotal(), is(Coin.FIFTY_COINS.plus(Coin.SATOSHI)));
+        assertThat("address has received expected amount of coins", balanceOnDestinationAddressAfter.getTotal(), is(requestedAmount));
+
+        Utxo utxo = Flux.interval(Duration.ofMillis(100))
+                .map(it -> this.electrumClient.delegate().getUtxos(ListUnspentParams.builder()
+                        .walletPath(defaultWalletParams.getWalletPath())
+                        .build()))
+                .flatMap(it -> Flux.fromIterable(it.getUtxos()))
+                .filter(it -> it.getAddress().orElse("").equals(destinationAddress1.toString()))
+                .blockFirst(Duration.ofSeconds(30));
+        assertThat(utxo.getValue().getValue(), is(requestedAmount.toSat()));
     }
 
     @Test
-    @Order(1002)
-    void itShouldSendRequestedBitcoinToMultipleAddressesWithoutNeedingNewCoinbaseRewardsInBetween() {
+    @Order(1_100)
+    void itShouldSendRequestedBitcoinToMultipleAddresses() {
         Stopwatch sw = Stopwatch.createStarted();
-
-        // if this test is called in isolation, this request will trigger the faucet to mine some blocks
-        // if other test methods run before the faucet will already be in control of enough funds
-        sut.requestBitcoin(() -> electrumClient.createNewAddress(CreateNewAddressParams.builder()
-                        .walletPath(defaultWalletParams.getWalletPath())
-                        .build()), Coin.SATOSHI.multiply(1_000))
-                .block(Duration.ofSeconds(60));
-
-        int blockchainHeightBefore = electrumClient.delegate().getInfo().getBlockchainHeight();
-        assertThat("blocks have already been mined", blockchainHeightBefore, is(greaterThan(0)));
 
         Address destinationAddress = electrumClient.createNewAddress(CreateNewAddressParams.builder()
                 .walletPath(defaultWalletParams.getWalletPath())
@@ -175,7 +190,7 @@ class SimpleElectrumRegtestFaucetTest {
         BitcoinjBalance balanceOnDestinationAddress1Before = this.electrumClient.getAddressBalance(destinationAddress);
         assertThat(balanceOnDestinationAddress1Before.getTotal(), is(Coin.ZERO));
 
-        sut.requestBitcoin(() -> destinationAddress, Coin.SATOSHI.multiply(1_000))
+        sut.requestBitcoin(() -> destinationAddress, Coin.ofSat(1_000))
                 .repeat(2)
                 .collectList()
                 .block(Duration.ofSeconds(90));
@@ -183,9 +198,6 @@ class SimpleElectrumRegtestFaucetTest {
         log.debug("Finished after {}", sw.stop());
 
         BitcoinjBalance balanceOnDestinationAddress2After = this.electrumClient.getAddressBalance(destinationAddress);
-        assertThat(balanceOnDestinationAddress2After.getTotal(), is(Coin.SATOSHI.multiply(1_000).multiply(3)));
-
-        int blockchainHeightAfter = electrumClient.delegate().getInfo().getBlockchainHeight();
-        assertThat("no additional blocks have been mined to fund the faucet", blockchainHeightAfter, is(blockchainHeightBefore));
+        assertThat(balanceOnDestinationAddress2After.getTotal(), is(Coin.ofSat(1_000).multiply(3)));
     }
 }

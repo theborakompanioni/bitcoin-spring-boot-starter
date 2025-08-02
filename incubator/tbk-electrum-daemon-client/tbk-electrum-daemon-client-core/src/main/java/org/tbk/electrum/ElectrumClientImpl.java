@@ -307,7 +307,7 @@ public class ElectrumClientImpl implements ElectrumClient {
     @Override
     public Utxos getUtxosByAddress(String address) {
         List<AddressUnspentResponse.AddressUnspentEntry> result = delegate.getaddressunspent(address);
-        return SimpleUtxos.fromAddressUnspent(result);
+        return SimpleUtxos.fromAddressUnspent(address, result);
     }
 
     @Override

@@ -109,6 +109,7 @@ class ElectrumRegtestScenarioTest {
     }
 
     @Test
+    @Order(1_000)
     void itShouldHaveFluentSyntaxToSendBalance() {
         Stopwatch sw = Stopwatch.createStarted();
 

@@ -103,7 +103,7 @@ class SimpleElectrumRegtestFaucetWithMultipleWalletsTest {
     }
 
     @Test
-    @Order(1001)
+    @Order(1_000)
     void itShouldFundMultipleWallets() {
         String walletPrefix = SimpleElectrumRegtestFaucetWithMultipleWalletsTest.class.getSimpleName();
 

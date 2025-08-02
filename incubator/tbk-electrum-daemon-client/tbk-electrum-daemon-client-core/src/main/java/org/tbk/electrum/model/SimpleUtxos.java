@@ -14,10 +14,10 @@ import java.util.List;
 @Builder
 public class SimpleUtxos implements Utxos {
 
-    public static SimpleUtxos fromAddressUnspent(List<AddressUnspentResponse.AddressUnspentEntry> val) {
+    public static SimpleUtxos fromAddressUnspent(String address, List<AddressUnspentResponse.AddressUnspentEntry> val) {
         return SimpleUtxos.builder()
                 .utxos(val.stream()
-                        .map(SimpleUtxo::from)
+                        .map(it -> SimpleUtxo.from(address, it))
                         .toList())
                 .build();
     }

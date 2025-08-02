@@ -280,7 +280,7 @@ public interface ElectrumDaemonRpcService {
     AddressBalanceResponse getaddressbalance(@JsonRpcParam("address") String address);
 
     /**
-     * Get the address history.
+     * Return the transaction history of any address.
      * <p>
      * e.g.:
      * [
@@ -294,6 +294,8 @@ public interface ElectrumDaemonRpcService {
      * }
      * ]
      *
+     * @implNote This is a walletless server query, results are not checked by SPV.
+     *
      * @param address the wallet address
      * @return the address history
      * @implNote This is a walletless server query, results are not checked by SPV.
@@ -302,7 +304,9 @@ public interface ElectrumDaemonRpcService {
     List<AddressHistoryResponse.Entry> getaddresshistory(@JsonRpcParam("address") String address);
 
     /**
-     * Returns a list of unspent transaction outputs for the given address.
+     * Returns the UTXO list of any address.
+     *
+     * @implNote This is a walletless server query, results are not checked by SPV.
      *
      * @param address the wallet address
      * @return a list of unspent transaction outputs
