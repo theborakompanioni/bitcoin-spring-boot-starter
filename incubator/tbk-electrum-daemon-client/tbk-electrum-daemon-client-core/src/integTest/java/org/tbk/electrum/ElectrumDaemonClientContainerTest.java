@@ -1,8 +1,12 @@
 package org.tbk.electrum;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.arteam.simplejsonrpc.client.exception.JsonRpcException;
 import com.github.arteam.simplejsonrpc.core.domain.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.params.RegTestParams;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -802,5 +806,33 @@ class ElectrumDaemonClientContainerTest {
         assertThat(result, is(notNullValue()));
         assertThat(result.getAmount(), is(21_000L));
         assertThat(result.getStatusMessage(), is("Unpaid"));
+    }
+
+    @Test
+    void testPaytoErrorNotEnoughFunds() {
+        String address = sut.createNewAddress(CreateNewAddressParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .build());
+
+        JsonRpcException exception = Assertions.assertThrows(JsonRpcException.class, () -> {
+            RawTx ignoredOnPurpose = sut.createTransaction(PaytoParams.builder()
+                    .destination(address)
+                    .changeAddress(address)
+                    .amount(Coin.valueOf(2_100).toBtc().toPlainString())
+                    .fee(Coin.valueOf(2_100).toBtc().toPlainString())
+                    .walletPath(defaultWalletParams.getWalletPath())
+                    .password(defaultWalletParams.getPassword().orElse(null))
+                    .unsigned(false)
+                    .addTransaction(true)
+                    .build());
+        });
+        ErrorMessage error = exception.getErrorMessage();
+        assertThat(error.getCode(), is(2));
+        assertThat(error.getMessage(), is(equalToIgnoringCase("internal error while executing RPC")));
+        assertThat(error.getData(), is(notNullValue()));
+
+        JsonNode errorData = error.getData();
+        assertThat(errorData.get("exception"), is(notNullValue()));
+        assertThat(errorData.get("exception").asText(""), startsWith("NotEnoughFunds"));
     }
 }
