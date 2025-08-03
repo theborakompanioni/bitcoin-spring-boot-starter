@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.arteam.simplejsonrpc.client.exception.JsonRpcException;
 import com.github.arteam.simplejsonrpc.core.domain.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.params.RegTestParams;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -214,9 +212,9 @@ class ElectrumDaemonClientContainerTest {
     }
 
     @Test
-    void testGetMinAcceptableGap() {
+    void testGetMinAcceptableGap() throws Exception {
         // needs a synchronized wallet
-        sut.waitForWalletSynchronization(defaultWalletParams);
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
 
         int value = sut.getMinAcceptableGap();
         assertThat(value, is(greaterThanOrEqualTo(1)));
@@ -797,6 +795,7 @@ class ElectrumDaemonClientContainerTest {
         assertThat(result.getStatus(), is(1));
         assertThat(result.getStatusMessage(), is("Expired"));
     }
+
     @Test
     void testAddRequest3NeverExpire() {
         AddRequestResponse result = sut.addRequest(AddRequestParams.builder()
