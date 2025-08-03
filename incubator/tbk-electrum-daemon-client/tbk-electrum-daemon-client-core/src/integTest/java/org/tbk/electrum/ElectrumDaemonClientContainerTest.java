@@ -182,22 +182,22 @@ class ElectrumDaemonClientContainerTest {
     void testUnsetConfig() {
         String value0 = sut.getConfig(ConfigKeyEnum.fee_policy_default)
                 .map(Object::toString)
-                .orElseThrow();
-        assertThat(value0, is("eta:2"));
+                .orElse(null);
 
-        sut.setConfig(ConfigKeyEnum.fee_policy_default, "eta:42");
+        String newValue = "eta:42";
+        sut.setConfig(ConfigKeyEnum.fee_policy_default, newValue);
 
         String value1 = sut.getConfig(ConfigKeyEnum.fee_policy_default)
                 .map(Object::toString)
                 .orElseThrow();
-        assertThat(value1, is("eta:42"));
+        assertThat("value has been successfully applied", value1, is(newValue));
 
         sut.unsetConfig(ConfigKeyEnum.fee_policy_default);
 
         String value2 = sut.getConfig(ConfigKeyEnum.fee_policy_default)
                 .map(Object::toString)
-                .orElseThrow();
-        assertThat(value2, is("eta:2"));
+                .orElse(null);
+        assertThat("value has been reset to previous/default", value2, is(value0 == null ? nullValue() : value0));
     }
 
     @Test

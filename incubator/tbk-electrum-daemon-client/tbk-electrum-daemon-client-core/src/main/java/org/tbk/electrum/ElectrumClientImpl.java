@@ -69,24 +69,24 @@ public class ElectrumClientImpl implements ElectrumClient {
 
     @Override
     public RawTx createTransaction(PaytoParams params) {
-        try {
-            String payto = delegate.payto(
-                    params.getDestination(),
-                    params.getAmount(),
-                    params.getFee(),
-                    params.getFeeRate(),
-                    params.getFromAddress(),
-                    params.getFromCoins(),
-                    params.getChangeAddress(),
-                    params.getNoCheck(),
-                    params.getUnsigned(),
-                    params.getReplaceByFee(),
-                    params.getLocktime(),
-                    params.getAddTransaction(),
-                    params.getPassword(),
-                    params.getWalletPath()
-            );
+        String payto = delegate.payto(
+                params.getDestination(),
+                params.getAmount(),
+                params.getFee(),
+                params.getFeeRate(),
+                params.getFromAddress(),
+                params.getFromCoins(),
+                params.getChangeAddress(),
+                params.getNoCheck(),
+                params.getUnsigned(),
+                params.getReplaceByFee(),
+                params.getLocktime(),
+                params.getAddTransaction(),
+                params.getPassword(),
+                params.getWalletPath()
+        );
 
+        try {
             // payto can be base64 or hex
             // hex: for finalized tx?
             // base64: for unsigned tx?
