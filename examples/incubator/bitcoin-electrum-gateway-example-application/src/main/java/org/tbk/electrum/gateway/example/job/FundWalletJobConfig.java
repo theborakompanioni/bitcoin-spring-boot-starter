@@ -7,10 +7,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.params.RegTestParams;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
+import org.quartz.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -30,9 +27,10 @@ import java.util.concurrent.atomic.AtomicLong;
 @Profile("development")
 class FundWalletJobConfig {
 
+    @DisallowConcurrentExecution
     @RequiredArgsConstructor
     public static class FundWalletJob implements Job {
-        private AtomicLong counter = new AtomicLong(0);
+        private final AtomicLong counter = new AtomicLong(0);
 
         @NonNull
         private final ElectrumRegtestFaucet faucet;

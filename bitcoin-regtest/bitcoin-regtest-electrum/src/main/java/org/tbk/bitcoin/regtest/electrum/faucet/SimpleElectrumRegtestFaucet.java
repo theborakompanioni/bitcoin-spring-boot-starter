@@ -1,10 +1,14 @@
 package org.tbk.bitcoin.regtest.electrum.faucet;
 
+import com.github.arteam.simplejsonrpc.client.exception.JsonRpcException;
+import com.google.common.base.Throwables;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.params.RegTestParams;
+import org.reactivestreams.Publisher;
 import org.tbk.bitcoin.regtest.common.AddressSupplier;
 import org.tbk.bitcoin.regtest.electrum.scenario.ElectrumRegtestActions;
 import org.tbk.bitcoin.regtest.scenario.BitcoinRegtestActions;
@@ -18,6 +22,7 @@ import org.tbk.electrum.rpc.command.GetBalanceParams;
 import org.tbk.electrum.rpc.command.LoadWalletParams;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
@@ -30,7 +35,7 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
     private static final Coin maxAllowedAmountPerRequest = Coin.COIN.multiply(100);
     private static final Coin txFee = Coin.valueOf(50_000L);
     // apply a default timeout as sending from the faucet should not really take too long
-    private static final Duration defaultRequestBitcoinTimeout = Duration.ofMinutes(3);
+    private static final Duration defaultRequestBitcoinTimeout = Duration.ofSeconds(180);
 
     private final BitcoinjElectrumClient electrumClient;
     private final BitcoinRegtestActions bitcoinRegtestActions;
@@ -114,20 +119,21 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 .walletPath(walletParams.getWalletPath())
                 .build();
 
-        return Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30)))
+        return Mono.defer(() -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
                 .map(it -> electrumClient.getBalance(balanceParams))
                 .filter(balance -> balance.getTotalOnChain().isPositive())
-                .switchIfEmpty(Mono.just(1)
+                .switchIfEmpty(Mono.defer(() -> Mono.just(1))
                         .doOnNext(it -> log.debug("Faucet is empty, initialize by funding with coinbase reward."))
                         .then(fundWithCoinbaseReward)
-                        .flatMap(address -> Mono.from(awaitBlockchainHeightIncrease))
+                        .flatMap(it -> Mono.from(awaitBlockchainHeightIncrease))
                         .flatMap(it -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
                         .map(it -> electrumClient.getBalance(balanceParams)))
                 .filter(balance -> !balance.getConfirmed().isLessThan(neededAmount))
-                .switchIfEmpty(Mono.from(rewardAddress)
+                .switchIfEmpty(Mono.defer(() -> Mono.from(rewardAddress))
                         .doOnNext(it -> log.debug("Faucet has funds but needs more blocks for them to be confirmed."))
                         .flatMap(address -> Mono.from(bitcoinRegtestActions.mineBlockWithCoinbase(() -> address, 1)))
                         .flatMap(it -> Mono.from(awaitBlockchainHeightIncrease))
+                        .flatMap(it -> Mono.from(electrumRegtestActions.awaitWalletSynchronized(walletParams, Duration.ofSeconds(30))))
                         .map(it -> electrumClient.getBalance(balanceParams)))
                 .repeat()
                 .takeWhile(balance -> {
@@ -141,9 +147,37 @@ public class SimpleElectrumRegtestFaucet implements ElectrumRegtestFaucet {
                 })
                 .collectList()
                 .then(Mono.from(electrumRegtestActions.sendPaymentAndAwaitTx(walletParams, destinationAddress.get(), amount, txFee)))
+                .retryWhen(requestBitcoinRetryHandler())
                 .map(OnchainHistory.Transaction::getTxHash)
                 .map(Sha256Hash::wrap)
                 .timeout(defaultRequestBitcoinTimeout);
+    }
+    /*
+     * If the wallet only holds one utxo, the electrum daemon can only spend confirmed coins (outside the control of this class),
+     * and multiple payments have been started during the same block height, the flow can be retried.
+     * This can potentially happen because electrum might be out of sync (even if wallet is signaled as synchronized).
+     * - "TxBroadcastServerReturnedError('bad-txns-inputs-missingorspent\\nYou might have a local transaction in your wallet that this transaction builds on top. You need to either broadcast or remove the local tx.')"
+     * - "TxBroadcastServerReturnedError('insufficient fee\\nYour transaction is trying to replace another one in the mempool but it does not meet the rules to do so. Try to increase the fee.')"
+     * - "NotEnoughFunds()"
+     */
+    private static Retry requestBitcoinRetryHandler() {
+        return Retry.from(retrySignalFlux -> retrySignalFlux
+                .doOnNext(it -> log.debug("An error occurred and the action might need to be retried.", it.failure()))
+                .filter(it -> it.totalRetries() <= 2)
+                .map(Retry.RetrySignal::failure)
+                .map(Throwables::getRootCause)
+                .filter(it -> JsonRpcException.class.isAssignableFrom(it.getClass()))
+                .cast(JsonRpcException.class)
+                .map(JsonRpcException::getErrorMessage)
+                .filter(it -> it.getCode() == 2)
+                .filter(it -> it.getMessage().toLowerCase().contains("internal error while executing rpc"))
+                .filter(it -> it.getData() != null && it.getData().get("exception") != null)
+                .map(it -> requireNonNull(it.getData()).get("exception").asText("<empty>"))
+
+                .filter(it -> it.startsWith("TxBroadcastServerReturnedError") || it.startsWith("NotEnoughFunds"))
+                .doOnNext(it -> log.info("There has been an error and the action will be retried after a delay: '{}'", it))
+                .delayElements(Duration.ofSeconds(5))
+        );
     }
 
     private void checkAmount(Coin amount) {
