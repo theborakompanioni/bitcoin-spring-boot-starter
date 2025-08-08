@@ -54,6 +54,7 @@ public class ElectrumDaemonContainerAutoConfiguration {
                                 .build())
                         .orElse(null))
                 .wallets(properties.getWallets())
+                .dockerImageName(properties.getDefaultImage().orElse(null))
                 .build();
     }
 

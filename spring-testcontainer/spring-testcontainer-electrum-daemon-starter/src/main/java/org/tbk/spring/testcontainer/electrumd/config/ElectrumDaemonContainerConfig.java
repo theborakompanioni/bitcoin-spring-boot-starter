@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
+import org.testcontainers.utility.DockerImageName;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -12,12 +13,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNullElse;
 import static java.util.Objects.requireNonNullElseGet;
 import static org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerProperties.ELECTRUM_NETWORK_ENV_NAME;
 
 @Value
 @Builder(toBuilder = true)
 public class ElectrumDaemonContainerConfig {
+
+    // currently only the image from "theborakompanioni" is supported
+    static final String DEFAULT_DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.0.1@sha256:1e97f069ea9053f7d4c922dfdeac7336e444f4f2933a24662a3842dba3157de5";
+    static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
+
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
             .put(ELECTRUM_NETWORK_ENV_NAME, "regtest")
             .put("ELECTRUM_CONFIG_AUTO_CONNECT", "true")
@@ -41,6 +48,9 @@ public class ElectrumDaemonContainerConfig {
     @Nullable
     ProxyParams proxy;
 
+    @Nullable
+    DockerImageName dockerImageName;
+
     public Optional<WalletParams> getDefaultWallet() {
         return Optional.ofNullable(defaultWallet);
     }
@@ -55,6 +65,10 @@ public class ElectrumDaemonContainerConfig {
 
     public Optional<ProxyParams> getProxy() {
         return Optional.ofNullable(proxy);
+    }
+
+    public DockerImageName getDockerImageName() {
+        return requireNonNullElse(dockerImageName, defaultDockerImageName);
     }
 
     public Map<String, String> getEnvironment() {

@@ -40,7 +40,7 @@ public class ElectrumDaemonContainerProperties extends AbstractContainerProperti
     private List<String> wallets;
 
     public ElectrumDaemonContainerProperties() {
-        super(null, Collections.emptyList(), defaultEnvironment);
+        super(ElectrumDaemonContainerConfig.defaultDockerImageName, Collections.emptyList(), defaultEnvironment);
     }
 
     public Optional<WalletEntry> getDefaultWallet() {

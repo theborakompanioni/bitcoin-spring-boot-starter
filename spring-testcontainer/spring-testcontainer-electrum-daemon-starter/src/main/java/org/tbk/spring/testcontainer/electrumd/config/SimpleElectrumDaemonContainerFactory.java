@@ -11,7 +11,6 @@ import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerConfig.WalletParams;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
-import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 import java.io.IOException;
@@ -22,17 +21,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContainerProperties.ELECTRUM_NETWORK_ENV_NAME;
 
 @Slf4j
 public final class SimpleElectrumDaemonContainerFactory {
-
-    // currently only the image from "theborakompanioni" is supported
-    private static final String DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.0.1@sha256:1e97f069ea9053f7d4c922dfdeac7336e444f4f2933a24662a3842dba3157de5";
-
-    private static final DockerImageName dockerImageName = DockerImageName.parse(DOCKER_IMAGE_NAME);
 
     private static final int DEFAULT_RPC_PORT = 7000;
 
@@ -65,8 +60,8 @@ public final class SimpleElectrumDaemonContainerFactory {
             environmentBuilder.put("ELECTRUM_CONFIG_PROXY_PASSWORD", proxyParams.getPassword().orElse(""));
         });
 
-        ElectrumDaemonContainer<?> electrumDaemonContainer = new ElectrumDaemonContainer<>(dockerImageName)
-                .withCreateContainerCmdModifier(cmdModifier())
+        ElectrumDaemonContainer<?> electrumDaemonContainer = new ElectrumDaemonContainer<>(config.getDockerImageName())
+                .withCreateContainerCmdModifier(cmdModifier(() -> dockerContainerName(config)))
                 .withExposedPorts(hardcodedStandardPorts.toArray(new Integer[]{}))
                 .withEnv(environmentBuilder.buildKeepingLast())
                 .waitingFor(containerWaitStrategy);
@@ -87,12 +82,12 @@ public final class SimpleElectrumDaemonContainerFactory {
         return electrumDaemonContainer;
     }
 
-    private Consumer<CreateContainerCmd> cmdModifier() {
-        return MoreTestcontainers.cmdModifiers().withName(dockerContainerName());
+    private Consumer<CreateContainerCmd> cmdModifier(Supplier<String> name) {
+        return MoreTestcontainers.cmdModifiers().withName(name.get());
     }
 
-    private String dockerContainerName() {
-        return String.format("%s-%s-%d", dockerImageName.getUnversionedPart(),
+    private String dockerContainerName(ElectrumDaemonContainerConfig config) {
+        return String.format("%s-%s-%d", config.getDockerImageName().getUnversionedPart(),
                         Integer.toHexString(System.identityHashCode(this)),
                         containerNameIdCounter.getAndIncrement())
                 .replace("/", "-");
