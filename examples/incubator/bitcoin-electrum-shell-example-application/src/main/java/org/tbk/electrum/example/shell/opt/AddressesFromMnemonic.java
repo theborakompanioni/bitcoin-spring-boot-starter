@@ -11,6 +11,7 @@ import lombok.Value;
 import reactor.core.publisher.Flux;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import static fr.acinq.bitcoin.DeterministicWallet.hardened;
 
@@ -19,35 +20,49 @@ public class AddressesFromMnemonic {
 
     private static final int DEFAULT_AMOUNT = 21;
 
-    // expected path: m/44'/0'/0'/0
-    public static final KeyPath p2pkhPath = new KeyPath("")
-            .derive(hardened(44))
-            .derive(hardened(0))
-            .derive(hardened(0));
-    // expected path: m/49'/0'/0'/0
-    public static final KeyPath p2shPath = new KeyPath("")
-            .derive(hardened(49))
-            .derive(hardened(0))
-            .derive(hardened(0));
-    // expected path: m/84'/0'/0'/0
-    public static final KeyPath p2wpkhPath = new KeyPath("")
-            .derive(hardened(84))
-            .derive(hardened(0))
-            .derive(hardened(0));
+    // expected path: m/44'/0'/0'
+    public static final Function<Block, KeyPath> p2pkhPath = network -> {
+        long networkId = network.equals(Block.LivenetGenesisBlock) ? 0 : 1;
+        return new KeyPath("")
+                .derive(hardened(44))
+                .derive(hardened(networkId))
+                .derive(hardened(0));
+    };
 
-    public static void main(String[] args) {
-        String mnemonic = args.length == 0 ? DEFAULT_MNEMONIC : Optional.ofNullable(args[0])
-                .orElse(DEFAULT_MNEMONIC);
-        int amount = args.length <= 1 ? DEFAULT_AMOUNT : Optional.ofNullable(args[1])
-                .map(Integer::parseUnsignedInt)
-                .orElse(DEFAULT_AMOUNT);
+    // expected path: m/49'/0'/0'
+    public static final Function<Block, KeyPath> p2shPath = network -> {
+        long networkId = network.equals(Block.LivenetGenesisBlock) ? 0 : 1;
+        return new KeyPath("")
+                .derive(hardened(49))
+                .derive(hardened(networkId))
+                .derive(hardened(0));
+    };
+    // expected path: m/84'/0'/0'
+    public static final Function<Block, KeyPath> p2wpkhPath = network -> {
+        long networkId = network.equals(Block.LivenetGenesisBlock) ? 0 : 1;
+        return new KeyPath("")
+                .derive(hardened(84))
+                .derive(hardened(networkId))
+                .derive(hardened(0));
+    };
 
-        byte[] seed = MnemonicCode.toSeed(mnemonic, "");
-        ExtendedPrivateKey extendedPrivateKey = DeterministicWallet.generate(seed);
+    @Value
+    @Builder
+    public static class Mnemonic {
+        @NonNull
+        String mnemonic;
 
-        p2pkh(extendedPrivateKey, amount);
-        p2sh(extendedPrivateKey, amount);
-        p2wpkh(extendedPrivateKey, amount);
+        @Builder.Default
+        String passphrase = "";
+    }
+
+    @Value
+    @Builder
+    public static class KeyAndPath {
+        @NonNull
+        ExtendedPrivateKey privateKey;
+        @NonNull
+        KeyPath keyPath;
     }
 
     public static Flux<KeyAndPath> keys(Mnemonic mnemonic, KeyPath keyPath) {
@@ -83,54 +98,44 @@ public class AddressesFromMnemonic {
                 .build();
     }
 
-    @Value
-    @Builder
-    public static class KeyAndPath {
-        @NonNull
-        ExtendedPrivateKey privateKey;
-        @NonNull
-        KeyPath keyPath;
-    }
-
-    public static void p2pkh(ExtendedPrivateKey extendedPrivateKey, int amount) {
-        KeyPath main = p2pkhPath.derive(0);
-        keys(extendedPrivateKey, main)
+    public static void p2pkh(Block network, ExtendedPrivateKey extendedPrivateKey, int amount) {
+        keys(extendedPrivateKey, p2pkhPath.apply(network).derive(0))
                 .repeat(amount)
                 .subscribe(it -> {
-                    String address = it.getPrivateKey().getPublicKey().p2pkhAddress(Block.LivenetGenesisBlock.hash);
+                    String address = it.getPrivateKey().getPublicKey().p2pkhAddress(network.hash);
                     System.out.printf("%s;%s%n", it.getKeyPath(), address);
                 });
     }
 
-    public static void p2sh(ExtendedPrivateKey extendedPrivateKey, int amount) {
-        KeyPath main = p2shPath.derive(0);
-
-        keys(extendedPrivateKey, main)
+    public static void p2sh(Block network, ExtendedPrivateKey extendedPrivateKey, int amount) {
+        keys(extendedPrivateKey, p2shPath.apply(network).derive(0))
                 .repeat(amount)
                 .subscribe(it -> {
-                    String address = it.getPrivateKey().getPublicKey().p2shOfP2wpkhAddress(Block.LivenetGenesisBlock.hash);
+                    String address = it.getPrivateKey().getPublicKey().p2shOfP2wpkhAddress(network.hash);
                     System.out.printf("%s;%s%n", it.getKeyPath(), address);
                 });
     }
 
-    public static void p2wpkh(ExtendedPrivateKey extendedPrivateKey, int amount) {
-        KeyPath main = p2wpkhPath.derive(0);
-
-        keys(extendedPrivateKey, main)
-                .repeat(amount)
+    public static void p2wpkh(Block network, ExtendedPrivateKey extendedPrivateKey, int amount) {
+        keys(extendedPrivateKey, p2wpkhPath.apply(network).derive(0)).repeat(amount)
                 .subscribe(it -> {
-                    String address = it.getPrivateKey().getPublicKey().p2wpkhAddress(Block.LivenetGenesisBlock.hash);
+                    String address = it.getPrivateKey().getPublicKey().p2wpkhAddress(network.hash);
                     System.out.printf("%s;%s%n", it.getKeyPath(), address);
                 });
     }
 
-    @Value
-    @Builder
-    public static class Mnemonic {
-        @NonNull
-        String mnemonic;
+    public static void main(String[] args) {
+        String mnemonic = args.length == 0 ? DEFAULT_MNEMONIC : Optional.ofNullable(args[0])
+                .orElse(DEFAULT_MNEMONIC);
+        int amount = args.length <= 1 ? DEFAULT_AMOUNT : Optional.ofNullable(args[1])
+                .map(Integer::parseUnsignedInt)
+                .orElse(DEFAULT_AMOUNT);
 
-        @Builder.Default
-        String passphrase = "";
+        byte[] seed = MnemonicCode.toSeed(mnemonic, "");
+        ExtendedPrivateKey extendedPrivateKey = DeterministicWallet.generate(seed);
+
+        p2pkh(Block.LivenetGenesisBlock, extendedPrivateKey, amount);
+        p2sh(Block.LivenetGenesisBlock, extendedPrivateKey, amount);
+        p2wpkh(Block.LivenetGenesisBlock, extendedPrivateKey, amount);
     }
 }

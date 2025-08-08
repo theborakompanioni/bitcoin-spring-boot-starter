@@ -38,7 +38,7 @@ class CheckAddressesFromFileCommand {
 
                 Balance addressBalance = client.getAddressBalance(line);
                 Coin total = Coin.ofSat(addressBalance.getTotal().getValue());
-                System.out.printf("%s;%s%n", line, total.toFriendlyString());
+                System.out.printf("%s;%s;%s%n", line, total.toFriendlyString(), !total.isZero());
             }
         }
         return "";

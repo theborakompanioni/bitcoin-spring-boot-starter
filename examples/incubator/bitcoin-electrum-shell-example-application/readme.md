@@ -39,6 +39,7 @@ Commands
        getinfo: execute command 'getinfo'
        getaddressunspent: execute command 'getaddressunspent'
        checkaddressesfromfile: check balances of addresses from a file
+       vanity: generate a vanity address
 ```
 
 #### `getaddressbalance`
@@ -150,12 +151,34 @@ electrum:>getinfo
 #### `checkaddressesfromfile`
 ```shell
 electrum:>checkaddressesfromfile ../../example_address_file_regtest.txt
-bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl;350.00 BTC
-bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz;0.00 BTC
-bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j;0.00 BTC
+bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl;350.00 BTC;true
+bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz;0.00 BTC;false
+bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j;0.00 BTC;false
 # or
 electrum:>checkaddressesfromfile ../../example_address_file_mainnet.txt
-12higDjoCCNXSA95xZMWUdPvXNmkAduhWv;0.00035711 BTC
-342ftSRCvFHfCeFFBuz4xwbeqnDw6BGUey;0.00008563 BTC
-bc1qeklep85ntjz4605drds6aww9u0qr46qzrv5xswd35uhjuj8ahfcqgf6hak;0.0060157 BTC
+12higDjoCCNXSA95xZMWUdPvXNmkAduhWv;0.00035711 BTC;true
+342ftSRCvFHfCeFFBuz4xwbeqnDw6BGUey;0.00008563 BTC;true
+bc1qeklep85ntjz4605drds6aww9u0qr46qzrv5xswd35uhjuj8ahfcqgf6hak;0.0060157 BTC;true
+```
+
+#### `vanity`
+```shell
+# or
+electrum:>vanity --network regtest --address-prefix eat
+{
+  "address" : "bcrt1qeat2kv2xs5pw7hrhs4n9dwxw3py7j7rfv802wq",
+  "mnemonic" : "mercy dawn spare satisfy place aspect eye measure live argue skate scorpion",
+  "passphrase" : ""
+}
+# or
+electrum:>vanity --address-type p2pkh
+{
+"address" : "1AWgukWaE1hcBv3VELsK5aRr8ZTo4NSLwZ",
+"mnemonic" : "roast energy copy crouch reason tragic icon letter embody fault mom noble",
+"passphrase" : ""
+}
+# or
+electrum:>vanity --network mainnet --address-prefix eater --timeout 5s
+Timeout on blocking read for 5000000000 NANOSECONDS
+Details of the error have been omitted. You can use the stacktrace command to print the full stacktrace.
 ```
