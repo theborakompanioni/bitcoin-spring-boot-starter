@@ -38,6 +38,7 @@ Commands
        getaddresshistory: execute command 'getaddresshistory'
        getinfo: execute command 'getinfo'
        getaddressunspent: execute command 'getaddressunspent'
+       checkaddressesfromfile: check balances of addresses from a file
 ```
 
 #### `getaddressbalance`
@@ -144,4 +145,17 @@ electrum:>getinfo
     "5" : 2361
   }
 }
+```
+
+#### `checkaddressesfromfile`
+```shell
+electrum:>checkaddressesfromfile ../../example_address_file_regtest.txt
+bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl;350.00 BTC
+bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz;0.00 BTC
+bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j;0.00 BTC
+# or
+electrum:>checkaddressesfromfile ../../example_address_file_mainnet.txt
+12higDjoCCNXSA95xZMWUdPvXNmkAduhWv;0.00035711 BTC
+342ftSRCvFHfCeFFBuz4xwbeqnDw6BGUey;0.00008563 BTC
+bc1qeklep85ntjz4605drds6aww9u0qr46qzrv5xswd35uhjuj8ahfcqgf6hak;0.0060157 BTC
 ```
