@@ -1,6 +1,9 @@
 package org.tbk.spring.testcontainer.electrumd.example;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,6 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ElectrumDaemonExampleApplicationTest {
 
     @Autowired(required = false)
@@ -26,6 +30,7 @@ class ElectrumDaemonExampleApplicationTest {
     private ElectrumClient electrumClient;
 
     @Test
+    @Order(1)
     void contextLoads() {
         assertThat(container, is(notNullValue()));
         assertThat(container.isRunning(), is(true));

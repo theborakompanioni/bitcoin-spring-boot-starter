@@ -8,6 +8,7 @@ import lombok.Value;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,14 @@ public class ElectrumDaemonContainerConfig {
 
     @Nullable
     DockerImageName dockerImageName;
+
+    /**
+     * A delay to retry loading a wallet if the first attempt failed.
+     * This provides some time to the daemon to start before trying to load a wallet again.
+     * 5 seconds seems to be enough. Increase on demand.
+     */
+    @Builder.Default
+    Duration loadWalletRetryDelay = Duration.ofSeconds(5);
 
     public Optional<WalletParams> getDefaultWallet() {
         return Optional.ofNullable(defaultWallet);

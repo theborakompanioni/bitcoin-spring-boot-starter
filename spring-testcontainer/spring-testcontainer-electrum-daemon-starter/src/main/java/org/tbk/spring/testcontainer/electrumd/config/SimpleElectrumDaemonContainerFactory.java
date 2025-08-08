@@ -72,7 +72,7 @@ public final class SimpleElectrumDaemonContainerFactory {
 
         config.getDefaultWallet().ifPresent(it -> {
             // give the daemon some time to startup; 5000ms seems to be enough
-            Container.ExecResult execResult = tryLoadWallet(electrumDaemonContainer, it, Duration.ofMillis(5_000));
+            Container.ExecResult execResult = tryLoadWallet(electrumDaemonContainer, it, config.getLoadWalletRetryDelay());
             if (execResult.getExitCode() != 0) {
                 log.error("Error while loading default wallet: {}", execResult.getStderr());
                 throw new IllegalStateException("Could not load default wallet");
@@ -165,6 +165,7 @@ public final class SimpleElectrumDaemonContainerFactory {
         if (execResult.getExitCode() != 0) {
             // try again with given delay if first try did not work
             try {
+                log.debug("Could not load wallet '{}' on first try. Will sleep {} and try again...", wallet.getWalletPath(), delay);
                 Thread.sleep(delay.toMillis());
                 return tryLoadWallet(container, wallet);
             } catch (InterruptedException ie) {
