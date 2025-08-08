@@ -1,0 +1,21 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
+
+spring.lifecycle.timeout-per-shutdown-phase: 30s
+spring.threads.virtual.enabled: true
+
+spring.main.banner-mode: OFF
+spring.shell.interactive.enabled: true
+spring.shell.script.enabled: true
+
+# LOGGING
+logging.file.path: ./var/log
+logging.file.name: ${logging.file.path}/application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: WARN
+logging.level.org.tbk.electrum.shell.example: WARN
+logging.level.org.bitcoinj.core.Context: OFF # too noisy in a cli app
+
+spring.profiles.default: development, local

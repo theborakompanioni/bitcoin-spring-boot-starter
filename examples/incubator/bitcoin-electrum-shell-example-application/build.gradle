@@ -1,0 +1,34 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'electrum balance example application package'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.shell:spring-shell-dependencies:${springShellVersion}"
+    }
+}
+
+bootRun {
+    args = [] // overwrite from global gradle build
+    standardInput = System.in // needed for interactive spring-shell mode
+}
+
+dependencies {
+    implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
+
+    implementation project(':spring-testcontainer:spring-testcontainer-core')
+    implementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
+    implementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
+    implementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter')
+    implementation project(':spring-testcontainer:spring-testcontainer-tor-starter')
+
+    implementation 'io.projectreactor:reactor-core'
+
+    // for importing "DurationStyle" class
+    implementation 'org.springframework.boot:spring-boot'
+
+    implementation 'org.springframework.shell:spring-shell-starter'
+    testImplementation 'org.springframework.shell:spring-shell-starter-test'
+
+    testImplementation project(':spring-testcontainer:spring-testcontainer-test')
+}

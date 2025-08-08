@@ -1,0 +1,31 @@
+app.name: tbk-bitcoin-spring-boot-starter-demo
+app.description: A spring boot bitcoin demo application
+
+spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo'
+
+org.tbk.spring.testcontainer.electrum-daemon:
+  enabled: true
+  environment:
+    ELECTRUM_NETWORK: mainnet
+    ELECTRUM_RPCUSER: electrum
+    ELECTRUM_RPCPASSWORD: correct_horse_battery_staple_20210508
+    ELECTRUM_CONFIG_SERVER: 'blockstream.info:700:s'
+    ELECTRUM_CONFIG_ENABLE_PROXY: ${org.tbk.spring.testcontainer.tor.enabled}
+    #ELECTRUM_CONFIG_SERVER: 'electrum.acinq.co:50002:s'
+    ELECTRUM_CONFIG_ONESERVER: true
+    ELECTRUM_CONFIG_AUTO_CONNECT: false
+    ELECTRUM_CONFIG_PROXY: 'socks5:127.0.0.1:9050' # later eventually replaced by application with tor container host
+
+org.tbk.bitcoin.electrum-daemon.jsonrpc:
+  enabled: true
+  rpchost: http://localhost
+  rpcport: 7000
+  rpcuser: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCUSER}
+  rpcpassword: ${org.tbk.spring.testcontainer.electrum-daemon.environment.ELECTRUM_RPCPASSWORD}
+
+org.tbk.spring.testcontainer.tor:
+  enabled: true
+  environment:
+    TOR_EXTRA_ARGS: |
+      # no exits allowed
+      ExitPolicy reject *:*
