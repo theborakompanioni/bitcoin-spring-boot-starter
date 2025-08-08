@@ -13,6 +13,6 @@
 
     <logger name="org.tbk.bitcoin.regtest.electrum.faucet" level="DEBUG"/>
 
-    <logger name="org.tbk.electrum.shell.example" level="DEBUG"/>
+    <logger name="org.tbk.electrum.example.shell" level="DEBUG"/>
 
 </configuration>

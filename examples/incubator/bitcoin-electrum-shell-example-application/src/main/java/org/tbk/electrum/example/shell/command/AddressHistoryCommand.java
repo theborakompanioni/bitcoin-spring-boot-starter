@@ -1,4 +1,4 @@
-package org.tbk.electrum.shell.example.command;
+package org.tbk.electrum.example.shell.command;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;

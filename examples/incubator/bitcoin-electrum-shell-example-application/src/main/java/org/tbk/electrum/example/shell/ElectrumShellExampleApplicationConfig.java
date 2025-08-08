@@ -1,4 +1,4 @@
-package org.tbk.electrum.shell.example;
+package org.tbk.electrum.example.shell;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;

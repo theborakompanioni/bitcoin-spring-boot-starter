@@ -15,7 +15,7 @@ logging.file.path: ./var/log
 logging.file.name: ${logging.file.path}/application.log
 logging.config: classpath:logback.xml
 logging.level.org.springframework: WARN
-logging.level.org.tbk.electrum.shell.example: WARN
+logging.level.org.tbk.electrum.example.shell: WARN
 logging.level.org.bitcoinj.core.Context: OFF # too noisy in a cli app
 
 spring.profiles.default: development, local
