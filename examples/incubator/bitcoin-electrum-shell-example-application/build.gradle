@@ -23,6 +23,7 @@ dependencies {
     implementation project(':spring-testcontainer:spring-testcontainer-tor-starter')
 
     implementation 'io.projectreactor:reactor-core'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
 
     // for importing "DurationStyle" class
     implementation 'org.springframework.boot:spring-boot'

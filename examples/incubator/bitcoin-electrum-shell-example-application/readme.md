@@ -35,7 +35,9 @@ Built-In Commands
 
 Commands
        getaddressbalance: execute command 'getaddressbalance'
+       getaddresshistory: execute command 'getaddresshistory'
        getinfo: execute command 'getinfo'
+       getaddressunspent: execute command 'getaddressunspent'
 ```
 
 #### `getaddressbalance`
@@ -45,6 +47,65 @@ electrum:>getaddressbalance bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regt
 # or
 electrum:>getaddressbalance 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
 0.00035711 BTC
+```
+
+#### `getaddresshistory`
+```shell
+electrum:>getaddresshistory bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
+[ {
+  "txHash" : "dc9e376d145d962d3b2e52a83b7f7ef9c390f0227a10173ac993f7ee7d642fa1",
+  "height" : 1
+} ]
+# or
+electrum:>getaddresshistory 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
+[ {
+  "txHash" : "6f7cf9580f1c2dfb3c4d5d043cdbb128c640e3f20161245aa7372e9666168516",
+  "height" : 728
+}, {
+  "txHash" : "90ff15e5a80593977fb2f6666de2860584d39ebc3a41f65a0a1fdc3a851aefda",
+  "height" : 1056
+}, [...] ]
+```
+
+#### `getaddressunspent`
+```shell
+electrum:>getaddressunspent bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
+{
+  "utxos" : [ {
+    "height" : 1,
+    "txHash" : "dc9e376d145d962d3b2e52a83b7f7ef9c390f0227a10173ac993f7ee7d642fa1",
+    "txPos" : 0,
+    "value" : {
+      "value" : 5000000000,
+      "zero" : false
+    },
+    "address" : "bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl"
+  } ],
+  "value" : {
+    "value" : 5000000000,
+    "zero" : false
+  },
+  "empty" : false
+}
+# or
+electrum:>getaddressunspent 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
+{
+  "utxos" : [ {
+    "height" : 898336,
+    "txHash" : "4c776295b641f078d4a405f71fcf9ac2aae8fb4b18f7a1fc8a132682390946c9",
+    "txPos" : 0,
+    "value" : {
+      "value" : 19855,
+      "zero" : false
+    },
+    "address" : "12higDjoCCNXSA95xZMWUdPvXNmkAduhWv"
+  }, [...] ],
+  "value" : {
+    "value" : 35711,
+    "zero" : false
+  },
+  "empty" : false
+}
 ```
 
 #### `getinfo`

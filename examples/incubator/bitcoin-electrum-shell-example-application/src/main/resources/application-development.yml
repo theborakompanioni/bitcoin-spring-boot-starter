@@ -86,11 +86,6 @@ org.tbk.bitcoin.jsonrpc:
   rpcuser: ${org.tbk.spring.testcontainer.bitcoind.rpcuser}
   rpcpassword: ${org.tbk.spring.testcontainer.bitcoind.rpcpassword}
 
-org.tbk.bitcoin.zeromq:
-  network: ${org.tbk.bitcoin.jsonrpc.network}
-  zmqpubrawblock: tcp://localhost:28332
-  zmqpubrawtx: tcp://localhost:28333
-
 org.tbk.bitcoin.electrum-daemon.jsonrpc:
   enabled: true
   rpchost: http://localhost
