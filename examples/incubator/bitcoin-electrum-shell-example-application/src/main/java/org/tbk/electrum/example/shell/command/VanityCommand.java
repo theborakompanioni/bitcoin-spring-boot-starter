@@ -19,10 +19,9 @@ import org.springframework.shell.standard.ShellCommandGroup;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import org.tbk.electrum.example.shell.opt.AddressesFromMnemonic;
-import org.tbk.electrum.example.shell.opt.AddressesFromMnemonic.KeyAndPath;
-import org.tbk.electrum.example.shell.opt.AddressesFromMnemonic.Mnemonic;
-import org.tbk.electrum.example.shell.opt.MoreRandom;
+import org.tbk.electrum.example.shell.util.MoreRandom;
+import org.tbk.electrum.example.shell.util.Wallet;
+import org.tbk.electrum.example.shell.util.Wallet.Mnemonic;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -81,7 +80,7 @@ class VanityCommand {
                 .build();
 
         Predicate<Mnemonic> mnemonicPredicate = mnemonic -> toFirstAddressMapper(params)
-                .andThen(it -> params.getAddressPredicate().test(it))
+                .andThen(it -> params.getAddressPredicate().test(it.getAddress()))
                 .apply(mnemonic);
 
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -91,19 +90,22 @@ class VanityCommand {
 
         log.debug("vanity with address-prefix '{}' took {}", addressPrefix, stopwatch.stop());
 
+        Wallet.AddressAndPath firstAddress = toFirstAddressMapper(params, mnemonic);
         return jsonMapper.writeValueAsString(ImmutableMap.<String, String>builder()
                 .put("mnemonic", mnemonic.getMnemonic())
                 .put("passphrase", mnemonic.getPassphrase())
-                .put("address", toFirstAddressMapper(params).apply(mnemonic))
+                .put("path", firstAddress.getKeyPath().toString())
+                .put("address", firstAddress.getAddress())
                 .build());
     }
 
+    private static Wallet.AddressAndPath toFirstAddressMapper(VanityCommandParams params, Mnemonic mnemonic) {
+        return toFirstAddressMapper(params).apply(mnemonic);
+    }
 
-    private static Function<Mnemonic, String> toFirstAddressMapper(VanityCommandParams params) {
-        return mnemonic -> {
-            KeyAndPath keyAndPath = AddressesFromMnemonic.key(mnemonic, params.getKeyPath(), 0);
-            return params.getAddressMapper().apply(keyAndPath.getPrivateKey().getPublicKey());
-        };
+    private static Function<Mnemonic, Wallet.AddressAndPath> toFirstAddressMapper(VanityCommandParams params) {
+        return mnemonic -> Wallet.from(params.getNetwork(), mnemonic)
+                .deriveAddress(params.getKeyPath().derive(0).derive(0), params.getAddressMapper());
     }
 
     private static Optional<Duration> parseTimeout(String timeoutArg) {
@@ -142,9 +144,9 @@ class VanityCommand {
         }
     }
 
-    private Mnemonic randomMnemonic() {
+    private Wallet.Mnemonic randomMnemonic() {
         List<String> mnemonics = MnemonicCode.toMnemonics(MoreRandom.randomByteArray(128 / 8));
-        return Mnemonic.builder()
+        return Wallet.Mnemonic.builder()
                 .mnemonic(String.join(" ", mnemonics))
                 .build();
     }
@@ -235,9 +237,9 @@ class VanityCommand {
 
             public KeyPath standardKeyPath(Block network) {
                 return switch (this) {
-                    case p2pkh -> AddressesFromMnemonic.p2pkhPath.apply(network).derive(0);
-                    case p2wpkh_p2sh -> AddressesFromMnemonic.p2shPath.apply(network).derive(0);
-                    case p2wpkh -> AddressesFromMnemonic.p2wpkhPath.apply(network).derive(0);
+                    case p2pkh -> Wallet.p2pkhPath(network).derive(0);
+                    case p2wpkh_p2sh -> Wallet.p2shPath(network).derive(0);
+                    case p2wpkh -> Wallet.p2wpkhPath(network).derive(0);
                 };
             }
 

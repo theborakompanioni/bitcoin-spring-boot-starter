@@ -1,4 +1,4 @@
-package org.tbk.electrum.example.shell.opt;
+package org.tbk.electrum.example.shell.util;
 
 import java.security.SecureRandom;
 
