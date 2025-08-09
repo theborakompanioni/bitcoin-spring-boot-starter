@@ -2,7 +2,7 @@
 services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
-    image: polarlightning/bitcoind:27.0
+    image: polarlightning/bitcoind:27.0@sha256:7ac359cacd1c667fae321fe049d3d860eb85f1f14aff805e96246c5dc70f2f13
     restart: no
     command:
       -regtest=1
@@ -42,7 +42,7 @@ services:
 
   electrumx_regtest:
     container_name: electrumx_regtest
-    image: lukechilds/electrumx:v1.16.0
+    image: lukechilds/electrumx:v1.16.0@sha256:72002782c432881f96837896ddad00e56469dac401420e3790afb86ca0ecb3a3
     restart: no
     depends_on:
       bitcoind_regtest:
