@@ -84,7 +84,7 @@ allprojects {
 configure(rootProject) {
     defaultTasks 'clean', 'build', 'integrationTest'
 
-    tasks.named('clean').configureEach {
+    tasks.register('clean').configure {
         doLast {
             delete fileTree("${rootProject.projectDir}") {
                 include '**/*.log'
