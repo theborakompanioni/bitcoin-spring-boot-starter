@@ -92,7 +92,8 @@ application-management.port
 *.db-journal
 *.tmp
 **/*-local.yml
-**/*.local.md
+**/*-local.csv
+**/*-local.md
 *.dat
 *.hprof
 .resourceCache/

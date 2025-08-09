@@ -52,7 +52,7 @@ class VanityCommand {
             @ShellOption(value = "address-suffix", defaultValue = "", help = "address suffix") String addressSuffixArg,
             @ShellOption(value = "network", defaultValue = "mainnet", help = "mainnet|regtest|signet|testnet4") String networkArg,
             @ShellOption(value = "address-type", defaultValue = "p2wpkh", help = "p2wpkh|p2wpkh_p2sh|p2pkh") String addressTypeArg,
-            @ShellOption(value = "path", defaultValue = "", help = " m/84'/0'/0'/0|m/49'/0'/0'/0|m/44'/0'/0'/0") String pathArg,
+            @ShellOption(value = "path", defaultValue = "", help = "m/86'/0'/0'/0|m/84'/0'/0'/0|m/49'/0'/0'/0|m/44'/0'/0'/0") String pathArg,
             @ShellOption(value = "parallelism", defaultValue = "0", help = "parallelism level (default: # of processors / 2)") int parallelismArg,
             @ShellOption(value = "timeout", defaultValue = "-1", help = "timeout (e.g. 2s, 2d, default: -1 [no timeout])") String timeoutArg
     ) throws JsonProcessingException {
@@ -195,7 +195,7 @@ class VanityCommand {
         }
 
         public enum AddressType {
-            p2wpkh, p2wpkh_p2sh, p2pkh;
+            p2tr, p2wpkh, p2wpkh_p2sh, p2pkh;
 
             public List<String> addressPrefix(Block network) {
                 return switch (network) {
@@ -203,17 +203,20 @@ class VanityCommand {
                         case p2pkh -> List.of("1");
                         case p2wpkh_p2sh -> List.of("3");
                         case p2wpkh -> List.of("bc1q");
+                        case p2tr -> List.of("bc1p");
                     };
                     case Block b when b.equals(Block.RegtestGenesisBlock) -> switch (this) {
                         case p2pkh -> List.of("m", "n");
                         case p2wpkh_p2sh -> List.of("2");
                         case p2wpkh -> List.of("bcrt1q");
+                        case p2tr -> List.of("bcrt1p");
                     };
                     // signet, testnet, testnet4
                     default -> switch (this) {
                         case p2pkh -> List.of("m", "n");
                         case p2wpkh_p2sh -> List.of("2");
                         case p2wpkh -> List.of("tb1q");
+                        case p2tr -> List.of("tb1p");
                     };
                 };
             }
@@ -223,6 +226,7 @@ class VanityCommand {
                     case p2pkh -> it.p2pkhAddress(network.hash);
                     case p2wpkh_p2sh -> it.p2shOfP2wpkhAddress(network.hash);
                     case p2wpkh -> it.p2wpkhAddress(network.hash);
+                    case p2tr -> it.p2trAddress(network.hash);
                 };
             }
 
@@ -231,13 +235,14 @@ class VanityCommand {
                     case p2pkh -> Wallet.bip44P2pkhPath(network, 0).derive(0);
                     case p2wpkh_p2sh -> Wallet.bip49P2shPath(network, 0).derive(0);
                     case p2wpkh -> Wallet.bip84P2wpkhPath(network, 0).derive(0);
+                    case p2tr -> Wallet.bip86P2trPath(network, 0).derive(0);
                 };
             }
 
             public Predicate<String> validChars() {
                 return switch (this) {
                     case p2pkh, p2wpkh_p2sh -> hasValidBase58Chars;
-                    case p2wpkh -> hasValidBech32Chars;
+                    case p2wpkh, p2tr -> hasValidBech32Chars;
                 };
             }
 

@@ -1,16 +1,15 @@
 package org.tbk.electrum.example.shell.command;
 
 import fr.acinq.bitcoin.Block;
-import fr.acinq.bitcoin.KeyPath;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jline.terminal.Terminal;
 import org.springframework.shell.standard.*;
 import org.tbk.electrum.ElectrumClient;
+import org.tbk.electrum.example.shell.util.WalletTree;
 import org.tbk.electrum.example.shell.util.MoreBlocks;
 import org.tbk.electrum.example.shell.util.Wallet;
-import reactor.core.publisher.Flux;
 
 import java.io.*;
 import java.util.Optional;
@@ -51,7 +50,7 @@ class WalletTreeCommand extends AbstractShellComponent {
                 printWriter.printf("#### '%s'%n".formatted(mnemonic));
                 printWriter.printf("##### passphrase: '%s'%n".formatted(passphrase));
 
-                addresses(wallet, amount).subscribe(it -> {
+                WalletTree.tree(wallet, amount).subscribe(it -> {
                     String line = "%s;%s".formatted(it.getAddress(), it.getKeyPath());
                     System.out.printf("%s%n", line);
                     printWriter.printf("%s%n", line);
@@ -60,25 +59,5 @@ class WalletTreeCommand extends AbstractShellComponent {
         } finally {
             terminal.resume();
         }
-    }
-
-    private static Flux<Wallet.AddressAndPath> addresses(Wallet wallet, int amount) {
-        return Flux.merge(
-                wallet.p2pkh(new KeyPath("")).take(amount),
-                wallet.p2pkh(Wallet.deprecatedBip32P2pkhPath().derive(0)).take(amount),
-                wallet.p2pkh(Wallet.deprecatedBip32P2pkhPath().derive(1)).take(amount),
-                wallet.p2pkh(0, 0).take(amount),
-                wallet.p2pkh(0, 1).take(amount),
-                wallet.p2pkh(1, 0).take(amount),
-                wallet.p2pkh(1, 1).take(amount),
-                wallet.p2sh(0, 0).take(amount),
-                wallet.p2sh(0, 1).take(amount),
-                wallet.p2sh(1, 0).take(amount),
-                wallet.p2sh(1, 1).take(amount),
-                wallet.p2wpkh(0, 0).take(amount),
-                wallet.p2wpkh(0, 1).take(amount),
-                wallet.p2wpkh(1, 0).take(amount),
-                wallet.p2wpkh(1, 1).take(amount)
-        );
     }
 }

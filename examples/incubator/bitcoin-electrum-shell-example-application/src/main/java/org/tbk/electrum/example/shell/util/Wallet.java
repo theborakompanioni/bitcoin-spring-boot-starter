@@ -53,6 +53,16 @@ public class Wallet {
         return bip84P2wpkhPath(network).derive(hardened(account));
     }
 
+    public static KeyPath bip86P2trPath(Block network) {
+        return new KeyPath("")
+                .derive(hardened(86))
+                .derive(hardened(coinTypeForKeyPath(network)));
+    }
+
+    public static KeyPath bip86P2trPath(Block network, long account) {
+        return bip86P2trPath(network).derive(hardened(account));
+    }
+
     public static Wallet from(Block network, Mnemonic mnemonic) {
         byte[] seed = MnemonicCode.toSeed(mnemonic.getMnemonic(), mnemonic.getPassphrase());
         return new Wallet(network, DeterministicWallet.generate(seed));
@@ -131,6 +141,18 @@ public class Wallet {
 
     public Flux<AddressAndPath> p2wpkh(KeyPath keyPath) {
         return deriveAddresses(keyPath, it -> it.p2wpkhAddress(network.hash));
+    }
+
+    public Flux<AddressAndPath> p2tr() {
+        return p2tr(0, 0);
+    }
+
+    public Flux<AddressAndPath> p2tr(long account, long change) {
+        return p2tr(bip86P2trPath(network, account).derive(change));
+    }
+
+    public Flux<AddressAndPath> p2tr(KeyPath keyPath) {
+        return deriveAddresses(keyPath, it -> it.p2trAddress(network.hash));
     }
 
 
