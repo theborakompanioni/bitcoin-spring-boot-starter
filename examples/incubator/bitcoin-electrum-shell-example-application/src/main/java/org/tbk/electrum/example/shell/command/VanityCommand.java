@@ -236,9 +236,9 @@ class VanityCommand {
 
             public KeyPath standardKeyPath(Block network) {
                 return switch (this) {
-                    case p2pkh -> Wallet.p2pkhPath(network).derive(0);
-                    case p2wpkh_p2sh -> Wallet.p2shPath(network).derive(0);
-                    case p2wpkh -> Wallet.p2wpkhPath(network).derive(0);
+                    case p2pkh -> Wallet.p2pkhPath(network, 0).derive(0);
+                    case p2wpkh_p2sh -> Wallet.p2shPath(network, 0).derive(0);
+                    case p2wpkh -> Wallet.p2wpkhPath(network, 0).derive(0);
                 };
             }
 

@@ -24,23 +24,36 @@ class CheckAddressesFromFileCommand extends AbstractShellComponent {
 
     @ShellMethod(key = "checkaddressesfromfile", value = "check balances of addresses from a file")
     public void run(
-            @ShellOption(value = "file", help = "the file") String fileName
-    ) throws IOException {
+            @ShellOption(value = "file", help = "the file") String fileName,
+            @ShellOption(value = "show-zero", defaultValue = "true", help = "filter non-zero balances") boolean showZero
+    ) throws IOException, InterruptedException {
         Terminal terminal = getTerminal();
+        terminal.pause(true);
+
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
-                if (line.isBlank() || line.startsWith("#")) {
+                if (line.startsWith("#") || line.startsWith("//")) {
+                    continue;
+                }
+                String address = line.split(";", 2)[0].trim();
+                if (address.isBlank()) {
                     continue;
                 }
 
-                Balance addressBalance = client.getAddressBalance(line);
+                Balance addressBalance = client.getAddressBalance(address);
                 Coin total = Coin.ofSat(addressBalance.getTotal().getValue());
+
+                if (!showZero && total.isZero()) {
+                    continue;
+                }
 
                 terminal.writer().printf("%s;%s;%s%n", line, total.toFriendlyString(), !total.isZero());
                 terminal.writer().flush();
             }
+        } finally {
+            terminal.resume();
         }
     }
 }
