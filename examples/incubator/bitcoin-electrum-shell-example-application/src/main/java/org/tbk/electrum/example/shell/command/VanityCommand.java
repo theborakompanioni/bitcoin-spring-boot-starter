@@ -19,6 +19,7 @@ import org.springframework.shell.standard.ShellCommandGroup;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.tbk.electrum.example.shell.util.MoreBlocks;
 import org.tbk.electrum.example.shell.util.MoreRandom;
 import org.tbk.electrum.example.shell.util.Wallet;
 import org.tbk.electrum.example.shell.util.Wallet.Mnemonic;
@@ -72,7 +73,7 @@ class VanityCommand {
         }
 
         VanityCommandParams params = VanityCommandParams.builder()
-                .network(VanityCommandParams.toNetwork(networkArg))
+                .network(MoreBlocks.toNetwork(networkArg))
                 .addressType(addressType)
                 .keyPath(keyPath.orElse(null))
                 .prefix(addressPrefix)
@@ -193,15 +194,6 @@ class VanityCommand {
             return addressType.isBlank() ? AddressType.p2wpkh : AddressType.valueOf(addressType);
         }
 
-        public static Block toNetwork(String network) {
-            return switch (network) {
-                case "regtest" -> Block.RegtestGenesisBlock;
-                case "signet" -> Block.SignetGenesisBlock;
-                case "testnet", "testnet4" -> Block.Testnet4GenesisBlock;
-                default -> Block.LivenetGenesisBlock;
-            };
-        }
-
         public enum AddressType {
             p2wpkh, p2wpkh_p2sh, p2pkh;
 
@@ -236,9 +228,9 @@ class VanityCommand {
 
             public KeyPath standardKeyPath(Block network) {
                 return switch (this) {
-                    case p2pkh -> Wallet.p2pkhPath(network, 0).derive(0);
-                    case p2wpkh_p2sh -> Wallet.p2shPath(network, 0).derive(0);
-                    case p2wpkh -> Wallet.p2wpkhPath(network, 0).derive(0);
+                    case p2pkh -> Wallet.bip44P2pkhPath(network, 0).derive(0);
+                    case p2wpkh_p2sh -> Wallet.bip49P2shPath(network, 0).derive(0);
+                    case p2wpkh -> Wallet.bip84P2wpkhPath(network, 0).derive(0);
                 };
             }
 

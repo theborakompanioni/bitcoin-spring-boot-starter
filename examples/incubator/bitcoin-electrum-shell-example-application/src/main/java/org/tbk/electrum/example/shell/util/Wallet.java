@@ -19,34 +19,38 @@ public class Wallet {
         return network.equals(Block.LivenetGenesisBlock) ? 0 : 1;
     }
 
-    public static KeyPath p2pkhPath(Block network) {
+    public static KeyPath deprecatedBip32P2pkhPath() {
+        return new KeyPath("").derive(hardened(0));
+    }
+
+    public static KeyPath bip44P2pkhPath(Block network) {
         return new KeyPath("")
                 .derive(hardened(44))
                 .derive(hardened(coinTypeForKeyPath(network)));
     }
 
-    public static KeyPath p2pkhPath(Block network, long account) {
-        return p2pkhPath(network).derive(hardened(account));
+    public static KeyPath bip44P2pkhPath(Block network, long account) {
+        return bip44P2pkhPath(network).derive(hardened(account));
     }
 
-    public static KeyPath p2shPath(Block network) {
+    public static KeyPath bip49P2shPath(Block network) {
         return new KeyPath("")
                 .derive(hardened(49))
                 .derive(hardened(coinTypeForKeyPath(network)));
     }
 
-    public static KeyPath p2shPath(Block network, long account) {
-        return p2shPath(network).derive(hardened(account));
+    public static KeyPath bip49P2shPath(Block network, long account) {
+        return bip49P2shPath(network).derive(hardened(account));
     }
 
-    public static KeyPath p2wpkhPath(Block network) {
+    public static KeyPath bip84P2wpkhPath(Block network) {
         return new KeyPath("")
                 .derive(hardened(84))
                 .derive(hardened(coinTypeForKeyPath(network)));
     }
 
-    public static KeyPath p2wpkhPath(Block network, long account) {
-        return p2wpkhPath(network).derive(hardened(account));
+    public static KeyPath bip84P2wpkhPath(Block network, long account) {
+        return bip84P2wpkhPath(network).derive(hardened(account));
     }
 
     public static Wallet from(Block network, Mnemonic mnemonic) {
@@ -98,7 +102,7 @@ public class Wallet {
     }
 
     public Flux<AddressAndPath> p2pkh(long account, long change) {
-        return p2pkh(p2pkhPath(network, account).derive(change));
+        return p2pkh(bip44P2pkhPath(network, account).derive(change));
     }
 
     public Flux<AddressAndPath> p2pkh(KeyPath keyPath) {
@@ -110,7 +114,7 @@ public class Wallet {
     }
 
     public Flux<AddressAndPath> p2sh(long account, long change) {
-        return p2sh(p2shPath(network, account).derive(change));
+        return p2sh(bip49P2shPath(network, account).derive(change));
     }
 
     public Flux<AddressAndPath> p2sh(KeyPath keyPath) {
@@ -122,12 +126,13 @@ public class Wallet {
     }
 
     public Flux<AddressAndPath> p2wpkh(long account, long change) {
-        return p2wpkh(p2wpkhPath(network, account).derive(change));
+        return p2wpkh(bip84P2wpkhPath(network, account).derive(change));
     }
 
     public Flux<AddressAndPath> p2wpkh(KeyPath keyPath) {
         return deriveAddresses(keyPath, it -> it.p2wpkhAddress(network.hash));
     }
+
 
     @Value
     @Builder

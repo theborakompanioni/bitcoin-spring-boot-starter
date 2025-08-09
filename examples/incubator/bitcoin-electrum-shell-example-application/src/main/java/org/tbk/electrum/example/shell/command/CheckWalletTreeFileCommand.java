@@ -17,12 +17,12 @@ import java.io.IOException;
 @ShellComponent
 @ShellCommandGroup("Commands")
 @RequiredArgsConstructor
-class CheckAddressesFromFileCommand extends AbstractShellComponent {
+class CheckWalletTreeFileCommand extends AbstractShellComponent {
 
     @NonNull
     private final ElectrumClient client;
 
-    @ShellMethod(key = "checkaddressesfromfile", value = "check balances of addresses from a file")
+    @ShellMethod(key = "check-wallet-tree-file", value = "check balances of wallet tree file")
     public void run(
             @ShellOption(value = "file", help = "the file") String fileName,
             @ShellOption(value = "show-zero", defaultValue = "true", help = "filter non-zero balances") boolean showZero

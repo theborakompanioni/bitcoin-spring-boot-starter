@@ -51,8 +51,8 @@ public class HdWalletTreeFileWriter {
     private static Flux<Wallet.AddressAndPath> addresses(Wallet wallet, int amount) {
         return Flux.merge(
                 wallet.p2pkh(new KeyPath("")).take(amount),
-                wallet.p2pkh(new KeyPath("").derive(0)).take(amount),
-                wallet.p2pkh(new KeyPath("").derive(1)).take(amount),
+                wallet.p2pkh(Wallet.deprecatedBip32P2pkhPath().derive(0)).take(amount),
+                wallet.p2pkh(Wallet.deprecatedBip32P2pkhPath().derive(1)).take(amount),
                 wallet.p2pkh(0, 0).take(amount),
                 wallet.p2pkh(0, 1).take(amount),
                 wallet.p2pkh(1, 0).take(amount),
