@@ -23,9 +23,9 @@ evaluate:
 # print system information such as OS and architecture
 [group("project-agnostic")]
 system-info:
-   @echo "architecture: {{arch()}}"
-   @echo "os: {{os()}}"
-   @echo "os family: {{os_family()}}"
+    @echo "architecture: {{arch()}}"
+    @echo "os: {{os()}}"
+    @echo "os family: {{os_family()}}"
 
 # clean (remove) the build artifacts
 [group("development")]

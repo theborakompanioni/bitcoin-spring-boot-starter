@@ -60,7 +60,7 @@ class VanityCommand {
         String addressSuffix = addressSuffixArg == null ? "" : addressSuffixArg;
         Optional<Duration> timeout = parseTimeout(timeoutArg);
         Optional<KeyPath> keyPath = Optional.ofNullable(pathArg)
-                .filter(String::isBlank)
+                .filter(it -> !it.isBlank())
                 .map(KeyPath::fromPath);
         VanityCommandParams.AddressType addressType = VanityCommandParams.toAddressType(addressTypeArg);
 
@@ -105,14 +105,13 @@ class VanityCommand {
 
     private static Function<Mnemonic, Wallet.AddressAndPath> toFirstAddressMapper(VanityCommandParams params) {
         return mnemonic -> Wallet.from(params.getNetwork(), mnemonic)
-                .deriveAddress(params.getKeyPath().derive(0).derive(0), params.getAddressMapper());
+                .deriveAddress(params.getKeyPath().derive(0), params.getAddressMapper());
     }
 
     private static Optional<Duration> parseTimeout(String timeoutArg) {
         Duration duration = DurationStyle.SIMPLE.parse(timeoutArg, ChronoUnit.SECONDS);
         return duration.isNegative() ? Optional.empty() : Optional.of(duration);
     }
-
 
     private Mono<Mnemonic> mineMnemonicMatching(int parallelism, Predicate<Mnemonic> predicate) {
         return requireNonNull(Mono.firstWithValue(IntStream.range(0, parallelism)
