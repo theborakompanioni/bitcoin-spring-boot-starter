@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jline.terminal.Terminal;
 import org.springframework.shell.standard.*;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.example.shell.util.WalletTree;
 import org.tbk.electrum.example.shell.util.MoreBlocks;
 import org.tbk.electrum.example.shell.util.Wallet;
+import org.tbk.electrum.example.shell.util.WalletTree;
 
 import java.io.*;
 import java.util.Optional;
@@ -46,14 +46,17 @@ class WalletTreeCommand extends AbstractShellComponent {
 
         try {
             try (Writer fileWriter = outArg.isEmpty() ? OutputStreamWriter.nullWriter() : new FileWriter(outArg);
-                 PrintWriter printWriter = new PrintWriter(fileWriter)) {
+                 PrintWriter printWriter = new PrintWriter(new BufferedWriter(fileWriter))) {
                 printWriter.printf("#### '%s'%n".formatted(mnemonic));
                 printWriter.printf("##### passphrase: '%s'%n".formatted(passphrase));
 
                 WalletTree.tree(wallet, amount).subscribe(it -> {
                     String line = "%s;%s".formatted(it.getAddress(), it.getKeyPath());
-                    System.out.printf("%s%n", line);
                     printWriter.printf("%s%n", line);
+                    printWriter.flush();
+
+                    terminal.writer().printf("%s%n", line);
+                    terminal.writer().flush();
                 });
             }
         } finally {
