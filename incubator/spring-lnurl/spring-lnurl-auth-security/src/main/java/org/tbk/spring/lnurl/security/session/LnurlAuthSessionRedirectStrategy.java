@@ -25,7 +25,7 @@ final class LnurlAuthSessionRedirectStrategy extends DefaultRedirectStrategy {
     }
 
     @Override
-    @SuppressFBWarnings("XSS_SERVLET") // false positive
+    @SuppressFBWarnings(value = "XSS_SERVLET", justification = "false positive")
     public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
         boolean clientPrefersJson = clientPrefersJson(request);
         if (!clientPrefersJson) {

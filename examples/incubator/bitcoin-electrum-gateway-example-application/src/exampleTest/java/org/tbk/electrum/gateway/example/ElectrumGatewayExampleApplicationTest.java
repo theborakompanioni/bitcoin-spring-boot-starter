@@ -160,7 +160,7 @@ class ElectrumGatewayExampleApplicationTest {
     @ActiveProfiles("test")
     @Configuration(proxyBeanMethods = false)
     @AutoConfigureAfter(ElectrumxContainerAutoConfiguration.class)
-    @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay for this test
+    @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "okay for this test")
     public static class TestConfig {
         private static final String TEST_ELECTRUM_RPCPASSWORD1 = "correct_horse_battery_staple_20210516-0";
         private static final String TEST_ELECTRUM_RPCPASSWORD2 = "correct_horse_battery_staple_20210516-1";

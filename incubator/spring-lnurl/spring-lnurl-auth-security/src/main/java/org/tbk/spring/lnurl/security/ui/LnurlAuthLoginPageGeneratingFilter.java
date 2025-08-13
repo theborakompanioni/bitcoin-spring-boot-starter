@@ -139,7 +139,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    @SuppressFBWarnings("XSS_SERVLET") // false positive
+    @SuppressFBWarnings(value = "XSS_SERVLET", justification = "false positive")
     private void writeLoginStylesheet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String script = this.loginPageGenerator.createStylesheet();
 
@@ -148,7 +148,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         response.getWriter().write(script);
     }
 
-    @SuppressFBWarnings("XSS_SERVLET") // false positive
+    @SuppressFBWarnings(value = "XSS_SERVLET", justification = "false positive")
     private void writeLoginScript(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // prevent logged-in users from invoking browser session migration - this would log out the user
         // as an AuthenticationException is thrown, which invalidates the user's authentication.
@@ -206,7 +206,7 @@ public class LnurlAuthLoginPageGeneratingFilter extends GenericFilterBean {
         writeHtml(request, response, content);
     }*/
 
-    @SuppressFBWarnings("XSS_SERVLET") // false positive
+    @SuppressFBWarnings(value = "XSS_SERVLET", justification = "false positive")
     private void writeHtml(HttpServletRequest request, HttpServletResponse response, String content) throws IOException {
         response.setContentType(HTML_CONTENT_TYPE);
         response.setContentLength(content.getBytes(StandardCharsets.UTF_8).length);

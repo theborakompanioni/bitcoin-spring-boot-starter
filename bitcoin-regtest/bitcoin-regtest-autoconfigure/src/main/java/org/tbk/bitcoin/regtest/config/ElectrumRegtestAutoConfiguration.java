@@ -54,7 +54,7 @@ public class ElectrumRegtestAutoConfiguration {
         );
     }
 
-    @SuppressFBWarnings("HARD_CODE_PASSWORD") // okay for a regtest faucet
+    @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "okay for a regtest faucet")
     WalletParams faucetWalletParams() {
         String pseudoRandomPostfix = UUID.randomUUID().toString().substring(0, 8);
         String walletName = "faucet_%d_%s".formatted(Instant.now().toEpochMilli(), pseudoRandomPostfix);

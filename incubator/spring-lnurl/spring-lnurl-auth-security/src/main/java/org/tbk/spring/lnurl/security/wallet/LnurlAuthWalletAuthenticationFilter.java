@@ -93,14 +93,14 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
         }
     }
 
-    @SuppressFBWarnings("XSS_SERVLET") // false positive - a hardcoded value is written
+    @SuppressFBWarnings(value = "XSS_SERVLET", justification = "false positive - a hardcoded value is writtene")
     protected void writeSuccessBody(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(successBody);
     }
 
-    @SuppressFBWarnings("XSS_SERVLET") // false positive - a hardcoded value is written
+    @SuppressFBWarnings(value = "XSS_SERVLET", justification = "false positive - a hardcoded value is written")
     protected void writeErrorBody(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
