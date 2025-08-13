@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
-import org.knowm.xchange.kraken.KrakenExchange;
+import org.knowm.xchange.bitstamp.BitstampExchange;
 
 import javax.money.convert.*;
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ class XChangeExchangeRateProviderIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Exchange exchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class);
+        Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BitstampExchange.class);
         ProviderContext providerContext = MoreProviderContexts.createSimpleProviderContextBuilder(exchange).build();
         this.sut = new XChangeExchangeRateProvider(providerContext, exchange);
     }
@@ -37,7 +37,7 @@ class XChangeExchangeRateProviderIntegrationTest {
 
     @Test
     void itShouldNotFetchUnsupportedExchangeRate() {
-        // hopefully kraken will never return factor "1" for btc/btc pair :D
+        // hopefully an exchange will never return factor "1" for btc/btc pair :D
         assertThrows(CurrencyConversionException.class, () -> this.sut.getExchangeRate("BTC", "BTC"));
     }
 
@@ -66,7 +66,7 @@ class XChangeExchangeRateProviderIntegrationTest {
 
     @Test
     void itShouldNotFetchUnsupportedCurrencyConversion() {
-        // hopefully kraken will never return factor "1" for btc/btc pair :D
+        // hopefully an exchange will never return factor "1" for btc/btc pair :D
         ConversionQuery conversionQuery = ConversionQueryBuilder.of()
                 .setBaseCurrency("BTC")
                 .setTermCurrency("BTC")

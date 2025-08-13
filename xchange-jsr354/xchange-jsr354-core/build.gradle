@@ -18,6 +18,6 @@ dependencies {
     // import "BTC" as jsr354 CurrencyUnit
     testImplementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
 
-    // use kraken as the exchange in all tests
-    testImplementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
+    // use bitstamp as the exchange in all tests
+    testImplementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
 }

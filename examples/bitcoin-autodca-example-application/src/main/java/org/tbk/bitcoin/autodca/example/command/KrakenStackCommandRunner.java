@@ -118,9 +118,9 @@ public class KrakenStackCommandRunner extends ConditionalOnNonOptionApplicationR
         System.out.printf("💸 Order: %s %s %s @ limit %s %s%n",
                 buyLimitOrder.getType(),
                 buyLimitOrder.getVolume(),
-                buyLimitOrder.getAssetPair().base,
+                buyLimitOrder.getAssetPair().getBase(),
                 buyLimitOrder.getPrice(),
-                buyLimitOrder.getAssetPair().counter);
+                buyLimitOrder.getAssetPair().getCounter());
 
         if (dryRun.isEnabled()) {
             System.out.printf("📎 Fake (dry-run) Transaction IDs: %s%n", Arrays.asList("42", "1337"));

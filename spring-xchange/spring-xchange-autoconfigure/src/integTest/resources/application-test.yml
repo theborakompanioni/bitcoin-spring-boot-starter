@@ -1,7 +1,7 @@
 org.tbk.xchange:
   enabled: true
   specifications:
-    krakenExchange:
-      exchange-class: org.knowm.xchange.kraken.KrakenExchange
+    bitstampExchange:
+      exchange-class: org.knowm.xchange.bitstamp.BitstampExchange
       exchange-specific-parameters:
         Use_Sandbox: true

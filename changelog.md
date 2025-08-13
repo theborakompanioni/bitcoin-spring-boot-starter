@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update lnd testcontainer from v0.18.4-beta to v0.18.5-beta
 - upgrade: update docker getumbrel/btc-rpc-explorer from v3.3.0 to v3.5.0
 - upgrade: update testcontainers from v1.20.4 to v1.21.3
+- upgrade: update xchange from v5.1.0 to v5.2.2
 
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers

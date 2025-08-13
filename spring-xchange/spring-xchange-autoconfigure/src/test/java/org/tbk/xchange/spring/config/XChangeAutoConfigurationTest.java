@@ -122,8 +122,8 @@ class XChangeAutoConfigurationTest {
                     Map<String, Exchange> beans = context.getBeansOfType(Exchange.class);
                     assertThat(beans.values(), is(empty()));
 
-                    assertThat(context.containsBean("krakenExchange"), is(false));
-                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(KrakenExchange.class));
+                    assertThat(context.containsBean("bitstampExchange"), is(false));
+                    assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(BitstampExchange.class));
                 });
     }
 
@@ -174,7 +174,6 @@ class XChangeAutoConfigurationTest {
                     ExchangeSpecification firstTestExchangeSpec = firstTestExchange.getExchangeSpecification();
                     assertThat(firstTestExchangeSpec.getSslUri(), is("https://api.kraken.com"));
                     assertThat(firstTestExchangeSpec.getExchangeDescription(), is("Custom Kraken Exchange"));
-
 
                     BitstampExchange secondTestExchange = context.getBean("secondTestExchange", BitstampExchange.class);
                     assertThat(secondTestExchange, is(beans.get("secondTestExchange")));

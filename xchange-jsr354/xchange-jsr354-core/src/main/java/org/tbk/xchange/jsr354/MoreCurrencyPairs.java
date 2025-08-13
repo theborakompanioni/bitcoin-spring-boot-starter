@@ -14,7 +14,7 @@ final class MoreCurrencyPairs {
     }
 
     static CurrencyPair reverse(CurrencyPair currencyPair) {
-        return new CurrencyPair(currencyPair.counter, currencyPair.base);
+        return new CurrencyPair(currencyPair.getCounter(), currencyPair.getBase());
     }
 
     static CurrencyPair toCurrencyPair(CurrencyUnit baseCurrencyUnit, CurrencyUnit targetCurrencyUnit) {

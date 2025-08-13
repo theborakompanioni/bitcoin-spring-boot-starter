@@ -3,7 +3,7 @@ package org.tbk.xchange.spring.config;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
-import org.knowm.xchange.kraken.KrakenExchange;
+import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,15 +34,15 @@ class XChangeAutoConfigurationIntegrationTest {
         }
 
         @Bean
-        AtomicReference<Exchange> aBeanInjectedWithDynamicallyCreatedExchangeBean(KrakenExchange krakenExchange) {
-            requireNonNull(krakenExchange);
-            return new AtomicReference<>(krakenExchange);
+        AtomicReference<Exchange> aBeanInjectedWithDynamicallyCreatedExchangeBean(BitstampExchange bitstampExchange) {
+            requireNonNull(bitstampExchange);
+            return new AtomicReference<>(bitstampExchange);
         }
 
         @Bean
-        AtomicReference<Exchange> anotherBeanInjectedWithDynamicallyCreatedExchangeBean(KrakenExchange krakenExchange) {
-            requireNonNull(krakenExchange);
-            return new AtomicReference<>(krakenExchange);
+        AtomicReference<Exchange> anotherBeanInjectedWithDynamicallyCreatedExchangeBean(BitstampExchange bitstampExchange) {
+            requireNonNull(bitstampExchange);
+            return new AtomicReference<>(bitstampExchange);
         }
     }
 
@@ -63,7 +63,7 @@ class XChangeAutoConfigurationIntegrationTest {
 
         Exchange autowiredExchange = aBeanInjectedWithDynamicallyCreatedExchangeBean.get();
         assertThat(autowiredExchange, is(notNullValue()));
-        assertThat(autowiredExchange, is(instanceOf(KrakenExchange.class)));
+        assertThat(autowiredExchange, is(instanceOf(BitstampExchange.class)));
 
         Boolean sandboxEnabled = (Boolean) autowiredExchange.getExchangeSpecification()
                 .getExchangeSpecificParametersItem("Use_Sandbox");
