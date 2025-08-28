@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public final class AwaitTransactionAction implements RegtestAction<OnchainHistory.Transaction> {
-    private static final Duration defaultTimeout = Duration.ofSeconds(30);
+    private static final Duration defaultTimeout = Duration.ofSeconds(60);
     private static final Duration defaultCheckInterval = Duration.ofMillis(100);
     private static final int DEFAULT_CONFIRMATIONS = 0;
 

@@ -1,3 +1,6 @@
+
+logging.level.org.tbk.bitcoin.regtest: DEBUG
+
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true
   default-wallet:

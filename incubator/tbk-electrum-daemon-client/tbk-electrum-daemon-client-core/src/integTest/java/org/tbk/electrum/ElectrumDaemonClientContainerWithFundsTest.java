@@ -279,11 +279,12 @@ class ElectrumDaemonClientContainerWithFundsTest {
         assertThat(blocks, hasSize(1));
 
         Balance balanceAfter = Flux.interval(Duration.ofMillis(100))
+                .map(it -> sut.waitForWalletSynchronization(defaultWalletParams))
                 .map(it -> sut.getBalance(GetBalanceParams.builder()
                         .walletPath(defaultWalletParams.getWalletPath())
                         .build()))
                 .filter(it -> it.getTotal().getValue() > balanceBefore.getTotal().getValue())
-                .blockFirst(Duration.ofSeconds(30));
+                .blockFirst(Duration.ofSeconds(60));
         assertThat(balanceAfter, is(notNullValue()));
         assertThat(balanceAfter.getUnmatured().getValue(), is(greaterThan(balanceBefore.getUnmatured().getValue())));
 
