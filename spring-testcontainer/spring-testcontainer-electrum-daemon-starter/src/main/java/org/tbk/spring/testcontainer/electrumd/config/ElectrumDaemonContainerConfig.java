@@ -23,7 +23,7 @@ import static org.tbk.spring.testcontainer.electrumd.config.ElectrumDaemonContai
 public class ElectrumDaemonContainerConfig {
 
     // currently only the image from "theborakompanioni" is supported
-    static final String DEFAULT_DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.1@sha256:39b74e348ac0644e6b2bb5d12ced3d98e96d6929cac8383b9c149aa1beb916ae";
+    static final String DEFAULT_DOCKER_IMAGE_NAME = "ghcr.io/theborakompanioni/electrum-daemon:4.6.2@sha256:b214fa9a30cb260a99daa88a5880abf110bda1556a359a1706d3e2112e4b088a";
     static final DockerImageName defaultDockerImageName = DockerImageName.parse(DEFAULT_DOCKER_IMAGE_NAME);
 
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()

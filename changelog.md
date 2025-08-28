@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ## Breaking
 - electrum: moved electrum RPC related code to distinct package
-- electrum: compatibility with electrum v4.6.0
-- electrum: upgrade electrum testcontainer from v3.3.8 to v4.6.1
+- electrum: compatibility wit electrum v4.6.0
+- electrum: upgrade electrum testcontainer from v3.3.8 to v4.6.2
 
 ### Changed
 - upgrade: update tor testcontainer from v0.4.7.8 to v0.4.8.10
