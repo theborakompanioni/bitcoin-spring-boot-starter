@@ -477,10 +477,23 @@ public interface ElectrumDaemonRpcService {
     @JsonRpcMethod("createnewaddress")
     String createnewaddress(@JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
+    /**
+     * Wallet onchain history. Returns the transaction history of your wallet.
+     *
+     * @param showAddresses Show input and output addresses
+     * @param year          Show history for a given year
+     * @param showFiat      Show fiat value of transactions
+     * @param fromHeight    Only show transactions that confirmed after(inclusive) given block height
+     * @param toHeight      Only show transactions that confirmed before(exclusive) given block height
+     * @param walletPath    wallet path
+     * @return transaction history of your wallet
+     */
     @JsonRpcMethod("onchain_history")
     List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
-                                                                    @JsonRpcOptional @JsonRpcParam("year") Long year,
+                                                                    @JsonRpcOptional @JsonRpcParam("year") Integer year,
                                                                     @JsonRpcOptional @JsonRpcParam("show_fiat") Boolean showFiat,
+                                                                    @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
+                                                                    @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight,
                                                                     @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**

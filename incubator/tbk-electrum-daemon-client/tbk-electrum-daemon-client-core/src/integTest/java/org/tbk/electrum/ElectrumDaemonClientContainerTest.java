@@ -23,6 +23,7 @@ import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -513,6 +514,43 @@ class ElectrumDaemonClientContainerTest {
                 .build());
 
         assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
+    }
+
+    @Test
+    void testOnchainHistoryWithParamsHeight() {
+        OnchainHistory history = sut.getOnchainHistory(OnchainHistoryParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .fromHeight(0L)
+                .toHeight(100_000_000L)
+                .build());
+
+        assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
+    }
+
+    @Test
+    void testOnchainHistoryWithParamsYear() {
+        OnchainHistory history = sut.getOnchainHistory(OnchainHistoryParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                .year(LocalDate.now().getYear())
+                .build());
+
+        assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
+    }
+
+    @Test
+    void testOnchainHistoryWithParamsError() {
+        JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
+            sut.getOnchainHistory(OnchainHistoryParams.builder()
+                    .year(LocalDate.now().getYear())
+                    .fromHeight(0L)
+                    .toHeight(100_000_000L)
+                    .walletPath(defaultWalletParams.getWalletPath())
+                    .build());
+        });
+
+        ErrorMessage error = e.getErrorMessage();
+        assertThat(error.getMessage(), is("timestamp and block height based filtering cannot be used together"));
+        assertThat(error.getCode(), is(1));
     }
 
     @Test

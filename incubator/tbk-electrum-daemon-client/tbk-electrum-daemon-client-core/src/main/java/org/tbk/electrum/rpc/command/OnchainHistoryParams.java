@@ -15,7 +15,15 @@ public class OnchainHistoryParams {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("year")
-    Long year;
+    Integer year;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("from_height")
+    Long fromHeight;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("to_height")
+    Long toHeight;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")

@@ -332,6 +332,8 @@ public class ElectrumClientImpl implements ElectrumClient {
                 true,
                 params.getYear(),
                 false,
+                params.getFromHeight(),
+                params.getToHeight(),
                 params.getWalletPath()
         );
         return SimpleOnchainHistory.from(result);
