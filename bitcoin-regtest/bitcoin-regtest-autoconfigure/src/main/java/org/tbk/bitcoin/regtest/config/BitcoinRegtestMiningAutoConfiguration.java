@@ -67,6 +67,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnMissingBean
     RegtestMiner regtestMiner(BitcoinClient bitcoinJsonRpcClient,
                               CoinbaseRewardAddressSupplier coinbaseRewardAddressSupplier) {
+        Duration serverTimeout = properties.getServerTimeout();
         return new RegtestMinerImpl(bitcoinJsonRpcClient, coinbaseRewardAddressSupplier);
     }
 

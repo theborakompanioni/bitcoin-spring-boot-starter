@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNullElse;
 @Getter
 @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinRegtestMiningProperties implements Validator {
+    private static final Duration DEFAULT_SERVER_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration DEFAULT_MINE_INITIAL_NUMBER_OF_BLOCKS_TIMEOUT = Duration.ofSeconds(60);
     /**
      * Whether mining should be enabled.
@@ -26,6 +27,8 @@ public class BitcoinRegtestMiningProperties implements Validator {
      */
     private String coinbaseRewardAddress;
 
+    private Duration serverTimeout;
+
     private int mineInitialAmountOfBlocks;
 
     private Duration mineInitialAmountOfBlocksTimeout;
@@ -36,6 +39,10 @@ public class BitcoinRegtestMiningProperties implements Validator {
 
     public Optional<String> getCoinbaseRewardAddress() {
         return Optional.ofNullable(coinbaseRewardAddress);
+    }
+
+    public Duration getServerTimeout() {
+        return serverTimeout != null ? serverTimeout : DEFAULT_SERVER_TIMEOUT;
     }
 
     public NextBlockDurationProperties getNextBlockDuration() {
