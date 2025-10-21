@@ -42,7 +42,7 @@ services:
 
   electrumx_regtest:
     container_name: electrumx_regtest
-    image: lukechilds/electrumx:v1.18.0@sha256:c7e630b2ab68545a43907724d9e8b80b105c253ee9794bfa0658ada031a0d22d
+    image: lukechilds/electrumx:v1.16.0@sha256:72002782c432881f96837896ddad00e56469dac401420e3790afb86ca0ecb3a3
     restart: no
     depends_on:
       bitcoind_regtest:
@@ -55,7 +55,7 @@ services:
       - "50002:50002"
     environment:
       DAEMON_URL: http://regtest:regtest@bitcoind_regtest:18443
-      COIN: Bitcoin
+      COIN: BitcoinSegwit
       NET: regtest
       LOG_LEVEL: debug
       DB_ENGINE: leveldb
