@@ -3,6 +3,7 @@ package org.tbk.xchange.spring.config;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.Exchange;
+import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -65,10 +66,15 @@ class XChangeAutoConfigurationIntegrationTest {
         assertThat(autowiredExchange, is(notNullValue()));
         assertThat(autowiredExchange, is(instanceOf(BitstampExchange.class)));
 
-        Boolean sandboxEnabled = (Boolean) autowiredExchange.getExchangeSpecification()
-                .getExchangeSpecificParametersItem("Use_Sandbox");
+        ExchangeSpecification exchangeSpecification = autowiredExchange.getExchangeSpecification();
 
+        Boolean sandboxEnabled = (Boolean) exchangeSpecification
+                .getExchangeSpecificParametersItem("Use_Sandbox");
         assertThat(sandboxEnabled, is(Boolean.TRUE));
+
+        boolean shouldLoadRemoteMetaData = exchangeSpecification
+                .isShouldLoadRemoteMetaData();
+        assertThat(shouldLoadRemoteMetaData, is(false));
     }
 
     @Test

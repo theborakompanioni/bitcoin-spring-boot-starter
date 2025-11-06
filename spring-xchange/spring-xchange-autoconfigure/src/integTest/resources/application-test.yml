@@ -3,5 +3,6 @@ org.tbk.xchange:
   specifications:
     bitstampExchange:
       exchange-class: org.knowm.xchange.bitstamp.BitstampExchange
+      should-load-remote-meta-data: false
       exchange-specific-parameters:
         Use_Sandbox: true
