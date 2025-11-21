@@ -9,7 +9,7 @@ ext {
     consensusJVersion = '0.6.5'
     guavaVersion = '33.0.0-jre'
     jeroMqVersion = '0.6.0'
-    testcontainersVersion = '1.21.3'
+    testcontainersVersion = '2.0.2'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
     grpcVersion = '1.61.0' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)

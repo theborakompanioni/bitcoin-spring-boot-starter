@@ -5,11 +5,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.tbk.spring.testcontainer.core.AbstractContainerProperties;
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public class BtcRpcExplorerContainerProperties extends AbstractContainerProperti
             .put("BTCEXP_NO_INMEMORY_RPC_CACHE", "true")
             .put("BTCEXP_SLOW_DEVICE_MODE", "false")
             .put("BTCEXP_NO_RATES", "true")
-            .put("BTCEXP_BASIC_AUTH_PASSWORD", RandomStringUtils.randomAlphanumeric(32))
+            .put("BTCEXP_BASIC_AUTH_PASSWORD", RandomStringUtils.secureStrong().nextAlphanumeric(32))
             .put("BTCEXP_RPC_ALLOWALL", "false")
             .put("BTCEXP_UI_SHOW_TOOLS_SUBHEADER", "true")
             .put("BTCEXP_DEMO", "false")

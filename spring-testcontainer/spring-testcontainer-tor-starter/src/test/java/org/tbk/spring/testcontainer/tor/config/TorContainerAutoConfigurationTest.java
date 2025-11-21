@@ -1,11 +1,11 @@
 package org.tbk.spring.testcontainer.tor.config;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.tbk.spring.testcontainer.tor.HiddenServiceHostnameResolver;
 import org.tbk.spring.testcontainer.tor.TorContainer;
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -41,7 +41,7 @@ class TorContainerAutoConfigurationTest {
 
     @Test
     void onionAddressesAreGenerated() {
-        String serviceName = RandomStringUtils.randomAlphabetic(10);
+        String serviceName = RandomStringUtils.secure().nextAlphabetic(10);
 
         this.contextRunner.withUserConfiguration(
                 TorContainerAutoConfiguration.class

@@ -20,9 +20,9 @@ import org.tbk.electrum.rpc.command.*;
 import org.tbk.spring.testcontainer.electrumd.ElectrumDaemonContainer;
 import org.tbk.spring.testcontainer.electrumx.ElectrumxContainer;
 import org.tbk.spring.testcontainer.test.MoreTestcontainerTestUtil;
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -684,7 +684,7 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testSignAndVerifyMessage() {
         String address = firstAddress;
-        String randomMessage = RandomStringUtils.randomAlphanumeric(127);
+        String randomMessage = String.valueOf(Instant.now().getEpochSecond());
 
         String signedMessage = sut.signMessage(address, randomMessage, null);
 
@@ -726,7 +726,7 @@ class ElectrumDaemonClientContainerTest {
         String firstPublicKey = publicKeys.stream()
                 .findFirst().orElseThrow(IllegalStateException::new);
 
-        String message = RandomStringUtils.randomAlphanumeric(255);
+        String message = String.valueOf(Instant.now().getEpochSecond());
         String encryptedMessage = this.sut.encryptMessage(firstPublicKey, message);
 
         assertThat(encryptedMessage, is(not(emptyOrNullString())));
