@@ -145,6 +145,7 @@ subprojects {
         implementation "com.google.guava:guava:${guavaVersion}"
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testImplementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
