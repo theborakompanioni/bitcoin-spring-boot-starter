@@ -12,6 +12,7 @@ ext {
     testcontainersVersion = '2.0.2'
     httpComponentsVersion = '4.4.14'
     httpComponentsClientVersion = '4.5.13'
+    apacheCommonsVersion = '3.20.0'
     grpcVersion = '1.61.0' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
     protobufVersion = '3.22.5'
     protocVersion = protobufVersion
@@ -29,7 +30,7 @@ ext {
     checkstyleVersion = '10.3.4'
     findsecbugsPluginVersion = '1.13.0'
     torSpringBootStarterVersion = '0.9.0'
-    springBootGradlePluginVersion = '3.4.4'
+    springBootGradlePluginVersion = '3.5.8'
     springShellVersion = '3.4.0'
     protobufGradleVersion = '0.9.4'
 }
