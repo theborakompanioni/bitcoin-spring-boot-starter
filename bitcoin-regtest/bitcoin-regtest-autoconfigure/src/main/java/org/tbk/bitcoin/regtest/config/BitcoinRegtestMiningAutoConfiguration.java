@@ -19,11 +19,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.tbk.bitcoin.regtest.mining.*;
+import reactor.core.publisher.Flux;
 
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -90,7 +92,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnMissingBean(ScheduledRegtestMining.class)
     @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.scheduled-mining-enabled", havingValue = "true", matchIfMissing = true)
     ScheduledRegtestMining scheduledRegtestMining(RegtestMiner regtestMiner,
-                                                 @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
+                                                  @Qualifier("regtestMinerScheduler") Scheduler scheduler) {
         ScheduledRegtestMining scheduledRegtestMining = new ScheduledRegtestMining(regtestMiner, scheduler);
         scheduledRegtestMining.startAsync();
         return scheduledRegtestMining;
@@ -100,6 +102,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnBean({RegtestMiner.class})
     InitializingBean regtestMinerPreminer(RegtestMiner regtestMiner) {
         int numberOfBlocksToMine = properties.getMineInitialAmountOfBlocks();
+        Duration timeout = properties.getMineInitialAmountOfBlocksTimeout();
 
         if (numberOfBlocksToMine == 0) {
             return () -> {
@@ -112,9 +115,23 @@ public class BitcoinRegtestMiningAutoConfiguration {
 
             Stopwatch stopwatch = Stopwatch.createStarted();
 
-            List<Sha256Hash> blockHashes = regtestMiner.mineBlocks(numberOfBlocksToMine);
+            LongAdder blocksMinedAdder = new LongAdder();
+            Long blocksMined = Flux.interval(Duration.ofSeconds(1))
+                    .map(i -> {
+                        try {
+                            while (blocksMinedAdder.sum() < numberOfBlocksToMine) {
+                                List<Sha256Hash> blockHashes = regtestMiner.mineBlocks(numberOfBlocksToMine - blocksMinedAdder.intValue());
+                                blocksMinedAdder.add(blockHashes.size());
+                            }
+                        } catch (Exception e) {
+                            log.warn("Error while mining initial number of blocks: {}", e.getMessage());
+                        }
+                        return blocksMinedAdder.sum();
+                    })
+                    .filter(it -> it >= numberOfBlocksToMine)
+                    .blockFirst(timeout);
 
-            log.info("Mined initial number of {} blocks in {}", blockHashes.size(), stopwatch);
+            log.info("Mined initial number of {} blocks in {}.", blocksMined, stopwatch);
             stopwatch.stop();
         };
     }

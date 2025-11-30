@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: ability to copy multiple wallets to electrum testcontainer
 - example: add electrum-shell-example-application
 - module: initial version of module `bitcoin-bip85`
+- feat: ability to configure timeout for mining initial number of blocks
 
 ## [0.16.0] - 2025-04-13
 

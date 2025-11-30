@@ -7,12 +7,14 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNullElse;
 
 @Getter
 @AllArgsConstructor(onConstructor = @__(@ConstructorBinding))
 public class BitcoinRegtestMiningProperties implements Validator {
+    private static final Duration DEFAULT_MINE_INITIAL_NUMBER_OF_BLOCKS_TIMEOUT = Duration.ofSeconds(60);
     /**
      * Whether mining should be enabled.
      */
@@ -26,6 +28,8 @@ public class BitcoinRegtestMiningProperties implements Validator {
 
     private int mineInitialAmountOfBlocks;
 
+    private Duration mineInitialAmountOfBlocksTimeout;
+
     private Boolean scheduledMiningEnabled;
 
     private NextBlockDurationProperties nextBlockDuration;
@@ -37,6 +41,11 @@ public class BitcoinRegtestMiningProperties implements Validator {
     public NextBlockDurationProperties getNextBlockDuration() {
         return nextBlockDuration != null ? nextBlockDuration : new NextBlockDurationProperties(null, null);
     }
+
+    public Duration getMineInitialAmountOfBlocksTimeout() {
+        return requireNonNullElse(mineInitialAmountOfBlocksTimeout, DEFAULT_MINE_INITIAL_NUMBER_OF_BLOCKS_TIMEOUT);
+    }
+
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -63,7 +72,7 @@ public class BitcoinRegtestMiningProperties implements Validator {
         private Duration maxDuration;
 
         public Duration getMinDuration() {
-            return Objects.requireNonNullElse(minDuration, DEFAULT_MIN_DURATION);
+            return requireNonNullElse(minDuration, DEFAULT_MIN_DURATION);
         }
 
         public Duration getMaxDuration() {
