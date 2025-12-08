@@ -492,8 +492,8 @@ public interface ElectrumDaemonRpcService {
     List<OnchainHistoryResponse.HistoricTransaction> onchainhistory(@JsonRpcOptional @JsonRpcParam("show_addresses") Boolean showAddresses,
                                                                     @JsonRpcOptional @JsonRpcParam("year") Integer year,
                                                                     @JsonRpcOptional @JsonRpcParam("show_fiat") Boolean showFiat,
-                                                                    @JsonRpcOptional @JsonRpcParam("from_height") Long fromHeight,
-                                                                    @JsonRpcOptional @JsonRpcParam("to_height") Long toHeight,
+                                                                    @JsonRpcOptional @JsonRpcParam("from_height") Integer fromHeight,
+                                                                    @JsonRpcOptional @JsonRpcParam("to_height") Integer toHeight,
                                                                     @JsonRpcOptional @JsonRpcParam("wallet_path") String walletPath);
 
     /**

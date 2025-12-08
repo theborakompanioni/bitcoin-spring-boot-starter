@@ -520,8 +520,8 @@ class ElectrumDaemonClientContainerTest {
     void testOnchainHistoryWithParamsHeight() {
         OnchainHistory history = sut.getOnchainHistory(OnchainHistoryParams.builder()
                 .walletPath(defaultWalletParams.getWalletPath())
-                .fromHeight(0L)
-                .toHeight(100_000_000L)
+                .fromHeight(0)
+                .toHeight(Integer.MAX_VALUE)
                 .build());
 
         assertThat(history.getTransactions(), is(hasSize(greaterThanOrEqualTo(0))));
@@ -542,8 +542,8 @@ class ElectrumDaemonClientContainerTest {
         JsonRpcException e = Assertions.assertThrows(JsonRpcException.class, () -> {
             sut.getOnchainHistory(OnchainHistoryParams.builder()
                     .year(LocalDate.now().getYear())
-                    .fromHeight(0L)
-                    .toHeight(100_000_000L)
+                    .fromHeight(0)
+                    .toHeight(Integer.MAX_VALUE)
                     .walletPath(defaultWalletParams.getWalletPath())
                     .build());
         });

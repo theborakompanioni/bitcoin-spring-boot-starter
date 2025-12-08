@@ -193,9 +193,16 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .orElse(null);
         assertThat(changeTxout, is(notNullValue()));
 
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
+
         int heightAfterBroadcast = sut.getInfo().getServerHeight();
         regtestMiner.mineBlocks(1);
         waitForBlockHeightIncrease(sut, heightAfterBroadcast).block(Duration.ofSeconds(30));
+
+        // tx might not have been mined the first time - mine a second block to be sure
+        int heightAfterBroadcast2 = sut.getInfo().getServerHeight();
+        regtestMiner.mineBlocks(1);
+        waitForBlockHeightIncrease(sut, heightAfterBroadcast2).block(Duration.ofSeconds(30));
 
         sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
 
@@ -203,8 +210,8 @@ class ElectrumDaemonClientContainerWithFundsTest {
         OnchainHistory historyWithoutUnconfirmedTransactions = sut.getOnchainHistory(OnchainHistoryParams.builder()
                 .walletPath(defaultWalletParams.getWalletPath())
                 // fromHeight/toHeight can be used since tx is confirmed
-                .fromHeight((long) heightBeforeBroadcast)
-                .toHeight((long) Integer.MAX_VALUE)
+                .fromHeight(heightBeforeBroadcast)
+                .toHeight(Integer.MAX_VALUE)
                 .build());
         OnchainHistory.Transaction confirmedTx = historyWithoutUnconfirmedTransactions.getTransactions().stream()
                 .filter(it -> unconfirmedTx.getTxHash().equals(it.getTxHash()))
@@ -215,11 +222,10 @@ class ElectrumDaemonClientContainerWithFundsTest {
         assertThat(confirmedTx.isIncoming(), is(unconfirmedTx.isIncoming()));
         assertThat(confirmedTx.getValue().getValue(), is(unconfirmedTx.getValue().getValue()));
         assertThat(confirmedTx.getOutputs(), hasSize(unconfirmedTx.getOutputs().size()));
+        assertThat(confirmedTx.getConfirmations(), is(greaterThanOrEqualTo(1L)));
         assertThat(confirmedTx.getHeight().isPresent(), is(true));
         assertThat(confirmedTx.getTxPosInBlock().isPresent(), is(true));
         assertThat(confirmedTx.getTimestamp().isPresent(), is(true));
-        assertThat(confirmedTx.getConfirmations(), is(greaterThanOrEqualTo(1L)));
-
     }
 
     @Test

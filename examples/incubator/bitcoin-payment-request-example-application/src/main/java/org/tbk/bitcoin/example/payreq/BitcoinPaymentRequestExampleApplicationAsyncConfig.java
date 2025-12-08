@@ -21,7 +21,7 @@ class BitcoinPaymentRequestExampleApplicationAsyncConfig implements AsyncConfigu
         threadPoolTaskExecutor.setQueueCapacity(Integer.MAX_VALUE);
         threadPoolTaskExecutor.setDaemon(false);
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-        threadPoolTaskExecutor.setAwaitTerminationSeconds((int) Duration.ofMinutes(2).toSeconds());
+        threadPoolTaskExecutor.setAwaitTerminationSeconds(Math.toIntExact(Duration.ofMinutes(2).toSeconds()));
 
         // must call initialize otherwise @Async methods won't work!
         threadPoolTaskExecutor.initialize();

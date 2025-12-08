@@ -19,11 +19,11 @@ public class OnchainHistoryParams {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("from_height")
-    Long fromHeight;
+    Integer fromHeight;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("to_height")
-    Long toHeight;
+    Integer toHeight;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("wallet_path")
