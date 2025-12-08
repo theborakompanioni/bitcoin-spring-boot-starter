@@ -23,6 +23,7 @@ import org.tbk.electrum.common.WalletParams;
 import org.tbk.electrum.model.*;
 import org.tbk.electrum.rpc.command.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
@@ -160,34 +161,65 @@ class ElectrumDaemonClientContainerWithFundsTest {
         assertThat(deserializedTx, is(notNullValue()));
         assertThat(deserializedTx.getOutputs(), hasSize(2));
 
+        int heightBeforeBroadcast = sut.getInfo().getServerHeight();
         String txid = sut.broadcast(rawTx);
         assertThat(txid, is(not(emptyOrNullString())));
 
-        // Check that the transaction is in the onchain history
-        OnchainHistory history = sut.getOnchainHistory(OnchainHistoryParams.builder()
+        // Check that the **unconfirmed** transaction is in the onchain history
+        OnchainHistory historyWithUnconfirmedTransactions = sut.getOnchainHistory(OnchainHistoryParams.builder()
+                // **ATTENTION**: toHeight/fromHeight cannot be used since tx is almost certainly unconfirmed
                 .walletPath(defaultWalletParams.getWalletPath())
                 .build());
-        OnchainHistory.Transaction tx = history.getTransactions().stream()
+        OnchainHistory.Transaction unconfirmedTx = historyWithUnconfirmedTransactions.getTransactions().stream()
                 .filter(it -> txid.equalsIgnoreCase(it.getTxHash()))
                 .findFirst()
                 .orElse(null);
-        assertThat("Transaction should be in onchain history", tx, is(notNullValue()));
-        assertThat(tx.isIncoming(), is(false));
-        assertThat(tx.getValue().getValue(), is(sendAmount.negate().getValue()));
-        assertThat(tx.getOutputs(), hasSize(2));
+        assertThat("Transaction should be in onchain history", unconfirmedTx, is(notNullValue()));
+        assertThat(unconfirmedTx.isIncoming(), is(false));
+        assertThat(unconfirmedTx.getValue().getValue(), is(sendAmount.negate().getValue()));
+        assertThat(unconfirmedTx.getOutputs(), hasSize(2));
+        assertThat(unconfirmedTx.getConfirmations(), is(greaterThanOrEqualTo(0L)));
 
-        OnchainHistory.HistoryTxOutput destinationTxout = tx.getOutputs().stream()
+        OnchainHistory.HistoryTxOutput destinationTxout = unconfirmedTx.getOutputs().stream()
                 .filter(it -> destinationAddress.equals(it.getAddress().orElse(null)))
                 .findFirst()
                 .orElseThrow();
         assertThat(destinationTxout, is(notNullValue()));
         assertThat(destinationTxout.getValue().getValue(), is(sendAmount.getValue()));
 
-        OnchainHistory.HistoryTxOutput changeTxout = tx.getOutputs().stream()
+        OnchainHistory.HistoryTxOutput changeTxout = unconfirmedTx.getOutputs().stream()
                 .filter(it -> changeAddress.equals(it.getAddress().orElse(null)))
                 .findFirst()
                 .orElse(null);
         assertThat(changeTxout, is(notNullValue()));
+
+        int heightAfterBroadcast = sut.getInfo().getServerHeight();
+        regtestMiner.mineBlocks(1);
+        waitForBlockHeightIncrease(sut, heightAfterBroadcast).block(Duration.ofSeconds(30));
+
+        sut.waitForWalletSynchronization(defaultWalletParams).get(30, TimeUnit.SECONDS);
+
+        // Check that the **confirmed** transaction is in the onchain history
+        OnchainHistory historyWithoutUnconfirmedTransactions = sut.getOnchainHistory(OnchainHistoryParams.builder()
+                .walletPath(defaultWalletParams.getWalletPath())
+                // fromHeight/toHeight can be used since tx is confirmed
+                .fromHeight((long) heightBeforeBroadcast)
+                .toHeight((long) Integer.MAX_VALUE)
+                .build());
+        OnchainHistory.Transaction confirmedTx = historyWithoutUnconfirmedTransactions.getTransactions().stream()
+                .filter(it -> unconfirmedTx.getTxHash().equals(it.getTxHash()))
+                .findFirst()
+                .orElse(null);
+        assertThat("Transaction should be in onchain history", confirmedTx, is(notNullValue()));
+        assertThat("tx has is the same", confirmedTx.getTxHash(), is(unconfirmedTx.getTxHash()));
+        assertThat(confirmedTx.isIncoming(), is(unconfirmedTx.isIncoming()));
+        assertThat(confirmedTx.getValue().getValue(), is(unconfirmedTx.getValue().getValue()));
+        assertThat(confirmedTx.getOutputs(), hasSize(unconfirmedTx.getOutputs().size()));
+        assertThat(confirmedTx.getHeight().isPresent(), is(true));
+        assertThat(confirmedTx.getTxPosInBlock().isPresent(), is(true));
+        assertThat(confirmedTx.getTimestamp().isPresent(), is(true));
+        assertThat(confirmedTx.getConfirmations(), is(greaterThanOrEqualTo(1L)));
+
     }
 
     @Test
@@ -309,5 +341,20 @@ class ElectrumDaemonClientContainerWithFundsTest {
                 .orElse(null);
         assertThat(txOutput, is(notNullValue()));
         assertThat(txOutput.getValue().getValue(), is(greaterThanOrEqualTo(0L)));
+    }
+
+    private static Mono<Integer> waitForBlockHeightIncrease(ElectrumClient client) {
+        return Mono.defer(() -> {
+            int currentServerHeight = client.getInfo().getServerHeight();
+            return waitForBlockHeightIncrease(client, currentServerHeight);
+        });
+    }
+
+    private static Mono<Integer> waitForBlockHeightIncrease(ElectrumClient client, int refHeight) {
+        return Flux.interval(Duration.ofMillis(100))
+                .doOnNext(it -> log.trace("Waiting for wallet to receive new blocks.. ({} attempt)", it))
+                .map(it -> client.getInfo().getBlockchainHeight())
+                .filter(newBlockchainHeight -> newBlockchainHeight > refHeight)
+                .next();
     }
 }
