@@ -1,7 +1,6 @@
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
-import io.franzbecker.gradle.lombok.task.DelombokTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
@@ -37,8 +36,9 @@ plugins {
     id 'com.github.spotbugs' version '5.2.5' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
-    id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
     id 'org.graalvm.buildtools.native' version '0.11.3' apply false
+    id 'io.freefair.lombok' version '9.1.0' apply false
+    id 'org.graalvm.buildtools.native' version '0.9.28' apply false
 }
 
 contacts {
@@ -106,7 +106,7 @@ subprojects {
     apply plugin: 'com.netflix.nebula.info'
     apply plugin: 'com.netflix.nebula.facet'
     apply plugin: 'com.netflix.nebula.integtest-standalone'
-    apply plugin: 'io.franzbecker.gradle-lombok'
+    apply plugin: 'io.freefair.lombok'
     apply plugin: 'io.spring.dependency-management'
 
     java {
@@ -265,7 +265,6 @@ subprojects {
 
     lombok {
         version = "${lombokVersion}"
-        sha256 = null // skip verifyLombok task - will be done by gradle dependency verification
     }
 
     tasks.withType(Test).configureEach {
@@ -290,29 +289,9 @@ subprojects {
 
     tasks.register('dependencyTree', DependencyReportTask) {}
 
-    tasks.register('delombok', DelombokTask) {
-        dependsOn compileJava
-        onlyIf { project.hasProperty('javadocEnabled') }
-        def srcDirs = sourceSets.main.java.srcDirs.findAll { it.exists() }
-
-        enabled = subprojects.isEmpty() && !srcDirs.isEmpty()
-
-        ext.outputDir = layout.buildDirectory.dir("./delombok").get().asFile
-        outputs.dir(outputDir)
-        srcDirs.each {
-            inputs.dir(it)
-            args(it, "-d", outputDir)
-        }
-
-        doFirst {
-            outputDir.deleteDir()
-        }
-    }
-
     javadoc {
         onlyIf { project.hasProperty('javadocEnabled') }
-        dependsOn delombok
-        source = delombok.outputDir
+        source = delombok
         failOnError = false
     }
 
@@ -369,8 +348,10 @@ subprojects {
 }
 
 // enable publishing for all subproject except for "example applications"
-configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
-        !project.pluginManager.hasPlugin('org.springframework.boot') &&
-        project.name.indexOf('-example-application') < 0 }) {
+configure(subprojects.findAll { project ->
+    project.subprojects.isEmpty() &&
+            !project.pluginManager.hasPlugin('org.springframework.boot') &&
+            project.name.indexOf('-example-application') < 0
+}) {
     apply from: "${project.rootDir}/publish.gradle"
 }

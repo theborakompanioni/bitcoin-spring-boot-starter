@@ -139,20 +139,20 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
     public void init(HttpSecurity http) {
         if (k1Manager == null) {
             String errorMessage = "Cannot create lnurl-auth authentication handling when 'k1Manager' is null. "
-                                  + "Please add the necessary bean or disable lnurl-auth authentication.";
+                    + "Please add the necessary bean or disable lnurl-auth authentication.";
             throw new IllegalStateException(errorMessage);
         }
 
         if (pairingService == null) {
             String errorMessage = "Cannot create lnurl-auth authentication handling when 'pairingService' is null. "
-                                  + "Please add the necessary bean or disable lnurl-auth authentication.";
+                    + "Please add the necessary bean or disable lnurl-auth authentication.";
             throw new IllegalStateException(errorMessage);
         }
 
         if (loginPageEndpointConfig.enabled) {
             if (lnurlAuthFactory == null) {
                 String errorMessage = "Cannot create default lnurl-auth login page when 'lnurlAuthFactory' is null. "
-                                      + "Consider adding the necessary bean or disable default login page generation.";
+                        + "Consider adding the necessary bean or disable default login page generation.";
                 throw new IllegalStateException(errorMessage);
             }
         }

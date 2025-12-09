@@ -79,8 +79,8 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                 .headers(headers -> headers
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
-                                                                           + "script-src 'self'; "
-                                                                           + "img-src 'self' data: https://robohash.org"))
+                                + "script-src 'self'; "
+                                + "img-src 'self' data: https://robohash.org"))
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
