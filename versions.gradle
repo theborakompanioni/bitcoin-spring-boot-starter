@@ -27,7 +27,7 @@ ext {
     hibernateCommunityDialectsVersion = '6.6.38.Final'
     lombokVersion = '1.18.42'
     springdocOpenApiVersion = '2.3.0'
-    checkstyleVersion = '10.3.4'
+    checkstyleVersion = '10.26.1'
     findsecbugsPluginVersion = '1.13.0'
     torSpringBootStarterVersion = '0.9.0'
     springBootGradlePluginVersion = '3.5.8'

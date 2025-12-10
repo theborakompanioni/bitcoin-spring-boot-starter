@@ -9,6 +9,7 @@
       </trusted-artifacts>
       <ignored-keys>
          <ignored-key id="74DAFDFD6DAE2441" reason="Key couldn't be downloaded from any key server"/>
+         <ignored-key id="E126833F9CF64915" reason="Key couldn't be downloaded from any key server"/>
       </ignored-keys>
       <trusted-keys>
          <trusted-key id="015479E1055341431B4545AB72475FD306B9CAB7" group="com.googlecode.javaewah" name="JavaEWAH" version="1.1.12"/>
@@ -22,7 +23,10 @@
             <trusting group="com.thoughtworks.xstream"/>
             <trusting group="io.github.x-stream"/>
          </trusted-key>
-         <trusted-key id="06D34ED6FF73DE368A772A781063FE98BCECB758" group="com.puppycrawl.tools" name="checkstyle" version="10.3.4"/>
+         <trusted-key id="06D34ED6FF73DE368A772A781063FE98BCECB758">
+            <trusting group="com.puppycrawl.tools" name="checkstyle" version="10.26.1"/>
+            <trusting group="com.puppycrawl.tools" name="checkstyle" version="10.3.4"/>
+         </trusted-key>
          <trusted-key id="073F7A9345756F3B40CDB99E6C70A3B7599C5736" group="org.jline"/>
          <trusted-key id="077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0" group="^org[.]apache[.]logging($|([.].*))" regex="true"/>
          <trusted-key id="0785B3EFF60B1B1BEA94E0BB7C25280EAE63EBE5" group="^org[.]apache[.]httpcomponents($|([.].*))" regex="true"/>
@@ -111,6 +115,7 @@
          <trusted-key id="28417C95E8906D108392822354A43F3254868410" group="org.apache.activemq"/>
          <trusted-key id="2B34821418CF19CF1F2A8352953E02E4F573B46F" group="jakarta.platform"/>
          <trusted-key id="2DB4F1EF0FA761ECC4EA935C86FDC7E2A11262CB">
+            <trusting group="commons-beanutils" name="commons-beanutils" version="1.11.0"/>
             <trusting group="commons-codec"/>
             <trusting group="commons-io" name="commons-io" version="2.16.1"/>
             <trusting group="commons-io" name="commons-io" version="2.18.0"/>
@@ -278,6 +283,7 @@
             <trusting group="org.seleniumhq.selenium" name="selenium-bom" version="4.8.3"/>
          </trusted-key>
          <trusted-key id="84789D24DF77A32433CE1F079EB80E92EB2135B1">
+            <trusting group="org.apache" name="apache"/>
             <trusting group="org.apache" name="apache" version="27"/>
             <trusting group="org.apache" name="apache" version="29"/>
             <trusting group="org.apache" name="apache" version="30"/>
@@ -313,6 +319,7 @@
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="5.2.1"/>
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="5.2.5"/>
          </trusted-key>
+         <trusted-key id="998AF0E2B935996F5CEBD56B9B1FDA9F3C062231" group="org.apache" name="apache" version="6"/>
          <trusted-key id="9B32CBC0F3F6BA4C13D611FC21871D2A9AB66A31">
             <trusting group="io.rsocket" name="rsocket-bom" version="1.1.3"/>
             <trusting group="io.rsocket" name="rsocket-bom" version="1.1.5"/>
@@ -329,14 +336,21 @@
             <trusting group="io.fabric8" name="kubernetes-client-bom" version="5.12.2"/>
             <trusting group="io.fabric8" name="kubernetes-client-bom" version="5.12.4"/>
          </trusted-key>
+         <trusted-key id="A48FADE54FA56B93FE66EC17A05EBEE656F3E01B" group="org.apache.geronimo.genesis"/>
          <trusted-key id="A5BD02B93E7A40482EB1D66A5F69AD087600B22C" group="org.ow2.asm"/>
          <trusted-key id="A6D6C97108B8585F91B158748671A8DF71296252" group="^com[.]squareup($|([.].*))" regex="true"/>
          <trusted-key id="A6DA1D74C3DEF695BA01C1B45FF0F772F46F7699" group="com.github.arteam"/>
          <trusted-key id="A7892505CF1A58076453E52D7999BEFBA1039E8B" group="net.bytebuddy"/>
          <trusted-key id="A9C5DF4D22E99998D9875A5110C01C5A2F6059E7" group="org.apache.tomcat.embed"/>
-         <trusted-key id="AA417737BD805456DB3CBDDE6601E5C08DCCBB96" group="info.picocli" name="picocli" version="4.6.3"/>
+         <trusted-key id="AA417737BD805456DB3CBDDE6601E5C08DCCBB96">
+            <trusting group="info.picocli" name="picocli" version="4.6.3"/>
+            <trusting group="info.picocli" name="picocli" version="4.7.7"/>
+         </trusted-key>
          <trusted-key id="AA70C7C433D501636392EC02153E7A3C2B4E5118" group="org.eclipse.ee4j" name="project"/>
-         <trusted-key id="B02137D875D833D9B23392ECAE5A7FB608A0221C" group="org.apache.maven" name="maven" version="3.6.3"/>
+         <trusted-key id="B02137D875D833D9B23392ECAE5A7FB608A0221C">
+            <trusting group="org.apache.maven" name="maven" version="3.6.3"/>
+            <trusting group="org.codehaus.plexus" name="plexus-classworlds" version="2.6.0"/>
+         </trusted-key>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD">
             <trusting group="com.google.protobuf" name="protobuf-gradle-plugin" version="0.9.3"/>
             <trusting group="com.google.protobuf" name="protobuf-gradle-plugin" version="0.9.4"/>
@@ -6184,6 +6198,19 @@
          </artifact>
          <artifact name="tomcat-embed-websocket-10.1.49.pom">
             <sha256 value="53b20f4afa2e5e4892a41f7c23cae312d40a9a2be30e452c6a48e985611dd807" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="org.apache.xbean" name="xbean" version="3.7">
+         <artifact name="xbean-3.7.pom">
+            <sha256 value="ea717132de8404b62fc9097a1f3215c705d525d457be9a5f12653adc68c33ab7" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.apache.xbean" name="xbean-reflect" version="3.7">
+         <artifact name="xbean-reflect-3.7.jar">
+            <sha256 value="104e5e9bb5a669f86722f32281960700f7ec8e3209ef51b23eb9b6d23d1629cb" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="xbean-reflect-3.7.pom">
+            <sha256 value="9795c15322c5d19af336eebd9e164fa7d5897c4b004a7d66e21635a173e748a9" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="org.apiguardian" name="apiguardian-api" version="1.1.1">
