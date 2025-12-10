@@ -11,7 +11,7 @@ ext {
     jeroMqVersion = '0.6.0'
     testcontainersVersion = '2.0.2'
     httpComponentsVersion = '4.4.14'
-    httpComponentsClientVersion = '4.5.13'
+    httpComponentsClientVersion = '4.5.14'
     apacheCommonsVersion = '3.20.0'
     grpcVersion = '1.61.0' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
     protobufVersion = '3.22.5'
