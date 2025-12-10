@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update spring-boot from v3.4.4 to v3.5.8
 - upgrade: update lombok from v1.18.30 to v1.18.42
 - upgrade: update sqlite from v3.48.0.0 to v3.51.1.0
+- upgrade: update zxing v3.5.3 to v3.5.4
 
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers
