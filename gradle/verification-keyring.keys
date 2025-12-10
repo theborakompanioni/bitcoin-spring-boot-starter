@@ -9150,8 +9150,6 @@ FxnfyN1K8Rmx78DyYrRG5p6wca4aqdZTQpKZ3h+T0kCxUr5L
 -----END PGP PUBLIC KEY BLOCK-----
 
 pub    5E1D8523FE7EAC7B
-uid    Terracotta Release Engineer 2 (Key used to sign build artifacts) <infrastructure@terracotta.org>
-
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQGNBGGWvwwBDACiIPxWt8EHK4C+2N6s2ua3YUQyJGF7QkyYfm8cgw59E9TFQg0l
@@ -9162,10 +9160,8 @@ VqnHAMoNb9P9tTWCn6hO3aevLpda++JIEKxYwOUnKx07GZy//x6neHd03guuu1Rm
 SZbbHc60XczXEQJ7k+pIabXvN3RZEd4UpQWdFIpWogmUvsJaV3Lpm0WMQYTx0H+N
 U5/OdJMX6hBZKx6dMdMGzVfBxp9m42alFsJaiAaTiFECq7TjFw3etvwjIDGIxdaq
 Pt+hETDT0IND8XgbsBDoCTLsuJqplce3PbvhvF+ni1P4H/pNZXwvWYE29Rd10iPR
-g23qPgiFTD2qkhUAEQEAAbRgVGVycmFjb3R0YSBSZWxlYXNlIEVuZ2luZWVyIDIg
-KEtleSB1c2VkIHRvIHNpZ24gYnVpbGQgYXJ0aWZhY3RzKSA8aW5mcmFzdHJ1Y3R1
-cmVAdGVycmFjb3R0YS5vcmc+
-=wuPD
+g23qPgiFTD2qkhUAEQEAAQ==
+=rmdJ
 -----END PGP PUBLIC KEY BLOCK-----
 
 pub    5F69AD087600B22C

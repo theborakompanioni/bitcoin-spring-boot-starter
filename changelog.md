@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ## Breaking
 - electrum: moved electrum RPC related code to distinct package
-- electrum: compatibility wit electrum v4.6.0
+- electrum: compatibility with electrum v4.6.0
 - electrum: upgrade electrum testcontainer from v3.3.8 to v4.6.1
 
 ### Changed
@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update testcontainers from v1.20.4 to v2.0.2
 - upgrade: update xchange from v5.1.0 to v5.2.2
 - upgrade: update spring-boot from v3.4.4 to v3.5.8
+- upgrade: update lombok from v1.18.30 to v1.18.42
 
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers
