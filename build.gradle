@@ -31,7 +31,7 @@ buildscript {
 plugins {
     id 'idea'
     id 'nebula.release' version '19.0.10'
-    id 'nebula.lint' version '20.5.5'
+    id 'nebula.lint' version '20.6.2'
     id 'com.netflix.nebula.project' version '11.0.0'
     id 'com.netflix.nebula.facet' version '11.0.0'
     id 'com.github.spotbugs' version '5.2.5' apply false
