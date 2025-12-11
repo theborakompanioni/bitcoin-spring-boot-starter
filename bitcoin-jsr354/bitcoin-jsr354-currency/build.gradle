@@ -14,7 +14,7 @@ repositories {
 configurations.testImplementation {
     resolutionStrategy {
         // javamoney-tck pulls in v1.1.0.Final - which does not exist anymore (on public repos)
-        force 'org.jboss.test-audit:jboss-test-audit-impl:1.1.1.Final'
+        force 'org.jboss.test-audit:jboss-test-audit-impl:1.1.4.Final'
     }
 }
 
