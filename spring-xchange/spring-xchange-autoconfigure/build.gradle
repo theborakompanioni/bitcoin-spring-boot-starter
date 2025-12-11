@@ -13,7 +13,6 @@ dependencies {
     compileOnly "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
     compileOnly "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
     compileOnly "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
     compileOnly "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
     // ================================================================
 
