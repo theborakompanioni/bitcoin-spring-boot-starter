@@ -13,11 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Slf4j
 @EnableWebSecurity
@@ -46,8 +45,8 @@ class LnurlAuthTestSecurityConfig implements WebSecurityCustomizer {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(
-                                antMatcher("/"),
-                                antMatcher("/login")
+                                PathPatternRequestMatcher.withDefaults().matcher("/"),
+                                PathPatternRequestMatcher.withDefaults().matcher("/login")
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
