@@ -10,7 +10,6 @@ dependencies {
 
     api "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
     api "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
-    api "org.knowm.xchange:xchange-bittrex:${xChangeVersion}"
     api "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
     api "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
 
