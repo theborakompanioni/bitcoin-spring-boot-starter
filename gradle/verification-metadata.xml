@@ -221,6 +221,7 @@
             <trusting group="com.querydsl" name="querydsl-bom" version="5.0.0"/>
             <trusting group="com.querydsl" name="querydsl-bom" version="5.1.0"/>
          </trusted-key>
+         <trusted-key id="58529CB0CBFD18AB30A3B937173ECD0F62AE64D9" group="com.github.mmazi" name="rescu" version="3.1"/>
          <trusted-key id="5989BAF76217B843D66BE55B2D0E1FB8FE4B68B4">
             <trusting group="org.eclipse.jetty" name="jetty-bom" version="11.0.13"/>
             <trusting group="org.eclipse.jetty" name="jetty-bom" version="11.0.15"/>
