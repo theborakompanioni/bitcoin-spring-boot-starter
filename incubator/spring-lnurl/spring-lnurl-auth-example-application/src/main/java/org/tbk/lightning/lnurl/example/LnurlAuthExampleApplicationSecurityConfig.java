@@ -15,12 +15,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.tbk.lnurl.auth.K1Manager;
 import org.tbk.lnurl.auth.LnurlAuthFactory;
 import org.tbk.spring.lnurl.security.LnurlAuthConfigurer;
 import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Slf4j
 @EnableWebSecurity
@@ -86,14 +85,14 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(
-                                antMatcher("/"),
-                                antMatcher("/index.html")
+                                PathPatternRequestMatcher.withDefaults().matcher("/"),
+                                PathPatternRequestMatcher.withDefaults().matcher("/index.html")
                         ).permitAll()
                         .requestMatchers(
-                                antMatcher("/authenticated.html")
+                                PathPatternRequestMatcher.withDefaults().matcher("/authenticated.html")
                         ).authenticated()
                         .requestMatchers(
-                                antMatcher("/api/v1/demo/**")
+                                PathPatternRequestMatcher.withDefaults().matcher("/api/v1/demo/**")
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

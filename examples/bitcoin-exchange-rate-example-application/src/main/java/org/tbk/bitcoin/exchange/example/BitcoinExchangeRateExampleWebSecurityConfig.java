@@ -11,8 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Slf4j
 @EnableWebSecurity
@@ -32,8 +31,8 @@ class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomiz
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                         PathRequest.toStaticResources().atCommonLocations(),
-                        antMatcher("/index.html"),
-                        antMatcher("/fonts/**")
+                        PathPatternRequestMatcher.withDefaults().matcher("/index.html"),
+                        PathPatternRequestMatcher.withDefaults().matcher("/fonts/**")
                 ).permitAll())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 

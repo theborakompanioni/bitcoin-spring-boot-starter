@@ -14,7 +14,8 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.util.ForwardedHeaderUtils;
 import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
@@ -41,11 +42,11 @@ public class LnurlAuthWalletAuthenticationFilter extends AbstractAuthenticationP
             """;
 
     public LnurlAuthWalletAuthenticationFilter(String pathRequestPattern) {
-        this(new AntPathRequestMatcher(pathRequestPattern, HttpMethod.GET.name()));
+        this(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, pathRequestPattern));
     }
 
-    protected LnurlAuthWalletAuthenticationFilter(AntPathRequestMatcher pathRequestPattern) {
-        super(pathRequestPattern);
+    protected LnurlAuthWalletAuthenticationFilter(RequestMatcher requestPattern) {
+        super(requestPattern);
 
         this.setAuthenticationFailureHandler(failureHandler);
         this.setAuthenticationSuccessHandler(successHandler);

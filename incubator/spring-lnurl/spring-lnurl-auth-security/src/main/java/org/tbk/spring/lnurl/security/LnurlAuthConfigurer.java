@@ -7,8 +7,9 @@ import org.springframework.security.config.annotation.SecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tbk.lnurl.auth.K1Manager;
@@ -325,12 +326,12 @@ public class LnurlAuthConfigurer extends AbstractHttpConfigurer<LnurlAuthConfigu
             return LnurlAuthConfigurer.this;
         }
 
-        private AntPathRequestMatcher getRequestMatcher() {
+        private RequestMatcher getRequestMatcher() {
             String pathWithoutQuery = UriComponentsBuilder.fromUriString(authorizationRequestBaseUri)
                     .replaceQuery("")
                     .fragment(null)
                     .build().toUriString();
-            return new AntPathRequestMatcher(pathWithoutQuery, HttpMethod.GET.name());
+            return PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, pathWithoutQuery);
         }
     }
 
