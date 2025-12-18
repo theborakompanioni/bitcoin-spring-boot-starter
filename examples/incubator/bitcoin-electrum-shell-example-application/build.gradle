@@ -1,6 +1,6 @@
 apply plugin: 'org.springframework.boot'
 
-description = 'electrum balance example application package'
+description = 'electrum shell example application package'
 
 dependencyManagement {
     imports {
