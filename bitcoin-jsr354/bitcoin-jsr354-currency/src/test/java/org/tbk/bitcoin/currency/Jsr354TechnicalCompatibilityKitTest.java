@@ -1,12 +1,12 @@
 package org.tbk.bitcoin.currency;
 
+import com.google.common.collect.ImmutableList;
 import org.javamoney.moneta.Money;
 import org.javamoney.moneta.function.MonetaryOperators;
 import org.javamoney.tck.JSR354TestConfiguration;
 import org.javamoney.tck.TCKRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mutabilitydetector.internal.com.google.common.collect.ImmutableList;
 import org.springframework.util.FileSystemUtils;
 
 import javax.money.Monetary;

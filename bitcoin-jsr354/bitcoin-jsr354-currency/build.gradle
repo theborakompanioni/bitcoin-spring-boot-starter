@@ -4,20 +4,6 @@ plugins {
 
 description = 'bitcoin jsr354 currency package'
 
-repositories {
-    maven {
-        // needed for jboss-test-audit-impl packages
-        url "https://repository.jboss.org/nexus/content/repositories/releases/"
-    }
-}
-
-configurations.testImplementation {
-    resolutionStrategy {
-        // javamoney-tck pulls in v1.1.0.Final - which does not exist anymore (on public repos)
-        force 'org.jboss.test-audit:jboss-test-audit-impl:1.1.1.Final'
-    }
-}
-
 dependencies {
     api "javax.money:money-api:${jsr354Version}"
 
