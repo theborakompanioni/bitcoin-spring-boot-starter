@@ -7,7 +7,7 @@ signing {
     sign publishing.publications.nebula
 }
 
-tasks.withType(Sign) {
+tasks.withType(Sign).configureEach {
     onlyIf { project.hasProperty('signing.password') }
 }
 
@@ -15,7 +15,7 @@ publishing {
     publications {
         nebula(MavenPublication) { publication ->
             pom {
-                packaging 'jar'
+                packaging = 'jar'
                 licenses {
                     license {
                         name = 'The Apache Software License, Version 2.0'
