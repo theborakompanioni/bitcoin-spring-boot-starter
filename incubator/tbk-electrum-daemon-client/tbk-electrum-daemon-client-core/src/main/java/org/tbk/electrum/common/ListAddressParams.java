@@ -11,6 +11,10 @@ import javax.annotation.Nullable;
 public class ListAddressParams {
     private static final ListAddressParams ALL = builder().build();
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     public static ListAddressParams all() {
         return ALL;
     }

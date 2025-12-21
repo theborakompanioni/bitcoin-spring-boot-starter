@@ -42,6 +42,10 @@ public interface ElectrumClient extends AutoCloseable {
 
     Balance getBalance(GetBalanceParams params);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default List<String> listAddresses() {
         return listAddresses(ListAddressParams.all());
     }
@@ -54,6 +58,10 @@ public interface ElectrumClient extends AutoCloseable {
 
     List<String> listAddresses(ListAddressParams options);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default List<AddressWithBalance> listAddressesWithBalance() {
         return listAddressesWithBalance(ListAddressParams.all());
     }
@@ -64,12 +72,20 @@ public interface ElectrumClient extends AutoCloseable {
 
     Boolean isOwnerOfAddress(IsMineParams params);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default Optional<String> getUnusedAddress() {
         return getUnusedAddress(GetUnusedAddressParams.builder().build());
     }
 
     Optional<String> getUnusedAddress(GetUnusedAddressParams params);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default String createNewAddress() {
         return createNewAddress(CreateNewAddressParams.builder().build());
     }
@@ -84,18 +100,25 @@ public interface ElectrumClient extends AutoCloseable {
 
     List<TxHashAndBlockHeight> getAddressHistory(String address);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default OnchainHistory getOnchainHistory() {
         return getOnchainHistory(OnchainHistoryParams.builder().build());
     }
 
     OnchainHistory getOnchainHistory(OnchainHistoryParams params);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default OnchainSummary getOnchainCapitalGains() {
         return getOnchainCapitalGains(OnchainCapitalGainsParams.builder().build());
     }
 
     OnchainSummary getOnchainCapitalGains(OnchainCapitalGainsParams params);
-
 
     RawTx getRawTransaction(GetTransactionParams params);
 
@@ -109,6 +132,10 @@ public interface ElectrumClient extends AutoCloseable {
 
     boolean changeGapLimit(ChangeGapLimitParams params);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     default int getMinAcceptableGap() {
         return getMinAcceptableGap(GetMinAcceptableGapParams.builder().build());
     }
@@ -157,8 +184,16 @@ public interface ElectrumClient extends AutoCloseable {
 
     RawTx createTransaction(PaytoParams params);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     RawTx createUnsignedTransactionSendingEntireBalance(String destinationAddress, TxoValue fee);
 
     RawTx createUnsignedTransaction(TxoValue value,
@@ -168,6 +203,10 @@ public interface ElectrumClient extends AutoCloseable {
                                     String walletPath,
                                     String password);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     RawTx createUnsignedTransaction(TxoValue value,
                                     String destinationAddress,
                                     String changeAddress);
@@ -202,6 +241,10 @@ public interface ElectrumClient extends AutoCloseable {
 
     Boolean isValidAddress(String firstAddress);
 
+    /**
+     * @deprecated use with wallet_path
+     */
+    @Deprecated
     Future<?> waitForWalletSynchronization();
 
     Future<?> waitForWalletSynchronization(WalletParams wallet);
