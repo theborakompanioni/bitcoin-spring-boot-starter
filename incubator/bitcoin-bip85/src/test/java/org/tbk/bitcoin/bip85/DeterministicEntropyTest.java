@@ -3,8 +3,9 @@ package org.tbk.bitcoin.bip85;
 import fr.acinq.bitcoin.DeterministicWallet;
 import fr.acinq.bitcoin.KeyPath;
 import fr.acinq.bitcoin.MnemonicCode;
-import fr.acinq.secp256k1.Hex;
 import org.junit.jupiter.api.Test;
+
+import java.util.HexFormat;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -31,7 +32,7 @@ class DeterministicEntropyTest {
         DeterministicWallet.ExtendedPrivateKey masterBip32RootKey = DeterministicWallet.ExtendedPrivateKey.decode(xprv, KeyPath.fromPath("")).getSecond();
 
         byte[] entropy = DeterministicEntropy.keyToEntropy(masterBip32RootKey, 0);
-        String entropyHex = Hex.encode(entropy);
+        String entropyHex = HexFormat.of().formatHex(entropy);
 
         assertThat(entropyHex, is("efecfbccffea313214232d29e71563d941229afb4338c21f9517c41aaa0d16f00b83d2a09ef747e7a64e8e2bd5a14869e693da66ce94ac2da570ab7ee48618f7"));
     }
@@ -42,7 +43,7 @@ class DeterministicEntropyTest {
         DeterministicWallet.ExtendedPrivateKey masterBip32RootKey = DeterministicWallet.ExtendedPrivateKey.decode(xprv, KeyPath.fromPath("")).getSecond();
 
         byte[] entropy = DeterministicEntropy.keyToEntropy(masterBip32RootKey, 1);
-        String entropyHex = Hex.encode(entropy);
+        String entropyHex = HexFormat.of().formatHex(entropy);
 
         assertThat(entropyHex, is("70c6e3e8ebee8dc4c0dbba66076819bb8c09672527c4277ca8729532ad711872218f826919f6b67218adde99018a6df9095ab2b58d803b5b93ec9802085a690e"));
     }
@@ -91,7 +92,8 @@ class DeterministicEntropyTest {
         DeterministicWallet.ExtendedPrivateKey masterBip32RootKey = DeterministicWallet.ExtendedPrivateKey.decode(xprv, KeyPath.fromPath("")).getSecond();
 
         byte[] entropy = DeterministicEntropy.keyToHex(masterBip32RootKey, 64, 0);
-        assertThat(Hex.encode(entropy), is("492db4698cf3b73a5a24998aa3e9d7fa96275d85724a91e71aa2d645442f878555d078fd1f1f67e368976f04137b1f7a0d19232136ca50c44614af72b5582a5c"));
+        String entropyHex = HexFormat.of().formatHex(entropy);
+        assertThat(entropyHex, is("492db4698cf3b73a5a24998aa3e9d7fa96275d85724a91e71aa2d645442f878555d078fd1f1f67e368976f04137b1f7a0d19232136ca50c44614af72b5582a5c"));
     }
 
     // https://github.com/hoganri/bip85-js/blob/main/test.js
@@ -102,7 +104,7 @@ class DeterministicEntropyTest {
         DeterministicWallet.ExtendedPrivateKey masterBip32RootKey = DeterministicWallet.generate(seed);
 
         byte[] entropy = DeterministicEntropy.keyToEntropy(masterBip32RootKey, 0);
-        String entropyHex = Hex.encode(entropy);
+        String entropyHex = HexFormat.of().formatHex(entropy);
 
         assertThat(entropyHex, is("d24cee04c61c4a47751658d078ae9b0cc9550fe43eee643d5c10ac2e3f5edbca757b2bd74d55ff5bcc2b1608d567053660d9c7447ae1eb84b6619282fd391844"));
     }

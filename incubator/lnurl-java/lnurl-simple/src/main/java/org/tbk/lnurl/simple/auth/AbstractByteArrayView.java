@@ -1,10 +1,10 @@
 package org.tbk.lnurl.simple.auth;
 
-import fr.acinq.secp256k1.Hex;
 import lombok.EqualsAndHashCode;
 import org.tbk.lnurl.auth.ByteArrayView;
 
 import java.util.Arrays;
+import java.util.HexFormat;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,7 +32,7 @@ abstract class AbstractByteArrayView implements ByteArrayView {
 
     public String toHex() {
         if (hex == null) {
-            hex = Hex.encode(data);
+            hex = HexFormat.of().formatHex(data);
         }
         return hex;
     }

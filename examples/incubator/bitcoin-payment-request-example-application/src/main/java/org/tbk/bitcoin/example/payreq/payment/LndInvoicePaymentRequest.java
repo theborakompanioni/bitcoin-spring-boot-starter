@@ -6,11 +6,11 @@ import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Value;
 import org.bitcoinj.core.NetworkParameters;
-import org.springframework.security.crypto.codec.Hex;
 import org.tbk.bitcoin.example.payreq.common.Network;
 import org.tbk.bitcoin.example.payreq.order.Order;
 
 import java.time.Instant;
+import java.util.HexFormat;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,7 +43,7 @@ public class LndInvoicePaymentRequest extends PaymentRequest {
         this.validUntil = requireNonNull(validUntil);
         this.network = Network.fromNetworkParameters(network).name();
         this.paymentHash = requireNonNull(paymentHash);
-        this.rhash = String.valueOf(Hex.encode(rHash));
+        this.rhash = HexFormat.of().formatHex(rHash);
 
         registerEvent(LightningPaymentRequestCreatedEvent.of(this.getId()));
     }

@@ -5,7 +5,7 @@ services:
     image: polarlightning/bitcoind:27.0@sha256:7ac359cacd1c667fae321fe049d3d860eb85f1f14aff805e96246c5dc70f2f13
     restart: no
     volumes:
-      - bitcoind-data:/home/bitcoin/.bitcoin/regtest
+      - bsbs-bitcoind-data:/home/bitcoin/.bitcoin/regtest
     command:
       -regtest=1
       -server=1
@@ -43,4 +43,4 @@ services:
       retries: 20
 
 volumes:
-  bitcoind-data:
+  bsbs-bitcoind-data:
