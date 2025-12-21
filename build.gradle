@@ -321,7 +321,7 @@ subprojects {
         reportLevel = Confidence.LOW
         ignoreFailures = false
         excludeFilter = rootProject.file('./spotbugs-exclude.xml')
-        reportsDir = rootProject.layout.buildDirectory.dir("./reports/spotbugs/$project.name").get().asFile
+        reportsDir = layout.buildDirectory.dir("./reports/spotbugs").get().asFile
     }
     tasks.withType(SpotBugsTask).configureEach {
         onlyIf { gradle.taskGraph.hasTask('build') }
@@ -336,7 +336,7 @@ subprojects {
         configFile = rootProject.file('./checkstyle.xml')
         maxErrors = 0
         ignoreFailures = false
-        reportsDir = rootProject.layout.buildDirectory.dir("./reports/checkstyle/$project.name").get().asFile
+        reportsDir = layout.buildDirectory.dir("./reports/checkstyle").get().asFile
     }
     tasks.withType(Checkstyle).configureEach {
         onlyIf { gradle.taskGraph.hasTask('build') }
