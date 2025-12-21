@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update zxing v3.5.3 to v3.5.4
 - upgrade: update hibernate-community-dialects from v6.6.11.Final to v6.6.38.Final
 - upgrade: update guava from v33.0.0-jre to v33.5.0-jre
+- upgrade: update secp256k1-kmp from v0.17.1 to v0.21.0
+- upgrade: update bitcoin-kmp from v0.22.1 to v0.28.1
+- upgrade: update lightning-kmp from v1.9.0 to v1.11.2
 
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers

@@ -1,7 +1,7 @@
 ext {
     jsr354Version = '1.1'
-    monetaVersion = '1.4.2'
-    xChangeVersion = '5.2.2'
+    monetaVersion = '1.4.5'
+    xChangeVersion = '5.2.3'
     bitcoinjVersion = '0.16.2'
     lightningjVersion = '0.17.4-Beta'
     clnGrpcClientVersion = '24.11.1'
@@ -9,8 +9,8 @@ ext {
     consensusJVersion = '0.6.5'
     guavaVersion = '33.5.0-jre'
     jeroMqVersion = '0.6.0'
-    testcontainersVersion = '2.0.2'
-    httpComponentsVersion = '4.4.14'
+    testcontainersVersion = '2.0.3'
+    httpComponentsVersion = '4.4.16'
     httpComponentsClientVersion = '4.5.14'
     apacheCommonsVersion = '3.20.0'
     grpcVersion = '1.61.0' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
@@ -20,15 +20,15 @@ ext {
     bytebuddyPluginVersion = '1.18.2' // keep in sync with `jmoleculesBomVersion`
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.4'
-    acinqSecp256k1KmpVersion = '0.17.1'
-    acinqBitcoinKmpVersion = '0.22.1' // keep in sync with `acinqSecp256k1KmpVersion`
-    acinqLightningKmpVersion = '1.9.0' // keep in sync with `acinqBitcoinKmpVersion`
+    acinqSecp256k1KmpVersion = '0.21.0'
+    acinqBitcoinKmpVersion = '0.28.1' // keep in sync with `acinqSecp256k1KmpVersion`
+    acinqLightningKmpVersion = '1.11.2' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.51.1.0'
-    hibernateCommunityDialectsVersion = '6.6.38.Final'
+    hibernateCommunityDialectsVersion = '6.6.39.Final'
     lombokVersion = '1.18.42'
     springdocOpenApiVersion = '2.3.0'
     checkstyleVersion = '10.26.1'
-    findsecbugsPluginVersion = '1.13.0'
+    findsecbugsPluginVersion = '1.14.0'
     torSpringBootStarterVersion = '0.9.0'
     springBootGradlePluginVersion = '3.5.8'
     springShellVersion = '3.4.0'
