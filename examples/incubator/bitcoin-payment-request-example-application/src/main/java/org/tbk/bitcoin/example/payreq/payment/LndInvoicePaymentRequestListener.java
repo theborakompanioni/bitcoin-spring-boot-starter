@@ -12,8 +12,9 @@ import org.lightningj.lnd.wrapper.message.InvoiceSubscription;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Component;
+
+import java.util.HexFormat;
 
 @Slf4j
 @Component
@@ -42,7 +43,7 @@ class LndInvoicePaymentRequestListener {
                 @Override
                 public void onNext(Invoice value) {
                     try {
-                        String rHash = String.valueOf(Hex.encode(value.getRHash()));
+                        String rHash = HexFormat.of().formatHex(value.getRHash());
                         lightningPaymentRequests.findByRhash(rHash)
                                 .map(PaymentRequest::getId)
                                 .ifPresent(paymentRequestService::reevaluatePaymentRequestById);

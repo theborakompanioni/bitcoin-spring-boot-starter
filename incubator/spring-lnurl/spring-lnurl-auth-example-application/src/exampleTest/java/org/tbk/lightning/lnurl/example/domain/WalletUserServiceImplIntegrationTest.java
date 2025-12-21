@@ -1,7 +1,6 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import fr.acinq.bitcoin.PublicKey;
-import fr.acinq.secp256k1.Hex;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.tbk.lnurl.simple.auth.SimpleLinkingKey;
 
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ class WalletUserServiceImplIntegrationTest {
     @Transactional
     void itShouldCreateNewUserIfMissing() {
         String uncompressedValidLinkingKeyHex = "0465d6177992064a24c24213230a0c3eeb5f2047c7286391c7ead608cda473f787af9afcae9af3a6a84f28a775ad257dbf6027448461455aaf482569237dda27bd";
-        String compressedValidLinkingKeyHex = Hex.encode(PublicKey.compress(Hex.decode(uncompressedValidLinkingKeyHex)));
+        String compressedValidLinkingKeyHex = HexFormat.of().formatHex(PublicKey.compress(HexFormat.of().parseHex(uncompressedValidLinkingKeyHex)));
 
         SimpleLinkingKey linkingKey = SimpleLinkingKey.fromHex(compressedValidLinkingKeyHex);
 
