@@ -16,8 +16,8 @@ ext {
     grpcVersion = '1.61.0' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
     protobufVersion = '3.22.5'
     protocVersion = protobufVersion
-    jmoleculesBomVersion = '2023.1.6'
-    bytebuddyPluginVersion = '1.17.3' // keep in sync with `jmoleculesBomVersion`
+    jmoleculesBomVersion = '2025.0.2'
+    bytebuddyPluginVersion = '1.18.3' // keep in sync with `jmoleculesBomVersion`
     jacksonDatatypeMoneyVersion = '1.2.2'
     zxingVersion = '3.5.4'
     acinqSecp256k1KmpVersion = '0.21.0'
