@@ -24,11 +24,7 @@ ext {
     acinqBitcoinKmpVersion = '0.28.1' // keep in sync with `acinqSecp256k1KmpVersion`
     acinqLightningKmpVersion = '1.11.2' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.51.1.0'
-<<<<<<< HEAD
     hibernateCommunityDialectsVersion = '6.6.40.Final'
-=======
-    hibernateCommunityDialectsVersion = '6.6.39.Final'
->>>>>>> 902f080f (chore: PathPatternRequestMatcher instead of deprecated AntPathRequestMatcher)
     lombokVersion = '1.18.42'
     springdocOpenApiVersion = '2.3.0'
     checkstyleVersion = '10.26.1'

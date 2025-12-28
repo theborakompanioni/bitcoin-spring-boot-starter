@@ -38,7 +38,6 @@ plugins {
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
     id 'org.graalvm.buildtools.native' version '0.11.3' apply false
     id 'io.freefair.lombok' version '9.1.0' apply false
-    id 'org.graalvm.buildtools.native' version '0.9.28' apply false
 }
 
 contacts {
