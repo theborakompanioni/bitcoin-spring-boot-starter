@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update secp256k1-kmp from v0.17.1 to v0.21.0
 - upgrade: update bitcoin-kmp from v0.22.1 to v0.28.1
 - upgrade: update lightning-kmp from v1.9.0 to v1.11.2
+- upgrade: update spring-tor from v0.9.0 to v0.10.0
 
 ### Added
 - feat: ability to provide own wait strategy for cln testcontainers

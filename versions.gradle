@@ -29,7 +29,7 @@ ext {
     springdocOpenApiVersion = '2.3.0'
     checkstyleVersion = '10.26.1'
     findsecbugsPluginVersion = '1.14.0'
-    torSpringBootStarterVersion = '0.9.0'
+    torSpringBootStarterVersion = '0.10.0'
     springBootGradlePluginVersion = '3.5.8'
     springShellVersion = '3.4.0'
     protobufGradleVersion = '0.9.6'
