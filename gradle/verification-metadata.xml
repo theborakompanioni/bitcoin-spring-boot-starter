@@ -414,6 +414,7 @@
             <trusting group="org.apache.pulsar" name="pulsar-bom" version="3.3.2"/>
             <trusting group="org.apache.pulsar" name="pulsar-bom" version="3.3.5"/>
             <trusting group="org.apache.pulsar" name="pulsar-bom" version="4.0.7"/>
+            <trusting group="org.apache.pulsar" name="pulsar-bom" version="4.0.8"/>
          </trusted-key>
          <trusted-key id="C6F7D1C804C821F49AF3BFC13AD93C3C677A106E">
             <trusting group="io.perfmark" name="perfmark-api" version="0.25.0"/>
