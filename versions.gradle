@@ -31,7 +31,7 @@ ext {
     findsecbugsPluginVersion = '1.14.0'
     torSpringBootStarterVersion = '0.10.0'
     springBootGradlePluginVersion = '3.5.8'
-    springShellVersion = '3.4.0'
+    springShellVersion = '3.4.1'
     protobufGradleVersion = '0.9.6'
 }
 
