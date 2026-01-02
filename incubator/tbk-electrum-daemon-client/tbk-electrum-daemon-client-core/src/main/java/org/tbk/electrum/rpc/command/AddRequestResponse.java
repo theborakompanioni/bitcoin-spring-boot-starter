@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * {
  * "URI": null,
- * "address": "<address>",
+ * "address": "$address",
  * "amount_BTC": "unknown", // or btc string like "0.000011"
  * "amount_sat": null, // or 2000
  * "expiry": 3600,

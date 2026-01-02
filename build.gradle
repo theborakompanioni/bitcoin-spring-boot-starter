@@ -290,8 +290,15 @@ subprojects {
 
     javadoc {
         onlyIf { project.hasProperty('javadocEnabled') }
-        source = delombok
-        failOnError = false
+        // Note: `source = delombok` is applied by plugin 'io.freefair.lombok' automatically
+        failOnError = true
+        options {
+            tags = [
+                    'apiNote:a:API Note:',
+                    'implSpec:a:Implementation Requirements:',
+                    'implNote:a:Implementation Note:'
+            ]
+        }
     }
 
     spotbugs {
