@@ -34,6 +34,7 @@
          <trusted-key id="06D34ED6FF73DE368A772A781063FE98BCECB758">
             <trusting group="com.puppycrawl.tools" name="checkstyle" version="10.26.1"/>
             <trusting group="com.puppycrawl.tools" name="checkstyle" version="10.3.4"/>
+            <trusting group="com.puppycrawl.tools" name="checkstyle" version="12.3.1"/>
          </trusted-key>
          <trusted-key id="073F7A9345756F3B40CDB99E6C70A3B7599C5736" group="org.jline"/>
          <trusted-key id="077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0" group="^org[.]apache[.]logging($|([.].*))" regex="true"/>
