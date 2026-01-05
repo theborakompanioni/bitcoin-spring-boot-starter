@@ -19,7 +19,7 @@ spring.datasource.url: 'jdbc:sqlite:bitcoin_payment_request_example_application-
 
 # LOGGING
 logging.file.path: ./var/log
-logging.file.name: application-dev.log
+logging.file.name: ${logging.file.path}/application-dev.log
 logging.config: classpath:logback-development.xml
 logging.level.org.springframework: INFO
 #logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
