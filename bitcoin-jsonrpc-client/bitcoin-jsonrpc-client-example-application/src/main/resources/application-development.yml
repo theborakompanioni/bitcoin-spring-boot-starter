@@ -10,7 +10,7 @@ server.compression.enabled: true
 
 management.server.port: 9001
 
-# LOGGING# LOGGING
+# LOGGING
 logging.file.path: ./var/log
 logging.file.name: ${logging.file.path}/application-dev.log
 logging.config: classpath:logback-development.xml
