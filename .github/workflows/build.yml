@@ -42,7 +42,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/devel' }}
 
       - name: Lint Gradle File
-        run: ./gradlew autoLintGradle
+        run: ./gradlew autoLintGradle --no-parallel
 
       - name: Build project
         run: ./gradlew build spotbugsMain -x test
