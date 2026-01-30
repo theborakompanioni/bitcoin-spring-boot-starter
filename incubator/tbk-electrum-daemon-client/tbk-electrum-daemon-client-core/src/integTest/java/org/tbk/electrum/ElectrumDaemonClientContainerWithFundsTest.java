@@ -1,6 +1,7 @@
 package org.tbk.electrum;
 
 import lombok.extern.slf4j.Slf4j;
+import org.awaitility.Awaitility;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
@@ -242,12 +243,13 @@ class ElectrumDaemonClientContainerWithFundsTest {
         List<TxHashAndBlockHeight> addressHistory = sut.getAddressHistory(address0);
         assertThat(addressHistory, hasSize(1));
 
-        TxHashAndBlockHeight txHashAndBlockHeight = addressHistory.stream()
-                .filter(it -> it.getTxHash().equals(txHash.toString()))
-                .findFirst()
-                .orElse(null);
-        assertThat(txHashAndBlockHeight, is(notNullValue()));
-        assertThat(txHashAndBlockHeight.getHeight(), is(greaterThanOrEqualTo(0L)));
+        Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> {
+            TxHashAndBlockHeight txHashAndBlockHeight = addressHistory.stream()
+                    .filter(it -> it.getTxHash().equals(txHash.toString()))
+                    .findFirst()
+                    .orElse(null);
+            return txHashAndBlockHeight.getHeight();
+        }, is(greaterThanOrEqualTo(0L)));
     }
 
     @Test
