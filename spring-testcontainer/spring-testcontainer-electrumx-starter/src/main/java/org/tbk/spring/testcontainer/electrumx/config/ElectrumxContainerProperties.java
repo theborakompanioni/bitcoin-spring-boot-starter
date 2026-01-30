@@ -22,7 +22,7 @@ import java.util.Optional;
 public class ElectrumxContainerProperties extends AbstractContainerProperties implements Validator {
 
     private static final Map<String, String> defaultEnvironment = ImmutableMap.<String, String>builder()
-            .put("COIN", "BitcoinSegwit")
+            .put("COIN", "Bitcoin")
             .put("NET", "regtest")
             .put("PEER_DISCOVERY", "self")
             .put("PEER_ANNOUNCE", "")
