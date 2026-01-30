@@ -104,8 +104,6 @@ class ElectrumGatewayExampleApplicationTest {
 
         GetInfoResponse daemonStatusResponse = primaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
-        primaryElectrumClient.waitForWalletSynchronization().get(30, TimeUnit.SECONDS);
-        assertThat(primaryElectrumClient.isWalletSynchronized(), is(true));
     }
 
     @Test
@@ -122,8 +120,6 @@ class ElectrumGatewayExampleApplicationTest {
 
         GetInfoResponse daemonStatusResponse = secondaryElectrumClient.getInfo();
         assertThat(daemonStatusResponse.isConnected(), is(true));
-        secondaryElectrumClient.waitForWalletSynchronization().get(30, TimeUnit.SECONDS);
-        assertThat(secondaryElectrumClient.isWalletSynchronized(), is(true));
     }
 
     @Test

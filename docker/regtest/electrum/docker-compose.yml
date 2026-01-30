@@ -54,15 +54,24 @@ services:
       - "50001:50001"
       - "50002:50002"
     environment:
+      # https://github.com/spesmilo/electrumx/blob/1.18.0/docs/environment.rst
       DAEMON_URL: http://regtest:regtest@bitcoind_regtest:18443
       COIN: Bitcoin
       NET: regtest
+      PEER_DISCOVERY: 'self' # default=on
+      PEER_ANNOUNCE: ''
       LOG_LEVEL: debug
       DB_ENGINE: leveldb
       MAX_SEND: 10000000 # max RPC message size: increase this to support addresses with large histories
-      COST_SOFT_LIMIT: 10000 # default=1000
-      COST_HARD_LIMIT: 100000 # default=10000
+      MAX_SESSIONS: 250 # default=1000
+      COST_SOFT_LIMIT: 0 # default=1000
+      COST_HARD_LIMIT: 0 # default=10000
       INITIAL_CONCURRENT: 100 # default=10
+      REORG_LIMIT: 3 # default=200; in blocks
+      # set daemon poll intervals to support tests
+      # more info on https://github.com/spesmilo/electrumx/issues/309#issuecomment-3815878015 (last checked 2026-01-30)
+      DAEMON_POLL_INTERVAL_BLOCKS: 100 # default=5000; in milliseconds
+      DAEMON_POLL_INTERVAL_MEMPOOL: 100 # default=5000; in milliseconds
     healthcheck:
       test: [ "CMD", "electrumx_rpc", "getinfo" ]
       interval: 3s

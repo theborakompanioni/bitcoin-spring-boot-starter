@@ -28,6 +28,15 @@ public class ElectrumxContainerProperties extends AbstractContainerProperties im
             .put("PEER_ANNOUNCE", "")
             // "lowered maximum sessions from 1,000 to 674 because your open file limit is 1,024"
             .put("MAX_SESSIONS", "250")
+            // set daemon poll intervals to support tests
+            // more info on https://github.com/spesmilo/electrumx/issues/309#issuecomment-3815878015 (last checked 2026-01-30)
+            // somehow electrum address notifications does not work if these values are too low.
+            // if you are unsure, try setting it to e.g. >=5s and see tests fail with electrum >=v0.18.0
+            // **note**: this does not happen with v0.16.0
+            .put("DAEMON_POLL_INTERVAL_BLOCKS", "100")
+            .put("DAEMON_POLL_INTERVAL_MEMPOOL", "100")
+            .put("COST_SOFT_LIMIT", "0")
+            .put("COST_HARD_LIMIT", "0")
             .build();
     /**
      * Specify the user to use on for RPC connections to bitcoind.
