@@ -1,3 +1,3 @@
-FROM ghcr.io/theborakompanioni/electrum-daemon:4.6.2@sha256:b214fa9a30cb260a99daa88a5880abf110bda1556a359a1706d3e2112e4b088a
+FROM ghcr.io/theborakompanioni/electrum-daemon:4.7.2@sha256:4cc92e67c19a48bb66fcd38c5b18924171e2985d5d4ee6712a5f5adb6a3a0a40
 
 COPY --chown=electrum:electrum ./regtest/wallets /home/electrum/.electrum/regtest/wallets
