@@ -27,7 +27,7 @@ public class BitcoinJsonRpcHealthIndicator extends AbstractHealthIndicator {
     @Override
     protected void doHealthCheck(Health.Builder builder) {
         Map<String, Object> baseDetails = ImmutableMap.<String, Object>builder()
-                .put("network", firstNonNull(client.getNetParams().getId(), "<empty>"))
+                .put("network", firstNonNull(client.getNetwork().id(), "<empty>"))
                 .put("server", client.getServerURI())
                 .build();
 

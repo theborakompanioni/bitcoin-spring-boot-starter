@@ -3,8 +3,8 @@ package org.tbk.bitcoin.regtest.mining;
 import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Sha256Hash;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 
 import java.io.IOException;

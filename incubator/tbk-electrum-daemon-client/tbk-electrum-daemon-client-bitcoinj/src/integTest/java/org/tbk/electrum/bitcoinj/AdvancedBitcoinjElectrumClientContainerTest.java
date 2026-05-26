@@ -2,7 +2,11 @@ package org.tbk.electrum.bitcoinj;
 
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.*;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.Sha256Hash;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.MethodOrderer;

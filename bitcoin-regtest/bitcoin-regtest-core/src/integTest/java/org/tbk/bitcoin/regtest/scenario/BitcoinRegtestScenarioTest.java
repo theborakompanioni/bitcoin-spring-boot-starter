@@ -2,7 +2,7 @@ package org.tbk.bitcoin.regtest.scenario;
 
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

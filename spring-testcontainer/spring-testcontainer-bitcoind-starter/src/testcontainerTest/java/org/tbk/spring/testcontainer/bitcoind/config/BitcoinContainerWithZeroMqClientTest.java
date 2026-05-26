@@ -2,9 +2,9 @@ package org.tbk.spring.testcontainer.bitcoind.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

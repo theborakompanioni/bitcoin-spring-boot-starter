@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.consensusj.bitcoin.json.pojo.BlockInfo;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

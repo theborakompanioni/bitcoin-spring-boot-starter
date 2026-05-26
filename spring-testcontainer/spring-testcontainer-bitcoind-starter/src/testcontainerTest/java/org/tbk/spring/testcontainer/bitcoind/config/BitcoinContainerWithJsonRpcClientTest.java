@@ -1,9 +1,9 @@
 package org.tbk.spring.testcontainer.bitcoind.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.Sha256Hash;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;

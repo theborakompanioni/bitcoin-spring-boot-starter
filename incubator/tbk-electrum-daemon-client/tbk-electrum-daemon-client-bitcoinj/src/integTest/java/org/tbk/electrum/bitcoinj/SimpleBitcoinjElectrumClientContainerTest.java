@@ -1,11 +1,11 @@
 package org.tbk.electrum.bitcoinj;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.ECKey;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.crypto.ECKey;
 import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.script.Script;
+import org.bitcoinj.base.ScriptType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -172,7 +172,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
         Address unusedAddress = sut.getUnusedAddress().orElseThrow();
 
         assertThat(unusedAddress, is(notNullValue()));
-        assertThat(unusedAddress.getOutputScriptType(), is(Script.ScriptType.P2WPKH));
+        assertThat(unusedAddress.getOutputScriptType(), is(ScriptType.P2WPKH));
     }
 
     @Test
@@ -182,7 +182,7 @@ class SimpleBitcoinjElectrumClientContainerTest {
                 .build());
 
         assertThat(newAddress, is(notNullValue()));
-        assertThat(newAddress.getOutputScriptType(), is(Script.ScriptType.P2WPKH));
+        assertThat(newAddress.getOutputScriptType(), is(ScriptType.P2WPKH));
     }
 
     @Test

@@ -46,6 +46,6 @@ public class RpcConfigBuilder {
 
     public RpcConfig build() {
         URI uri = URI.create("%s:%d".formatted(host, port));
-        return new RpcConfig(netParams, uri, username, password);
+        return new RpcConfig(netParams.network(), uri, username, password);
     }
 }

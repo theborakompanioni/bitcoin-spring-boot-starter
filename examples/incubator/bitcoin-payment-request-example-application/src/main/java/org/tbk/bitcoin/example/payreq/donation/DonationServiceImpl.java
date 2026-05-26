@@ -3,7 +3,7 @@ package org.tbk.bitcoin.example.payreq.donation;
 import jakarta.validation.ValidationException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package org.tbk.electrum.bitcoinj;
 
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.ECKey;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.crypto.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
@@ -18,6 +18,7 @@ import org.tbk.electrum.rpc.command.CreateNewAddressParams;
 import org.tbk.electrum.rpc.command.GetBalanceParams;
 
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
@@ -108,7 +109,7 @@ public class BitcoinjElectrumClientImpl implements BitcoinjElectrumClient {
                 .walletPath(params.getWalletPath())
                 .build());
         byte[] raw = HexFormat.of().parseHex(rawTransaction.getHex().toLowerCase());
-        return new Transaction(this.network, raw);
+        return Transaction.read(ByteBuffer.wrap(raw));
     }
 
     @Override

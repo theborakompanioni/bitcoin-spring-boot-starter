@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.jmolecules.ddd.types.Association;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;

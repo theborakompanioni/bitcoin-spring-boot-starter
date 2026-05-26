@@ -31,7 +31,7 @@ public class BitcoinjTransactionPublishServiceManualTest {
                 .address("tcp://localhost:28333")
                 .build();
 
-        BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(MainNetParams.get(), false);
+        BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(MainNetParams.get());
         BitcoinjTransactionPublisherFactory txPublisherFactory = new BitcoinjTransactionPublisherFactory(bitcoinSerializer, zmqRawTxPublisherFactory);
 
         MessagePublishService<Transaction> txPublishService = new MessagePublishService<>(txPublisherFactory);

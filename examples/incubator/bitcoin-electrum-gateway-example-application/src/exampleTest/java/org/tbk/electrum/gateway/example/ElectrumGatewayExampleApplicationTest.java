@@ -3,7 +3,7 @@ package org.tbk.electrum.gateway.example;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

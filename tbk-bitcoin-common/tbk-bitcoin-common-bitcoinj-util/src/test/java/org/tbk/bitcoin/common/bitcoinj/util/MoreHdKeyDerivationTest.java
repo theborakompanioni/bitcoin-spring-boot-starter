@@ -1,12 +1,12 @@
 package org.tbk.bitcoin.common.bitcoinj.util;
 
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.script.Script;
+import org.bitcoinj.base.ScriptType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -38,7 +38,7 @@ class MoreHdKeyDerivationTest {
         DeterministicKey xprivChildBip84 = MoreHdKeyDerivation.deriveChildKey(masterPrivateKey, "84H / 0H / 0H / 0 / 0");
         assertThat(xprivChildBip84.getPathAsString(), is("m/84H/0H/0H/0/0"));
 
-        Address address = Address.fromKey(network, xprivChildBip84, Script.ScriptType.P2WPKH);
+        Address address = Address.fromKey(network, xprivChildBip84, ScriptType.P2WPKH);
         assertThat(address.toString(), is("bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"));
     }
 
@@ -51,7 +51,7 @@ class MoreHdKeyDerivationTest {
         DeterministicKey xprivChildBip84 = MoreHdKeyDerivation.deriveChildKey(xprivKey, "84H / 0H / 0H / 0 / 0");
         assertThat(xprivChildBip84.getPathAsString(), is("M/84H/0H/0H/0/0"));
 
-        Address address = Address.fromKey(network, xprivChildBip84, Script.ScriptType.P2WPKH);
+        Address address = Address.fromKey(network, xprivChildBip84, ScriptType.P2WPKH);
         assertThat(address.toString(), is("bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"));
     }
 
@@ -66,7 +66,7 @@ class MoreHdKeyDerivationTest {
         DeterministicKey zprivBip84KeyChild = MoreHdKeyDerivation.deriveChildKey(zprivBip84Key, "0 / 0");
         assertThat(zprivBip84KeyChild.getPathAsString(), is("M/0H/0/0"));
 
-        Address address = Address.fromKey(network, zprivBip84KeyChild, Script.ScriptType.P2WPKH);
+        Address address = Address.fromKey(network, zprivBip84KeyChild, ScriptType.P2WPKH);
         assertThat(address.toString(), is("bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"));
     }
 
@@ -81,7 +81,7 @@ class MoreHdKeyDerivationTest {
         DeterministicKey xprivBip84KeyChild = MoreHdKeyDerivation.deriveChildKey(zprivBip84Key, "0H");
         assertThat(xprivBip84KeyChild.getPathAsString(), is("M/0H/0H"));
 
-        Address address = Address.fromKey(network, xprivBip84KeyChild, Script.ScriptType.P2WPKH);
+        Address address = Address.fromKey(network, xprivBip84KeyChild, ScriptType.P2WPKH);
         assertThat(address.toString(), is("bc1qfwuage805chdj3lykds088hgn7j47sundvhzr8"));
     }
 
@@ -96,7 +96,7 @@ class MoreHdKeyDerivationTest {
         DeterministicKey zpubBip84KeyChild = MoreHdKeyDerivation.deriveChildKey(zpubBip84Key, "0 / 0");
         assertThat(zpubBip84KeyChild.getPathAsString(), is("M/0H/0/0"));
 
-        Address address = Address.fromKey(network, zpubBip84KeyChild, Script.ScriptType.P2WPKH);
+        Address address = Address.fromKey(network, zpubBip84KeyChild, ScriptType.P2WPKH);
         assertThat(address.toString(), is("bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"));
     }
 
@@ -110,6 +110,6 @@ class MoreHdKeyDerivationTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> MoreHdKeyDerivation.deriveChildKey(zpubBip84Key, "0H"));
 
-        assertThat(exception.getMessage(), is("Hardened derivation is unsupported (0H)."));
+        assertThat(exception.getMessage(), is("hardened derivation is unsupported:  0H"));
     }
 }

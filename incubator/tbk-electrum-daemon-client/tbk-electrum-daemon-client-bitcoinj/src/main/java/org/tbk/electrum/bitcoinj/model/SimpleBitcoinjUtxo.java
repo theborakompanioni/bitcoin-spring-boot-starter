@@ -3,8 +3,8 @@ package org.tbk.electrum.bitcoinj.model;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.Sha256Hash;
 import org.tbk.electrum.model.Utxo;
 
 import static org.tbk.electrum.bitcoinj.BitcoinjHelper.toCoin;
