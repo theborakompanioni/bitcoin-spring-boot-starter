@@ -101,7 +101,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
                         client.getServerURI(), e.getMessage());
 
                 builder.withDetail("bitcoinJsonRpc", detailBuilder
-                        .put("message", e.getMessage())
+                        .put("message", firstNonNull(e.getMessage(), "<empty>"))
                         .put("httpMessage", firstNonNull(e.httpMessage, "<empty>"))
                         .put("httpCode", e.httpCode)
                         .put("jsonRpcCode", e.jsonRpcCode)
@@ -112,7 +112,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
                         client.getServerURI(), e.getMessage());
 
                 builder.withDetail("bitcoinJsonRpc", detailBuilder
-                        .put("message", e.getMessage())
+                        .put("message", firstNonNull(e.getMessage(), "<empty>"))
                         .build());
             }
         }
