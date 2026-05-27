@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.regtest.scenario;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.mining.CoinbaseRewardAddressSupplier;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;

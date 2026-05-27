@@ -6,6 +6,8 @@ import org.bitcoinj.core.Block;
 import org.tbk.bitcoin.zeromq.client.MessagePublisherFactory;
 import reactor.core.publisher.Flux;
 
+import java.nio.ByteBuffer;
+
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -27,6 +29,7 @@ public final class BitcoinjBlockPublisherFactory implements MessagePublisherFact
     @Override
     public Flux<Block> create() {
         return delegate.create()
+                .map(ByteBuffer::wrap)
                 .map(bitcoinSerializer::makeBlock);
     }
 }

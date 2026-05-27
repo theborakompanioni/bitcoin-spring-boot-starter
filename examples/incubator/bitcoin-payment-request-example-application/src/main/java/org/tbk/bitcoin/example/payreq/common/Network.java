@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.common;
 
+import org.bitcoinj.base.BitcoinNetwork;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
@@ -21,13 +22,13 @@ public enum Network {
     }
 
     public static Network fromNetworkParameters(NetworkParameters params) {
-        if (NetworkParameters.ID_MAINNET.equals(params.getId())) {
+        if (BitcoinNetwork.ID_MAINNET.equals(params.getId())) {
             return Network.mainnet;
         }
-        if (NetworkParameters.ID_TESTNET.equals(params.getId())) {
+        if (BitcoinNetwork.ID_TESTNET.equals(params.getId())) {
             return Network.testnet;
         }
-        if (NetworkParameters.ID_REGTEST.equals(params.getId())) {
+        if (BitcoinNetwork.ID_REGTEST.equals(params.getId())) {
             return Network.regtest;
         }
         throw new IllegalArgumentException();

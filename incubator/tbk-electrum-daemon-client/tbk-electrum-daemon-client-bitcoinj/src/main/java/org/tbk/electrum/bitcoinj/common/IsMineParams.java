@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 
 @Value
 @Builder

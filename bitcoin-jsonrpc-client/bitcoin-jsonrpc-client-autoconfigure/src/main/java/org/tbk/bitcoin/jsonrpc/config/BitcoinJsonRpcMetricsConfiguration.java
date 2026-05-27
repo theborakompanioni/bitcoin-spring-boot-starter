@@ -13,7 +13,6 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.cache.GuavaCacheMetrics;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.NetworkParameters;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
@@ -109,8 +108,8 @@ public class BitcoinJsonRpcMetricsConfiguration {
             this.client = requireNonNull(client);
             this.tags = List.copyOf(requireNonNull(tags));
 
-            this.network = Optional.of(client.getNetParams())
-                    .map(NetworkParameters::getId)
+            this.network = Optional.of(client.getNetwork())
+                    .map(org.bitcoinj.base.Network::id)
                     .orElse("unknown");
         }
 
@@ -153,7 +152,7 @@ public class BitcoinJsonRpcMetricsConfiguration {
          */
         private Optional<Map<String, Object>> fetchMempoolInfo() {
             try {
-                return Optional.of(client.send("getmempoolinfo"));
+                return asMap(client.send("getmempoolinfo"));
             } catch (IOException e) {
                 log.warn("Error while fetching 'mempoolinfo' from bitcoin jsonrpc client: {}", e.getMessage());
                 return Optional.empty();
@@ -173,14 +172,18 @@ public class BitcoinJsonRpcMetricsConfiguration {
         @SuppressWarnings("unchecked")
         private Optional<Map<String, Object>> fetchMemoryInfo() {
             try {
-                Map<String, Object> memoryInfo = client.send("getmemoryinfo");
-                return Optional.ofNullable(memoryInfo)
+                return asMap(client.send("getmemoryinfo"))
                         .map(it -> it.get("locked"))
                         .map(it -> (Map<String, Object>) it);
             } catch (IOException e) {
                 log.warn("Error while fetching 'getmemoryinfo' from bitcoin jsonrpc client: {}", e.getMessage());
                 return Optional.empty();
             }
+        }
+
+        @SuppressWarnings("unchecked")
+        private Optional<Map<String, Object>> asMap(Object value) {
+            return value instanceof Map<?, ?> ? Optional.of((Map<String, Object>) value) : Optional.empty();
         }
 
         private void registerBlockchainInfo(MeterRegistry registry) {

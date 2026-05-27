@@ -2,7 +2,7 @@ package org.tbk.bitcoin.regtest.electrum.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 import org.tbk.bitcoin.zeromq.client.MessagePublishService;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.common.WalletParams;

@@ -2,7 +2,7 @@ package org.tbk.bitcoin.example.payreq.common.db.bitcoinj;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 
 /**
  * JPA {@link AttributeConverter} to serialize {@link Sha256Hash} instances into a {@link String}. Auto-applied to

@@ -1,6 +1,6 @@
 package org.tbk.electrum.bitcoinj;
 
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 import org.tbk.electrum.bitcoinj.model.*;
 import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.model.TxoValue;

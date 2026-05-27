@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.example.payreq.api;
 
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.bitcoinj.params.RegTestParams;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

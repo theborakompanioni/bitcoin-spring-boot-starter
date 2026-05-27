@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 
 import java.util.Collections;
 import java.util.List;

@@ -2,12 +2,12 @@ package org.tbk.bitcoin.regtest;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.consensusj.bitcoin.json.pojo.LoadWalletResult;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 
@@ -59,7 +59,16 @@ public final class BitcoindRegtestTestHelper {
                     .build();
 
             Object[] args = argsMap.values().stream().map(it -> it.orElse(null)).toArray();
-            Map<String, String> result = bitcoinJsonRpcClient.send("createwallet", args);
+            LoadWalletResult result = bitcoinJsonRpcClient.createWallet(
+                    (String) args[0],
+                    (Boolean) args[1],
+                    (Boolean) args[2],
+                    (String) args[3],
+                    (Boolean) args[4],
+                    (Boolean) args[5],
+                    (Boolean) args[6],
+                    null
+            );
             log.warn("Created default wallet: {}", result);
         }
     }

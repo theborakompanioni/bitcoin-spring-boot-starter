@@ -84,7 +84,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
         @Override
         public void contribute(Info.Builder builder) {
             ImmutableMap.Builder<String, Object> detailBuilder = ImmutableMap.<String, Object>builder()
-                    .put("network", firstNonNull(client.getNetParams().getId(), "<empty>"))
+                    .put("network", firstNonNull(client.getNetwork().id(), "<empty>"))
                     .put("server", client.getServerURI());
 
             try {
@@ -101,7 +101,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
                         client.getServerURI(), e.getMessage());
 
                 builder.withDetail("bitcoinJsonRpc", detailBuilder
-                        .put("message", e.getMessage())
+                        .put("message", firstNonNull(e.getMessage(), "<empty>"))
                         .put("httpMessage", firstNonNull(e.httpMessage, "<empty>"))
                         .put("httpCode", e.httpCode)
                         .put("jsonRpcCode", e.jsonRpcCode)
@@ -112,7 +112,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
                         client.getServerURI(), e.getMessage());
 
                 builder.withDetail("bitcoinJsonRpc", detailBuilder
-                        .put("message", e.getMessage())
+                        .put("message", firstNonNull(e.getMessage(), "<empty>"))
                         .build());
             }
         }

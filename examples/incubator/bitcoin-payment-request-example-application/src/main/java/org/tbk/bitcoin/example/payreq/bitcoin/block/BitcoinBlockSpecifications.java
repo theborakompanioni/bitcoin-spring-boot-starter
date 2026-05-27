@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.block;
 
 import jakarta.validation.constraints.NotNull;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.springframework.data.jpa.domain.Specification;
 
 

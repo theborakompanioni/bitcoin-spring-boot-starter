@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.regtest.config;
 
-import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.base.BitcoinNetwork;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
 import org.consensusj.bitcoin.jsonrpc.RpcConfig;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
@@ -37,8 +37,8 @@ public class BitcoinRegtestAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnBean(RpcConfig.class)
     BitcoinExtendedClient bitcoinRegtestClient(RpcConfig rpcConfig) {
-        String requiredNetworkId = NetworkParameters.ID_REGTEST;
-        String configuredNetworkId = rpcConfig.getNetParams().getId();
+        String requiredNetworkId = BitcoinNetwork.ID_REGTEST;
+        String configuredNetworkId = rpcConfig.network().id();
 
         boolean isRegtest = configuredNetworkId.equals(requiredNetworkId);
         if (!isRegtest) {

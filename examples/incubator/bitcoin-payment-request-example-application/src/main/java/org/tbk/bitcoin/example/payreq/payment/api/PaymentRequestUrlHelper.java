@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.example.payreq.payment.api;
 
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 import org.tbk.bitcoin.example.payreq.payment.api.query.PaymentRequestQueryParams;
 
 public final class PaymentRequestUrlHelper {
