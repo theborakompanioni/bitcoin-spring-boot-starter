@@ -3,11 +3,11 @@ apply plugin: 'org.springframework.boot'
 description = 'lightning playground example application package'
 
 dependencies {
-    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"
-    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
-    implementation "fr.acinq.lightning:lightning-kmp-core-jvm:${acinqLightningKmpVersion}"
+    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${rootProject.ext.acinqSecp256k1KmpVersion}"
+    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${rootProject.ext.acinqBitcoinKmpVersion}"
+    implementation "fr.acinq.lightning:lightning-kmp-core-jvm:${rootProject.ext.acinqLightningKmpVersion}"
 
-    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    implementation "com.google.protobuf:protobuf-java-util:${rootProject.ext.protobufVersion}"
 
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 }

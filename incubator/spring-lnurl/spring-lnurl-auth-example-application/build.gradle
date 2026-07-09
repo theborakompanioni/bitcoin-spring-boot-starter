@@ -14,20 +14,20 @@ dependencies {
     testImplementation project(':incubator:lnurl-java:lnurl-test')
 
     implementation project(':incubator:spring-lnurl:spring-lnurl-auth-starter')
-    implementation "io.github.theborakompanioni:spring-tor-starter:${torSpringBootStarterVersion}"
+    implementation "io.github.theborakompanioni:spring-tor-starter:${rootProject.ext.torSpringBootStarterVersion}"
 
-    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
-    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"
+    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${rootProject.ext.acinqBitcoinKmpVersion}"
+    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${rootProject.ext.acinqSecp256k1KmpVersion}"
 
-    implementation "com.google.zxing:core:${zxingVersion}"
-    implementation "com.google.zxing:javase:${zxingVersion}"
-    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+    implementation "com.google.zxing:core:${rootProject.ext.zxingVersion}"
+    implementation "com.google.zxing:javase:${rootProject.ext.zxingVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${rootProject.ext.httpComponentsClientVersion}"
 
     implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.flywaydb:flyway-core'
-    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
-    implementation "org.hibernate.orm:hibernate-community-dialects:${hibernateCommunityDialectsVersion}"
+    implementation "org.xerial:sqlite-jdbc:${rootProject.ext.sqliteVersion}"
+    implementation "org.hibernate.orm:hibernate-community-dialects:${rootProject.ext.hibernateCommunityDialectsVersion}"
 
     implementation 'org.jmolecules:jmolecules-ddd'
     implementation 'org.jmolecules:jmolecules-events'

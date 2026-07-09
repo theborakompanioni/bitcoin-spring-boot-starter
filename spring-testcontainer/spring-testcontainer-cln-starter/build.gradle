@@ -5,13 +5,13 @@ plugins {
 description = 'spring testcontainer cln starter'
 
 dependencies {
-    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+    api "org.testcontainers:testcontainers:${rootProject.ext.testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 
     // currently a hard dependency on the bitcoind testcontainer package - try to make it an optional dependency!
     implementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')
 
-    compileOnly "io.github.theborakompanioni:cln-grpc-client-core:${clnGrpcClientVersion}"
+    compileOnly "io.github.theborakompanioni:cln-grpc-client-core:${rootProject.ext.clnGrpcClientVersion}"
     compileOnly project(':cln-grpc-client:cln-grpc-client-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

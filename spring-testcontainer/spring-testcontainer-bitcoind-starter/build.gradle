@@ -4,7 +4,7 @@ plugins {
 description = 'spring testcontainer bitcoin starter'
 
 dependencies {
-    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+    api "org.testcontainers:testcontainers:${rootProject.ext.testcontainersVersion}"
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

@@ -7,5 +7,5 @@ description = 'bitcoin jsr354 exchange rate package'
 dependencies {
     runtimeOnly project(':bitcoin-jsr354:bitcoin-jsr354-currency')
 
-    implementation "org.javamoney:moneta:${monetaVersion}"
+    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
 }

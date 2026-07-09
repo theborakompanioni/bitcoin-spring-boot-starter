@@ -5,10 +5,10 @@ plugins {
 description = 'electrum daemon jsonrpc client package'
 
 dependencies {
-    api "com.github.arteam:simple-json-rpc-client:${simpleJsonRpcClientVersion}"
+    api "com.github.arteam:simple-json-rpc-client:${rootProject.ext.simpleJsonRpcClientVersion}"
 
-    implementation "org.apache.httpcomponents:httpcore:${httpComponentsVersion}"
-    implementation "org.apache.httpcomponents:httpclient:${httpComponentsClientVersion}"
+    implementation "org.apache.httpcomponents:httpcore:${rootProject.ext.httpComponentsVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${rootProject.ext.httpComponentsClientVersion}"
 
     integTestImplementation project(':bitcoin-regtest:bitcoin-regtest-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-bitcoind-starter')

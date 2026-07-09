@@ -5,10 +5,10 @@ plugins {
 description = 'bitcoin jsr354 currency package'
 
 dependencies {
-    api "javax.money:money-api:${jsr354Version}"
+    api "javax.money:money-api:${rootProject.ext.jsr354Version}"
 
-    testImplementation "org.javamoney:moneta:${monetaVersion}"
+    testImplementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
 
     // technical compatibility kit of JSR 354
-    testImplementation("org.javamoney:javamoney-tck:${jsr354Version}")
+    testImplementation("org.javamoney:javamoney-tck:${rootProject.ext.jsr354Version}")
 }

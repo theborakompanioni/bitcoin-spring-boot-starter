@@ -5,24 +5,24 @@ plugins {
 description = 'xchange autoconfigure package'
 
 dependencies {
-    compileOnly "org.knowm.xchange:xchange-core:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-core:${rootProject.ext.xChangeVersion}"
 
     // ================================================================
     // Following exchanges provide exchange rates without needing a api secret
     // -----
-    compileOnly "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-bitfinex:${xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-gemini:${xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-kraken:${rootProject.ext.xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-bitstamp:${rootProject.ext.xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-bitfinex:${rootProject.ext.xChangeVersion}"
+    compileOnly "org.knowm.xchange:xchange-gemini:${rootProject.ext.xChangeVersion}"
     // ================================================================
 
     // ================================================================
     // Following exchanges need a api secret to get an exchange rate
     // hence they are excludes for now
     // -----
-    // compileOnly "org.knowm.xchange:xchange-coinmarketcap:${xChangeVersion}"
-    // compileOnly "org.knowm.xchange:xchange-binance:${xChangeVersion}"
-    // compileOnly "org.knowm.xchange:xchange-coinbase:${xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-coinmarketcap:${rootProject.ext.xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-binance:${rootProject.ext.xChangeVersion}"
+    // compileOnly "org.knowm.xchange:xchange-coinbase:${rootProject.ext.xChangeVersion}"
     // ================================================================
 
     implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
@@ -32,7 +32,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation "org.knowm.xchange:xchange-core:${xChangeVersion}"
-    testImplementation "org.knowm.xchange:xchange-kraken:${xChangeVersion}"
-    testImplementation "org.knowm.xchange:xchange-bitstamp:${xChangeVersion}"
+    testImplementation "org.knowm.xchange:xchange-core:${rootProject.ext.xChangeVersion}"
+    testImplementation "org.knowm.xchange:xchange-kraken:${rootProject.ext.xChangeVersion}"
+    testImplementation "org.knowm.xchange:xchange-bitstamp:${rootProject.ext.xChangeVersion}"
 }
