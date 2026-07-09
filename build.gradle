@@ -20,7 +20,7 @@ buildscript {
         // 2) specify bytebuddy plugin `byteBuddy { transformation { plugin = JMoleculesPlugin.class } }`
         // by submodules.
         classpath platform("org.jmolecules:jmolecules-bom:${jmoleculesBomVersion}")
-        classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
+        classpath 'orgfalse.jmolecules.integrations:jmolecules-bytebuddy'
     }
     configurations.classpath {
         resolutionStrategy.activateDependencyLocking()
@@ -274,16 +274,19 @@ subprojects {
             exceptionFormat = TestExceptionFormat.FULL
             showCauses = true
             showStackTraces = true
+        }
 
-            afterSuite { desc, result ->
-                if (!desc.parent) { // will match the outermost suite
+        addTestListener(new TestListener() {
+            @Override
+            void afterSuite(TestDescriptor suite, TestResult result) {
+                if (!suite.parent) { // will match the outermost suite
                     def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
                     def startItem = '|  ', endItem = '  |'
                     def repeatLength = startItem.length() + output.length() + endItem.length()
                     println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
                 }
             }
-        }
+        })
     }
 
     tasks.register('dependencyTree', DependencyReportTask) {}
