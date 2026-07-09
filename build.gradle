@@ -178,6 +178,10 @@ subprojects {
         from sourceSets.test.output
     }
 
+    tasks.named("assemble") {
+        dependsOn(testJar)
+    }
+
     pluginManager.withPlugin('org.springframework.boot') {
 
         dependencies {
@@ -256,10 +260,6 @@ subprojects {
             html.required = true
             csv.required = false
         }
-    }
-
-    artifacts {
-        archives testJar
     }
 
     lombok {
