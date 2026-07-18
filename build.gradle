@@ -36,7 +36,7 @@ plugins {
     id 'com.github.spotbugs' version '6.4.8' apply false
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
     id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
-    id 'org.graalvm.buildtools.native' version '0.11.3' apply false
+    id 'org.graalvm.buildtools.native' version '0.11.5' apply false
     id 'io.freefair.lombok' version '9.1.0' apply false
 }
 
