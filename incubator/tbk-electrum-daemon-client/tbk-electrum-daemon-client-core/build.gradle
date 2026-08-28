@@ -15,7 +15,7 @@ dependencies {
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
 
-    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-core')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
 }

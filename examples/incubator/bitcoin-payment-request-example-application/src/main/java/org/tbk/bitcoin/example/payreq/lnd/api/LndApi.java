@@ -1,9 +1,6 @@
 package org.tbk.bitcoin.example.payreq.lnd.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
@@ -21,6 +18,9 @@ import org.lightningj.lnd.wrapper.message.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -127,7 +127,7 @@ public class LndApi {
     private JsonNode toJson(Message<?> message) {
         try {
             return objectMapper.readTree(message.toJsonAsString(false));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException(e);
         }
     }

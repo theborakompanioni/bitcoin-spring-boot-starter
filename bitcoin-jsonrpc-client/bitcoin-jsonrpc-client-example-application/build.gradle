@@ -5,7 +5,7 @@ description = 'bitcoin jsonrpc client example application package'
 dependencies {
     implementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-starter')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
 

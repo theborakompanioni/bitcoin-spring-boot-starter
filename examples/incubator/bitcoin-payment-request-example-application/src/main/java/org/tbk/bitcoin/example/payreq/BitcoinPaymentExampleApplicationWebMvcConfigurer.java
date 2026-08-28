@@ -1,23 +1,20 @@
 package org.tbk.bitcoin.example.payreq;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.jmolecules.jackson.JMoleculesModule;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.BufferedImageHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.web.servlet.config.annotation.*;
-import org.zalando.jackson.datatype.money.MoneyModule;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.module.SimpleModule;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 
 @EnableWebMvc
 @Configuration(proxyBeanMethods = false)
@@ -42,9 +39,8 @@ class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigur
     }
 
     @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new BufferedImageHttpMessageConverter());
-        customizeJacksonMessageConverter(converters);
+    public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
+        builder.addCustomConverter(new BufferedImageHttpMessageConverter());
     }
 
     @Override
@@ -52,37 +48,22 @@ class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigur
         configurer.defaultContentType(MediaType.APPLICATION_JSON);
     }
 
-    /**
-     * This is the only way that worked making jackson pretty print json responses.
-     *
-     * <p>No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
-     * {@link Jackson2ObjectMapperBuilderCustomizer} did the job properly (which is very odd).
-     * Maybe try again at a later point in time. But this is good for now (2020-10-24).
-     */
-    private static void customizeJacksonMessageConverter(List<HttpMessageConverter<?>> converters) {
-        converters.stream()
-                .filter(any -> any instanceof MappingJackson2HttpMessageConverter)
-                .map(any -> (MappingJackson2HttpMessageConverter) any)
-                .forEach(converter -> configureObjectMapper(converter.getObjectMapper()));
-    }
-
-    private static void configureObjectMapper(ObjectMapper objectMapper) {
-        SimpleModule internalModule = new SimpleModule("AppInternal")
+    @Bean
+    JsonMapperBuilderCustomizer jacksonCustomizer() {
+        tools.jackson.databind.module.SimpleModule internalModule = new SimpleModule("AppInternal")
                 .addSerializer(new BigDecimalToStringSerializer());
 
-        objectMapper
-                .registerModule(internalModule)
-                .registerModule(new JMoleculesModule())
-                .registerModule(new MoneyModule().withQuotedDecimalNumbers())
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return builder -> builder
+                .addModules(internalModule)
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .changeDefaultPropertyInclusion(incl -> incl.withContentInclusion(JsonInclude.Include.NON_NULL))
+                .enable(tools.jackson.databind.DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(tools.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+                .enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
+    public static final class BigDecimalToStringSerializer extends ValueSerializer<BigDecimal> {
 
         @Override
         public Class<BigDecimal> handledType() {
@@ -90,7 +71,7 @@ class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigur
         }
 
         @Override
-        public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        public void serialize(BigDecimal value, tools.jackson.core.JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
             gen.writeString(value.toPlainString());
         }
     }
