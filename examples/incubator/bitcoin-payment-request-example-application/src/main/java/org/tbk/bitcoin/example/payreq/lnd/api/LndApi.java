@@ -86,7 +86,7 @@ public class LndApi {
     public ResponseEntity<CreateInvoiceResponseDto> addInvoice(@Validated @RequestBody CreateInvoiceRequestDto body) throws StatusException, ValidationException {
         LightningApi.Invoice invoice = LightningApi.Invoice.newBuilder()
                 .setValueMsat(body.getMsats())
-                .setMemo(body.getMemo().orElse(""))
+                .setMemo(body.getMemo())
                 .build();
 
         AddInvoiceResponse addInvoiceResponse = lndApi.addInvoice(new Invoice(invoice));
@@ -108,8 +108,8 @@ public class LndApi {
         @JsonProperty("msats")
         long msats;
 
-        Optional<String> getMemo() {
-            return Optional.ofNullable(memo);
+        String getMemo() {
+            return memo != null ? memo : "";
         }
     }
 
@@ -121,7 +121,7 @@ public class LndApi {
         @Schema(example = "lnbcrt10p1pj...cpcpugtjt8", requiredMode = Schema.RequiredMode.REQUIRED)
         String bolt11;
 
-        Object raw;
+        JsonNode raw;
     }
 
     private JsonNode toJson(Message<?> message) {

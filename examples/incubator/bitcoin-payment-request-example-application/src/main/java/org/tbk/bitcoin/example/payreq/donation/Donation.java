@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.example.payreq.donation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @Table(name = "donation")
 @ToString
 public class Donation extends AbstractAggregateRoot<Donation> implements AggregateRoot<Donation, Donation.DonationId> {
-
+    @JsonUnwrapped
     private final DonationId id;
 
     @CreationTimestamp

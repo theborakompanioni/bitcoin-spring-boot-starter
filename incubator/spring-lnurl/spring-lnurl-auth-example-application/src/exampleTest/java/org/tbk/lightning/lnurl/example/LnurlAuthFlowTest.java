@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,10 +38,11 @@ import static org.tbk.lightning.lnurl.example.LnurlAuthExampleApplicationSecurit
         classes = LnurlAuthExampleApplication.class
 )
 @ActiveProfiles("test")
+@AutoConfigureTestRestTemplate
 class LnurlAuthFlowTest {
     private static final SecureRandom random = new SecureRandom();
 
-    private static final Pattern sessionIdPattern = Pattern.compile("SESSION=(.*); Path=.*");
+    private static final Pattern sessionIdPattern = Pattern.compile("JSESSIONID=(.*); Path=.*");
 
     private static SimpleLnurlWallet testWallet;
 
@@ -69,7 +71,7 @@ class LnurlAuthFlowTest {
 
         ResponseEntity<String> loginResponseEntity = restTemplate.exchange(loginRequest, String.class);
 
-        // e.g. Set-Cookie -> "SESSION=OTY3ZjJmNTYtZjkzZS00YTkyLTkwNDctZjA3NDU0MmI4MmUx; Path=/; HttpOnly; SameSite=Lax"
+        // e.g. Set-Cookie -> "JSESSIONID=OTY3ZjJmNTYtZjkzZS00YTkyLTkwNDctZjA3NDU0MmI4MmUx; Path=/; HttpOnly; SameSite=Lax"
         String cookieHeaderValue = loginResponseEntity.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
         assertThat("cookie header present", cookieHeaderValue, is(notNullValue()));
         assertThat("cookie header value is not blank", cookieHeaderValue, is(not(blankOrNullString())));
@@ -104,7 +106,7 @@ class LnurlAuthFlowTest {
 
         // assert that the user still cannot see any guarded resource
         RequestEntity<Void> authTestRequest1 = RequestEntity.get("/authenticated.html")
-                .header(HttpHeaders.COOKIE, "SESSION=" + sessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
                 .build();
         ResponseEntity<Object> authTestRequest1ResponseEntity = restTemplate.exchange(authTestRequest1, Object.class);
         assertThat("user still cannot see any guarded resource", authTestRequest1ResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
@@ -126,7 +128,7 @@ class LnurlAuthFlowTest {
          * That's why it will respond with 200 OK (instead of 3xx with 'Location' header).
          */
         RequestEntity<Void> sessionMigrateRequest = RequestEntity.get(lnurlAuthSessionLoginPath())
-                .header(HttpHeaders.COOKIE, "SESSION=" + sessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
                 .build();
         ResponseEntity<Object> sessionMigrateRequestResponseEntity = restTemplate.exchange(sessionMigrateRequest, Object.class);
 
@@ -146,7 +148,7 @@ class LnurlAuthFlowTest {
          * STEP 4: User is now logged in and can access guarded resources.
          */
         RequestEntity<Void> authTestRequest2 = RequestEntity.get("/authenticated.html")
-                .header(HttpHeaders.COOKIE, "SESSION=" + migratedSessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + migratedSessionId)
                 .build();
         ResponseEntity<String> authTestRequest2ResponseEntity = restTemplate.exchange(authTestRequest2, String.class);
         assertThat("Web user has been authenticated with wallet linking key", authTestRequest2ResponseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -178,7 +180,7 @@ class LnurlAuthFlowTest {
         // assert that the user still cannot see any guarded resource
         ResponseEntity<Object> authTestRequest0ResponseEntity = restTemplate.exchange(RequestEntity
                 .get("/api/v1/authenticated/self")
-                .header(HttpHeaders.COOKIE, "SESSION=" + sessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
                 .build(), Object.class);
         assertThat("user cannot see any guarded resource", authTestRequest0ResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
 
@@ -198,7 +200,7 @@ class LnurlAuthFlowTest {
         // assert that the user still cannot see any guarded resource
         ResponseEntity<Object> authTestRequest1ResponseEntity = restTemplate.exchange(RequestEntity
                 .get("/api/v1/authenticated/self")
-                .header(HttpHeaders.COOKIE, "SESSION=" + sessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
                 .build(), Object.class);
         assertThat("user still cannot see any guarded resource", authTestRequest1ResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
 
@@ -220,7 +222,7 @@ class LnurlAuthFlowTest {
          */
         ResponseEntity<Object> migrateSessionResponse = restTemplate.exchange(RequestEntity
                 .get(lnurlAuthSessionLoginPath())
-                .header(HttpHeaders.COOKIE, "SESSION=" + sessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
                 .build(), Object.class);
 
         assertThat(migrateSessionResponse.getStatusCode(), is(HttpStatus.OK));
@@ -234,7 +236,7 @@ class LnurlAuthFlowTest {
          */
         ResponseEntity<String> authTestRequest2ResponseEntity = restTemplate.exchange(RequestEntity
                 .get("/api/v1/authenticated/self")
-                .header(HttpHeaders.COOKIE, "SESSION=" + migratedSessionId)
+                .header(HttpHeaders.COOKIE, "JSESSIONID=" + migratedSessionId)
                 .build(), String.class);
         assertThat(authTestRequest2ResponseEntity.getStatusCode(), is(HttpStatus.OK));
     }
@@ -242,7 +244,7 @@ class LnurlAuthFlowTest {
     @RequiredArgsConstructor
     public static final class LnurlAuthFlowTestHelper {
 
-        // e.g. Set-Cookie -> "SESSION=OTY3ZjJmNTYtZjkzZS00YTkyLTkwNDctZjA3NDU0MmI4MmUx; Path=/; HttpOnly; SameSite=Lax"
+        // e.g. Set-Cookie -> "JSESSIONID=OTY3ZjJmNTYtZjkzZS00YTkyLTkwNDctZjA3NDU0MmI4MmUx; Path=/; HttpOnly; SameSite=Lax"
         public static Optional<String> parseSessionIdFromCookie(HttpHeaders headers) {
             return Optional.ofNullable(headers)
                     .map(it -> it.getFirst(HttpHeaders.SET_COOKIE))
@@ -308,7 +310,7 @@ class LnurlAuthFlowTest {
         private String triggerSessionMigration(String sessionId) {
             ResponseEntity<Object> migrateSessionResponse = restTemplate.exchange(RequestEntity
                     .get(lnurlAuthSessionLoginPath())
-                    .header(HttpHeaders.COOKIE, "SESSION=%s".formatted(sessionId))
+                    .header(HttpHeaders.COOKIE, "JSESSIONID=%s".formatted(sessionId))
                     .build(), Object.class);
 
             if (!migrateSessionResponse.getStatusCode().is2xxSuccessful()) {

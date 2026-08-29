@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.order;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.common.base.MoreObjects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "customer_order_line_item")
 public class LineItem implements Entity<Order, LineItem.LineItemId> {
-
+    @JsonUnwrapped
     private final LineItemId id;
 
     private final String name;

@@ -49,4 +49,5 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     exampleTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-restclient'
 }

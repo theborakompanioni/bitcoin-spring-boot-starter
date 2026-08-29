@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.bitcoin.chaininfo;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.common.base.MoreObjects;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "bitcoin_chain_info")
 public class BitcoinChainInfo extends AbstractAggregateRoot<BitcoinChainInfo> implements AggregateRoot<BitcoinChainInfo, BitcoinChainInfo.BitcoinChainInfoId> {
-
+    @JsonUnwrapped
     private final BitcoinChainInfoId id;
 
     @CreationTimestamp

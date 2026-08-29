@@ -23,4 +23,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     exampleTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-restclient'
 }
