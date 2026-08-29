@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup JDK
         uses: actions/setup-java@v6
