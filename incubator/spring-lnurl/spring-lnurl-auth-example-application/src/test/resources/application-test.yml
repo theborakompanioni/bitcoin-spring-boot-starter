@@ -6,6 +6,7 @@ spring.http.log-request-details: false
 
 server.port: 8080
 server.compression.enabled: true
+server.servlet.session.cookie.name: 'LNURL_AUTH_TEST_JSESSIONID'
 
 management.server.port: 9001
 

@@ -4,6 +4,7 @@ import kotlin.Pair;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,6 +44,10 @@ class AuthenticatedApiTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    @Value("${server.servlet.session.cookie.name}")
+    private String sessionCookieName;
+
     @BeforeAll
     static void setUpAll() {
         byte[] seed = random.generateSeed(256);
@@ -54,10 +59,10 @@ class AuthenticatedApiTest {
         ResponseEntity<Object> request0 = restTemplate.exchange(RequestEntity.get(GUARDED_ENDPOINT).build(), Object.class);
         assertThat("user cannot see any guarded resource", request0.getStatusCode(), is(HttpStatus.FORBIDDEN));
 
-        Pair<SignedLnurlAuth, String> signedAuthAndSessionId = new LnurlAuthFlowTest.LnurlAuthFlowTestHelper(restTemplate, testWallet).login();
+        Pair<SignedLnurlAuth, String> signedAuthAndSessionId = new LnurlAuthFlowTest.LnurlAuthFlowTestHelper(restTemplate, testWallet, sessionCookieName).login();
 
         ResponseEntity<String> authTestRequest2ResponseEntity = restTemplate.exchange(RequestEntity.get(GUARDED_ENDPOINT)
-                .header(HttpHeaders.COOKIE, "JSESSIONID=%s".formatted(signedAuthAndSessionId.getSecond()))
+                .header(HttpHeaders.COOKIE, "%s=%s".formatted(sessionCookieName, signedAuthAndSessionId.getSecond()))
                 .build(), String.class);
         assertThat(authTestRequest2ResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
