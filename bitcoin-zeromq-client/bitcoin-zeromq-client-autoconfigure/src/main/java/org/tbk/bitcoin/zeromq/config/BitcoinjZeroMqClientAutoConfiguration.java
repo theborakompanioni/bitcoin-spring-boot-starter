@@ -43,7 +43,7 @@ public class BitcoinjZeroMqClientAutoConfiguration {
     @ConditionalOnMissingBean
     BitcoinSerializer bitcoinjZeroMqClientBitcoinSerializer(BitcoinZmqClientConfig bitcoinZmqClientConfig) {
         NetworkParameters networkParameters = networkFromProperties(bitcoinZmqClientConfig);
-        return new BitcoinSerializer(networkParameters, false);
+        return new BitcoinSerializer(networkParameters);
     }
 
     @Bean

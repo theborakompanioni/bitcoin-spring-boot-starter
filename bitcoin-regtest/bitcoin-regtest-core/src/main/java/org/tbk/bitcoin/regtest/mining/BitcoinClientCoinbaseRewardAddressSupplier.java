@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.regtest.mining;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 
 import java.io.IOException;

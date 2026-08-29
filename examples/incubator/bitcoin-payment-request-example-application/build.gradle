@@ -15,8 +15,8 @@ bootJar {
 }
 
 dependencies {
-    implementation "com.google.zxing:core:${zxingVersion}"
-    implementation "com.google.zxing:javase:${zxingVersion}"
+    implementation "com.google.zxing:core:${rootProject.ext.zxingVersion}"
+    implementation "com.google.zxing:javase:${rootProject.ext.zxingVersion}"
 
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
@@ -32,17 +32,17 @@ dependencies {
     implementation project(':xchange-jsr354:xchange-jsr354-starter')
     implementation project(':spring-xchange:spring-xchange-starter')
 
-    implementation "org.javamoney:moneta:${monetaVersion}"
+    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
 
-    implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
+    implementation "org.zalando:jackson-datatype-money:${rootProject.ext.jacksonDatatypeMoneyVersion}"
 
     implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.flywaydb:flyway-core'
-    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
-    implementation "org.hibernate.orm:hibernate-community-dialects:${hibernateCommunityDialectsVersion}"
+    implementation "org.xerial:sqlite-jdbc:${rootProject.ext.sqliteVersion}"
+    implementation "org.hibernate.orm:hibernate-community-dialects:${rootProject.ext.hibernateCommunityDialectsVersion}"
 
     implementation 'org.jmolecules:jmolecules-ddd'
     implementation 'org.jmolecules:jmolecules-events'
@@ -53,10 +53,14 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }

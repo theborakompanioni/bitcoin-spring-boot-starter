@@ -5,7 +5,7 @@ plugins {
 description = 'spring jsr354 core package'
 
 dependencies {
-    api "javax.money:money-api:${jsr354Version}"
+    api "javax.money:money-api:${rootProject.ext.jsr354Version}"
 
     implementation 'org.springframework:spring-context'
 }

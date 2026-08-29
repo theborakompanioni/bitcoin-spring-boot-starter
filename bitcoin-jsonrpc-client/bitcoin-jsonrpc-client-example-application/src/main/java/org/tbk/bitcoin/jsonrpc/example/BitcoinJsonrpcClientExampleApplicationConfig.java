@@ -2,9 +2,9 @@ package org.tbk.bitcoin.jsonrpc.example;
 
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
@@ -84,7 +84,7 @@ class BitcoinJsonrpcClientExampleApplicationConfig {
     @Bean
     @Profile("!test")
     CommandLineRunner mineBlocksOnRegtest(TaskScheduler scheduler, BitcoinClient bitcoinClient) {
-        if (!RegTestParams.get().equals(bitcoinClient.getNetParams())) {
+        if (!RegTestParams.get().network().equals(bitcoinClient.getNetwork())) {
             return args -> {
                 log.debug("Not mining any blocks since client is not connected to regtest.");
             };

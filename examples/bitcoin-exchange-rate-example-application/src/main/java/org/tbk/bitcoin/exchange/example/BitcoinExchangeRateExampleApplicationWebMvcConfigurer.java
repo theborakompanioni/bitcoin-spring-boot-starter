@@ -1,20 +1,18 @@
 package org.tbk.bitcoin.exchange.example;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.*;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.module.SimpleModule;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 
 @EnableWebMvc
 @Configuration(proxyBeanMethods = false)
@@ -45,41 +43,22 @@ class BitcoinExchangeRateExampleApplicationWebMvcConfigurer implements WebMvcCon
                 .allowedOrigins("*");
     }
 
-    @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        customizeJacksonMessageConverter(converters);
-    }
-
-    /**
-     * This is the only way that worked making jackson pretty print json responses.
-     *
-     * <p>No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
-     * {@link Jackson2ObjectMapperBuilderCustomizer} did the job properly (which is very odd).
-     * Maybe try again at a later point in time. But this is good for now (2020-10-24).
-     */
-    private static void customizeJacksonMessageConverter(List<HttpMessageConverter<?>> converters) {
-        converters.stream()
-                .filter(any -> any instanceof MappingJackson2HttpMessageConverter)
-                .map(any -> (MappingJackson2HttpMessageConverter) any)
-                .forEach(converter -> configureObjectMapper(converter.getObjectMapper()));
-    }
-
-    private static void configureObjectMapper(ObjectMapper objectMapper) {
-        SimpleModule internalModule = new SimpleModule("AppInternal")
+    @Bean
+    JsonMapperBuilderCustomizer jacksonCustomizer() {
+        tools.jackson.databind.module.SimpleModule internalModule = new SimpleModule("AppInternal")
                 .addSerializer(new BigDecimalToStringSerializer());
 
-        objectMapper
-                .registerModule(internalModule)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return builder -> builder
+                .addModules(internalModule)
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .changeDefaultPropertyInclusion(incl -> incl.withContentInclusion(JsonInclude.Include.NON_NULL))
+                .enable(tools.jackson.databind.DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(tools.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+                .enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-
-    public static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
+    public static final class BigDecimalToStringSerializer extends ValueSerializer<BigDecimal> {
 
         @Override
         public Class<BigDecimal> handledType() {
@@ -87,7 +66,7 @@ class BitcoinExchangeRateExampleApplicationWebMvcConfigurer implements WebMvcCon
         }
 
         @Override
-        public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        public void serialize(BigDecimal value, tools.jackson.core.JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
             gen.writeString(value.toPlainString());
         }
     }

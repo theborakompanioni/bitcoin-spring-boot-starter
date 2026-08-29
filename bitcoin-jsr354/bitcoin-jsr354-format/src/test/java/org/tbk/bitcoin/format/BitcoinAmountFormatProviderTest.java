@@ -1,6 +1,8 @@
 package org.tbk.bitcoin.format;
 
 import org.javamoney.moneta.Money;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.money.CurrencyUnit;
@@ -8,6 +10,7 @@ import javax.money.Monetary;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.format.MonetaryFormats;
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -17,6 +20,19 @@ class BitcoinAmountFormatProviderTest {
     private static final CurrencyUnit bitcoinUnit = Monetary.getCurrency("BTC");
     private static final MonetaryAmountFormat sut = MonetaryFormats
             .getAmountFormat(BitcoinAmountFormatProvider.formatNameBitcoin());
+
+    private Locale defaultLocale;
+
+    @BeforeEach
+    void setUp() {
+        defaultLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+    }
+
+    @AfterEach
+    void tearDown() {
+        Locale.setDefault(defaultLocale);
+    }
 
     @Test
     void itShouldRegisterBitcoinAsMonetaryAmountFormatCorrectly() {

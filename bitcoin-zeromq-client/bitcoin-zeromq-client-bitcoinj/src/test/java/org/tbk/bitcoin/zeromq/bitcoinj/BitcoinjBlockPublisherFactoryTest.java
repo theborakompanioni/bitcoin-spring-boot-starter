@@ -1,6 +1,12 @@
 package org.tbk.bitcoin.zeromq.bitcoinj;
 
-import org.bitcoinj.core.*;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.Sha256Hash;
+import org.bitcoinj.core.BitcoinSerializer;
+import org.bitcoinj.core.Block;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionInput;
+import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.params.MainNetParams;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
@@ -18,9 +24,7 @@ import static org.hamcrest.Matchers.*;
 class BitcoinjBlockPublisherFactoryTest {
     private static final MessagePublisherFactory<byte[]> genesisBlockPublisher = new GenesisBlockPublisher();
 
-    private static final Context bitcoinjContext = Context.getOrCreate(MainNetParams.get());
-
-    private static final BitcoinSerializer mainnetSerializer = new BitcoinSerializer(bitcoinjContext.getParams(), false);
+    private static final BitcoinSerializer mainnetSerializer = new BitcoinSerializer(MainNetParams.get());
 
     @Test
     void create() {

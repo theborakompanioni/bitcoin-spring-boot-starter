@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import tools.jackson.databind.JsonNode;
 
 @Value
 @Builder(toBuilder = true)
@@ -14,5 +15,5 @@ public class CreateInvoiceResponseDto {
     @Schema(example = "lnbcrt10p1pj...cpcpugtjt8", requiredMode = Schema.RequiredMode.REQUIRED)
     String bolt11;
 
-    Object raw;
+    JsonNode raw;
 }

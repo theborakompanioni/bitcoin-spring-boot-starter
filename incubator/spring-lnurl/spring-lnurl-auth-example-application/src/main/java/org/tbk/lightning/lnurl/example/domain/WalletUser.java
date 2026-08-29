@@ -1,6 +1,7 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -25,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "lnurl_auth_wallet_user")
 public class WalletUser extends AbstractAggregateRoot<WalletUser> implements AggregateRoot<WalletUser, WalletUser.WalletUserId> {
-
+    @JsonUnwrapped
     private final WalletUserId id;
 
     private final long createdAt;

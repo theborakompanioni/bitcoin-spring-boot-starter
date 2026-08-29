@@ -6,8 +6,9 @@ import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Sha256Hash;
+import org.bitcoinj.core.NetworkParameters;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,7 +51,7 @@ public class BitcoinRegtestMiningAutoConfiguration {
     @ConditionalOnProperty(value = "org.tbk.bitcoin.regtest.mining.coinbase-reward-address")
     CoinbaseRewardAddressSupplier staticCoinbaseRewardAddressSupplier(BitcoinClient bitcoinJsonRpcClient) {
         return this.properties.getCoinbaseRewardAddress()
-                .map(it -> Address.fromString(bitcoinJsonRpcClient.getNetParams(), it))
+                .map(it -> Address.fromString(NetworkParameters.of(bitcoinJsonRpcClient.getNetwork()), it))
                 .map(StaticCoinbaseRewardAddressSupplier::new)
                 .orElseThrow(() -> new IllegalStateException("Cannot create CoinbaseRewardAddressSupplier from static address"));
     }

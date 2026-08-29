@@ -16,8 +16,8 @@ dependencies {
     implementation project(':incubator:tbk-electrum-daemon-client:tbk-electrum-daemon-client-starter')
     implementation project(':spring-testcontainer:spring-testcontainer-tor-starter')
 
-    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${acinqBitcoinKmpVersion}"
-    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${acinqSecp256k1KmpVersion}"
+    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${rootProject.ext.acinqBitcoinKmpVersion}"
+    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${rootProject.ext.acinqSecp256k1KmpVersion}"
 
     implementation 'io.projectreactor:reactor-core'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'

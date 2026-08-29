@@ -1,6 +1,6 @@
 package org.tbk.electrum.bitcoinj.model;
 
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 
 public interface BitcoinjBalance {
     Coin getConfirmed();

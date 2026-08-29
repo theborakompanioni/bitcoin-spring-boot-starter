@@ -1,6 +1,6 @@
 package org.tbk.electrum.bitcoinj.model;
 
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 
 import java.util.List;
 

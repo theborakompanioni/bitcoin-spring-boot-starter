@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Coin;
 import org.jline.terminal.Terminal;
 import org.springframework.shell.standard.*;
 import org.tbk.electrum.ElectrumClient;

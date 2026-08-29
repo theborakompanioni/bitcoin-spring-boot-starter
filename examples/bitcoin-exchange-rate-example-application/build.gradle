@@ -9,16 +9,19 @@ dependencies {
     implementation project(':spring-xchange:spring-xchange-starter')
 
     implementation 'io.projectreactor:reactor-core'
-    implementation "org.javamoney:moneta:${monetaVersion}"
+    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
 
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
 
-    implementation "org.zalando:jackson-datatype-money:${jacksonDatatypeMoneyVersion}"
+    implementation "org.zalando:jackson-datatype-money:${rootProject.ext.jacksonDatatypeMoneyVersion}"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-restclient'
 }

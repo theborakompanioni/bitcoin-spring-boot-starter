@@ -5,5 +5,5 @@ plugins {
 description = 'common utilities needed in bitcoin applications using bitcoinj'
 
 dependencies {
-    api "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
+    api "org.bitcoinj:bitcoinj-core:${rootProject.ext.bitcoinjVersion}"
 }

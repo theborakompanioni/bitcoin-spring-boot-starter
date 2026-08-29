@@ -7,15 +7,15 @@ import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.consensusj.jsonrpc.JsonRpcStatusException;
-import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
-import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.info.ConditionalOnEnabledInfoContributor;
-import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.health.autoconfigure.contributor.CompositeHealthContributorConfiguration;
+import org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator;
+import org.springframework.boot.health.contributor.HealthContributor;
 import org.springframework.context.annotation.Bean;
 import org.tbk.bitcoin.jsonrpc.actuator.health.BitcoinJsonRpcHealthIndicator;
 
@@ -84,7 +84,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
         @Override
         public void contribute(Info.Builder builder) {
             ImmutableMap.Builder<String, Object> detailBuilder = ImmutableMap.<String, Object>builder()
-                    .put("network", firstNonNull(client.getNetParams().getId(), "<empty>"))
+                    .put("network", firstNonNull(client.getNetwork().id(), "<empty>"))
                     .put("server", client.getServerURI());
 
             try {
@@ -101,7 +101,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
                         client.getServerURI(), e.getMessage());
 
                 builder.withDetail("bitcoinJsonRpc", detailBuilder
-                        .put("message", e.getMessage())
+                        .put("message", firstNonNull(e.getMessage(), "<empty>"))
                         .put("httpMessage", firstNonNull(e.httpMessage, "<empty>"))
                         .put("httpCode", e.httpCode)
                         .put("jsonRpcCode", e.jsonRpcCode)
@@ -112,7 +112,7 @@ public class BitcoinJsonRpcHealthContributorAutoConfiguration {
                         client.getServerURI(), e.getMessage());
 
                 builder.withDetail("bitcoinJsonRpc", detailBuilder
-                        .put("message", e.getMessage())
+                        .put("message", firstNonNull(e.getMessage(), "<empty>"))
                         .build());
             }
         }

@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.example.payreq.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.common.collect.ImmutableMap;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +30,7 @@ import java.util.*;
 @ToString(exclude = "lineItems")
 @Table(name = "customer_order")
 public class Order extends AbstractAggregateRoot<Order> implements AggregateRoot<Order, Order.OrderId> {
-
+    @JsonUnwrapped
     private final OrderId id;
 
     @CreationTimestamp

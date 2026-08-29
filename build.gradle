@@ -131,21 +131,21 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom SpringBootPlugin.BOM_COORDINATES
-            mavenBom "org.jmolecules:jmolecules-bom:${jmoleculesBomVersion}"
-            mavenBom "org.springframework.shell:spring-shell-dependencies:${springShellVersion}"
+            mavenBom "org.jmolecules:jmolecules-bom:${rootProject.ext.jmoleculesBomVersion}"
+            mavenBom "org.springframework.shell:spring-shell-dependencies:${rootProject.ext.springShellVersion}"
         }
     }
 
     dependencies {
         compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
         testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
-        spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:${findsecbugsPluginVersion}"
+        spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:${rootProject.ext.findsecbugsPluginVersion}"
 
         implementation 'org.slf4j:slf4j-api'
-        implementation "com.google.guava:guava:${guavaVersion}"
+        implementation "com.google.guava:guava:${rootProject.ext.guavaVersion}"
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
-        testImplementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
+        testImplementation "org.apache.commons:commons-lang3:${rootProject.ext.apacheCommonsVersion}"
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -178,6 +178,10 @@ subprojects {
         from sourceSets.test.output
     }
 
+    tasks.named("assemble") {
+        dependsOn(testJar)
+    }
+
     pluginManager.withPlugin('org.springframework.boot') {
 
         dependencies {
@@ -189,8 +193,6 @@ subprojects {
         }
 
         bootJar {
-            // creates a launch script for the executable jar
-            launchScript()
             archiveClassifier.set('boot')
 
             exclude('*-local.yml')
@@ -258,12 +260,8 @@ subprojects {
         }
     }
 
-    artifacts {
-        archives testJar
-    }
-
     lombok {
-        version = "${lombokVersion}"
+        version = "${rootProject.ext.lombokVersion}"
     }
 
     tasks.withType(Test).configureEach {
@@ -274,16 +272,19 @@ subprojects {
             exceptionFormat = TestExceptionFormat.FULL
             showCauses = true
             showStackTraces = true
+        }
 
-            afterSuite { desc, result ->
-                if (!desc.parent) { // will match the outermost suite
+        addTestListener(new TestListener() {
+            @Override
+            void afterSuite(TestDescriptor suite, TestResult result) {
+                if (!suite.parent) { // will match the outermost suite
                     def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
                     def startItem = '|  ', endItem = '  |'
                     def repeatLength = startItem.length() + output.length() + endItem.length()
                     println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
                 }
             }
-        }
+        })
     }
 
     tasks.register('dependencyTree', DependencyReportTask) {}
@@ -317,7 +318,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = "${checkstyleVersion}"
+        toolVersion = "${rootProject.ext.checkstyleVersion}"
         configFile = rootProject.file('./checkstyle.xml')
         maxErrors = 0
         ignoreFailures = false

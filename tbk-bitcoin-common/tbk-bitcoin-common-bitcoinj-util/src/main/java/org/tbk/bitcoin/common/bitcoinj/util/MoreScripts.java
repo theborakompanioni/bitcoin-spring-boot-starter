@@ -1,7 +1,7 @@
 package org.tbk.bitcoin.common.bitcoinj.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.script.Script;
@@ -19,13 +19,13 @@ public final class MoreScripts {
         throw new UnsupportedOperationException();
     }
 
-    public static List<Address> extractOutputAddress(Transaction tx) {
+    public static List<Address> extractOutputAddress(NetworkParameters networkParameters, Transaction tx) {
         if (tx == null) {
             return Collections.emptyList();
         }
 
         return tx.getOutputs().stream()
-                .map(val -> MoreScripts.extractAddress(tx.getParams(), val.getScriptPubKey()))
+                .map(val -> MoreScripts.extractAddress(networkParameters, val.getScriptPubKey()))
                 .flatMap(Optional::stream)
                 .toList();
     }

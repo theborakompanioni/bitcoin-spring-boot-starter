@@ -4,8 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Coin;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.javamoney.moneta.Money;
 import org.jmolecules.ddd.annotation.Service;
@@ -50,7 +50,7 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 
     @Override
     public PaymentRequest createOnchainPayment(Order order, Network network, Instant validUntil, int minConfirmations) {
-        boolean networkSupported = bitcoinClient.getNetParams().equals(network.toNetworkParameters());
+        boolean networkSupported = bitcoinClient.getNetwork().equals(network.toNetworkParameters().network());
         if (!networkSupported) {
             throw new IllegalArgumentException("Network not supported");
         }

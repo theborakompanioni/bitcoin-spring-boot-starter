@@ -3,7 +3,7 @@ package org.tbk.bitcoin.regtest.electrum.scenario;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.reactivestreams.Subscriber;
 import org.tbk.electrum.common.WalletParams;
 import org.tbk.bitcoin.regtest.scenario.RegtestAction;

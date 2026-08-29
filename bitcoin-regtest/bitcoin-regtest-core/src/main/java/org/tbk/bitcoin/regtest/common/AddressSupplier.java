@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.regtest.common;
 
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 
 import java.util.function.Supplier;
 

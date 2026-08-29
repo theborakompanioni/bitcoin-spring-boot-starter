@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.consensusj.jsonrpc.JsonRpcStatusException;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class BitcoinJsonRpcHealthIndicator extends AbstractHealthIndicator {
     @Override
     protected void doHealthCheck(Health.Builder builder) {
         Map<String, Object> baseDetails = ImmutableMap.<String, Object>builder()
-                .put("network", firstNonNull(client.getNetParams().getId(), "<empty>"))
+                .put("network", firstNonNull(client.getNetwork().id(), "<empty>"))
                 .put("server", client.getServerURI())
                 .build();
 

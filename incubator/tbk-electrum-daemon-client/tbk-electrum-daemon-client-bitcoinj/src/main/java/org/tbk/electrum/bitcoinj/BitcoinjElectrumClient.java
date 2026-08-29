@@ -1,8 +1,8 @@
 package org.tbk.electrum.bitcoinj;
 
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.crypto.ECKey;
+import org.bitcoinj.base.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.bitcoinj.common.GetPubkeysParams;

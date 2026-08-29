@@ -1,6 +1,6 @@
 package org.tbk.bitcoin.regtest.scenario;
 
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Sha256Hash;
 import org.reactivestreams.Subscriber;
 import org.tbk.bitcoin.regtest.mining.RegtestMiner;
 import reactor.core.publisher.Mono;
