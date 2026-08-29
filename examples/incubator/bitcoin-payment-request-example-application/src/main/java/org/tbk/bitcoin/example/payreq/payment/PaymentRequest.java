@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.example.payreq.payment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,7 +32,7 @@ import static com.google.gdata.util.common.base.Preconditions.checkArgument;
 public abstract class PaymentRequest
         extends AbstractAggregateRoot<PaymentRequest>
         implements AggregateRoot<PaymentRequest, PaymentRequest.PaymentRequestId> {
-
+    @JsonUnwrapped
     private final PaymentRequestId id;
 
     private final NumberValue amount;

@@ -19,5 +19,5 @@ dependencies {
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
     testImplementation project(':bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core')
 
-    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }

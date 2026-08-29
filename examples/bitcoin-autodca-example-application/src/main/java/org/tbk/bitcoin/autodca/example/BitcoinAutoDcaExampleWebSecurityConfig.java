@@ -1,102 +1,43 @@
 package org.tbk.bitcoin.autodca.example;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 @ConditionalOnWebApplication
-class BitcoinAutoDcaExampleWebSecurityConfig implements WebMvcConfigurer {
-
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-            "classpath:/META-INF/resources/",
-            "classpath:/resources/",
-            "classpath:/static/",
-            "classpath:/public/"
-    };
+class BitcoinAutoDcaExampleWebSecurityConfig implements WebSecurityCustomizer {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+    public void customize(WebSecurity web) {
+        web.httpFirewall(new StrictHttpFirewall());
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "index.html");
-    }
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> {
+                })
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                        PathRequest.toStaticResources().atCommonLocations(),
+                        PathPatternRequestMatcher.withDefaults().matcher("/index.html"),
+                        PathPatternRequestMatcher.withDefaults().matcher("/fonts/**")
+                ).permitAll())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
-    @Override
-    @SuppressFBWarnings("PERMISSIVE_CORS")
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*");
-    }
-
-    @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        customizeJacksonMessageConverter(converters);
-    }
-
-    /**
-     * This is the only way that worked making jackson pretty print json responses.
-     *
-     * <p>No, beans of {@link Jackson2ObjectMapperBuilder}, {@link MappingJackson2HttpMessageConverter} or
-     * {@link Jackson2ObjectMapperBuilderCustomizer} did the job properly (which is very odd).
-     * Maybe try again at a later point in time. But this is good for now (2020-10-24).
-     */
-    private static void customizeJacksonMessageConverter(List<HttpMessageConverter<?>> converters) {
-        converters.stream()
-                .filter(any -> any instanceof MappingJackson2HttpMessageConverter)
-                .map(any -> (MappingJackson2HttpMessageConverter) any)
-                .forEach(converter -> configureObjectMapper(converter.getObjectMapper()));
-    }
-
-    private static void configureObjectMapper(ObjectMapper objectMapper) {
-        SimpleModule internalModule = new SimpleModule("AppInternal")
-                .addSerializer(new BigDecimalToStringSerializer());
-
-        objectMapper
-                .registerModule(internalModule)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    }
-
-
-    public static final class BigDecimalToStringSerializer extends JsonSerializer<BigDecimal> {
-
-        @Override
-        public Class<BigDecimal> handledType() {
-            return BigDecimal.class;
-        }
-
-        @Override
-        public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeString(value.toPlainString());
-        }
+        return http.build();
     }
 }

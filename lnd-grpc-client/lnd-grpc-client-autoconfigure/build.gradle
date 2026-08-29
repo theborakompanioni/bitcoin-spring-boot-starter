@@ -20,6 +20,6 @@ dependencies {
 
     testImplementation project(':lnd-grpc-client:lnd-grpc-client-core')
     integTestImplementation 'org.springframework.boot:spring-boot-starter-actuator'
-    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 
 }
