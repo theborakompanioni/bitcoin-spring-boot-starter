@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<verification-metadata xmlns="https://schema.gradle.org/dependency-verification" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://schema.gradle.org/dependency-verification https://schema.gradle.org/dependency-verification/dependency-verification-1.3.xsd">
+<verification-metadata xmlns="https://schema.gradle.org/dependency-verification" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://schema.gradle.org/dependency-verification https://schema.gradle.org/dependency-verification/dependency-verification-1.4.xsd">
    <configuration>
       <verify-metadata>true</verify-metadata>
       <verify-signatures>true</verify-signatures>
@@ -468,6 +468,10 @@
             <trusting group="io.perfmark" name="perfmark-api" version="0.27.0"/>
          </trusted-key>
          <trusted-key id="C70B844F002F21F6D2B9C87522E44AC0622B91C3" group="com.beust" name="jcommander" version="1.82"/>
+         <trusted-key id="C73B7FB12A0B8D0DFF2F0FBADA70365F88DD141C">
+            <trusting group="jakarta.el"/>
+            <trusting group="org.glassfish"/>
+         </trusted-key>
          <trusted-key id="C7BE5BCC9FEC15518CFDA882B0F3710FA64900E7" group="com.google.code.gson"/>
          <trusted-key id="C888B9955815EA83B48531784896F7312A5ACE4D" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="C89074FC8BE681B7C7EAAB6E4C5EED3C53B75933">
