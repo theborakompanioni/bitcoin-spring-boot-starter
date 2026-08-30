@@ -1,0 +1,145 @@
+[versions]
+jsr354 = "1.1"
+moneta = "1.4.5"
+xchange = "5.2.5"
+bitcoinj = "0.17.1"
+lightningj = "0.17.4-Beta"
+clnGrpcClient = "24.11.1"
+simpleJsonRpcClient = "1.3"
+consensusJ = "0.7.0-beta2"
+guava = "33.5.0-jre"
+jeromq = "0.6.0"
+testcontainers = "2.0.5"
+httpComponents = "4.4.16"
+httpComponentsClient = "4.5.14"
+apacheCommons = "3.20.0"
+grpc = "1.61.1"
+protobuf = "3.25.8"
+protoc = "3.25.8"
+jmoleculesBom = "2025.0.2"
+bytebuddyPlugin = "1.18.12"
+zxing = "3.5.4"
+acinqSecp256k1Kmp = "0.21.0"
+acinqBitcoinKmp = "0.28.1"
+acinqLightningKmp = "1.11.2"
+sqlite = "3.53.4.0"
+hibernateCommunityDialects = "6.6.56.Final"
+lombok = "1.18.46"
+spotbugs = "4.10.4"
+springdocOpenApi = "2.3.0"
+checkstyle = "12.3.1"
+findsecbugsPlugin = "1.14.0"
+torSpringBootStarter = "0.12.0"
+springBootPlugin = "4.1.1"
+springShell = "4.0.3"
+protobufGradle = "0.9.6"
+
+[libraries]
+# JSR‑354 (Money & Currency API) and implementations
+jsr354-api = { module = "javax.money:money-api", version.ref = "jsr354" }
+moneta = { module = "org.javamoney:moneta", version.ref = "moneta" }
+
+# XChange (exchange client)
+xchange-core = { module = "org.knowm.xchange:xchange-core", version.ref = "xchange" }
+
+# BitcoinJ
+bitcoinj = { module = "org.bitcoinj:bitcoinj-core", version.ref = "bitcoinj" }
+
+# LightningJ
+lightningj = { module = "org.lightningj:lightningj", version.ref = "lightningj" }
+
+# CLN gRPC client
+cln-grpc-client = { module = "org.lightningj:cln-grpc-client", version.ref = "clnGrpcClient" }
+
+# Simple JSON‑RPC client
+simple-json-rpc-client = { module = "org.lightningj:simple-json-rpc-client", version.ref = "simpleJsonRpcClient" }
+
+# ConsensusJ
+consensusj = { module = "org.consensusj:consensusj", version.ref = "consensusJ" }
+
+# Guava
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+
+# JeroMQ (pure‑Java ZeroMQ)
+jeromq = { module = "org.zeromq:jeromq", version.ref = "jeromq" }
+
+# Testcontainers
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+
+# Apache HttpComponents (core & client)
+httpcomponents = { module = "org.apache.httpcomponents:httpcore", version.ref = "httpComponents" }
+httpcomponents-client = { module = "org.apache.httpcomponents:httpclient", version.ref = "httpComponentsClient" }
+
+# Apache Commons
+apache-commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "apacheCommons" }
+
+# gRPC
+grpc-bom = { module = "io.grpc:grpc-bom", version.ref = "grpc" }
+grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
+grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
+
+# Protocol Buffers
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
+protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufGradle" }
+
+# Jmolecules Bill‑of‑Materials
+jmolecules-bom = { module = "org.jmolecules:jmolecules-bom", version.ref = "jmoleculesBom" }
+
+# Byte Buddy plugin (used by Jmolecules)
+bytebuddy-plugin = { module = "net.bytebuddy:byte-buddy", version.ref = "bytebuddyPlugin" }
+
+# ZXing (barcode scanner)
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
+
+# ACINQ native libraries (KMP)
+acinq-secp256k1-kmp = { module = "io.github.acinq:secp256k1-kmp", version.ref = "acinqSecp256k1Kmp" }
+acinq-bitcoin-kmp = { module = "io.github.acinq:bitcoin-kmp", version.ref = "acinqBitcoinKmp" }
+acinq-lightning-kmp = { module = "io.github.acinq:lightning-kmp", version.ref = "acinqLightningKmp" }
+
+# SQLite JDBC driver (or native wrapper) – adjust if you use a different artifact
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+
+# Hibernate Community Dialects
+hibernate-community-dialects = { module = "org.hibernate.orm:hibernate-community-dialects", version.ref = "hibernateCommunityDialects" }
+
+# Lombok
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+
+# Springdoc OpenAPI
+springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdocOpenApi" }
+
+# Checkstyle
+checkstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
+
+spotbugs-annotations = { module = "com.github.spotbugs:spotbugs-annotations", version.ref = "spotbugs" }
+
+# FindSecBugs (SpotBugs plugin)
+findsecbugs-plugin = { module = "com.h3xstream.findsecbugs:findsecbugs-plugin", version.ref = "findsecbugsPlugin" }
+
+# Tor Spring Boot starter
+tor-spring-boot-starter = { module = "org.torproject:tor-spring-boot-starter", version.ref = "torSpringBootStarter" }
+
+# Spring Boot Gradle plugin
+spring-boot-plugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBootPlugin" }
+
+# Spring Shell
+spring-shell = { module = "org.springframework.shell:spring-shell-starter", version.ref = "springShell" }
+
+[plugins]
+nebula-release = { id = "nebula.release", version = "21.0.0" }
+nebula-lint = { id = "nebula.lint", version = "21.1.3" }
+nebula-project = { id = "com.netflix.nebula.project", version = "13.0.0" }
+nebula-facet = { id = "com.netflix.nebula.facet", version = "13.0.0" }
+spotbugs = { id = "com.github.spotbugs", version = "6.5.11" }
+spring-boot = { id = "org.springframework.boot", version.ref = "springBootPlugin" }
+lombok = { id = "io.freefair.lombok", version = "9.1.0" }
+bytebuddy = { id = "net.bytebuddy.byte-buddy-gradle-plugin", version.ref = "bytebuddyPlugin" }
+graalvm-buildtools-native = { id = "org.graalvm.buildtools.native", version = "0.11.3" }
+
+[bundles]
+acinq = [
+    "acinq-secp256k1-kmp", "acinq-bitcoin-kmp", "acinq-lightning-kmp"
+]
+java-money = [
+    "jsr354-api", "moneta"
+]
