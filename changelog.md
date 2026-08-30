@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Breaking
 - electrum: moved electrum RPC related code to distinct package
 - electrum: compatibility wit electrum v4.6.0
-- electrum: upgrade electrum testcontainer from v3.3.8 to v4.7.2
+- electrum: upgrade electrum testcontainer from v3.3.8 to v4.8.1
 - upgrade: update spring-boot from v3.4.4 to v4.1.1
 
 ### Changed
