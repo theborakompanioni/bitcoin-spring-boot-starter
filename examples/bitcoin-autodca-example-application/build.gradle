@@ -10,7 +10,7 @@ dependencies {
 
     implementation 'io.projectreactor:reactor-core'
 
-    implementation "org.zalando:jackson-datatype-money:${rootProject.ext.jacksonDatatypeMoneyVersion}"
+    implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-security'

@@ -36,7 +36,7 @@ dependencies {
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
 
-    implementation "org.zalando:jackson-datatype-money:${rootProject.ext.jacksonDatatypeMoneyVersion}"
+    implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
     implementation 'io.projectreactor:reactor-core'
 

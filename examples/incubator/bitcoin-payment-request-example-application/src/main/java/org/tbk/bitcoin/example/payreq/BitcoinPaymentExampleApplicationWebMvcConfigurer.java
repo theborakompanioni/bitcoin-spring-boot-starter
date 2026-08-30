@@ -15,6 +15,7 @@ import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.ValueSerializer;
 import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.datatype.moneta.MonetaMoneyModule;
 
 import java.math.BigDecimal;
 
@@ -56,7 +57,8 @@ class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigur
                 .addSerializer(new BigDecimalToStringSerializer());
 
         return builder -> builder
-                .addModules(internalModule)
+                .addModule(internalModule)
+                .addModule(new MonetaMoneyModule())
                 .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
                 .changeDefaultPropertyInclusion(incl -> incl.withContentInclusion(JsonInclude.Include.NON_NULL))
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
