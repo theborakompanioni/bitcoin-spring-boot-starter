@@ -5,7 +5,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
-import org.springframework.boot.web.context.WebServerPortFileWriter;
+import org.springframework.boot.web.server.context.WebServerPortFileWriter;
 import org.springframework.context.ApplicationListener;
 
 import java.util.Locale;
@@ -30,8 +30,8 @@ public class LightningRegtestExampleApplication {
     private static ApplicationListener<?> applicationPidFileWriter() {
         return new ApplicationPidFileWriter("application.pid");
     }
-    
-    private static ApplicationListener<?> webServerPortFileWriter() {
+
+    public static ApplicationListener<?> webServerPortFileWriter() {
         return new WebServerPortFileWriter("application.port");
     }
 }
