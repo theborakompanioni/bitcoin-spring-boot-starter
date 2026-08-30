@@ -14,7 +14,7 @@ ext {
     httpComponentsClientVersion = '4.5.14'
     apacheCommonsVersion = '3.20.0'
     grpcVersion = '1.83.1' // must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
-    protobufVersion = '3.25.8'
+    protobufVersion = '4.36.0'
     protocVersion = protobufVersion
     jmoleculesBomVersion = '2025.0.2'
     bytebuddyPluginVersion = '1.18.8' // keep in sync with `jmoleculesBomVersion`
