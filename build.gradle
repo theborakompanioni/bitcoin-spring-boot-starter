@@ -7,9 +7,6 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
     apply from: 'versions.gradle'
-    repositories {
-        mavenCentral()
-    }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootGradlePluginVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${protobufGradleVersion}")
@@ -113,18 +110,6 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_21
         toolchain {
             languageVersion = JavaLanguageVersion.of(JavaVersion.VERSION_21.getMajorVersion())
-        }
-    }
-
-    repositories {
-        mavenCentral()
-        maven {
-            // needed for netlayer packages
-            url = 'https://jitpack.io'
-        }
-        maven {
-            // needed for consensusj
-            url = 'https://gitlab.com/api/v4/projects/8482916/packages/maven'
         }
     }
 

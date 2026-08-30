@@ -1,3 +1,37 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven {
+            // needed for netlayer packages
+            url = 'https://jitpack.io'
+            content {
+                includeGroup('com.github.bisq-network.netlayer')
+                includeGroup('com.github.bisq-network.tor-binary')
+                includeGroup('com.github.bisq-network')
+            }
+        }
+        mavenCentral()
+        maven {
+            // needed for consensusj
+            url = 'https://gitlab.com/api/v4/projects/8482916/packages/maven'
+        }
+        mavenLocal {
+            mavenContent {
+                snapshotsOnly()
+            }
+        }
+    }
+}
+
 rootProject.name = 'bitcoin-spring-boot-starter'
 
 include 'bitcoin-jsonrpc-client:bitcoin-jsonrpc-client-core'
