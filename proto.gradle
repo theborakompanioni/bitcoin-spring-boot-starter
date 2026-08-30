@@ -12,24 +12,23 @@ sourceSets {
         }
     }
 }
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         dependencySubstitution {
-            substitute module("com.google.protobuf:protobuf-javalite") using module("com.google.protobuf:protobuf-java:${rootProject.ext.protobufVersion}")
+            substitute module("com.google.protobuf:protobuf-javalite") using module("com.google.protobuf:protobuf-java:${rootProject.libs.versions.protobuf.get()}")
         }
     }
 }
 
 dependencies {
-    implementation "com.google.protobuf:protobuf-java:${rootProject.ext.protobufVersion}"
-    implementation "com.google.protobuf:protobuf-java-util:${rootProject.ext.protobufVersion}"
+    implementation rootProject.libs.bundles.protobuf
 }
 
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:${rootProject.ext.protocVersion}" }
+    protoc { artifact = "com.google.protobuf:protoc:${rootProject.libs.versions.protoc.get()}" }
 
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${rootProject.ext.grpcVersion}" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${rootProject.libs.versions.grpc.get()}" }
     }
 
     generateProtoTasks {

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - electrum: compatibility wit electrum v4.6.0
 - electrum: upgrade electrum testcontainer from v3.3.8 to v4.8.1
 - upgrade: update spring-boot from v3.4.4 to v4.1.1
+- upgrade: update consensusj from v0.6.5 to v0.7.0-beta3
+- upgrade: update bitcoinj from v0.16.2 to v0.17.1
 
 ### Changed
 - upgrade: update tor testcontainer from v0.4.7.8 to v0.4.8.10
@@ -22,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update sqlite from v3.48.0.0 to v3.53.4.0
 - upgrade: update zxing v3.5.3 to v3.5.4
 - upgrade: update hibernate-community-dialects from v6.6.11.Final to v6.6.38.Final
-- upgrade: update guava from v33.0.0-jre to v33.5.0-jre
+- upgrade: update guava from v33.0.0-jre to v33.7.1-jre
 - upgrade: update secp256k1-kmp from v0.17.1 to v0.21.0
 - upgrade: update bitcoin-kmp from v0.22.1 to v0.28.1
 - upgrade: update lightning-kmp from v1.9.0 to v1.11.2
@@ -103,6 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update bitcoin-kmp from v0.15.0 to v0.16.0
 - upgrade: update lightning-kmp from v1.5.14 to v1.5.15
 - upgrade: update guava from v30.1-jre to v33.0.0-jre
+- upgrade: update consensusj from v0.6.4 to v0.6.5
 
 ## [0.12.0] - 2024-01-19
 

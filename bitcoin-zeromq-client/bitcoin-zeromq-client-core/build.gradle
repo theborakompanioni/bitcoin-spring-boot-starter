@@ -7,9 +7,8 @@ description = 'bitcoin zeromq client package'
 dependencies {
     api 'io.projectreactor:reactor-core'
 
-    implementation "com.google.guava:guava:${rootProject.ext.guavaVersion}"
-
-    implementation "org.zeromq:jeromq:${rootProject.ext.jeroMqVersion}"
+    implementation rootProject.libs.guava
+    implementation rootProject.libs.jeromq
 
     testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-test')
     testImplementation project(':tbk-bitcoin-common:tbk-bitcoin-common-util')

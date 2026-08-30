@@ -5,13 +5,13 @@ plugins {
 description = 'xchange jsr354 core package'
 
 dependencies {
-    api "javax.money:money-api:${rootProject.ext.jsr354Version}"
+    api rootProject.libs.jsr354.api
 
     // must be exposed because of class AbstractRateProvider
-    api "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
+    api rootProject.libs.moneta
 
     // must be exposed because of e.g. class Exchange
-    api "org.knowm.xchange:xchange-core:${rootProject.ext.xChangeVersion}"
+    api rootProject.libs.xchange.core
 
     testImplementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
 
@@ -19,5 +19,5 @@ dependencies {
     testImplementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
 
     // use bitstamp as the exchange in all tests
-    testImplementation "org.knowm.xchange:xchange-bitstamp:${rootProject.ext.xChangeVersion}"
+    testImplementation rootProject.libs.xchange.bitstamp
 }

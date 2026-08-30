@@ -7,11 +7,8 @@ description = 'lnurl simple implementation package'
 dependencies {
     api project(':incubator:lnurl-java:lnurl-core')
 
-    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${rootProject.ext.acinqBitcoinKmpVersion}"
-    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${rootProject.ext.acinqSecp256k1KmpVersion}"
-
-    implementation "org.apache.httpcomponents:httpclient:${rootProject.ext.httpComponentsClientVersion}"
-    implementation "org.apache.httpcomponents:httpcore:${rootProject.ext.httpComponentsVersion}"
+    implementation rootProject.libs.bundles.acinq.bitcoin
+    implementation rootProject.libs.bundles.apache.httpclient
 
     testImplementation project(':incubator:lnurl-java:lnurl-test')
 }

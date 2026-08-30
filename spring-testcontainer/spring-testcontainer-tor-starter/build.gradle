@@ -6,7 +6,7 @@ description = 'spring testcontainer tor starter'
 
 dependencies {
     api "io.github.theborakompanioni:spring-tor-http:${rootProject.ext.torSpringBootStarterVersion}"
-    api "org.testcontainers:testcontainers:${rootProject.ext.testcontainersVersion}"
+    api rootProject.libs.testcontainers
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

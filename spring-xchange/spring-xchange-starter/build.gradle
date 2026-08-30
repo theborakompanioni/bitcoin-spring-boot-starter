@@ -5,13 +5,10 @@ plugins {
 description = 'xchange starter package'
 
 dependencies {
-    api "org.knowm.xchange:xchange-core:${rootProject.ext.xChangeVersion}"
+    api rootProject.libs.xchange.core
     api project(':spring-xchange:spring-xchange-autoconfigure')
 
-    api "org.knowm.xchange:xchange-bitstamp:${rootProject.ext.xChangeVersion}"
-    api "org.knowm.xchange:xchange-bitfinex:${rootProject.ext.xChangeVersion}"
-    api "org.knowm.xchange:xchange-gemini:${rootProject.ext.xChangeVersion}"
-    api "org.knowm.xchange:xchange-kraken:${rootProject.ext.xChangeVersion}"
+    api rootProject.libs.bundles.xchange.exchanges
 
     implementation 'org.springframework.boot:spring-boot-starter'
 }

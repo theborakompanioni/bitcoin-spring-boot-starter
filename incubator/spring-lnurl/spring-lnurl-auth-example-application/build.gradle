@@ -14,20 +14,18 @@ dependencies {
     testImplementation project(':incubator:lnurl-java:lnurl-test')
 
     implementation project(':incubator:spring-lnurl:spring-lnurl-auth-starter')
-    implementation "io.github.theborakompanioni:spring-tor-starter:${rootProject.ext.torSpringBootStarterVersion}"
+    implementation rootProject.libs.spring.boot.starter.tor
 
-    implementation "fr.acinq.bitcoin:bitcoin-kmp-jvm:${rootProject.ext.acinqBitcoinKmpVersion}"
-    implementation "fr.acinq.secp256k1:secp256k1-kmp-jni-jvm:${rootProject.ext.acinqSecp256k1KmpVersion}"
+    implementation rootProject.libs.bundles.acinq.bitcoin
 
-    implementation "com.google.zxing:core:${rootProject.ext.zxingVersion}"
-    implementation "com.google.zxing:javase:${rootProject.ext.zxingVersion}"
-    implementation "org.apache.httpcomponents:httpclient:${rootProject.ext.httpComponentsClientVersion}"
+    implementation rootProject.libs.bundles.zxing
+    implementation rootProject.libs.bundles.apache.httpclient
 
     implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.flywaydb:flyway-core'
-    implementation "org.xerial:sqlite-jdbc:${rootProject.ext.sqliteVersion}"
-    implementation "org.hibernate.orm:hibernate-community-dialects:${rootProject.ext.hibernateCommunityDialectsVersion}"
+    implementation rootProject.libs.sqlite.jdbc
+    implementation rootProject.libs.hibernate.community.dialects
 
     implementation 'org.jmolecules:jmolecules-ddd'
     implementation 'org.jmolecules:jmolecules-events'

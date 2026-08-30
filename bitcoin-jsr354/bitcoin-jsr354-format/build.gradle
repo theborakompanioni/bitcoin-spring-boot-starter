@@ -7,5 +7,5 @@ description = 'bitcoin jsr354 format package'
 dependencies {
     implementation project(':bitcoin-jsr354:bitcoin-jsr354-currency')
 
-    testImplementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
+    testImplementation rootProject.libs.moneta
 }
