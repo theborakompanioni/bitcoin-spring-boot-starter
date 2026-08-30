@@ -9,12 +9,12 @@ dependencies {
     implementation project(':spring-xchange:spring-xchange-starter')
 
     implementation 'io.projectreactor:reactor-core'
-    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
 
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
 
-    implementation "org.zalando:jackson-datatype-money:${rootProject.ext.jacksonDatatypeMoneyVersion}"
+    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
+    implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
 

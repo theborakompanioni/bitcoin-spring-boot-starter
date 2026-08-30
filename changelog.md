@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - upgrade: update xchange from v5.1.0 to v5.2.2
 - upgrade: update spring-boot from v3.4.4 to v3.5.9
 - upgrade: update lombok from v1.18.30 to v1.18.42
-- upgrade: update sqlite from v3.48.0.0 to v3.51.1.0
+- upgrade: update sqlite from v3.48.0.0 to v3.53.4.0
 - upgrade: update zxing v3.5.3 to v3.5.4
 - upgrade: update hibernate-community-dialects from v6.6.11.Final to v6.6.38.Final
 - upgrade: update guava from v33.0.0-jre to v33.5.0-jre

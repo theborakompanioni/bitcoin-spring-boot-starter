@@ -33,10 +33,11 @@ dependencies {
     implementation project(':spring-xchange:spring-xchange-starter')
 
     implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
+    // jackson-datatype-moneta does not play nicely with bytebuddy plugin:
+    // always throws "ZipException: zip END header not found" (last checked 2026-08-29)
+    //implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
-
-    implementation "org.zalando:jackson-datatype-money:${rootProject.ext.jacksonDatatypeMoneyVersion}"
 
     implementation 'io.projectreactor:reactor-core'
 
