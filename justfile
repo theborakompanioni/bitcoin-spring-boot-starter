@@ -87,6 +87,17 @@ update-verification *args='':
       dependencies dependencyTree \
       --write-verification-metadata pgp,sha256 --export-keys --write-locks {{args}}
 
+# update dependency lockfiles
+[group("development")]
+update-lockfiles:
+    @./gradlew \
+     -Dorg.gradle.caching=false \
+     -Dorg.gradle.configureondemand=false \
+     -Dorg.gradle.parallel=false \
+     -Dorg.gradle.dependency.verification=off \
+     dependencies dependencyTree \
+     --write-locks
+
 # update metadata for dependency verification and refresh keys
 [group("development")]
 update-verification-refresh-keys:
