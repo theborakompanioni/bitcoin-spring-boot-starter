@@ -2,7 +2,7 @@
 services:
   bitcoind_regtest:
     container_name: bitcoind_regtest
-    image: polarlightning/bitcoind:27.0@sha256:7ac359cacd1c667fae321fe049d3d860eb85f1f14aff805e96246c5dc70f2f13
+    image: polarlightning/bitcoind:30.0@sha256:6b15e7efb79995a18441806f509e40316428a901f1cdc5c54cd25b03ac513cb9
     restart: no
     command:
       -regtest=1
