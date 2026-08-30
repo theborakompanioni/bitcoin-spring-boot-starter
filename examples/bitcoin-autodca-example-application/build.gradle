@@ -10,6 +10,7 @@ dependencies {
 
     implementation 'io.projectreactor:reactor-core'
 
+    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
     implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'

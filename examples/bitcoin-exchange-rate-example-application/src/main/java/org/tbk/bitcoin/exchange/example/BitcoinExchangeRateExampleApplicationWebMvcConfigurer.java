@@ -53,7 +53,7 @@ class BitcoinExchangeRateExampleApplicationWebMvcConfigurer implements WebMvcCon
 
         return builder -> builder
                 .addModule(internalModule)
-                .addModule(new MonetaMoneyModule())
+                .addModule(new MonetaMoneyModule().withQuotedDecimalNumbers().withDefaultFormatting())
                 .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
                 .changeDefaultPropertyInclusion(incl -> incl.withContentInclusion(JsonInclude.Include.NON_NULL))
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)

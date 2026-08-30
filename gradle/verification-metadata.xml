@@ -580,6 +580,7 @@
          </trusted-key>
          <trusted-key id="F3A90E6B10E809F851AB4FC54CC08E7F47C3EC76" group="com.zaxxer"/>
          <trusted-key id="F43BD1DCA7D5F5AFF5BBEC1EA4B9C195907CB45B" group="org.apache.cassandra" name="java-driver-bom" version="4.19.3"/>
+         <trusted-key id="F4907E8114F3632D72B6E7317A2328FAEBF60822" group="com.google.api.grpc" name="proto-google-common-protos" version="1.0.0"/>
          <trusted-key id="F4DD59C90148BDC52BEB90A4530AA5F25C25011F">
             <trusting group="commons-codec"/>
             <trusting group="commons-logging"/>
