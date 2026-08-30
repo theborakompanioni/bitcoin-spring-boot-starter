@@ -4,6 +4,7 @@
 [group("development")]
 run-development:
     SPRING_PROFILES_ACTIVE=development ../../../gradlew \
+      --no-daemon \
       --console=plain \
       bootRun
 
@@ -11,5 +12,6 @@ run-development:
 [group("mainnet")]
 run-mainnet:
     SPRING_PROFILES_ACTIVE=mainnet ../../../gradlew \
+      --no-daemon \
       --console=plain \
       bootRun

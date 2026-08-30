@@ -1,20 +1,20 @@
 package org.tbk.electrum.example.shell.command;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.shell.standard.ShellCommandGroup;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.Utxos;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
-@ShellComponent
-@ShellCommandGroup("Commands")
+@Component
+@CommandGroup(name = "Commands")
 @RequiredArgsConstructor
 class AddressUnspentCommand {
 
@@ -24,10 +24,10 @@ class AddressUnspentCommand {
     @NonNull
     private final JsonMapper jsonMapper;
 
-    @ShellMethod(key = "getaddressunspent", value = "execute command 'getaddressunspent'")
+    @Command(name = "getaddressunspent", description = "execute command 'getaddressunspent'")
     public String run(
-            @ShellOption(value = "address", help = "bitcoin address") String address
-    ) throws JsonProcessingException {
+            @Option(longName = "address", description = "bitcoin address") String address
+    ) throws JacksonException {
         Utxos result = client.getUtxosByAddress(address);
         return jsonMapper.writeValueAsString(result);
     }

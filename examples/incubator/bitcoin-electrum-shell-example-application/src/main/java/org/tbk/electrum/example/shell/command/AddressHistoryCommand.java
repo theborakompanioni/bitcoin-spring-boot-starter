@@ -1,22 +1,22 @@
 package org.tbk.electrum.example.shell.command;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.shell.standard.ShellCommandGroup;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.TxHashAndBlockHeight;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
 @Slf4j
-@ShellComponent
-@ShellCommandGroup("Commands")
+@Component
+@CommandGroup(name = "Commands")
 @RequiredArgsConstructor
 class AddressHistoryCommand {
 
@@ -26,10 +26,10 @@ class AddressHistoryCommand {
     @NonNull
     private final JsonMapper jsonMapper;
 
-    @ShellMethod(key = "getaddresshistory", value = "execute command 'getaddresshistory'")
+    @Command(name = "getaddresshistory", description = "execute command 'getaddresshistory'")
     public String run(
-            @ShellOption(value = "address", help = "bitcoin address") String address
-    ) throws JsonProcessingException {
+            @Option(longName = "address", description = "bitcoin address") String address
+    ) throws JacksonException {
         List<TxHashAndBlockHeight> result = client.getAddressHistory(address);
         return jsonMapper.writeValueAsString(result);
     }

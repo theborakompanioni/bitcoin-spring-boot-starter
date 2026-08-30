@@ -19,4 +19,14 @@ electrum-gateway:
 # run electrum shell example application
 [group("examples")]
 electrum-shell:
-    @SPRING_PROFILES_ACTIVE=mainnet ./gradlew --console=plain -p examples/incubator/bitcoin-electrum-shell-example-application bootRun
+    @SPRING_PROFILES_ACTIVE=mainnet \
+    ./gradlew \
+    --no-daemon \
+    --console=plain \
+    -p examples/incubator/bitcoin-electrum-shell-example-application \
+    bootRun
+
+# run exchange rate example application
+[group("examples")]
+bitcoin-exchange-rate:
+    @./gradlew -p examples/bitcoin-exchange-rate-example-application bootRun --args="--spring.profiles.active=development"

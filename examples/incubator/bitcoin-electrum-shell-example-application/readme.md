@@ -44,22 +44,22 @@ Commands
 
 #### `getaddressbalance`
 ```shell
-electrum:>getaddressbalance bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
+$>getaddressbalance bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
 50.00 BTC
 # or
-electrum:>getaddressbalance 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
+$>getaddressbalance 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
 0.00035711 BTC
 ```
 
 #### `getaddresshistory`
 ```shell
-electrum:>getaddresshistory bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
+$>getaddresshistory bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
 [ {
   "txHash" : "dc9e376d145d962d3b2e52a83b7f7ef9c390f0227a10173ac993f7ee7d642fa1",
   "height" : 1
 } ]
 # or
-electrum:>getaddresshistory 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
+$>getaddresshistory 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
 [ {
   "txHash" : "6f7cf9580f1c2dfb3c4d5d043cdbb128c640e3f20161245aa7372e9666168516",
   "height" : 728
@@ -71,7 +71,7 @@ electrum:>getaddresshistory 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
 
 #### `getaddressunspent`
 ```shell
-electrum:>getaddressunspent bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
+$>getaddressunspent bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regtest eater address
 {
   "utxos" : [ {
     "height" : 1,
@@ -90,7 +90,7 @@ electrum:>getaddressunspent bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl  # regt
   "empty" : false
 }
 # or
-electrum:>getaddressunspent 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
+$>getaddressunspent 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
 {
   "utxos" : [ {
     "height" : 898336,
@@ -112,7 +112,7 @@ electrum:>getaddressunspent 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv
 
 #### `getinfo`
 ```shell
-electrum:>getinfo
+$>getinfo
 {
   "network" : "regtest",
   "path" : "/home/electrum/.electrum/regtest",
@@ -126,7 +126,7 @@ electrum:>getinfo
   "fee_estimates" : { }
 }
 # or
-electrum:>getinfo
+$>getinfo
 {
   "network" : "mainnet",
   "path" : "/home/electrum/.electrum",
@@ -150,12 +150,12 @@ electrum:>getinfo
 
 #### `check-wallet-tree-file`
 ```shell
-electrum:>check-wallet-tree-file regtest.txt
+$>check-wallet-tree-file regtest.txt
 bcrt1qgksms8qktns8xajc2ylf6kwrmd6tspfmug72kl;350.00 BTC;true
 bcrt1q0xtrupsjmqr7u7xz4meufd3a8pt6v553m8nmvz;0.00 BTC;false
 bcrt1q4m4fds2rdtgde67ws5aema2a2wqvv7uzyxqc4j;0.00 BTC;false
 # or
-electrum:>check-wallet-tree-file mainnet.txt
+$>check-wallet-tree-file mainnet.txt
 12higDjoCCNXSA95xZMWUdPvXNmkAduhWv;0.00035711 BTC;true
 342ftSRCvFHfCeFFBuz4xwbeqnDw6BGUey;0.00008563 BTC;true
 bc1qeklep85ntjz4605drds6aww9u0qr46qzrv5xswd35uhjuj8ahfcqgf6hak;0.0060157 BTC;true
@@ -164,21 +164,21 @@ bc1qeklep85ntjz4605drds6aww9u0qr46qzrv5xswd35uhjuj8ahfcqgf6hak;0.0060157 BTC;tru
 #### `vanity`
 ```shell
 # or
-electrum:>vanity --network regtest --address-prefix eat
+$>vanity --network regtest --address-prefix eat
 {
   "address" : "bcrt1qeat2kv2xs5pw7hrhs4n9dwxw3py7j7rfv802wq",
   "mnemonic" : "mercy dawn spare satisfy place aspect eye measure live argue skate scorpion",
   "passphrase" : ""
 }
 # or
-electrum:>vanity --address-type p2pkh
+$>vanity --address-type p2pkh
 {
 "address" : "1AWgukWaE1hcBv3VELsK5aRr8ZTo4NSLwZ",
 "mnemonic" : "roast energy copy crouch reason tragic icon letter embody fault mom noble",
 "passphrase" : ""
 }
 # or
-electrum:>vanity --network mainnet --address-prefix eater --timeout 5s
+$>vanity --network mainnet --address-prefix eater --timeout 5s
 Timeout on blocking read for 5000000000 NANOSECONDS
 Details of the error have been omitted. You can use the stacktrace command to print the full stacktrace.
 ```
