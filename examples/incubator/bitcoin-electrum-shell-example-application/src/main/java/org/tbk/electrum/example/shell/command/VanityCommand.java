@@ -1,7 +1,5 @@
 package org.tbk.electrum.example.shell.command;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableMap;
@@ -15,16 +13,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.convert.DurationStyle;
-import org.springframework.shell.standard.ShellCommandGroup;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 import org.tbk.electrum.example.shell.util.MoreBlocks;
 import org.tbk.electrum.example.shell.util.MoreRandom;
 import org.tbk.electrum.example.shell.util.Wallet;
 import org.tbk.electrum.example.shell.util.Wallet.Mnemonic;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -38,24 +38,24 @@ import java.util.stream.IntStream;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-@ShellComponent
-@ShellCommandGroup("Commands")
+@Component
+@CommandGroup(name = "Commands")
 @RequiredArgsConstructor
 class VanityCommand {
 
     @NonNull
     private final JsonMapper jsonMapper;
 
-    @ShellMethod(key = "vanity", value = "generate a vanity address")
+    @Command(name = "vanity", description = "generate a vanity address")
     public String run(
-            @ShellOption(value = "address-prefix", defaultValue = "", help = "address prefix") String addressPrefixArg,
-            @ShellOption(value = "address-suffix", defaultValue = "", help = "address suffix") String addressSuffixArg,
-            @ShellOption(value = "network", defaultValue = "mainnet", help = "mainnet|regtest|signet|testnet4") String networkArg,
-            @ShellOption(value = "address-type", defaultValue = "p2wpkh", help = "p2wpkh|p2wpkh_p2sh|p2pkh") String addressTypeArg,
-            @ShellOption(value = "path", defaultValue = "", help = "m/86'/0'/0'/0|m/84'/0'/0'/0|m/49'/0'/0'/0|m/44'/0'/0'/0") String pathArg,
-            @ShellOption(value = "parallelism", defaultValue = "0", help = "parallelism level (default: # of processors / 2)") int parallelismArg,
-            @ShellOption(value = "timeout", defaultValue = "-1", help = "timeout (e.g. 2s, 2d, default: -1 [no timeout])") String timeoutArg
-    ) throws JsonProcessingException {
+            @Option(longName = "address-prefix", defaultValue = "", description = "address prefix") String addressPrefixArg,
+            @Option(longName = "address-suffix", defaultValue = "", description = "address suffix") String addressSuffixArg,
+            @Option(longName = "network", defaultValue = "mainnet", description = "mainnet|regtest|signet|testnet4") String networkArg,
+            @Option(longName = "address-type", defaultValue = "p2wpkh", description = "p2tr|p2wpkh|p2wpkh_p2sh|p2pkh") String addressTypeArg,
+            @Option(longName = "path", defaultValue = "", description = "m/86'/0'/0'/0|m/84'/0'/0'/0|m/49'/0'/0'/0|m/44'/0'/0'/0") String pathArg,
+            @Option(longName = "parallelism", defaultValue = "0", description = "parallelism level (default: # of processors / 2)") int parallelismArg,
+            @Option(longName = "timeout", defaultValue = "-1", description = "timeout (e.g. 2s, 2d, default: -1 [no timeout])") String timeoutArg
+    ) throws JacksonException {
         int parallelism = parallelismArg > 0 ? parallelismArg : Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
         String addressPrefix = addressPrefixArg == null ? "" : addressPrefixArg;
         String addressSuffix = addressSuffixArg == null ? "" : addressSuffixArg;

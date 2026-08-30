@@ -9,6 +9,8 @@ import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.web.servlet.config.annotation.*;
 import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.ValueSerializer;
@@ -50,16 +52,16 @@ class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigur
 
     @Bean
     JsonMapperBuilderCustomizer jacksonCustomizer() {
-        tools.jackson.databind.module.SimpleModule internalModule = new SimpleModule("AppInternal")
+        SimpleModule internalModule = new SimpleModule("AppInternal")
                 .addSerializer(new BigDecimalToStringSerializer());
 
         return builder -> builder
                 .addModules(internalModule)
                 .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
                 .changeDefaultPropertyInclusion(incl -> incl.withContentInclusion(JsonInclude.Include.NON_NULL))
-                .enable(tools.jackson.databind.DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .enable(tools.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
                 .enable(SerializationFeature.INDENT_OUTPUT);
     }
 
@@ -71,7 +73,7 @@ class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigur
         }
 
         @Override
-        public void serialize(BigDecimal value, tools.jackson.core.JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
+        public void serialize(BigDecimal value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
             gen.writeString(value.toPlainString());
         }
     }
