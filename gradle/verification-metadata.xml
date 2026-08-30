@@ -448,6 +448,7 @@
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.49.1.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.51.1.0"/>
             <trusting group="org.xerial" name="sqlite-jdbc" version="3.53.2.1"/>
+            <trusting group="org.xerial" name="sqlite-jdbc" version="3.53.4.0"/>
          </trusted-key>
          <trusted-key id="C25A288A842EAF7AA5B5303F7A73FE77DE2C4027" group="^fr[.]acinq($|([.].*))" regex="true"/>
          <trusted-key id="C3259D20DAEC4ACE6D57CC83340B090F727518D8" group="com.google.j2objc" name="j2objc-annotations" version="3.1"/>
