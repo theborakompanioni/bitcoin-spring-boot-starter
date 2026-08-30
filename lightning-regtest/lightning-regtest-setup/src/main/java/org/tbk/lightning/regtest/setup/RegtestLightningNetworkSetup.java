@@ -11,8 +11,8 @@ import io.grpc.StatusRuntimeException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Coin;
 import org.bitcoinj.params.RegTestParams;
 import org.consensusj.bitcoin.json.pojo.BlockChainInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinExtendedClient;
@@ -135,6 +135,7 @@ public class RegtestLightningNetworkSetup {
 
         log.debug("Successfully finished connecting peers.");
     }
+
     private void connectPeers(NodeInfo origin, NodeInfo dest) {
         try {
             CommonConnectResponse ignoredOnPurpose = tryConnectPeers(origin, dest);

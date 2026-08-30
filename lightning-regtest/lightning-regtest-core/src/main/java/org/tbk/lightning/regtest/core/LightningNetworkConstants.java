@@ -11,7 +11,7 @@ public final class LightningNetworkConstants {
     public static final Satoshi LARGEST_CHANNEL_SIZE = new Satoshi(16_777_215L);
     public static final MilliSatoshi LARGEST_CHANNEL_SIZE_MSAT = new MilliSatoshi(LARGEST_CHANNEL_SIZE);
 
-    public static final Duration CLN_DEFAULT_INVOICE_EXPIRY = Duration.ofSeconds(604800);
+    public static final Duration CLN_DEFAULT_INVOICE_EXPIRY = Duration.ofSeconds(604_800);
 
     public static final int CLN_DEFAULT_REGTEST_P2P_PORT = 19_846;
     public static final int LND_DEFAULT_REGTEST_P2P_PORT = 9_735;

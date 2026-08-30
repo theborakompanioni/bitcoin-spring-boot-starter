@@ -44,7 +44,7 @@ public abstract class AbstractClnNodeApi {
         Duration expiry = expiryInSecondsOrNull != null ? Duration.ofSeconds(expiryInSecondsOrNull) : CLN_DEFAULT_INVOICE_EXPIRY;
 
         InvoiceResponse invoice = node.invoice(InvoiceRequest.newBuilder()
-                .setLabel(RandomStringUtils.randomAlphanumeric(32))
+                .setLabel(RandomStringUtils.secure().nextAlphanumeric(32))
                 .setAmountMsat(AmountOrAny.newBuilder()
                         .setAmount(Amount.newBuilder()
                                 .setMsat(millisats)
@@ -110,7 +110,7 @@ public abstract class AbstractClnNodeApi {
 
     @Value
     @Builder
-    static class CreateInvoiceResponse {
+    public static class CreateInvoiceResponse {
         @NonNull
         String bolt11;
 
@@ -127,7 +127,7 @@ public abstract class AbstractClnNodeApi {
 
     @Value
     @Builder
-    static class BalanceInfo {
+    public static class BalanceInfo {
         @NonNull
         Integer channelCount;
 
