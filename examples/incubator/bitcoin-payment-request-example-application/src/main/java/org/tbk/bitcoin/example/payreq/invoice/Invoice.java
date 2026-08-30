@@ -1,6 +1,7 @@
 package org.tbk.bitcoin.example.payreq.invoice;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -23,7 +24,7 @@ import static com.google.gdata.util.common.base.Preconditions.checkArgument;
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "invoice")
 public class Invoice extends AbstractAggregateRoot<Invoice> implements AggregateRoot<Invoice, Invoice.InvoiceId> {
-
+    @JsonUnwrapped
     private final InvoiceId id;
 
     private final long createdAt;

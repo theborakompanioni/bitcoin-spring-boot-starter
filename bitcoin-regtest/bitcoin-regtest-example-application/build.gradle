@@ -5,8 +5,10 @@ description = 'bitcoin regtest example application package'
 dependencies {
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     testAndDevelopmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }

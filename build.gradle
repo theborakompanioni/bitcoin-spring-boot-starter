@@ -193,8 +193,6 @@ subprojects {
         }
 
         bootJar {
-            // creates a launch script for the executable jar
-            launchScript()
             archiveClassifier.set('boot')
 
             exclude('*-local.yml')

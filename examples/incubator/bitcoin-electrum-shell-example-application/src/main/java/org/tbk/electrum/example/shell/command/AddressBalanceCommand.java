@@ -4,10 +4,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.base.Coin;
-import org.springframework.shell.standard.ShellCommandGroup;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.Balance;
 
@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-@ShellComponent
-@ShellCommandGroup("Commands")
+@Component
+@CommandGroup(name = "Commands")
 @RequiredArgsConstructor
 class AddressBalanceCommand {
     private static final List<String> types = Arrays.asList("total|total_onchain|unconfirmed|confirmed|lightning|spendable|unmatured".split("\\|"));
@@ -24,10 +24,10 @@ class AddressBalanceCommand {
     @NonNull
     private final ElectrumClient client;
 
-    @ShellMethod(key = "getaddressbalance", value = "execute command 'getaddressbalance'")
+    @Command(name = "getaddressbalance", description = "execute command 'getaddressbalance'")
     public String run(
-            @ShellOption(value = "address", help = "bitcoin address") String address,
-            @ShellOption(value = "type", help = "total|unconfirmed|confirmed", defaultValue = "total") String type
+            @Option(longName = "address", description = "bitcoin address") String address,
+            @Option(longName = "type", description = "total|unconfirmed|confirmed", defaultValue = "total") String type
     ) {
         Balance result = client.getAddressBalance(address);
 

@@ -3,7 +3,7 @@ app.description: A spring boot bitcoin demo application
 
 spring.application.name: 'tbk-bitcoin-spring-boot-starter-demo-test'
 
-spring.shell.context.close: false
+spring.shell.test.terminal-width: 240
 
 org.tbk.spring.testcontainer.electrum-daemon:
   enabled: true

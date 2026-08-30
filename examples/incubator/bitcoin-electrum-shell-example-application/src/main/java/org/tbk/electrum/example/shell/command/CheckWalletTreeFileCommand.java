@@ -3,10 +3,13 @@ package org.tbk.electrum.example.shell.command;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.FileNameUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.bitcoinj.base.Coin;
-import org.jline.terminal.Terminal;
-import org.springframework.shell.standard.*;
+import org.springframework.shell.core.command.CommandContext;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 import org.tbk.electrum.ElectrumClient;
 import org.tbk.electrum.model.Balance;
 
@@ -14,29 +17,28 @@ import java.io.*;
 import java.util.Optional;
 
 @Slf4j
-@ShellComponent
-@ShellCommandGroup("Commands")
+@Component
+@CommandGroup(name = "Commands")
 @RequiredArgsConstructor
-class CheckWalletTreeFileCommand extends AbstractShellComponent {
+class CheckWalletTreeFileCommand {
 
     @NonNull
     private final ElectrumClient client;
 
-    @ShellMethod(key = "check-wallet-tree-file", value = "check balances of wallet tree file")
+    @Command(name = "check-wallet-tree-file", description = "check balances of wallet tree file")
     public void run(
-            @ShellOption(value = "file", help = "the file") String fileName,
-            @ShellOption(value = "show-zero", defaultValue = "true", help = "filter non-zero balances") boolean showZero,
-            @ShellOption(value = "write-out", defaultValue = "true", help = "write to an output file") boolean writeOut,
-            @ShellOption(value = "out", defaultValue = "", help = "write output to file") String outArg
+            @Option(longName = "file", description = "the file") String fileName,
+            @Option(longName = "show-zero", defaultValue = "true", description = "filter non-zero balances") boolean showZero,
+            @Option(longName = "write-out", defaultValue = "true", description = "write to an output file") boolean writeOut,
+            @Option(longName = "out", defaultValue = "", description = "write output to file") String outArg,
+            CommandContext commandContext
     ) throws IOException, InterruptedException {
-        Terminal terminal = getTerminal();
-        terminal.pause(true);
 
         String outFile = Optional.ofNullable(outArg)
                 .filter(it -> !it.isBlank())
                 .orElseGet(() -> "%s_out.%s".formatted(
-                        FileNameUtils.getBaseName(fileName),
-                        FileNameUtils.getExtension(fileName)
+                        FilenameUtils.removeExtension(fileName),
+                        FilenameUtils.getExtension(fileName)
                 ));
 
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
@@ -64,11 +66,9 @@ class CheckWalletTreeFileCommand extends AbstractShellComponent {
                 printWriter.printf("%s;%s;%s%n", line, total.toFriendlyString(), !total.isZero());
                 printWriter.flush();
 
-                terminal.writer().printf("%s;%s;%s%n", line, total.toFriendlyString(), !total.isZero());
-                terminal.writer().flush();
+                commandContext.outputWriter().printf("%s;%s;%s%n", line, total.toFriendlyString(), !total.isZero());
+                commandContext.outputWriter().flush();
             }
-        } finally {
-            terminal.resume();
         }
     }
 }

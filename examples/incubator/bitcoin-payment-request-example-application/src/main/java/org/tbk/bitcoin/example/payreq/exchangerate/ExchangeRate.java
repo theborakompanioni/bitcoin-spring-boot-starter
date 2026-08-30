@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.exchangerate;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.common.base.MoreObjects;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -24,7 +25,7 @@ import static java.util.Objects.requireNonNull;
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "exchange_rate")
 public class ExchangeRate extends AbstractAggregateRoot<Invoice> implements AggregateRoot<ExchangeRate, ExchangeRate.ExchangeRateId> {
-
+    @JsonUnwrapped
     private final ExchangeRateId id;
 
     @CreationTimestamp

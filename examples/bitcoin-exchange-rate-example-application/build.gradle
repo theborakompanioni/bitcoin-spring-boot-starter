@@ -18,7 +18,10 @@ dependencies {
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    exampleTestImplementation 'org.springframework.boot:spring-boot-starter-restclient'
 }

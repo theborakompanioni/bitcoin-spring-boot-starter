@@ -22,6 +22,6 @@ dependencies {
 
     integTestImplementation project(':incubator:lnurl-java:lnurl-test')
     integTestImplementation project(':incubator:spring-lnurl:spring-lnurl-auth-simple')
-    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     integTestImplementation 'org.springframework.boot:spring-boot-starter-security'
 }

@@ -2,8 +2,8 @@ package org.tbk.bitcoin.example.payreq.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,8 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -64,13 +63,13 @@ class DonationFormApiTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(donationId)))
-                .andExpect(jsonPath("$.createdAt", is(notNullValue())))
+                .andExpect(jsonPath("$.createdAt", is(endsWith("Z"))))
                 .andExpect(jsonPath("$.description", is(notNullValue())))
                 .andExpect(jsonPath("$.displayPrice", is(notNullValue())))
-                .andExpect(jsonPath("$.paymentUrl", is(notNullValue())))
-                .andExpect(jsonPath("$.comment", is(notNullValue())))
-                .andExpect(jsonPath("$.order", is(notNullValue())))
-                .andExpect(jsonPath("$.paymentRequest", is(notNullValue())));
+                .andExpect(jsonPath("$.paymentUrl", both(startsWith("bitcoin:")).and(containsString("?amount="))))
+                .andExpect(jsonPath("$.comment", is("hello world.")))
+                .andExpect(jsonPath("$.order.id.id", is(notNullValue())))
+                .andExpect(jsonPath("$.paymentRequest.id.id", is(notNullValue())));
     }
 
     @Test

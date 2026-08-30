@@ -1,6 +1,7 @@
 package org.tbk.lightning.lnurl.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fr.acinq.bitcoin.PublicKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
@@ -22,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "lnurl_auth_linking_key")
 class AuthLinkingKey implements Entity<WalletUser, AuthLinkingKey.LinkingKeyId> {
-
+    @JsonUnwrapped
     private final LinkingKeyId id;
 
     private final long createdAt;

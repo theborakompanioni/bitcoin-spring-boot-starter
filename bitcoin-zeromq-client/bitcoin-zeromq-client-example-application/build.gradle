@@ -5,7 +5,7 @@ description = 'bitcoin zeromq client example application package'
 dependencies {
     implementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-starter')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     testAndDevelopmentOnly project(':bitcoin-regtest:bitcoin-regtest-starter')

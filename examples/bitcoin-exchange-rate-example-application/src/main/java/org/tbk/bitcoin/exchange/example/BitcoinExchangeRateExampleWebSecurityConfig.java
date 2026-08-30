@@ -1,7 +1,8 @@
 package org.tbk.bitcoin.exchange.example;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,7 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 @Slf4j
 @EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication
 class BitcoinExchangeRateExampleWebSecurityConfig implements WebSecurityCustomizer {
 
     @Override

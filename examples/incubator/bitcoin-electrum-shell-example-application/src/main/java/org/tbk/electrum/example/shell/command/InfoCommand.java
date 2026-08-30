@@ -1,22 +1,19 @@
 package org.tbk.electrum.example.shell.command;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.base.Coin;
-import org.springframework.shell.standard.ShellCommandGroup;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.stereotype.Component;
 import org.tbk.electrum.ElectrumClient;
-import org.tbk.electrum.model.Balance;
 import org.tbk.electrum.rpc.command.GetInfoResponse;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
-@ShellComponent
-@ShellCommandGroup("Commands")
+@Component
+@CommandGroup(name = "Commands")
 @RequiredArgsConstructor
 class InfoCommand {
 
@@ -26,8 +23,8 @@ class InfoCommand {
     @NonNull
     private final JsonMapper jsonMapper;
 
-    @ShellMethod(key = "getinfo", value = "execute command 'getinfo'")
-    public String run() throws JsonProcessingException {
+    @Command(name = "getinfo", description = "execute command 'getinfo'")
+    public String run() throws JacksonException {
         GetInfoResponse result = client.getInfo();
         return jsonMapper.writeValueAsString(result);
     }

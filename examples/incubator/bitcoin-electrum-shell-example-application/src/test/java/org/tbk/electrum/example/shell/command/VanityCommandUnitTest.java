@@ -1,11 +1,11 @@
 package org.tbk.electrum.example.shell.command;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import fr.acinq.bitcoin.MnemonicCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -17,7 +17,7 @@ class VanityCommandUnitTest {
     private static final VanityCommand sut = new VanityCommand(jsonMapper);
 
     @Test
-    void itShouldFindVanityAddressMainnetPrefixSimple() throws JsonProcessingException {
+    void itShouldFindVanityAddressMainnetPrefixSimple() throws JacksonException {
         String prefix = "z";
 
         String result = sut.run(prefix, "", "", "", "", 0, "60s");
@@ -34,7 +34,7 @@ class VanityCommandUnitTest {
     }
 
     @Test
-    void itShouldFindVanityAddressMainnetSuffixSimple() throws JsonProcessingException {
+    void itShouldFindVanityAddressMainnetSuffixSimple() throws JacksonException {
         String suffix = "z";
 
         String result = sut.run("", suffix, "", "", "", 0, "60s");
@@ -62,7 +62,7 @@ class VanityCommandUnitTest {
     }
 
     @Test
-    void itShouldFindVanityAddressMainnetP2pkhSimple() throws JsonProcessingException {
+    void itShouldFindVanityAddressMainnetP2pkhSimple() throws JacksonException {
         String prefix = "A";
 
         String result = sut.run(prefix, "", "", "p2pkh", "", 0, "60s");
@@ -79,7 +79,7 @@ class VanityCommandUnitTest {
     }
 
     @Test
-    void itShouldFindVanityAddressMainnetP2shSimple() throws JsonProcessingException {
+    void itShouldFindVanityAddressMainnetP2shSimple() throws JacksonException {
         String prefix = "A";
 
         String result = sut.run(prefix, "", "", "p2wpkh_p2sh", "", 0, "60s");
@@ -96,7 +96,7 @@ class VanityCommandUnitTest {
     }
 
     @Test
-    void itShouldFindVanityAddressRegtestSimple() throws JsonProcessingException {
+    void itShouldFindVanityAddressRegtestSimple() throws JacksonException {
         String prefix = "z";
 
         String result = sut.run(prefix, "", "regtest", "", "", 0, "60s");
@@ -113,7 +113,7 @@ class VanityCommandUnitTest {
     }
 
     @Test
-    void itShouldFindVanityAddressRegtestP2pkhSimple() throws JsonProcessingException {
+    void itShouldFindVanityAddressRegtestP2pkhSimple() throws JacksonException {
         String prefix = "y";
 
         String result = sut.run(prefix, "", "regtest", "p2pkh", "", 0, "60s");
