@@ -15,6 +15,7 @@ buildscript {
         // by submodules.
         classpath platform(libs.jmolecules.bom)
         classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
+        classpath libs.protobuf.plugin
     }
     // https://docs.gradle.org/current/userguide/dependency_locking.html#sec:activate-locking-build-script
     configurations.classpath {

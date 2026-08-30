@@ -46,7 +46,7 @@ public class LocalRegtestLightningNetworkSetupConfig {
         String username = "regtest";
         String password = "regtest";
         URI uri = URI.create("http://%s:%d".formatted(host, port));
-        return new RpcConfig(RegTestParams.get(), uri, username, password);
+        return new RpcConfig(RegTestParams.get().network(), uri, username, password);
     }
 
     @Bean

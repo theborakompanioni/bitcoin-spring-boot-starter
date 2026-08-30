@@ -5,11 +5,12 @@ description = 'lightning regtest example application package'
 dependencies {
     implementation project(':lightning-regtest:lightning-regtest-starter')
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}"
+    implementation rootProject.libs.springdoc.openapi.ui
     
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // testAndDevelopmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     //integTestImplementation 'org.springframework.boot:spring-boot-docker-compose'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }
