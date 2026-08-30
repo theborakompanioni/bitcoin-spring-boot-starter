@@ -4,8 +4,10 @@ import kotlin.Pair;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -13,10 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.tbk.lnurl.auth.SignedLnurlAuth;
 import org.tbk.lnurl.test.SimpleLnurlWallet;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.security.SecureRandom;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
@@ -25,6 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         classes = LnurlAuthExampleApplication.class
 )
 @ActiveProfiles("test")
+@AutoConfigureTestRestTemplate
 class AuthenticatedApiTest {
     private static final String GUARDED_ENDPOINT = "/api/v1/authenticated/self";
 
@@ -34,6 +40,13 @@ class AuthenticatedApiTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    @Value("${server.servlet.session.cookie.name}")
+    private String sessionCookieName;
 
     @BeforeAll
     static void setUpAll() {
@@ -46,23 +59,27 @@ class AuthenticatedApiTest {
         ResponseEntity<Object> request0 = restTemplate.exchange(RequestEntity.get(GUARDED_ENDPOINT).build(), Object.class);
         assertThat("user cannot see any guarded resource", request0.getStatusCode(), is(HttpStatus.FORBIDDEN));
 
-        Pair<SignedLnurlAuth, String> signedAuthAndSessionId = new LnurlAuthFlowTest.LnurlAuthFlowTestHelper(restTemplate, testWallet).login();
+        Pair<SignedLnurlAuth, String> signedAuthAndSessionId = new LnurlAuthFlowTest.LnurlAuthFlowTestHelper(restTemplate, testWallet, sessionCookieName).login();
 
         ResponseEntity<String> authTestRequest2ResponseEntity = restTemplate.exchange(RequestEntity.get(GUARDED_ENDPOINT)
-                .header(HttpHeaders.COOKIE, "SESSION=%s".formatted(signedAuthAndSessionId.getSecond()))
+                .header(HttpHeaders.COOKIE, "%s=%s".formatted(sessionCookieName, signedAuthAndSessionId.getSecond()))
                 .build(), String.class);
         assertThat(authTestRequest2ResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
-        assertThat(authTestRequest2ResponseEntity.getBody(), is("""
+        String username = signedAuthAndSessionId.getFirst().getLinkingKey().toHex();
+
+        JsonNode body = objectMapper.readTree(authTestRequest2ResponseEntity.getBody());
+        assertThat(body, is(equalTo(objectMapper.readTree("""
                 {
-                  "username" : "%s",
+                  "accountNonExpired" : true,
+                  "accountNonLocked" : true,
                   "authorities" : [ {
                     "authority" : "ROLE_USER"
                   } ],
-                  "accountNonExpired" : true,
-                  "accountNonLocked" : true,
                   "credentialsNonExpired" : true,
-                  "enabled" : true
-                }""".formatted(signedAuthAndSessionId.getFirst().getLinkingKey().toHex())));
+                  "enabled" : true,
+                  "password" : null,
+                  "username" : "%s"
+                }""".formatted(username)))));
     }
 }

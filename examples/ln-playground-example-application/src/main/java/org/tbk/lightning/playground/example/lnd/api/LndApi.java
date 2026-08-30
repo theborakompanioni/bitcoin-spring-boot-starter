@@ -1,8 +1,5 @@
 package org.tbk.lightning.playground.example.lnd.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
@@ -22,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.tbk.lightning.playground.example.api.dto.CreateInvoiceRequestDto;
 import org.tbk.lightning.playground.example.api.dto.CreateInvoiceResponseDto;
 import org.tbk.lightning.playground.example.api.dto.NodeInfoDto;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -124,7 +124,7 @@ public class LndApi {
     private JsonNode toJson(Message<?> message) {
         try {
             return objectMapper.readTree(message.toJsonAsString(false));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException(e);
         }
     }

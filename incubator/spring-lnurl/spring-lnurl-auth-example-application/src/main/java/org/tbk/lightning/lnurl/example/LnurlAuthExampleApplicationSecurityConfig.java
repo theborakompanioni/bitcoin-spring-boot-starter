@@ -3,7 +3,7 @@ package org.tbk.lightning.lnurl.example;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -79,8 +79,8 @@ class LnurlAuthExampleApplicationSecurityConfig implements WebSecurityCustomizer
                 .headers(headers -> headers
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
-                                + "script-src 'self'; "
-                                + "img-src 'self' data: https://robohash.org"))
+                                                                           + "script-src 'self'; "
+                                                                           + "img-src 'self' data: https://robohash.org"))
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()

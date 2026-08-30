@@ -15,6 +15,6 @@ dependencies {
     api project(':incubator:spring-lnurl:spring-lnurl-auth-autoconfigure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 }

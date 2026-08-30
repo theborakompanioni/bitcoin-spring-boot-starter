@@ -3,6 +3,7 @@ package org.tbk.spring.lnurl.security.session;
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.util.Assert;
 import org.tbk.lnurl.auth.K1;
 
@@ -24,7 +25,7 @@ public final class LnurlAuthSessionToken extends AbstractAuthenticationToken {
     private Object principal;
 
     LnurlAuthSessionToken(K1 k1) {
-        super(null);
+        super(AuthorityUtils.NO_AUTHORITIES);
         this.k1 = requireNonNull(k1);
         setAuthenticated(false);
     }

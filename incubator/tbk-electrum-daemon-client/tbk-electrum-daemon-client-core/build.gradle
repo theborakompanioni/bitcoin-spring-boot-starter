@@ -6,6 +6,7 @@ description = 'electrum daemon jsonrpc client package'
 
 dependencies {
     api "com.github.arteam:simple-json-rpc-client:${rootProject.ext.simpleJsonRpcClientVersion}"
+    api 'tools.jackson.core:jackson-databind'
 
     implementation "org.apache.httpcomponents:httpcore:${rootProject.ext.httpComponentsVersion}"
     implementation "org.apache.httpcomponents:httpclient:${rootProject.ext.httpComponentsClientVersion}"
@@ -15,7 +16,7 @@ dependencies {
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrumx-starter')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-electrum-daemon-starter')
 
-    integTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-core')
     integTestImplementation project(':spring-testcontainer:spring-testcontainer-test')
 }

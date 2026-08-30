@@ -1,5 +1,6 @@
 package org.tbk.bitcoin.example.payreq.lnd.info;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.common.base.MoreObjects;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Setter(AccessLevel.PACKAGE)
 @Table(name = "lnd_info")
 public class LndInfo extends AbstractAggregateRoot<LndInfo> implements AggregateRoot<LndInfo, LndInfo.LndInfoId> {
-
+    @JsonUnwrapped
     private final LndInfoId id;
 
     private final long createdAt;

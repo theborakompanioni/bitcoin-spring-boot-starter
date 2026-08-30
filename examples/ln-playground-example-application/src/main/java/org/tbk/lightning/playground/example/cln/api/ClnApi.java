@@ -1,8 +1,5 @@
 package org.tbk.lightning.playground.example.cln.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.MessageOrBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +15,9 @@ import org.tbk.lightning.cln.grpc.client.*;
 import org.tbk.lightning.playground.example.api.dto.CreateInvoiceRequestDto;
 import org.tbk.lightning.playground.example.api.dto.CreateInvoiceResponseDto;
 import org.tbk.lightning.playground.example.api.dto.NodeInfoDto;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.security.SecureRandom;
 import java.util.HexFormat;
@@ -98,7 +98,7 @@ public class ClnApi {
     private JsonNode toJson(MessageOrBuilder messageOrBuilder) {
         try {
             return objectMapper.readTree(protoToJson(messageOrBuilder));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException(e);
         }
     }

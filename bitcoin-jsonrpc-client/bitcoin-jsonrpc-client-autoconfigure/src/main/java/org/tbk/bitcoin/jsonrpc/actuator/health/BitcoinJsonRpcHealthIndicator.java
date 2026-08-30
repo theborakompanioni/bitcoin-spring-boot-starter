@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.consensusj.bitcoin.json.pojo.NetworkInfo;
 import org.consensusj.bitcoin.jsonrpc.BitcoinClient;
 import org.consensusj.jsonrpc.JsonRpcStatusException;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
 
 import java.util.Map;
 

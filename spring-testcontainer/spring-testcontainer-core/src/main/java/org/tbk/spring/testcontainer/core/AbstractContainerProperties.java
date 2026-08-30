@@ -22,7 +22,7 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     private final Map<String, String> defaultEnvironment;
 
     @Nullable
-    private final DockerImageName defaultImage;
+    private DockerImageName defaultImage;
 
     private boolean enabled;
 
@@ -34,6 +34,7 @@ public abstract class AbstractContainerProperties implements ContainerProperties
 
     private Map<String, String> environment;
 
+    @Nullable
     private Duration startupTimeout;
 
     protected AbstractContainerProperties() {
@@ -75,7 +76,7 @@ public abstract class AbstractContainerProperties implements ContainerProperties
     protected AbstractContainerProperties(@Nullable DockerImageName defaultImage,
                                           List<String> reservedCommands,
                                           Map<String, String> defaultEnvironment,
-                                          Duration defaultStartupTimeout) {
+                                          @Nullable Duration defaultStartupTimeout) {
         this.defaultImage = defaultImage;
         this.reservedCommands = ImmutableList.copyOf(reservedCommands);
         this.defaultEnvironment = ImmutableMap.copyOf(defaultEnvironment);
@@ -138,6 +139,10 @@ public abstract class AbstractContainerProperties implements ContainerProperties
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void setDefaultImage(DockerImageName defaultImage) {
+        this.defaultImage = defaultImage;
     }
 
     public void setImage(String image) {

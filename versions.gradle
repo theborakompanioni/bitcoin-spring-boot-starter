@@ -25,12 +25,12 @@ ext {
     acinqLightningKmpVersion = '1.11.2' // keep in sync with `acinqBitcoinKmpVersion`
     sqliteVersion = '3.51.1.0'
     hibernateCommunityDialectsVersion = '6.6.40.Final'
-    lombokVersion = '1.18.42'
+    lombokVersion = '1.18.46'
     springdocOpenApiVersion = '2.3.0'
     checkstyleVersion = '12.3.1'
     findsecbugsPluginVersion = '1.14.0'
-    torSpringBootStarterVersion = '0.10.0'
-    springBootGradlePluginVersion = '3.5.9'
+    torSpringBootStarterVersion = '0.12.0'
+    springBootGradlePluginVersion = '4.1.1'
     springShellVersion = '3.4.1'
     protobufGradleVersion = '0.9.6'
 }
