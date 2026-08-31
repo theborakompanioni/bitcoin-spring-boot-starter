@@ -6,7 +6,7 @@ description = 'bitcoin zeromq bitcoin-kmp package'
 
 dependencies {
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
-    api "fr.acinq.bitcoin:bitcoin-kmp-jvm:${rootProject.ext.acinqBitcoinKmpVersion}"
+    api rootProject.libs.acinq.bitcoin.kmp
 
     testImplementation 'io.micrometer:micrometer-core'
     testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-test')

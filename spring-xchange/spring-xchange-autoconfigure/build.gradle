@@ -5,15 +5,12 @@ plugins {
 description = 'xchange autoconfigure package'
 
 dependencies {
-    compileOnly "org.knowm.xchange:xchange-core:${rootProject.ext.xChangeVersion}"
+    compileOnly rootProject.libs.xchange.core
 
     // ================================================================
     // Following exchanges provide exchange rates without needing a api secret
     // -----
-    compileOnly "org.knowm.xchange:xchange-kraken:${rootProject.ext.xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-bitstamp:${rootProject.ext.xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-bitfinex:${rootProject.ext.xChangeVersion}"
-    compileOnly "org.knowm.xchange:xchange-gemini:${rootProject.ext.xChangeVersion}"
+    compileOnly rootProject.libs.bundles.xchange.exchanges
     // ================================================================
 
     // ================================================================
@@ -32,7 +29,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation "org.knowm.xchange:xchange-core:${rootProject.ext.xChangeVersion}"
-    testImplementation "org.knowm.xchange:xchange-kraken:${rootProject.ext.xChangeVersion}"
-    testImplementation "org.knowm.xchange:xchange-bitstamp:${rootProject.ext.xChangeVersion}"
+    testImplementation rootProject.libs.xchange.core
+    testImplementation rootProject.libs.xchange.kraken
+    testImplementation rootProject.libs.xchange.bitstamp
 }

@@ -32,12 +32,6 @@
         <property name="optional" value="true"/>
     </module>
 
-    <!-- Suppress all checks in generated proto sources -->
-    <module name="SuppressionSingleFilter">
-        <property name="files" value="generated[\\/]source[\\/]proto[\\/]"/>
-        <property name="checks" value=".*"/>
-    </module>
-
     <!-- Suppress false positives for spring autoconfig classes -->
     <module name="SuppressionSingleFilter">
         <property name="files" value="^.*AutoConfiguration\.java$"/>

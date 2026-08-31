@@ -15,8 +15,7 @@ bootJar {
 }
 
 dependencies {
-    implementation "com.google.zxing:core:${rootProject.ext.zxingVersion}"
-    implementation "com.google.zxing:javase:${rootProject.ext.zxingVersion}"
+    implementation rootProject.libs.bundles.zxing
 
     implementation project(':bitcoin-regtest:bitcoin-regtest-starter')
 
@@ -32,18 +31,18 @@ dependencies {
     implementation project(':xchange-jsr354:xchange-jsr354-starter')
     implementation project(':spring-xchange:spring-xchange-starter')
 
-    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
+    implementation rootProject.libs.moneta
     // jackson-datatype-moneta does not play nicely with bytebuddy plugin:
     // always throws "ZipException: zip END header not found" (last checked 2026-08-29)
     //implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
+    implementation rootProject.libs.springdoc.openapi.ui
 
     implementation 'io.projectreactor:reactor-core'
 
     implementation 'org.flywaydb:flyway-core'
-    implementation "org.xerial:sqlite-jdbc:${rootProject.ext.sqliteVersion}"
-    implementation "org.hibernate.orm:hibernate-community-dialects:${rootProject.ext.hibernateCommunityDialectsVersion}"
+    implementation rootProject.libs.sqlite.jdbc
+    implementation rootProject.libs.hibernate.community.dialects
 
     implementation 'org.jmolecules:jmolecules-ddd'
     implementation 'org.jmolecules:jmolecules-events'

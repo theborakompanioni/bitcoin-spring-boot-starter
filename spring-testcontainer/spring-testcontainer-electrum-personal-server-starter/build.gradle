@@ -5,7 +5,7 @@ plugins {
 description = 'spring testcontainer electrum personal server starter'
 
 dependencies {
-    api "org.testcontainers:testcontainers:${rootProject.ext.testcontainersVersion}"
+    api rootProject.libs.testcontainers
     implementation project(':spring-testcontainer:spring-testcontainer-core')
 
     // currently a hard dependency on the bitcoind testcontainer package - try to make it an optional dependency!

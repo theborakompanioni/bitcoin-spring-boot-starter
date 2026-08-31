@@ -4,6 +4,6 @@ plugins {
 description = 'spring testcontainer test package'
 
 dependencies {
-    api "org.testcontainers:testcontainers:${rootProject.ext.testcontainersVersion}"
+    api rootProject.libs.testcontainers
     api 'io.projectreactor:reactor-core'
 }

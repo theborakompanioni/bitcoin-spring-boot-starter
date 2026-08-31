@@ -46,7 +46,7 @@ class BitcoinExchangeRateExampleApplicationTest {
     }
 
     @Test
-    void bitcoinCanBeExchangeToDollars() {
+    void bitcoinCanBeExchangedForDollars() {
         CurrencyConversion btcToUsdConversion = MonetaryConversions.getConversion(ConversionQueryBuilder.of()
                 .setBaseCurrency(Monetary.getCurrency("BTC"))
                 .setTermCurrency(Monetary.getCurrency("USD"))

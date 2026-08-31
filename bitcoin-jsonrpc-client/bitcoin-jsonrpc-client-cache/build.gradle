@@ -5,6 +5,6 @@ plugins {
 description = 'bitcoin jsonrpc client cache package'
 
 dependencies {
-    api "com.msgilligan:cj-btc-jsonrpc:${rootProject.ext.consensusJVersion}"
-    api "com.google.guava:guava:${rootProject.ext.guavaVersion}"
+    api rootProject.libs.consensusj.btc.jsonrpc
+    api rootProject.libs.guava
 }

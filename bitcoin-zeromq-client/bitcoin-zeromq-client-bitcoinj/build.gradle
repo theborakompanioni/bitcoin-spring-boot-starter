@@ -6,7 +6,7 @@ description = 'bitcoin zeromq bitcoinj package'
 
 dependencies {
     api project(':bitcoin-zeromq-client:bitcoin-zeromq-client-core')
-    api "org.bitcoinj:bitcoinj-core:${rootProject.ext.bitcoinjVersion}"
+    api rootProject.libs.bitcoinj
 
     testImplementation 'io.micrometer:micrometer-core'
     testImplementation project(':bitcoin-zeromq-client:bitcoin-zeromq-client-test')

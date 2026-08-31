@@ -6,22 +6,17 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
-    apply from: 'versions.gradle'
-    repositories {
-        mavenCentral()
-    }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootGradlePluginVersion}")
-        classpath("com.google.protobuf:protobuf-gradle-plugin:${protobufGradleVersion}")
-
+        classpath libs.spring.boot.plugin
         // some example projects use jmolecules which allows syntactic sugar via bytebuddy
         // bytebuddy plugin is disabled by default and must be manually enabled via
         // 1) `apply plugin: 'net.bytebuddy.byte-buddy-gradle-plugin'`
         // 2) specify bytebuddy plugin `byteBuddy { transformation { plugin = JMoleculesPlugin.class } }`
         // by submodules.
-        classpath platform("org.jmolecules:jmolecules-bom:${jmoleculesBomVersion}")
+        classpath platform(libs.jmolecules.bom)
         classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
     }
+    // https://docs.gradle.org/current/userguide/dependency_locking.html#sec:activate-locking-build-script
     configurations.classpath {
         resolutionStrategy.activateDependencyLocking()
     }
@@ -29,15 +24,17 @@ buildscript {
 
 plugins {
     id 'idea'
-    id 'nebula.release' version '21.0.0'
-    id 'nebula.lint' version '21.1.3'
-    id 'com.netflix.nebula.project' version '13.0.0'
-    id 'com.netflix.nebula.facet' version '13.0.0'
-    id 'com.github.spotbugs' version '6.4.8' apply false
-    id 'net.bytebuddy.byte-buddy-gradle-plugin' version "$bytebuddyPluginVersion" apply false
-    id 'org.springframework.boot' version "$springBootGradlePluginVersion" apply false
-    id 'org.graalvm.buildtools.native' version '0.11.3' apply false
-    id 'io.freefair.lombok' version '9.1.0' apply false
+
+    alias(libs.plugins.nebula.release)
+    alias(libs.plugins.nebula.lint)
+    alias(libs.plugins.nebula.project)
+    alias(libs.plugins.nebula.facet)
+    alias(libs.plugins.spotbugs) apply false
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.lombok) apply false
+    alias(libs.plugins.bytebuddy) apply false
+    // TODO: enable on demand - currently unused
+    // alias(libs.plugins.graalvm.buildtools.native) apply false
 }
 
 contacts {
@@ -52,8 +49,6 @@ def isIdeEnv = System.getProperty('idea.active')
 
 configurations.configureEach {
     resolutionStrategy {
-        // check for updates in modules every build
-        cacheChangingModulesFor 0, 'seconds'
         preferProjectModules()
         // fail eagerly on version conflict (includes transitive dependencies)
         // e.g. multiple different versions of the same dependency (group and name are equal)
@@ -108,6 +103,12 @@ subprojects {
     apply plugin: 'io.freefair.lombok'
     apply plugin: 'io.spring.dependency-management'
 
+    configurations.configureEach {
+        resolutionStrategy {
+            preferProjectModules()
+        }
+    }
+
     java {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -116,36 +117,24 @@ subprojects {
         }
     }
 
-    repositories {
-        mavenCentral()
-        maven {
-            // needed for netlayer packages
-            url = 'https://jitpack.io'
-        }
-        maven {
-            // needed for consensusj
-            url = 'https://gitlab.com/api/v4/projects/8482916/packages/maven'
-        }
-    }
-
     dependencyManagement {
         imports {
             mavenBom SpringBootPlugin.BOM_COORDINATES
-            mavenBom "org.jmolecules:jmolecules-bom:${rootProject.ext.jmoleculesBomVersion}"
-            mavenBom "org.springframework.shell:spring-shell-dependencies:${rootProject.ext.springShellVersion}"
+            mavenBom rootProject.libs.jmolecules.bom.get().toString()
+            mavenBom rootProject.libs.spring.shell.bom.get().toString()
         }
     }
 
     dependencies {
-        compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
-        testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
-        spotbugsPlugins "com.h3xstream.findsecbugs:findsecbugs-plugin:${rootProject.ext.findsecbugsPluginVersion}"
+        compileOnly rootProject.libs.spotbugs.annotations
+        testCompileOnly rootProject.libs.spotbugs.annotations
+        spotbugsPlugins rootProject.libs.findsecbugs.plugin
 
         implementation 'org.slf4j:slf4j-api'
-        implementation "com.google.guava:guava:${rootProject.ext.guavaVersion}"
+        implementation rootProject.libs.guava
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
-        testImplementation "org.apache.commons:commons-lang3:${rootProject.ext.apacheCommonsVersion}"
+        testImplementation rootProject.libs.apache.commons.lang3
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -261,7 +250,7 @@ subprojects {
     }
 
     lombok {
-        version = "${rootProject.ext.lombokVersion}"
+        version = rootProject.libs.versions.lombok.get()
     }
 
     tasks.withType(Test).configureEach {
@@ -303,6 +292,7 @@ subprojects {
     }
 
     spotbugs {
+        toolVersion = rootProject.libs.versions.spotbugs.get()
         effort = Effort.MAX
         reportLevel = Confidence.valueOf('LOW')
         ignoreFailures = false
@@ -318,7 +308,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = "${rootProject.ext.checkstyleVersion}"
+        toolVersion = rootProject.libs.versions.checkstyle.get()
         configFile = rootProject.file('./checkstyle.xml')
         maxErrors = 0
         ignoreFailures = false

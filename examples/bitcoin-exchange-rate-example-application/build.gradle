@@ -13,10 +13,10 @@ dependencies {
     //implementation 'org.javamoney.lib:javamoney-exchange-frb:1.1'
     //implementation 'org.javamoney.lib:javamoney-exchange-yahoo:1.1'
 
-    implementation "org.javamoney:moneta:${rootProject.ext.monetaVersion}"
+    implementation rootProject.libs.moneta
     implementation 'tools.jackson.datatype:jackson-datatype-moneta'
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${rootProject.ext.springdocOpenApiVersion}"
+    implementation rootProject.libs.springdoc.openapi.ui
 
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
