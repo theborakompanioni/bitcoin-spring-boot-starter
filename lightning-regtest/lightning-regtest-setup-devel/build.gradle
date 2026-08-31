@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+description = 'lightning regtest setup devel package'
+
+dependencies {
+    api project(':lightning-regtest:lightning-regtest-setup')
+
+    api 'org.springframework.boot:spring-boot-docker-compose'
+}
+
+def IS_CI_ENV = (System.getenv("CI") ?: "false") == "true"
+
+tasks.register('resetDockerComposeSetupIfNecessary', Exec) {
+    setEnabled(!IS_CI_ENV)
+    outputs.upToDateWhen { false }
+    workingDir "${projectDir}"
+    commandLine 'docker', 'compose', '--file', "$rootDir/docker/regtest/lightning-regtest-setup-devel/docker-compose.yml", 'down', '--volumes'
+}
+
+integrationTest {
+    // docker-compose setup will be started by spring-boot-docker-compose!
+    dependsOn resetDockerComposeSetupIfNecessary
+}

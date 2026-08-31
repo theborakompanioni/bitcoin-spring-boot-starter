@@ -722,7 +722,7 @@ class ElectrumDaemonClientContainerTest {
     @Test
     void testSignAndVerifyMessage() {
         String address = firstAddress;
-        String randomMessage = RandomStringUtils.randomAlphanumeric(127);
+        String randomMessage = RandomStringUtils.secure().nextAlphanumeric(127);
 
         String signedMessage = sut.signMessage(address, randomMessage, null);
 
@@ -764,7 +764,7 @@ class ElectrumDaemonClientContainerTest {
         String firstPublicKey = publicKeys.stream()
                 .findFirst().orElseThrow(IllegalStateException::new);
 
-        String message = RandomStringUtils.randomAlphanumeric(255);
+        String message = RandomStringUtils.secure().nextAlphanumeric(255);
         String encryptedMessage = this.sut.encryptMessage(firstPublicKey, message);
 
         assertThat(encryptedMessage, is(not(emptyOrNullString())));

@@ -1,0 +1,434 @@
+
+services:
+  postgres:
+    restart: unless-stopped
+    container_name: regtest_db
+    image: postgres:17.0-alpine3.20
+    volumes:
+      - postgres-data:/postgresql_data
+      - ./data/pg/init:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_ADDITIONAL_DATABASES: regtest_cln1_alice,regtest_cln2_bob,regtest_cln3_charlie,regtest_cln4_dave,regtest_cln5_erin,regtest_lnd6_farid,regtest_cln0_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      PGDATA: /postgresql_data
+    ports:
+      - "5889:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready --username=$$POSTGRES_USER", "--dbname=regtest_cln0_app" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bitcoind:
+    container_name: regtest_bitcoind
+    image: polarlightning/bitcoind:27.0
+    restart: unless-stopped
+    volumes:
+      - bitcoind-data:/home/bitcoin/.bitcoin/regtest
+    command:
+      -regtest=1
+      -server=1
+      -whitelist=0.0.0.0/0
+      -txindex=1
+      -debug=rpc
+      -dns=0
+      -dnsseed=0
+      -networkactive=0
+      -uacomment=tbkdevbitcoindregtest
+      -printtoconsole=1
+      -printpriority=1
+      -logtimemicros=1
+      -rpcauth=regtest:169f6ba28badca1d912ac0defebc8ceb$$2550c68dfde8ca3b4892415fa8779b6ea656a44e7af1642332afa06c1979e014
+      -rpcauth=app:f821d634f8b4c2fa2c63fb88a184960e$$225d98d20183093c377a6090c86b9a740380067d092a203831d5ce3ba168cc6c
+      -rpcauth=alice:5e191aea02d8e4ddc6ae20cd24f46032$$f9379455baec014bfc4010602b40609586ce2a6f09ede080f70cac9ef920b8da
+      -rpcauth=bob:15c79f76cfcf280680e24e708e743d41$$b529fc69466a868790ddbc17f7ecc76d894b60a3f7f8e58a8832932445a73cb9
+      -rpcauth=charlie:c32657f44f0302f9f0facd25f730a151$$c90dbe5778cd65b23e4f5d931452fd4cfa4dc9bf695bb530de6d1533ec2ca8bb
+      -rpcauth=dave:94d43df76ac813b13c958f99fb0e44c4$$3dde024ded4adc112021ed97e4741c3710a52a8526076188c14b2358b594be05
+      -rpcauth=erin:39558bb938c4932e9ab179d75552495e$$c2f8a80cf4496d340bf5777ce45183e6c05dd9470bf17e90ba9a3dcbfee223e2
+      -rpcbind=0.0.0.0
+      -rpcallowip=0.0.0.0/0
+      -zmqpubrawblock=tcp://0.0.0.0:28332
+      -zmqpubrawtx=tcp://0.0.0.0:28333
+      -zmqpubhashblock=tcp://0.0.0.0:28334
+      -zmqpubhashtx=tcp://0.0.0.0:28335
+      -fallbackfee=0.00000253
+    expose:
+      - "18443"
+      - "28332"
+      - "28333"
+      - "28334"
+      - "28335"
+    ports:
+      - "18443:18443"
+      - "28332:28332"
+      - "28333:28333"
+      - "28334:28334"
+      - "28335:28335"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "bitcoin-cli", "-chain=regtest", "-getinfo" ]
+      interval: 10s
+      retries: 5
+
+  cln0_app:
+    container_name: regtest_cln0_app
+    image: polarlightning/clightning:24.08.1
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      cln1_alice:
+        condition: service_started # service_healthy
+      cln2_bob:
+        condition: service_started # service_healthy
+      cln3_charlie:
+        condition: service_started # service_healthy
+      cln4_dave:
+        condition: service_started # service_healthy
+      cln5_erin:
+        condition: service_started # service_healthy
+      lnd6_farid:
+        condition: service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
+    command:
+      - '--alias=cln0_app'
+      - '--wallet=postgres://regtest_cln0_app:regtest_cln0_app@regtest_db:5432/regtest_cln0_app'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=app'
+      - '--bitcoin-rpcpassword=app'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
+      - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
+      - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
+      - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln0_app/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln0_app/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln0_app/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln0_app/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln0_app/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln0_app/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln0_app/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19935:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+  cln1_alice:
+    container_name: regtest_cln1_alice
+    image: polarlightning/clightning:24.11.1
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
+    command:
+      - '--alias=cln1_alice'
+      - '--wallet=postgres://regtest_cln1_alice:regtest_cln1_alice@regtest_db:5432/regtest_cln1_alice'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=alice'
+      - '--bitcoin-rpcpassword=alice'
+      - '--grpc-host=0.0.0.0'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
+      - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
+      - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
+      - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln1_alice/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19936:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+  cln2_bob:
+    container_name: regtest_cln2_bob
+    #image: polarlightning/clightning:24.08.1
+    # An LND instance will connect to this node and does not like version >v23.11.2
+    # Always fails with "peer ${pubkey} is not online" (last checked: 2024-10-10)
+    image: polarlightning/clightning:23.11.2
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
+    command:
+      - '--alias=cln2_bob'
+      - '--wallet=postgres://regtest_cln2_bob:regtest_cln2_bob@regtest_db:5432/regtest_cln2_bob'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=bob'
+      - '--bitcoin-rpcpassword=bob'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--log-level=debug'
+      - '--log-file=-'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
+      - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
+      - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
+      #- '--disable-plugin=offers' # TODO: 'offers' plugin errors with v24.05 - disable temporarily (see https://github.com/ElementsProject/lightning/pull/7379)
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln2_bob/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19937:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+  cln3_charlie:
+    container_name: regtest_cln3_charlie
+    image: polarlightning/clightning:24.11.1
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
+    command:
+      - '--alias=cln3_charlie'
+      - '--wallet=postgres://regtest_cln3_charlie:regtest_cln3_charlie@regtest_db:5432/regtest_cln3_charlie'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=charlie'
+      - '--bitcoin-rpcpassword=charlie'
+      - '--grpc-host=0.0.0.0'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
+      - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
+      - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
+      - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln3_charlie/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19938:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+  cln4_dave:
+    container_name: regtest_cln4_dave
+    image: polarlightning/clightning:24.08.1
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
+    command:
+      - '--alias=cln4_dave'
+      - '--wallet=postgres://regtest_cln4_dave:regtest_cln4_dave@regtest_db:5432/regtest_cln4_dave'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=dave'
+      - '--bitcoin-rpcpassword=dave'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
+      - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
+      - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
+      - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln4_dave/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19939:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+  cln5_erin:
+    container_name: regtest_cln5_erin
+    image: polarlightning/clightning:24.08.1
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      LIGHTNINGD_POSTGRES_NO_VACUUM: 1
+    command:
+      - '--alias=cln5_erin' # hack: use the container name as alias (to programmatically connect in setup)
+      - '--wallet=postgres://regtest_cln5_erin:regtest_cln5_erin@regtest_db:5432/regtest_cln5_erin'
+      - '--bitcoin-rpcconnect=regtest_bitcoind'
+      - '--bitcoin-rpcport=18443'
+      - '--bitcoin-rpcuser=erin'
+      - '--bitcoin-rpcpassword=erin'
+      - '--grpc-port=19935'
+      - '--network=regtest'
+      - '--log-level=debug'
+      - '--log-file=/home/clightning/.lightning/regtest/debug.log' # write log file for inspection
+      - '--log-file=-' # means to log to stdout also!
+      - '--funding-confirms=1'
+      - '--database-upgrade=true' # required if a non-release version wants to (irrevocably!) upgrade the db
+      - '--allow-deprecated-apis=false'
+      - '--disable-dns'
+      # see all dev options: https://github.com/ElementsProject/lightning/blob/v24.08.1/lightningd/options.c#L812
+      - '--dev-fast-gossip'
+      - '--dev-fast-reconnect'
+      - '--dev-bitcoind-poll=1'
+      - '--dev-allow-localhost' # Announce and allow announcements for localhost address
+      - '--developer'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/cln5_erin/regtest/hsm_secret:/home/clightning/.lightning/regtest/hsm_secret:ro
+      - ./data/cln_common/regtest/ca.pem:/home/clightning/.lightning/regtest/ca.pem
+      - ./data/cln_common/regtest/ca-key.pem:/home/clightning/.lightning/regtest/ca-key.pem
+      - ./data/cln_common/regtest/client.pem:/home/clightning/.lightning/regtest/client.pem
+      - ./data/cln_common/regtest/client-key.pem:/home/clightning/.lightning/regtest/client-key.pem
+      - ./data/cln_common/regtest/server.pem:/home/clightning/.lightning/regtest/server.pem
+      - ./data/cln_common/regtest/server-key.pem:/home/clightning/.lightning/regtest/server-key.pem
+    ports:
+      - "19940:19935"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lightning-cli", "--network=regtest", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+  lnd6_farid:
+    container_name: regtest_lnd6_farid
+    image: polarlightning/lnd:0.18.2-beta
+    restart: unless-stopped
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command:
+      - '--alias=lnd6_farid'
+      - '--bitcoin.active'
+      - '--bitcoin.regtest'
+      - '--bitcoin.node=bitcoind'
+      - '--bitcoin.defaultchanconfs=1'
+      - '--bitcoind.rpchost=regtest_bitcoind:18443'
+      - '--bitcoind.zmqpubrawblock=tcp://regtest_bitcoind:28332'
+      - '--bitcoind.zmqpubrawtx=tcp://regtest_bitcoind:28333'
+      - '--bitcoind.rpcuser=regtest'
+      - '--bitcoind.rpcpass=regtest'
+      - '--db.backend=postgres'
+      - '--db.postgres.dsn=postgresql://regtest_lnd6_farid:regtest_lnd6_farid@regtest_db:5432/regtest_lnd6_farid'
+      - '--db.postgres.timeout=0'
+      - '--noseedbackup'
+      - '--restlisten=regtest_lnd6_farid:8080'
+      - '--rpclisten=regtest_lnd6_farid:10009'
+      - '--rpclisten=localhost:10009' # needed for healthcheck
+      - '--tlscertduration=876000h'
+      - '--debuglevel=debug'
+      - '--maxpendingchannels=21'
+      - '--trickledelay=1000'
+      # Skip setting up macaroons for now, as it does not work properly and ends up with exception
+      # `io.grpc.StatusRuntimeException: UNKNOWN: verification failed: signature mismatch after caveat verification`
+      - '--no-macaroons'
+    volumes:
+      # mount all certs/keys individually (to avoid creating files on the host system by the container)
+      - ./data/lnd_common/tls.cert:/home/lnd/.lnd/tls.cert
+      - ./data/lnd_common/tls.key:/home/lnd/.lnd/tls.key
+    ports:
+      - "19841:8080"
+      - "19941:10009"
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "lncli", "--network=regtest", "--no-macaroons", "getinfo" ]
+      interval: 10s
+      retries: 5
+
+volumes:
+  bitcoind-data:
+  postgres-data:
