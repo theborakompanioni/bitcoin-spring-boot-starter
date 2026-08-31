@@ -33,7 +33,8 @@ plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.lombok) apply false
     alias(libs.plugins.bytebuddy) apply false
-    alias(libs.plugins.graalvm.buildtools.native) apply false
+    // TODO: enable on demand - currently unused
+    // alias(libs.plugins.graalvm.buildtools.native) apply false
 }
 
 contacts {
