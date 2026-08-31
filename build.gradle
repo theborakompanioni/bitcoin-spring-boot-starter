@@ -18,6 +18,7 @@ buildscript {
         classpath platform(libs.jmolecules.bom)
         classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
     }
+    // https://docs.gradle.org/current/userguide/dependency_locking.html#sec:activate-locking-build-script
     configurations.classpath {
         resolutionStrategy.activateDependencyLocking()
     }
@@ -74,6 +75,12 @@ allprojects {
         ]
         // duplicate dependency false positives from "compileOnly 'javax.servlet:javax.servlet-api'"
         excludedRules = ['duplicate-dependency-class']
+    }
+
+    dependencyLocking {
+        lockMode = LockMode.STRICT
+        // locks all project configurations (but not the `buildscript` ones)
+        lockAllConfigurations()
     }
 }
 
