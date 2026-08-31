@@ -13,15 +13,15 @@ testcontainers = "2.0.5"
 httpComponents = "4.4.16"
 httpComponentsClient = "4.5.14"
 apacheCommons = "3.20.0"
-grpc = "1.61.1"
-protobuf = "3.25.8"
-protoc = "3.25.8"
+grpc = "1.61.1" # update blocked by lightningj; must be compatible with lightningj (https://github.com/lightningj-org/lightningj/blob/master/gradle.properties#L5)
+protoc = "3.25.8" # update blocked by lightningj; must be compatible with lightningj
+protobuf = "3.25.8"  # keep in sync with ${protoc}
 jmoleculesBom = "2025.0.2"
-bytebuddyPlugin = "1.18.12"
+bytebuddyPlugin = "1.18.12"  # keep in sync with ${jmoleculesBom}
 zxing = "3.5.4"
 acinqSecp256k1Kmp = "0.21.0"
-acinqBitcoinKmp = "0.28.1"
-acinqLightningKmp = "1.11.2"
+acinqBitcoinKmp = "0.28.1" # keep in sync with ${acinqSecp256k1Kmp}
+acinqLightningKmp = "1.11.2" # keep in sync with ${acinqBitcoinKmp}
 sqlite = "3.53.4.0"
 hibernateCommunityDialects = "6.6.56.Final"
 lombok = "1.18.46"
@@ -81,11 +81,13 @@ apache-commons-lang3 = { module = "org.apache.commons:commons-lang3", version.re
 # gRPC
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
+grpc-protoc-gen = { module = "io.grpc:protoc-gen-grpc-java", version.ref = "grpc" }
 
 # Protocol Buffers
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 protobuf-java-util = { module = "com.google.protobuf:protobuf-java-util", version.ref = "protobuf" }
 protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufGradle" }
+protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protoc" }
 
 # Jmolecules Bill‑of‑Materials
 jmolecules-bom = { module = "org.jmolecules:jmolecules-bom", version.ref = "jmoleculesBom" }
