@@ -74,6 +74,10 @@ allprojects {
             // fail eagerly on version conflict (includes transitive dependencies)
             // e.g. multiple different versions of the same dependency (group and name are equal)
             failOnVersionConflict()
+
+            force 'com.google.errorprone:error_prone_annotations:2.50.0'
+            force 'org.jetbrains:annotations:23.0.0'
+            force 'com.google.api.grpc:proto-google-common-protos:2.64.1'
         }
     }
 }
