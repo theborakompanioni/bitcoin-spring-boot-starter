@@ -5,9 +5,9 @@ plugins {
 description = 'lnd grpc client package'
 
 dependencies {
-    api "org.lightningj:lightningj:${rootProject.ext.lightningjVersion}"
+    api rootProject.libs.lightningj
 
-    api libs.bundles.grpc
+    api rootProject.libs.bundles.grpc
     api 'javax.json:javax.json-api:1.1.4'
     api 'org.glassfish:javax.json:1.1.4'
 }

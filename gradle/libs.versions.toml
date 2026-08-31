@@ -114,7 +114,6 @@ lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 # Springdoc OpenAPI
 springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdocOpenApi" }
 
-
 # Checkstyle
 checkstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
 
@@ -124,13 +123,14 @@ spotbugs-annotations = { module = "com.github.spotbugs:spotbugs-annotations", ve
 findsecbugs-plugin = { module = "com.h3xstream.findsecbugs:findsecbugs-plugin", version.ref = "findsecbugsPlugin" }
 
 # Tor Spring Boot starter
+spring-tor-http = { module = "io.github.theborakompanioni:spring-tor-http", version.ref = "torSpringBootStarter" }
 spring-boot-starter-tor = { module = "io.github.theborakompanioni:spring-tor-starter", version.ref = "torSpringBootStarter" }
 
 # Spring Boot Gradle plugin
 spring-boot-plugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBootPlugin" }
 
 # Spring Shell
-spring-shell = { module = "org.springframework.shell:spring-shell-starter", version.ref = "springShell" }
+spring-shell-bom = { module = "org.springframework.shell:spring-shell-dependencies", version.ref = "springShell" }
 
 [plugins]
 nebula-release = { id = "nebula.release", version = "21.0.0" }
