@@ -48,17 +48,6 @@ contacts {
 def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
 def isIdeEnv = System.getProperty('idea.active')
 
-configurations.configureEach {
-    resolutionStrategy {
-        // check for updates in modules every build
-        cacheChangingModulesFor 0, 'seconds'
-        preferProjectModules()
-        // fail eagerly on version conflict (includes transitive dependencies)
-        // e.g. multiple different versions of the same dependency (group and name are equal)
-        failOnVersionConflict()
-    }
-}
-
 allprojects {
     apply plugin: 'nebula.lint'
 
@@ -81,6 +70,17 @@ allprojects {
         lockMode = LockMode.STRICT
         // locks all project configurations (but not the `buildscript` ones)
         lockAllConfigurations()
+    }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            // check for updates in modules every build
+            cacheChangingModulesFor 0, 'seconds'
+            preferProjectModules()
+            // fail eagerly on version conflict (includes transitive dependencies)
+            // e.g. multiple different versions of the same dependency (group and name are equal)
+            failOnVersionConflict()
+        }
     }
 }
 
