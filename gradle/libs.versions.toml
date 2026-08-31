@@ -141,7 +141,7 @@ nebula-project = { id = "com.netflix.nebula.project", version = "13.0.0" }
 nebula-facet = { id = "com.netflix.nebula.facet", version = "13.0.0" }
 spotbugs = { id = "com.github.spotbugs", version = "6.5.11" }
 spring-boot = { id = "org.springframework.boot", version.ref = "springBootPlugin" }
-lombok = { id = "io.freefair.lombok", version = "9.1.0" }
+lombok = { id = "io.freefair.lombok", version = "9.5.0" }
 bytebuddy = { id = "net.bytebuddy.byte-buddy-gradle-plugin", version.ref = "bytebuddyPlugin" }
 graalvm-buildtools-native = { id = "org.graalvm.buildtools.native", version = "0.11.3" }
 

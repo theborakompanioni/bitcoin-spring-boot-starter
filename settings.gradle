@@ -19,11 +19,14 @@ dependencyResolutionManagement {
                 includeGroup('com.github.bisq-network')
             }
         }
-        mavenCentral()
         maven {
             // needed for consensusj
             url = 'https://gitlab.com/api/v4/projects/8482916/packages/maven'
+            content {
+                includeGroup('com.msgilligan')
+            }
         }
+        mavenCentral()
         mavenLocal {
             mavenContent {
                 snapshotsOnly()

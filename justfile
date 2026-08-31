@@ -92,6 +92,16 @@ update-verification *args='':
 update-verification-refresh-keys:
     @just update-verification --refresh-keys
 
+# update dependency lockfiles
+[group("development")]
+update-lockfiles:
+    @./gradlew \
+     -Dorg.gradle.caching=false \
+     -Dorg.gradle.configureondemand=false \
+     -Dorg.gradle.parallel=false \
+     dependencies dependencyTree \
+     --write-locks
+
 # check style
 [group("development")]
 checkstyle:
