@@ -46,6 +46,15 @@ contacts {
 def testcontainersRyukDisabled = System.getenv("TESTCONTAINERS_RYUK_DISABLED") ?: "true"
 def isIdeEnv = System.getProperty('idea.active')
 
+configurations.configureEach {
+    resolutionStrategy {
+        preferProjectModules()
+        // fail eagerly on version conflict (includes transitive dependencies)
+        // e.g. multiple different versions of the same dependency (group and name are equal)
+        failOnVersionConflict()
+    }
+}
+
 allprojects {
     apply plugin: 'nebula.lint'
 
@@ -62,20 +71,6 @@ allprojects {
         ]
         // duplicate dependency false positives from "compileOnly 'javax.servlet:javax.servlet-api'"
         excludedRules = ['duplicate-dependency-class']
-    }
-
-    configurations.configureEach {
-        resolutionStrategy {
-            // check for updates in modules every build
-            // cacheChangingModulesFor 0, 'seconds'
-            // preferProjectModules()
-            // fail eagerly on version conflict (includes transitive dependencies)
-            // e.g. multiple different versions of the same dependency (group and name are equal)
-            // failOnVersionConflict()
-
-            force 'com.google.errorprone:error_prone_annotations:2.50.0'
-            force 'org.jetbrains:annotations:23.0.0'
-        }
     }
 }
 
@@ -106,6 +101,12 @@ subprojects {
     apply plugin: 'com.netflix.nebula.integtest-standalone'
     apply plugin: 'io.freefair.lombok'
     apply plugin: 'io.spring.dependency-management'
+
+    configurations.configureEach {
+        resolutionStrategy {
+            preferProjectModules()
+        }
+    }
 
     java {
         sourceCompatibility = JavaVersion.VERSION_21
