@@ -8,8 +8,6 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 buildscript {
     dependencies {
         classpath libs.spring.boot.plugin
-        classpath libs.protobuf.plugin
-
         // some example projects use jmolecules which allows syntactic sugar via bytebuddy
         // bytebuddy plugin is disabled by default and must be manually enabled via
         // 1) `apply plugin: 'net.bytebuddy.byte-buddy-gradle-plugin'`
@@ -69,15 +67,14 @@ allprojects {
     configurations.configureEach {
         resolutionStrategy {
             // check for updates in modules every build
-            cacheChangingModulesFor 0, 'seconds'
-            preferProjectModules()
+            // cacheChangingModulesFor 0, 'seconds'
+            // preferProjectModules()
             // fail eagerly on version conflict (includes transitive dependencies)
             // e.g. multiple different versions of the same dependency (group and name are equal)
-            failOnVersionConflict()
+            // failOnVersionConflict()
 
             force 'com.google.errorprone:error_prone_annotations:2.50.0'
             force 'org.jetbrains:annotations:23.0.0'
-            force 'com.google.api.grpc:proto-google-common-protos:2.64.1'
         }
     }
 }

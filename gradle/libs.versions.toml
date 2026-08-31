@@ -81,13 +81,13 @@ apache-commons-lang3 = { module = "org.apache.commons:commons-lang3", version.re
 # gRPC
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
-grpc-protoc-gen = { module = "io.grpc:protoc-gen-grpc-java", version.ref = "grpc" }
+# grpc-protoc-gen = { module = "io.grpc:protoc-gen-grpc-java", version.ref = "grpc" }
 
 # Protocol Buffers
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 protobuf-java-util = { module = "com.google.protobuf:protobuf-java-util", version.ref = "protobuf" }
-protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufGradle" }
-protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protoc" }
+
+# protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protoc" }
 
 # Jmolecules Bill‑of‑Materials
 jmolecules-bom = { module = "org.jmolecules:jmolecules-bom", version.ref = "jmoleculesBom" }
