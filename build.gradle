@@ -66,12 +66,6 @@ allprojects {
         excludedRules = ['duplicate-dependency-class']
     }
 
-    dependencyLocking {
-        lockMode = LockMode.STRICT
-        // locks all project configurations (but not the `buildscript` ones)
-        lockAllConfigurations()
-    }
-
     configurations.configureEach {
         resolutionStrategy {
             // check for updates in modules every build
