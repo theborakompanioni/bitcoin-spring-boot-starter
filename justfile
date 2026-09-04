@@ -2,6 +2,8 @@
 
 # run example applications
 import 'examples.just'
+# gradle build specific stuff
+import 'gradle.just'
 
 # Load environment variables from `.env` file.
 set dotenv-load
