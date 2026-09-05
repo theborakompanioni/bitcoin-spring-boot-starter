@@ -507,6 +507,7 @@
             <trusting group="org.projectlombok" name="lombok" version="1.18.36"/>
             <trusting group="org.projectlombok" name="lombok" version="1.18.42"/>
             <trusting group="org.projectlombok" name="lombok" version="1.18.46"/>
+            <trusting group="org.projectlombok" name="lombok" version="1.18.48"/>
          </trusted-key>
          <trusted-key id="D54A395B5CF3F86EB45F6E426B1B008864323B92" group="org.antlr"/>
          <trusted-key id="D5FC4D8E6FF704C573819555BF7CC7DEFE9389D7" group="com.github.docker-java"/>
