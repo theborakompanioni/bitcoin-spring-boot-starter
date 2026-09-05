@@ -73,6 +73,12 @@ allprojects {
         // duplicate dependency false positives from "compileOnly 'javax.servlet:javax.servlet-api'"
         excludedRules = ['duplicate-dependency-class']
     }
+
+    dependencyLocking {
+        lockMode = LockMode.STRICT
+        // locks all project configurations (but not the `buildscript` ones)
+        lockAllConfigurations()
+    }
 }
 
 configure(rootProject) {
