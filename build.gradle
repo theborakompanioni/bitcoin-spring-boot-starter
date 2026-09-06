@@ -57,6 +57,12 @@ configurations.configureEach {
 }
 
 allprojects {
+    // pin exact version as spring might pull in a different protoc runtime dependency
+    // we need the exact version because of lightningj
+    ext['protobuf-java.version'] = rootProject.libs.versions.protobuf.get()
+}
+
+allprojects {
     apply plugin: 'nebula.lint'
 
     group = 'io.github.theborakompanioni'
