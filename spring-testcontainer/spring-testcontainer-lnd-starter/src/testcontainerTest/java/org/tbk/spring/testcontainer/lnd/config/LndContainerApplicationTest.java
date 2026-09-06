@@ -72,7 +72,8 @@ class LndContainerApplicationTest {
 
         NetworkInfo networkInfo = lndSyncApi.getNetworkInfo();
         assertThat(networkInfo, is(notNullValue()));
-        assertThat("node is running alone in the network", networkInfo.getNumNodes(), is(0));
+        // 0 or 1; e.g. v0.18.5 returns 0, v0.21.3 return 1
+        assertThat("node is running alone in the network", networkInfo.getNumNodes(), either(is(0)).or(is(1)));
     }
 
     @Test
