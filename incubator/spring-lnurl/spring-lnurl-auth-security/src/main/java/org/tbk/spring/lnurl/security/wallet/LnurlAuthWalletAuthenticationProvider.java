@@ -3,6 +3,7 @@ package org.tbk.spring.lnurl.security.wallet;
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.PublicKey;
+import fr.acinq.secp256k1.Secp256k1;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -14,6 +15,8 @@ import org.tbk.lnurl.auth.*;
 import org.tbk.spring.lnurl.security.AbstractTokenAuthenticationProvider;
 import org.tbk.spring.lnurl.security.LnurlAuthenticationException;
 import org.tbk.spring.lnurl.security.userdetails.LnurlAuthUserPairingService;
+
+import java.util.HexFormat;
 
 @RequiredArgsConstructor
 public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenticationProvider {
@@ -76,9 +79,10 @@ public class LnurlAuthWalletAuthenticationProvider extends AbstractTokenAuthenti
 
     private boolean verifyLogin(K1 k1, Signature signature, LinkingKey linkingKey) {
         byte[] rawK1 = k1.toArray();
-        ByteVector64 rawSig = Crypto.der2compact(signature.toArray());
+        byte[] rawSig = Secp256k1.get().der2compact(signature.toArray());
+        ByteVector64 rawSigVector = ByteVector64.fromValidHex(HexFormat.of().formatHex(rawSig));
         PublicKey rawKey = PublicKey.fromHex(linkingKey.toHex());
 
-        return Crypto.verifySignature(rawK1, rawSig, rawKey);
+        return Crypto.verifySignature(rawK1, rawSigVector, rawKey);
     }
 }

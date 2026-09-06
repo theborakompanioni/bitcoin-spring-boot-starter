@@ -5,6 +5,7 @@ import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.DeterministicWallet;
 import fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey;
+import fr.acinq.secp256k1.Secp256k1;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -15,6 +16,7 @@ import org.tbk.lnurl.simple.auth.SimpleSignature;
 import org.tbk.lnurl.simple.auth.SimpleSignedLnurlAuth;
 
 import java.net.URI;
+import java.util.HexFormat;
 
 @Slf4j
 public class SimpleLnurlWallet implements LnurlWallet {
@@ -49,10 +51,10 @@ public class SimpleLnurlWallet implements LnurlWallet {
         ExtendedPrivateKey linkingKey = deriveLinkingKey(lnurlAuth.toLnurl().toUri());
 
         ByteVector64 signedK1 = Crypto.sign(lnurlAuth.getK1().toArray(), linkingKey.getPrivateKey());
-        ByteVector signedK1DerEncoded = Crypto.compact2der(signedK1);
+        byte[] signedK1DerEncoded = Secp256k1.get().compact2der(signedK1.toByteArray());
 
         // <LNURL_hostname_and_path>?<LNURL_existing_query_parameters>&sig=<hex(sign(utf8ToBytes(k1), linkingPrivKey))>&key=<hex(linkingKey)>
-        String sigParam = signedK1DerEncoded.toHex();
+        String sigParam = HexFormat.of().formatHex(signedK1DerEncoded);
         String keyParam = linkingKey.getPublicKey().toHex();
 
         return K1WithSigAndKey.builder()

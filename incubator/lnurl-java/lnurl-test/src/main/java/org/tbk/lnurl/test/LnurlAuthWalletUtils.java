@@ -15,7 +15,6 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static fr.acinq.bitcoin.DeterministicWallet.derivePrivateKey;
 import static fr.acinq.bitcoin.DeterministicWallet.hardened;
 
 final class LnurlAuthWalletUtils {
@@ -26,11 +25,11 @@ final class LnurlAuthWalletUtils {
     private static final KeyPath lnurlAuthHashingKeyPath = lnurlAuthKeyPathBase.derive(0L);
 
     public static ExtendedPrivateKey deriveLinkingKey(ExtendedPrivateKey masterPrivateKey, URI domainName) {
-        ExtendedPrivateKey hashingKey = derivePrivateKey(masterPrivateKey, lnurlAuthHashingKeyPath);
+        ExtendedPrivateKey hashingKey = masterPrivateKey.derivePrivateKey(lnurlAuthHashingKeyPath);
 
         KeyPath linkingKeyPath = deriveLinkingKeyPathWithHashingKey(hashingKey.getPrivateKey(), domainName);
 
-        return derivePrivateKey(masterPrivateKey, linkingKeyPath);
+        return masterPrivateKey.derivePrivateKey(linkingKeyPath);
     }
 
     private static KeyPath deriveLinkingKeyPathWithHashingKey(PrivateKey hashingKey, URI domainName) {

@@ -22,7 +22,7 @@ class DeterministicEntropyTest {
         DeterministicWallet.ExtendedPrivateKey key = DeterministicWallet.generate(seed);
         assertThat(key.path, is(KeyPath.fromPath("m")));
 
-        String rootXprv = DeterministicWallet.encode(key, DeterministicWallet.xprv);
+        String rootXprv = key.encode(DeterministicWallet.xprv);
         assertThat(rootXprv, is(xprv));
     }
 
@@ -82,7 +82,7 @@ class DeterministicEntropyTest {
 
         DeterministicWallet.ExtendedPrivateKey key = DeterministicEntropy.keyToXprv(masterBip32RootKey, 0);
 
-        String keyXprv = DeterministicWallet.encode(key, DeterministicWallet.xprv);
+        String keyXprv = key.encode(DeterministicWallet.xprv);
         assertThat(keyXprv, is("xprv9s21ZrQH143K2srSbCSg4m4kLvPMzcWydgmKEnMmoZUurYuBuYG46c6P71UGXMzmriLzCCBvKQWBUv3vPB3m1SATMhp3uEjXHJ42jFg7myX"));
     }
 

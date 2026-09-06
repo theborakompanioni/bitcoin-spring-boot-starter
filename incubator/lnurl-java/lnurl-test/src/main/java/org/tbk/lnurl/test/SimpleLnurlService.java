@@ -5,7 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import fr.acinq.bitcoin.ByteVector64;
 import fr.acinq.bitcoin.Crypto;
 import fr.acinq.bitcoin.PublicKey;
-import fr.acinq.secp256k1.Hex;
+import fr.acinq.secp256k1.Secp256k1;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
@@ -19,6 +19,7 @@ import org.tbk.lnurl.simple.auth.SimpleLnurlAuth;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,10 +65,11 @@ public class SimpleLnurlService implements LnurlService {
         K1 k1 = SimpleK1.fromHex(k1Param.getValue());
         invalidateK1ValueOrThrow(k1);
 
-        ByteVector64 rawSig = Crypto.der2compact(Hex.decode(sigParam.getValue()));
         PublicKey rawKey = PublicKey.fromHex(keyParam.getValue());
+        byte[] rawSig = Secp256k1.get().der2compact(HexFormat.of().parseHex(sigParam.getValue()));
+        ByteVector64 rawSigVector = ByteVector64.fromValidHex(HexFormat.of().formatHex(rawSig));
 
-        return Crypto.verifySignature(k1.toArray(), rawSig, rawKey);
+        return Crypto.verifySignature(k1.toArray(), rawSigVector, rawKey);
     }
 
     private void invalidateK1ValueOrThrow(K1 k1) {

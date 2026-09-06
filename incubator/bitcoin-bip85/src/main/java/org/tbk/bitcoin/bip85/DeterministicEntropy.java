@@ -15,8 +15,7 @@ public final class DeterministicEntropy {
     }
 
     private static byte[] keyToEntropy(DeterministicWallet.ExtendedPrivateKey rootKey, KeyPath keyPath) {
-        DeterministicWallet.ExtendedPrivateKey key = DeterministicWallet.derivePrivateKey(rootKey, keyPath);
-
+        DeterministicWallet.ExtendedPrivateKey key =  rootKey.derivePrivateKey(keyPath);
         return Crypto.hmac512("bip-entropy-from-k".getBytes(StandardCharsets.UTF_8), key.getPrivateKey().value.toByteArray());
     }
 
