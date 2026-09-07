@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverters;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,7 +19,6 @@ import tools.jackson.databind.module.SimpleModule;
 
 import java.math.BigDecimal;
 
-@EnableWebMvc
 @Configuration(proxyBeanMethods = false)
 class LnurlAuthExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 

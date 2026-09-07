@@ -19,7 +19,6 @@ import tools.jackson.databind.module.SimpleModule;
 
 import java.math.BigDecimal;
 
-@EnableWebMvc
 @Configuration(proxyBeanMethods = false)
 class BitcoinPaymentExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 

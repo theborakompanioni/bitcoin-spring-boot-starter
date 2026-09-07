@@ -19,7 +19,6 @@ import tools.jackson.datatype.moneta.MonetaMoneyModule;
 import java.math.BigDecimal;
 
 @Configuration(proxyBeanMethods = false)
-@EnableWebMvc
 @ConditionalOnWebApplication
 class BitcoinAutoDcaExampleApplicationWebMvcConfigurer implements WebMvcConfigurer {
 

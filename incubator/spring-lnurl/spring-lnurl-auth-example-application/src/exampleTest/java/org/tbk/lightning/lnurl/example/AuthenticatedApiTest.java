@@ -78,7 +78,6 @@ class AuthenticatedApiTest {
                   } ],
                   "credentialsNonExpired" : true,
                   "enabled" : true,
-                  "password" : null,
                   "username" : "%s"
                 }""".formatted(username)))));
     }
