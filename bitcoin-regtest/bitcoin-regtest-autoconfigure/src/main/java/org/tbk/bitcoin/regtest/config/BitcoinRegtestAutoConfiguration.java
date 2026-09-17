@@ -42,8 +42,7 @@ public class BitcoinRegtestAutoConfiguration {
 
         boolean isRegtest = configuredNetworkId.equals(requiredNetworkId);
         if (!isRegtest) {
-            String errorMessage = String.format("Bitcoin must be configured with network '%s' - got '%s'",
-                    requiredNetworkId, configuredNetworkId);
+            String errorMessage = "Bitcoin must be configured with network '%s' - got '%s'".formatted(requiredNetworkId, configuredNetworkId);
             throw new BeanCreationNotAllowedException("bitcoinRegtestClient", errorMessage);
         }
 
