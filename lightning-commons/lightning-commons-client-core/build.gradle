@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+apply from: "${project.rootDir}/proto.gradle"
+
+description = 'ln common client core package'
+
+dependencies {
+    api 'io.projectreactor:reactor-core'
+}

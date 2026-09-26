@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+description = 'ln common client cln package'
+
+dependencies {
+    api project(':lightning-commons:lightning-commons-client-core')
+    api rootProject.libs.cln.grpcclient
+}
