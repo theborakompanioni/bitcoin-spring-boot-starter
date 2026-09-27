@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+description = 'lightning regtest core package'
+
+dependencies {
+    api rootProject.libs.acinq.secp256k1.kmp
+    api rootProject.libs.acinq.bitcoin.kmp
+    api rootProject.libs.acinq.lightning.kmp
+
+    api project(':lightning-commons:lightning-commons-client-core')
+}

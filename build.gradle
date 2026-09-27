@@ -15,6 +15,7 @@ buildscript {
         // by submodules.
         classpath platform(libs.jmolecules.bom)
         classpath 'org.jmolecules.integrations:jmolecules-bytebuddy'
+        classpath libs.protobuf.plugin
     }
     // https://docs.gradle.org/current/userguide/dependency_locking.html#sec:activate-locking-build-script
     configurations.classpath {
@@ -357,10 +358,10 @@ subprojects {
 }
 
 // enable publishing for all subproject except for "example applications"
-configure(subprojects.findAll { project ->
-    project.subprojects.isEmpty() &&
-            !project.pluginManager.hasPlugin('org.springframework.boot') &&
-            project.name.indexOf('-example-application') < 0
-}) {
+configure(subprojects.findAll { project -> project.subprojects.isEmpty() &&
+        !project.pluginManager.hasPlugin('org.springframework.boot') &&
+        project.name.indexOf('-example-application') < 0 &&
+        !project.name.startsWith('lightning-commons-') &&
+        !project.name.startsWith('lightning-regtest-') }) {
     apply from: "${project.rootDir}/publish.gradle"
 }

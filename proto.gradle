@@ -1,0 +1,45 @@
+apply plugin: 'com.google.protobuf'
+
+sourceSets {
+    main {
+        proto {
+            // In addition to the default 'src/main/proto'
+            srcDir file('src/main/java')
+        }
+        java {
+            srcDir new File("${layout.buildDirectory}", '/generated/sources/proto/main/java')
+            srcDir new File("${layout.buildDirectory}", '/generated/sources/proto/main/grpc')
+        }
+    }
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        dependencySubstitution {
+            //substitute module("com.google.protobuf:protobuf-javalite") using module("com.google.protobuf:protobuf-java:${rootProject.ext.protobufVersion}")
+            substitute module("com.google.protobuf:protobuf-javalite") using module("com.google.protobuf:protobuf-java:3.25.9")
+
+        }
+    }
+}
+
+dependencies {
+    api rootProject.libs.protobuf.java
+    implementation rootProject.libs.protobuf.java.util
+}
+
+protobuf {
+    //protoc { artifact = "com.google.protobuf:protoc:${rootProject.ext.protocVersion}" }
+    protoc { artifact = "com.google.protobuf:protoc:3.25.9" }
+
+    plugins {
+        //grpc { artifact = "io.grpc:protoc-gen-grpc-java:${rootProject.ext.grpcVersion}" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.61.1" }
+    }
+
+    generateProtoTasks {
+        all().configureEach { task ->
+            task.plugins{ grpc {} }
+        }
+    }
+}
